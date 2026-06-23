@@ -1404,7 +1404,7 @@ export class FinanceDbRepository extends IFinanceRepository {
       });
     } catch (err) {
       // Non-fatal: another concurrent request may have provisioned already.
-      this.logger?.warn?.(
+      console.warn(
         `provisionDefaultPeriods failed for tenant ${ctx.tenant_id}: ${(err as Error).message}`,
       );
     }
