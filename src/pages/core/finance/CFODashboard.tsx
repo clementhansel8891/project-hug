@@ -54,7 +54,7 @@ const CFODashboardContent: React.FC = () => {
   const health = summary?.healthStatus || { status: 'HEALTHY', score: 0, dominantIssueType: 'STABLE' };
   const healthStatus = health.status;
 
-  const { data: reports, isLoading: loadingReports } = useQuery({
+  const { data: reports, isLoading: loadingReports, isError: reportsError, refetch: refetchReports } = useQuery({
     queryKey: ["financial-reports", state.companyId, state.periodId, state.snapshotSequence, state.correlationId],
     queryFn: async () => {
       try {
@@ -204,11 +204,26 @@ const CFODashboardContent: React.FC = () => {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KPICard title="Total Revenue" value={summary?.kpis?.totalRevenue || 0} trend="UP" />
-            <KPICard title="Total Expense" value={summary?.kpis?.totalExpense || 0} trend="DOWN" inverseColor />
-            <KPICard title="Net Profit" value={summary?.kpis?.netProfit || 0} trend="UP" />
-            <KPICard title="Total Assets" value={summary?.kpis?.totalAssets || 0} trend="NEUTRAL" />
+            <KPICard title="Total Revenue" value={summary?.revenue ?? summary?.kpis?.totalRevenue ?? 0} trend="UP" />
+            <KPICard title="Total Expense" value={summary?.expense ?? summary?.kpis?.totalExpense ?? 0} trend="DOWN" inverseColor />
+            <KPICard title="Net Profit" value={summary?.netProfit ?? summary?.kpis?.netProfit ?? 0} trend="UP" />
+            <KPICard title="Total Assets" value={summary?.kpis?.totalAssets ?? 0} trend="NEUTRAL" />
           </div>
+
+          {Number(summary?.revenue ?? 0) === 0 &&
+            Number(summary?.expense ?? 0) === 0 &&
+            Number(summary?.kpis?.totalAssets ?? 0) === 0 && (
+              <Alert className="border-2 border-primary/20 bg-primary/5">
+                <FileCheck size={18} className="text-primary" />
+                <AlertTitle>No financial activity in this period</AlertTitle>
+                <AlertDescription>
+                  This fiscal period has no posted journal entries yet, so all figures read zero.
+                  This is expected for a new or unused period — it is not an error. Record sales,
+                  purchases, payments, or manual journals (or select a different period) to see live
+                  figures populate across the KPIs and reports below.
+                </AlertDescription>
+              </Alert>
+            )}
 
           <CfoChartsSection summaryData={summary?.kpis} />
 
@@ -224,13 +239,31 @@ const CFODashboardContent: React.FC = () => {
             </TabsList>
             
             <TabsContent value="tb">
-              <HierarchicalReportTable title="Detailed Trial Balance" data={reports?.tb || []} />
+              <HierarchicalReportTable
+                title="Detailed Trial Balance"
+                data={reports?.tb || []}
+                isLoading={loadingReports}
+                isError={reportsError}
+                onRetry={() => refetchReports()}
+              />
             </TabsContent>
             <TabsContent value="pl">
-              <HierarchicalReportTable title="Profit & Loss Statement" data={reports?.pl || []} />
+              <HierarchicalReportTable
+                title="Profit & Loss Statement"
+                data={reports?.pl || []}
+                isLoading={loadingReports}
+                isError={reportsError}
+                onRetry={() => refetchReports()}
+              />
             </TabsContent>
             <TabsContent value="bs">
-              <HierarchicalReportTable title="Consolidated Balance Sheet" data={reports?.bs || []} />
+              <HierarchicalReportTable
+                title="Consolidated Balance Sheet"
+                data={reports?.bs || []}
+                isLoading={loadingReports}
+                isError={reportsError}
+                onRetry={() => refetchReports()}
+              />
             </TabsContent>
             <TabsContent value="cashflow">
               <CashflowIntelligenceTab 

@@ -1338,22 +1338,27 @@ export class FinanceDbRepository extends IFinanceRepository {
 
   // Periods
   async listPeriods(ctx: TenantContext): Promise<AccountingPeriod[]> {
+    // Unified period source: finance_fiscal_periods is the table that journal entries
+    // reference and that the reporting engine + lock/close flows operate on. The dashboard
+    // filter reads from here so a selected period resolves to real posted ledger data.
     const whereClause: any = { tenant_id: ctx.tenant_id };
-    if (ctx.company_id && ctx.company_id !== "system") {
-      whereClause.company_id = ctx.company_id;
+    if (ctx.company_id && ctx.company_id !== 'system') {
+      // Include company-scoped periods AND tenant-wide periods (company_id null),
+      // since ledger auto-posting creates tenant-level periods.
+      whereClause.OR = [{ company_id: ctx.company_id }, { company_id: null }];
     }
 
-    let periods = await this.prisma.accounting_periods.findMany({
+    let periods = await this.prisma.finance_fiscal_periods.findMany({
       where: whereClause,
-      orderBy: { start_date: 'desc' }
+      orderBy: { start_date: 'desc' },
     });
 
-    // Auto-provision current fiscal year monthly periods if none exist for this tenant/company.
+    // Auto-provision current fiscal year monthly periods if none exist for this tenant.
     if (periods.length === 0) {
       await this.provisionDefaultPeriods(ctx);
-      periods = await this.prisma.accounting_periods.findMany({
+      periods = await this.prisma.finance_fiscal_periods.findMany({
         where: whereClause,
-        orderBy: { start_date: 'desc' }
+        orderBy: { start_date: 'desc' },
       });
     }
 
@@ -1367,16 +1372,16 @@ export class FinanceDbRepository extends IFinanceRepository {
   }
 
   /**
-   * Creates 12 monthly accounting periods for the current calendar year.
+   * Creates 12 monthly fiscal periods (finance_fiscal_periods) for the current calendar year.
    * The period covering the current month is marked OPEN; all others CLOSED.
-   * Idempotent via the (tenant_id, name) unique constraint (skipDuplicates).
+   * Periods are tenant-scoped (company_id null) to match ledger auto-posting behavior.
+   * Guarded against concurrent provisioning via a count re-check inside a transaction.
    */
   private async provisionDefaultPeriods(ctx: TenantContext): Promise<void> {
     const now = new Date();
     const year = now.getUTCFullYear();
     const currentMonth = now.getUTCMonth(); // 0-11
-    const companyId =
-      ctx.company_id && ctx.company_id !== 'system' ? ctx.company_id : null;
+    const fiscalYearId = `FY-${ctx.tenant_id}-${year}`;
 
     const monthNames = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -1385,22 +1390,28 @@ export class FinanceDbRepository extends IFinanceRepository {
 
     const data = monthNames.map((mn, idx) => {
       const start = new Date(Date.UTC(year, idx, 1, 0, 0, 0));
-      // Last day of the month: day 0 of next month
       const end = new Date(Date.UTC(year, idx + 1, 0, 23, 59, 59));
       return {
+        id: randomUUID(),
         tenant_id: ctx.tenant_id,
-        company_id: companyId,
+        company_id: null,
         name: `${mn} ${year}`,
         start_date: start,
         end_date: end,
         status: idx === currentMonth ? 'OPEN' : 'CLOSED',
+        period_number: idx + 1,
+        fiscal_year_id: fiscalYearId,
+        updated_at: new Date(),
       };
     });
 
     try {
-      await this.prisma.accounting_periods.createMany({
-        data,
-        skipDuplicates: true,
+      await this.prisma.$transaction(async (tx) => {
+        const existing = await tx.finance_fiscal_periods.count({
+          where: { tenant_id: ctx.tenant_id },
+        });
+        if (existing > 0) return; // another request already provisioned
+        await tx.finance_fiscal_periods.createMany({ data });
       });
     } catch (err) {
       // Non-fatal: another concurrent request may have provisioned already.

@@ -4,7 +4,7 @@ import { financeApiClient } from '@/core/services/finance/financeApiClient';
 import { useSession } from '@/core/security/session';
 import { CashflowTrendChart } from './CashflowTrendChart';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ShieldAlert, TrendingDown, Clock, Hash, Play, Settings2, AlertTriangle } from 'lucide-react';
+import { ShieldAlert, TrendingDown, Clock, Hash, Play, Settings2, AlertTriangle, Inbox } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { KPICard } from './KPICard';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -42,7 +42,7 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
     sceneDelay
   });
 
-  const { data: cashflow, isLoading, refetch } = useQuery({
+  const { data: cashflow, isLoading, isError, refetch } = useQuery({
     queryKey: ['cashflow-intelligence', companyId, snapshotId, queryParams, correlationId],
     queryFn: () => financeApiClient.getCashflow(session, {
       companyId,
@@ -80,6 +80,23 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
     );
   }
 
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-destructive/30 bg-destructive/5 p-10 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+          <ShieldAlert className="h-6 w-6" />
+        </div>
+        <p className="text-sm font-bold text-foreground">Couldn&apos;t load cashflow intelligence</p>
+        <p className="max-w-sm text-xs text-muted-foreground">
+          A system error occurred while computing the projection. This is not a lack of data.
+        </p>
+        <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-2 mt-1">
+          <Play size={12} fill="currentColor" /> Retry
+        </Button>
+      </div>
+    );
+  }
+
   if (!cashflow) return null;
 
   // --- Normalize backend response (field-name reconciliation) ---
@@ -87,6 +104,10 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
   // runwayDays, currentCash, minimumSafeCash, isBelowSafeBuffer, deficitRisk, severity.
   const projection: number[] = Array.isArray((cashflow as any).projection) ? (cashflow as any).projection : [];
   const projectionDetails: any[] = Array.isArray((cashflow as any).projectionDetails) ? (cashflow as any).projectionDetails : [];
+
+  // Detect "no posted data" state: backend returns snapshotHash 'EMPTY' and no detail rows
+  // when there are no financial snapshots/journal activity yet.
+  const hasNoData = (cashflow as any).snapshotHash === 'EMPTY' || projectionDetails.length === 0;
 
   const chartData = projectionDetails.length > 0
     ? projectionDetails.map((d: any) => ({ date: (d.date || "").slice(5), cash: Number(d.closingBalance ?? 0) }))
@@ -104,6 +125,20 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
 
   return (
     <div className="space-y-6">
+      {hasNoData && (
+        <Alert className="border-2 border-primary/20 bg-primary/5 animate-in fade-in slide-in-from-top-4">
+          <Inbox size={18} className="text-primary" />
+          <AlertTitle className="font-black uppercase tracking-wider text-[11px]">
+            No cashflow data posted yet
+          </AlertTitle>
+          <AlertDescription className="text-sm">
+            There are no financial snapshots or ledger transactions for this entity yet, so the
+            projection below reflects a zero baseline. Once invoices, payments, and journals are
+            recorded, the deterministic 30-day projection will populate automatically. You can still
+            run what-if simulations using the tools on the right.
+          </AlertDescription>
+        </Alert>
+      )}
       <div className="flex justify-between items-start gap-6">
         <div className="flex-1 space-y-6">
           {cashflow.deficitRisk && (

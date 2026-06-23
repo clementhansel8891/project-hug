@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { ChevronRight, ChevronDown } from "lucide-react";
+import { ChevronRight, ChevronDown, Loader2, AlertTriangle, Inbox, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ReportNode {
   accountCode: string;
@@ -14,6 +15,14 @@ interface ReportNode {
 interface HierarchicalReportTableProps {
   data: ReportNode[];
   title: string;
+  /** Whether the underlying query is still loading. */
+  isLoading?: boolean;
+  /** Whether the underlying query errored. */
+  isError?: boolean;
+  /** Retry handler for the error state. */
+  onRetry?: () => void;
+  /** Message explaining why the report is empty (shown when data is empty). */
+  emptyMessage?: string;
 }
 
 const ReportRow: React.FC<{ node: ReportNode; isExpanded: boolean; onToggle: () => void }> = ({
@@ -71,7 +80,17 @@ const RecursiveRows: React.FC<{ node: ReportNode }> = ({ node }) => {
   );
 };
 
-export const HierarchicalReportTable: React.FC<HierarchicalReportTableProps> = ({ data, title }) => {
+export const HierarchicalReportTable: React.FC<HierarchicalReportTableProps> = ({
+  data,
+  title,
+  isLoading,
+  isError,
+  onRetry,
+  emptyMessage,
+}) => {
+  const rows = Array.isArray(data) ? data : [];
+  const isEmpty = rows.length === 0;
+
   return (
     <div className="rounded-md border">
       <div className="bg-muted px-4 py-2 font-medium">{title}</div>
@@ -83,13 +102,60 @@ export const HierarchicalReportTable: React.FC<HierarchicalReportTableProps> = (
           </tr>
         </thead>
         <tbody>
-          {(Array.isArray(data) ? data : []).map((root) => (
+          {/* Loading */}
+          {isLoading && (
+            <tr>
+              <td colSpan={2} className="p-10">
+                <div className="flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  <span className="text-sm font-medium">Loading report…</span>
+                </div>
+              </td>
+            </tr>
+          )}
+
+          {/* Error — distinct from empty */}
+          {!isLoading && isError && (
+            <tr>
+              <td colSpan={2} className="p-10">
+                <div className="flex flex-col items-center justify-center gap-3 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+                    <AlertTriangle className="h-6 w-6" />
+                  </div>
+                  <p className="text-sm font-bold text-foreground">Couldn&apos;t load this report</p>
+                  <p className="max-w-sm text-xs text-muted-foreground">
+                    A problem occurred while retrieving ledger data. This is a system error, not a
+                    lack of data.
+                  </p>
+                  {onRetry && (
+                    <Button variant="outline" size="sm" onClick={onRetry} className="gap-2 mt-1">
+                      <RefreshCw className="h-3.5 w-3.5" /> Retry
+                    </Button>
+                  )}
+                </div>
+              </td>
+            </tr>
+          )}
+
+          {/* Populated */}
+          {!isLoading && !isError && rows.map((root) => (
             <RecursiveRows key={root.accountCode} node={root} />
           ))}
-          {data.length === 0 && (
+
+          {/* Empty — explains WHY, distinct from error */}
+          {!isLoading && !isError && isEmpty && (
             <tr>
-              <td colSpan={2} className="p-8 text-center text-muted-foreground">
-                No report data available for the selected period.
+              <td colSpan={2} className="p-10">
+                <div className="flex flex-col items-center justify-center gap-3 text-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                    <Inbox className="h-6 w-6" />
+                  </div>
+                  <p className="text-sm font-bold text-foreground">No ledger activity for this period</p>
+                  <p className="max-w-sm text-xs text-muted-foreground">
+                    {emptyMessage ??
+                      "No journal entries have been posted to this fiscal period yet. Once transactions are recorded (sales, purchases, payments, or manual journals), they will appear here automatically."}
+                  </p>
+                </div>
               </td>
             </tr>
           )}
