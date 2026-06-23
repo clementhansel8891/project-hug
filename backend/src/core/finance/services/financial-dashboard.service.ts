@@ -74,7 +74,110 @@ export class FinancialDashboardService {
   }
 
   async getHierarchicalReport(tenant_id: string, company_id: string, filters: any) {
-    return this.reportingEngine.getHierarchicalReport(tenant_id, company_id, filters);
+    return this.reportingEngine.getHierarchicalReport(tenant_id, company_id, filters?.periodId || filters);
+  }
+
+  /**
+   * Returns a hierarchical report (Trial Balance, P&L, or Balance Sheet) in the
+   * { accountCode, accountName, level, balance, isGroup, children } node shape
+   * consumed by the CFO dashboard HierarchicalReportTable.
+   * Returns an empty array (not an error) when there is no ledger data.
+   */
+  async getReport(
+    tenant_id: string,
+    company_id: string,
+    periodId: string,
+    type: 'TB' | 'PL' | 'BS',
+  ): Promise<any[]> {
+    if (!periodId) return [];
+
+    const toNum = (v: any): number => {
+      const n = typeof v?.toNumber === 'function' ? v.toNumber() : Number(v);
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    try {
+      if (type === 'PL') {
+        const pl = await this.reportingEngine.getProfitLoss(tenant_id, company_id, periodId);
+        const details = (pl as any).details || [];
+        const revenue = details.filter((d: any) => d.category === 'REVENUE');
+        const expense = details.filter((d: any) => d.category === 'EXPENSE');
+        const group = (code: string, name: string, items: any[]) => {
+          const children = items.map((i: any) => ({
+            accountCode: i.accountId,
+            accountName: i.account_name,
+            level: 1,
+            balance: toNum(i.amount ?? i.balance),
+            isGroup: false,
+          }));
+          return {
+            accountCode: code,
+            accountName: name,
+            level: 0,
+            isGroup: true,
+            balance: children.reduce((s, n) => s + n.balance, 0),
+            children,
+          };
+        };
+        return [
+          group('REVENUE', 'Revenue', revenue),
+          group('EXPENSE', 'Expenses', expense),
+          {
+            accountCode: 'NET_PROFIT',
+            accountName: 'Net Profit',
+            level: 0,
+            isGroup: false,
+            balance: toNum((pl as any).summary?.netProfit),
+          },
+        ];
+      }
+
+      if (type === 'BS') {
+        const bs = await this.reportingEngine.getBalanceSheet(tenant_id, company_id, new Date());
+        const sections = (bs as any).sections || {};
+        const summary = (bs as any).summary || {};
+        const mapItems = (items: any[] = []) =>
+          items.map((i: any) => ({
+            accountCode: i.accountId,
+            accountName: i.account_name,
+            level: 1,
+            balance: toNum(i.balance),
+            isGroup: false,
+          }));
+        return [
+          { accountCode: 'ASSETS', accountName: 'Assets', level: 0, isGroup: true, balance: toNum(summary.totalAssets), children: mapItems(sections.assets) },
+          { accountCode: 'LIABILITIES', accountName: 'Liabilities', level: 0, isGroup: true, balance: toNum(summary.totalLiabilities), children: mapItems(sections.liabilities) },
+          { accountCode: 'EQUITY', accountName: 'Equity', level: 0, isGroup: true, balance: toNum(summary.totalEquity), children: mapItems(sections.equity) },
+        ];
+      }
+
+      // Default: Trial Balance, grouped by account type.
+      const tb = await this.reportingEngine.getTrialBalance(tenant_id, company_id, periodId);
+      const rows = (tb as any).rows || [];
+      const groups: Record<string, any[]> = {};
+      for (const row of rows) {
+        const t = row.type || 'OTHER';
+        if (!groups[t]) groups[t] = [];
+        groups[t].push({
+          accountCode: row.accountId,
+          accountName: row.account_name,
+          level: 1,
+          balance: toNum(row.closingBalance),
+          isGroup: false,
+        });
+      }
+      return Object.keys(groups).map((t) => ({
+        accountCode: t,
+        accountName: t,
+        level: 0,
+        isGroup: true,
+        balance: groups[t].reduce((s, n) => s + n.balance, 0),
+        children: groups[t],
+      }));
+    } catch (err) {
+      this.logger.warn(`getReport(${type}) for period ${periodId} returned empty: ${(err as Error).message}`);
+      return [];
+    }
   }
 
   async getDrillDown(tenant_id: string, company_id: string, filters: any) {

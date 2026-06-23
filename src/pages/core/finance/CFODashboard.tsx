@@ -58,10 +58,11 @@ const CFODashboardContent: React.FC = () => {
     queryKey: ["financial-reports", state.companyId, state.periodId, state.snapshotSequence, state.correlationId],
     queryFn: async () => {
       try {
+        const seq = state.snapshotSequence ?? 0;
         const [tb, pl, bs] = await Promise.all([
-          financeApiClient.getHierarchicalReport(session, state.companyId, state.periodId, "TB", state.snapshotSequence!, state.correlationId),
-          financeApiClient.getHierarchicalReport(session, state.companyId, state.periodId, "PL", state.snapshotSequence!, state.correlationId),
-          financeApiClient.getHierarchicalReport(session, state.companyId, state.periodId, "BS", state.snapshotSequence!, state.correlationId),
+          financeApiClient.getHierarchicalReport(session, state.companyId, state.periodId, "TB", seq, state.correlationId),
+          financeApiClient.getHierarchicalReport(session, state.companyId, state.periodId, "PL", seq, state.correlationId),
+          financeApiClient.getHierarchicalReport(session, state.companyId, state.periodId, "BS", seq, state.correlationId),
         ]);
         return { tb, pl, bs };
       } catch (err) {
@@ -69,7 +70,7 @@ const CFODashboardContent: React.FC = () => {
         throw err;
       }
     },
-    enabled: !!state.snapshotSequence,
+    enabled: !!state.companyId && !!state.periodId,
   });
 
   useEffect(() => {

@@ -82,6 +82,26 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
 
   if (!cashflow) return null;
 
+  // --- Normalize backend response (field-name reconciliation) ---
+  // Backend returns: projection (number[]), projectionDetails ({date, closingBalance,...}),
+  // runwayDays, currentCash, minimumSafeCash, isBelowSafeBuffer, deficitRisk, severity.
+  const projection: number[] = Array.isArray((cashflow as any).projection) ? (cashflow as any).projection : [];
+  const projectionDetails: any[] = Array.isArray((cashflow as any).projectionDetails) ? (cashflow as any).projectionDetails : [];
+
+  const chartData = projectionDetails.length > 0
+    ? projectionDetails.map((d: any) => ({ date: (d.date || "").slice(5), cash: Number(d.closingBalance ?? 0) }))
+    : projection.map((v: number, i: number) => ({ date: `D${i}`, cash: Number(v ?? 0) }));
+
+  const minimumCash = projection.length > 0 ? Math.min(...projection) : Number(cashflow.currentCash ?? 0);
+  const runwayDays = Number(cashflow.runwayDays ?? 999);
+  const runwayLabel = runwayDays >= 999 ? ">30 Days" : `${runwayDays} Days`;
+
+  const firstDeficitIndex = projection.findIndex((v) => v < 0);
+  const deficitAmount = projection.length > 0 ? Math.abs(Math.min(0, ...projection)) : 0;
+  const firstDeficitDate = firstDeficitIndex >= 0 && projectionDetails[firstDeficitIndex]
+    ? projectionDetails[firstDeficitIndex].date
+    : "N/A";
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-start gap-6">
@@ -93,8 +113,8 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
                 Cashflow Deficit Predicted [SEVERITY_{cashflow.severity}]
               </AlertTitle>
               <AlertDescription className="text-sm">
-                Projected deficit starts on <span className="font-bold underline">{cashflow.firstDeficitDate}</span>. 
-                Deepest point: <span className="font-bold">-${cashflow.deficitAmount.toLocaleString()}</span>.
+                Projected deficit starts on <span className="font-bold underline">{firstDeficitDate}</span>. 
+                Deepest point: <span className="font-bold">-${deficitAmount.toLocaleString()}</span>.
               </AlertDescription>
             </Alert>
           )}
@@ -106,7 +126,7 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
                 Safety Buffer Breach Predicted
               </AlertTitle>
               <AlertDescription className="text-sm">
-                Projected cash will dip below the <span className="font-bold">${cashflow.minimumSafeCash.toLocaleString()}</span> safety threshold.
+                Projected cash will dip below the <span className="font-bold">${Number(cashflow.minimumSafeCash ?? 0).toLocaleString()}</span> safety threshold.
               </AlertDescription>
             </Alert>
           )}
@@ -114,17 +134,18 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <KPICard 
               title="Cash Runway" 
-              value={`${cashflow.runwayDays ?? '>30'} Days`} 
+              value={runwayLabel} 
+              format="text"
               trend={cashflow.deficitRisk ? 'DOWN' : 'NEUTRAL'}
               icon={<Clock className="h-4 w-4" />}
               inverseColor={cashflow.deficitRisk}
             />
             <KPICard 
               title="Minimum Cash" 
-              value={cashflow.minimumCash || cashflow.deficitAmount * -1} 
-              trend={(cashflow.minimumCash || 0) < 0 ? 'DOWN' : 'UP'}
+              value={minimumCash} 
+              trend={minimumCash < 0 ? 'DOWN' : 'UP'}
               icon={<TrendingDown className="h-4 w-4" />}
-              inverseColor={(cashflow.minimumCash || 0) < 0}
+              inverseColor={minimumCash < 0}
             />
           </div>
 
@@ -177,9 +198,9 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
       </div>
 
       <CashflowTrendChart 
-        data={cashflow.projected} 
-        currentCash={cashflow.currentCash} 
-        minimumSafeCash={cashflow.minimumSafeCash}
+        data={chartData} 
+        currentCash={Number(cashflow.currentCash ?? 0)} 
+        minimumSafeCash={Number(cashflow.minimumSafeCash ?? 0)}
       />
     </div>
   );

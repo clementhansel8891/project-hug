@@ -23,6 +23,16 @@ export class FinancialDashboardController {
     // Requirement 5: Validate allowedCompanies
     this.validateCompanyAccess(req.user, company_id);
 
+    // If a report type is requested, return hierarchical report rows (TB/PL/BS).
+    if (query.type) {
+      return this.dashboardService.getReport(
+        tenant_id,
+        company_id,
+        query.periodId || query.period_id,
+        query.type,
+      );
+    }
+
     const data = await this.dashboardService.getDashboardSummary(tenant_id, company_id, query);
 
     // Requirement 1 & 8: Backend Audit Enforcement (Resilient)
