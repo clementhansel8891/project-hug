@@ -95,7 +95,7 @@ export default function JVDesk() {
             <HandCoins className="h-12 w-12 text-primary" />
           </div>
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">MTD Allocated Revenue</p>
-          <p className="text-3xl font-black text-primary mt-1">{netSettlement ? `Rp ${(Math.abs(netSettlement.totalDebit || 0) / 1e9).toFixed(1)}B` : '—'}</p>
+          <p className="text-3xl font-black text-primary mt-1">{settlement[0] ? `Rp ${(Math.abs(settlement[0].totalDebit || 0) / 1e9).toFixed(1)}B` : '—'}</p>
           <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground font-medium">
             <History className="h-3 w-3" />
             <span>Last sync: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -107,7 +107,7 @@ export default function JVDesk() {
             <Scale className="h-12 w-12 text-destructive" />
           </div>
           <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Pending Cost Burden</p>
-          <p className="text-3xl font-black text-destructive mt-1">{netSettlement ? `Rp ${(Math.abs(netSettlement.totalCredit || 0) / 1e6).toFixed(0)}M` : '—'}</p>
+          <p className="text-3xl font-black text-destructive mt-1">{settlement[0] ? `Rp ${(Math.abs(settlement[0].totalCredit || 0) / 1e6).toFixed(0)}M` : '—'}</p>
           <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground font-medium">
             <ArrowDownRight className="h-3 w-3 text-destructive" />
             <span>From active settlements</span>
