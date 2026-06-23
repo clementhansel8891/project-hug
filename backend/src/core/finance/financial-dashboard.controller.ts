@@ -151,9 +151,17 @@ export class FinancialDashboardController {
   private validateCompanyAccess(user: any, requestedCompanyId: string) {
     // Requirement 4: tenant_id from session ONLY (already in req.tenantContext)
     // Requirement 5: validate allowedCompanies
-    const userCompanies = user.userCompanies || [];
-    const isAllowed = userCompanies.some((uc: any) => uc.tenant_id === requestedCompanyId);
-    
+    // Note: req.user is the verified user payload which uses snake_case (user_companies).
+    const userCompanies = user.user_companies || user.userCompanies || [];
+    const isAllowed =
+      userCompanies.some(
+        (uc: any) =>
+          uc.tenant_id === requestedCompanyId ||
+          uc.company_id === requestedCompanyId,
+      ) ||
+      // The requested company defaults to the session tenant; always allow own tenant.
+      user.tenant_id === requestedCompanyId;
+
     if (!isAllowed && user.role !== 'SUPERADMIN') {
       throw new ForbiddenException(`Access Denied: You do not have permission to access company ${requestedCompanyId}`);
     }

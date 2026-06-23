@@ -645,7 +645,17 @@ export const financeService = {
     tenantId: string,
     session: SessionContext,
   ): Promise<AccountingPeriod[]> {
-    return apiRequest<AccountingPeriod[]>("/v1/finance/periods", "GET", session);
+    const raw = await apiRequest<any[]>("/v1/finance/periods", "GET", session);
+    return (Array.isArray(raw) ? raw : []).map((p) => ({
+      id: p.id,
+      startDate: p.startDate ?? p.start_date ?? "",
+      endDate: p.endDate ?? p.end_date ?? "",
+      status: p.status,
+      lockedBy: p.lockedBy ?? p.locked_by,
+      approvalLevel: p.approvalLevel ?? p.approval_level,
+      // preserve name for display if present
+      ...(p.name ? { name: p.name } : {}),
+    })) as AccountingPeriod[];
   },
 
   async lockPeriod(

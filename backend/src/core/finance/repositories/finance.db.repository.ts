@@ -1342,11 +1342,21 @@ export class FinanceDbRepository extends IFinanceRepository {
     if (ctx.company_id && ctx.company_id !== "system") {
       whereClause.company_id = ctx.company_id;
     }
-    
-    const periods = await this.prisma.accounting_periods.findMany({ 
-      where: whereClause, 
-      orderBy: { start_date: 'desc' } 
+
+    let periods = await this.prisma.accounting_periods.findMany({
+      where: whereClause,
+      orderBy: { start_date: 'desc' }
     });
+
+    // Auto-provision current fiscal year monthly periods if none exist for this tenant/company.
+    if (periods.length === 0) {
+      await this.provisionDefaultPeriods(ctx);
+      periods = await this.prisma.accounting_periods.findMany({
+        where: whereClause,
+        orderBy: { start_date: 'desc' }
+      });
+    }
+
     return periods.map((p: any) => ({
       id: p.id,
       name: p.name,
@@ -1354,6 +1364,50 @@ export class FinanceDbRepository extends IFinanceRepository {
       end_date: p.end_date.toISOString(),
       status: p.status as any
     }));
+  }
+
+  /**
+   * Creates 12 monthly accounting periods for the current calendar year.
+   * The period covering the current month is marked OPEN; all others CLOSED.
+   * Idempotent via the (tenant_id, name) unique constraint (skipDuplicates).
+   */
+  private async provisionDefaultPeriods(ctx: TenantContext): Promise<void> {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const currentMonth = now.getUTCMonth(); // 0-11
+    const companyId =
+      ctx.company_id && ctx.company_id !== 'system' ? ctx.company_id : null;
+
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+
+    const data = monthNames.map((mn, idx) => {
+      const start = new Date(Date.UTC(year, idx, 1, 0, 0, 0));
+      // Last day of the month: day 0 of next month
+      const end = new Date(Date.UTC(year, idx + 1, 0, 23, 59, 59));
+      return {
+        tenant_id: ctx.tenant_id,
+        company_id: companyId,
+        name: `${mn} ${year}`,
+        start_date: start,
+        end_date: end,
+        status: idx === currentMonth ? 'OPEN' : 'CLOSED',
+      };
+    });
+
+    try {
+      await this.prisma.accounting_periods.createMany({
+        data,
+        skipDuplicates: true,
+      });
+    } catch (err) {
+      // Non-fatal: another concurrent request may have provisioned already.
+      this.logger?.warn?.(
+        `provisionDefaultPeriods failed for tenant ${ctx.tenant_id}: ${(err as Error).message}`,
+      );
+    }
   }
 
   // Insights & Alerts

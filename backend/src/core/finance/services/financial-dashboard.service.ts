@@ -28,8 +28,9 @@ export class FinancialDashboardService {
   ) {}
 
   async getDashboardSummary(tenant_id: string, company_id: string, filters: any) {
-    // 1. Fetch Summary
-    const summary = await this.reportingEngine.getSummary(tenant_id, company_id, filters);
+    // 1. Fetch Summary (reporting engine expects the fiscal period id, not the raw query object)
+    const periodId = filters?.periodId || filters?.period_id;
+    const summary = await this.reportingEngine.getSummary(tenant_id, company_id, periodId);
 
     // 2. Anomaly Detection: Sequence Mismatch
     // We check if the returned sequence is consistent with the latest available for the period

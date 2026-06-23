@@ -123,7 +123,7 @@ export const GlobalFinancialFilterBar: React.FC = () => {
             <SelectContent>
               {(Array.isArray(periods) ? periods : []).map(p => (
                 <SelectItem key={p.id} value={p.id}>
-                  {p.startDate} - {p.endDate} ({p.status})
+                  {(p as any).name ? `${(p as any).name} (${p.status})` : `${p.startDate} - ${p.endDate} (${p.status})`}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -220,11 +220,6 @@ export class FinanceController {
     return this.financeService.getMoneySources(ctx);
   }
 
-  @Get('periods')
-  async listPeriodsAlias(@TenantCtx() ctx: TenantContext) {
-    return this.financeService.listPeriods(ctx);
-  }
-
   @Get('treasury/transfers')
   async listTransfers(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listTransfers(ctx);
