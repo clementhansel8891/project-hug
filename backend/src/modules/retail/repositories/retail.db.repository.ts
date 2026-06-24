@@ -1132,10 +1132,21 @@ export class RetailDbRepository implements IRetailRepository {
     data: OpenShiftDto,
     opened_by_id?: string,
   ): Promise<RetailShift> {
+    // Fetch the store to get its company_id (retail_shifts.company_id must reference a valid company)
+    const store = await this.prisma.stores.findUnique({
+      where: { id: data.store_id },
+      select: { company_id: true },
+    });
+
+    if (!store) {
+      throw new Error(`Store ${data.store_id} not found`);
+    }
+
     const shift = await this.prisma.retail_shifts.create({
       data: {
         updated_at: new Date(),
-        ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+        tenant_id: ctx.tenant_id,
+        company_id: store.company_id, // Use the store's company_id instead of context company_id
         store_id: data.store_id,
         employee_id: employee_id,
         opened_by_id: opened_by_id,
