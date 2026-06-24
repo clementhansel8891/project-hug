@@ -172,17 +172,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               console.log("[AuthContext] Routing info received:", routingData);
               
               if (routingData.data && routingData.data.context) {
-                // Update session with store/location context from schedule
+                // Update session with store/location context from shift
                 const updatedSession = {
                   ...newSession,
                   location_id: routingData.data.context.location_id || "",
                   store_id: routingData.data.context.store_id,
                   store_name: routingData.data.context.store_name,
-                  schedule_id: routingData.data.context.schedule_id,
-                  shift_type: routingData.data.context.shift_type,
+                  shift_id: routingData.data.context.shift_id,
                 };
                 setSession(updatedSession);
-                console.log("[AuthContext] Session updated with schedule context:", updatedSession);
+                console.log("[AuthContext] Session updated with shift context:", updatedSession);
               }
               
               return { 

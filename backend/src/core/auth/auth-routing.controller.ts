@@ -76,18 +76,16 @@ export class AuthRoutingController {
 
       const now = new Date();
 
-      // Find active schedule for today
-      const activeSchedule = await this.prisma.hr_schedules.findFirst({
+      // Find active shift for today
+      const activeShift = await this.prisma.hr_work_shifts.findFirst({
         where: {
           tenant_id: user.tenant_id,
           employee_id: employee.id,
-          date: {
-            gte: today,
-            lt: tomorrow,
-          },
-          status: 'CONFIRMED',
           start_time: {
             lte: new Date(now.getTime() + 2 * 60 * 60 * 1000), // Allow login 2 hours before shift
+          },
+          end_time: {
+            gte: now, // Shift hasn't ended yet
           },
         },
         include: {
@@ -102,8 +100,8 @@ export class AuthRoutingController {
         },
       });
 
-      if (activeSchedule && activeSchedule.locations?.stores?.[0]) {
-        const store = activeSchedule.locations.stores[0];
+      if (activeShift && activeShift.locations?.stores?.[0]) {
+        const store = activeShift.locations.stores[0];
         
         return {
           success: true,
@@ -112,11 +110,10 @@ export class AuthRoutingController {
             context: {
               store_id: store.id,
               store_name: store.name,
-              location_id: activeSchedule.location_id,
-              schedule_id: activeSchedule.id,
-              shift_type: activeSchedule.shift_type || 'REGULAR',
-              shift_start: activeSchedule.start_time?.toISOString(),
-              shift_end: activeSchedule.end_time?.toISOString(),
+              location_id: activeShift.location_id,
+              shift_id: activeShift.id,
+              shift_start: activeShift.start_time?.toISOString(),
+              shift_end: activeShift.end_time?.toISOString(),
             },
           },
         };
