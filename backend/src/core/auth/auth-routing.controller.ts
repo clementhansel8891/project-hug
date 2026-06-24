@@ -12,8 +12,7 @@ interface LoginRoutingInfo {
     store_id?: string;
     store_name?: string;
     location_id?: string;
-    schedule_id?: string;
-    shift_type?: string;
+    shift_id?: string;
     shift_start?: string;
     shift_end?: string;
   };
