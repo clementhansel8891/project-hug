@@ -81,7 +81,7 @@ async function main() {
   
   const totalStock = await prisma.stock_levels.aggregate({
     where: { tenant_id: TENANT_ID },
-    _sum: { quantity: true },
+    _sum: { on_hand: true },
   });
 
   const seminyakStock = seminyakStore?.location_id 
@@ -95,7 +95,7 @@ async function main() {
 
   console.log(`   Products (Item Masters): ${products.toLocaleString()}`);
   console.log(`   Stock Levels: ${stockLevels.toLocaleString()}`);
-  console.log(`   Total Stock Quantity: ${totalStock._sum.quantity?.toString() || '0'}`);
+  console.log(`   Total Stock On Hand: ${totalStock._sum?.on_hand?.toString() || '0'}`);
   console.log(`   Seminyak Stock Items: ${seminyakStock}\n`);
 
   results.push(
@@ -263,7 +263,10 @@ async function main() {
 
   const priceVersions = await prisma.price_versions.count({ where: { tenant_id: TENANT_ID } });
   const activePrices = await prisma.price_versions.count({ 
-    where: { tenant_id: TENANT_ID, status: 'active' } 
+    where: { 
+      tenant_id: TENANT_ID, 
+      active: true 
+    } 
   });
   
   const promotions = await prisma.retail_promotions.count({ where: { tenant_id: TENANT_ID } });
