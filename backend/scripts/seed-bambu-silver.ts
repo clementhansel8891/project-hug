@@ -424,7 +424,7 @@ async function main() {
   console.log('\n' + report);
 
   // Save report to file
-  const fs = require('fs');
+  const fs = await import('fs');
   const reportPath = './bambu-silver-credentials-report.txt';
   fs.writeFileSync(reportPath, report, 'utf-8');
   console.log(`\n💾 Report saved to: ${reportPath}\n`);
