@@ -114,11 +114,9 @@ async function main() {
         store_id: store.id,
         type: 'CASH_REGISTER',
         name: `${store.name} - Cash Register`,
-        code: `CASH-${store.code}`,
         currency: 'IDR',
         balance: 0,
-        status: 'active',
-        created_at: new Date(),
+        last_updated: new Date(),
         updated_at: new Date(),
       });
 
@@ -129,11 +127,9 @@ async function main() {
         store_id: store.id,
         type: 'PETTY_CASH',
         name: `${store.name} - Petty Cash`,
-        code: `PETTY-${store.code}`,
         currency: 'IDR',
         balance: 0,
-        status: 'active',
-        created_at: new Date(),
+        last_updated: new Date(),
         updated_at: new Date(),
       });
     }
