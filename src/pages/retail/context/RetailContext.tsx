@@ -135,7 +135,16 @@ export const RetailProvider: React.FC<{ children: ReactNode }> = ({
       if (!initializedRef.current) {
         initializedRef.current = true;
         
-        let targetStore = fetchedStores.find(s => s.id === savedStoreId);
+        // PRIORITY 1: Check if session has store_id from routing (shift context)
+        let targetStore = (session as any).store_id 
+          ? fetchedStores.find(s => s.id === (session as any).store_id)
+          : null;
+        
+        // PRIORITY 2: Use saved store from localStorage
+        if (!targetStore && savedStoreId) {
+          targetStore = fetchedStores.find(s => s.id === savedStoreId);
+        }
+        
         let targetChannel = fetchedChannels.find(c => c.id === savedChannelId);
 
         if (targetStore) {
