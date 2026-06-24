@@ -171,14 +171,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               const routingData = await apiRequest<any>("/v1/auth/routing-info", "GET", { token: data.token } as any);
               console.log("[AuthContext] Routing info received:", routingData);
               
-              if (routingData.data && routingData.data.context) {
+              // Handle both wrapped and unwrapped response formats
+              const routingInfo = routingData.data || routingData;
+              
+              if (routingInfo.context) {
                 // Update session with store/location context from shift
                 const updatedSession = {
                   ...newSession,
-                  location_id: routingData.data.context.location_id || "",
-                  store_id: routingData.data.context.store_id,
-                  store_name: routingData.data.context.store_name,
-                  shift_id: routingData.data.context.shift_id,
+                  location_id: routingInfo.context.location_id || "",
+                  store_id: routingInfo.context.store_id,
+                  store_name: routingInfo.context.store_name,
+                  shift_id: routingInfo.context.shift_id,
                 };
                 setSession(updatedSession);
                 console.log("[AuthContext] Session updated with shift context:", updatedSession);
@@ -186,8 +189,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               
               return { 
                 success: true, 
-                redirect_to: routingData.data?.redirect_to || "/core/dashboard",
-                context: routingData.data?.context
+                redirect_to: routingInfo.redirect_to || "/core/dashboard",
+                context: routingInfo.context
               };
             } catch (routingError) {
               console.warn("[AuthContext] Routing info failed, using default:", routingError);
