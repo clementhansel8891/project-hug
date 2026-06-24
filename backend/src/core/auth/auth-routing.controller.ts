@@ -105,16 +105,20 @@ export class AuthRoutingController {
         // Filter out E2E test stores and prefer real stores
         const realStores = stores.filter(s => 
           !s.name?.includes('E2E-') && 
+          !s.name?.includes('E2E ') &&
           !s.code?.includes('E2E') &&
           !s.deleted_at
         );
         
-        // Use real store if available, otherwise fall back to first valid store
-        const store = realStores[0] || stores.filter(s => !s.deleted_at)[0];
+        // Prefer Seminyak (BS-03) if multiple stores available
+        const store = realStores.find(s => s.code === 'BS-03' || s.name === 'Seminyak') 
+                     || realStores[0] 
+                     || stores.filter(s => !s.deleted_at)[0];
         
         if (store) {
-          console.log(`[AuthRouting] Resolved store: ${store.name} (${store.code}) [ID: ${store.id}] for shift ${activeShift.id}`);
-          console.log(`[AuthRouting] Available stores at location: ${stores.length}, filtered to: ${realStores.length} real stores`);
+          console.log(`[AuthRouting] ✅ Resolved store: ${store.name} (${store.code})`);
+          console.log(`[AuthRouting] Location: ${activeShift.locations.name} (${activeShift.location_id})`);
+          console.log(`[AuthRouting] Shift: ${activeShift.id.slice(-6)} | ${activeShift.start_time} to ${activeShift.end_time}`);
           
           return {
             success: true,
@@ -131,9 +135,11 @@ export class AuthRoutingController {
             },
           };
         } else {
-          console.warn(`[AuthRouting] No valid store found for shift ${activeShift.id} at location ${activeShift.location_id}`);
+          console.warn(`[AuthRouting] ⚠️  No valid store found for shift ${activeShift.id} at location ${activeShift.location_id}`);
           // Fall through to default routing
         }
+      } else if (userRole === 'EMPLOYEE') {
+        console.warn(`[AuthRouting] ⚠️  No active shift found for employee ${employee.id}`);
       }
     }
 
