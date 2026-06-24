@@ -3,26 +3,31 @@
  * 
  * Purpose:
  * - Clean up unwanted data for tenant Bambu Silver
- * - Set up proper branches: Double Six, Sahadewa, Seminyak, SS Anchor
+ * - Set up proper branches (stores): Double Six, Sahadewa, Seminyak, SS Anchor
  * - Create user accounts with proper roles
  * - Generate login credentials report
  */
 
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 const prisma = new PrismaClient();
+
+// Hash password using crypto (same method as in auth)
+function hashPassword(password: string): string {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 // Tenant identifier for Bambu Silver
 const TENANT_ID = 'tnt-pfzurx';
 const COMPANY_NAME = 'Bambu Silver';
 
-// Branch definitions
+// Branch (Store) definitions
 const BRANCHES = [
-  { code: 'DBL-SIX', name: 'Double Six', address: 'Jl. Double Six, Seminyak, Bali' },
-  { code: 'SAHADEWA', name: 'Sahadewa', address: 'Jl. Sahadewa, Denpasar, Bali' },
-  { code: 'SEMINYAK', name: 'Seminyak', address: 'Jl. Seminyak, Bali' },
-  { code: 'SS-ANCHOR', name: 'SS Anchor', address: 'Sunset Strip, Seminyak, Bali' },
+  { code: 'DBL-SIX', name: 'Double Six', address: 'Jl. Double Six, Seminyak, Bali', type: 'RETAIL' },
+  { code: 'SAHADEWA', name: 'Sahadewa', address: 'Jl. Sahadewa, Denpasar, Bali', type: 'RETAIL' },
+  { code: 'SEMINYAK', name: 'Seminyak', address: 'Jl. Seminyak, Bali', type: 'RETAIL' },
+  { code: 'SS-ANCHOR', name: 'SS Anchor', address: 'Sunset Strip, Seminyak, Bali', type: 'RETAIL' },
 ];
 
 // User definitions with roles
@@ -138,114 +143,112 @@ async function main() {
   }
   console.log(`✅ Found company: ${company.name} (${company.id})\n`);
 
-  // ===== STEP 3: Clean up unwanted branches =====
-  console.log('📋 Step 3: Cleaning up unwanted branches...');
+  // ===== STEP 3: Clean up unwanted stores (branches) =====
+  console.log('📋 Step 3: Cleaning up unwanted stores/branches...');
   const wantedBranchCodes = BRANCHES.map(b => b.code);
   
-  const unwantedBranches = await prisma.branches.findMany({
+  const unwantedStores = await prisma.stores.findMany({
     where: {
       tenant_id: TENANT_ID,
+      company_id: company.id,
       code: { notIn: wantedBranchCodes },
     },
   });
 
-  if (unwantedBranches.length > 0) {
-    console.log(`   Found ${unwantedBranches.length} unwanted branches to remove:`);
-    unwantedBranches.forEach(b => console.log(`   - ${b.name} (${b.code})`));
+  if (unwantedStores.length > 0) {
+    console.log(`   Found ${unwantedStores.length} unwanted stores to remove:`);
+    unwantedStores.forEach(s => console.log(`   - ${s.name} (${s.code})`));
     
-    // Delete related data first (locations, retail locations, etc.)
-    for (const branch of unwantedBranches) {
-      await prisma.locations.deleteMany({
-        where: { branch_id: branch.id },
-      });
-      
-      await prisma.retail_locations.deleteMany({
-        where: { branch_id: branch.id },
-      });
-    }
-    
-    await prisma.branches.deleteMany({
+    // Delete unwanted stores
+    await prisma.stores.deleteMany({
       where: {
         tenant_id: TENANT_ID,
+        company_id: company.id,
         code: { notIn: wantedBranchCodes },
       },
     });
-    console.log(`   ✅ Removed ${unwantedBranches.length} unwanted branches\n`);
+    console.log(`   ✅ Removed ${unwantedStores.length} unwanted stores\n`);
   } else {
-    console.log('   ✅ No unwanted branches found\n');
+    console.log('   ✅ No unwanted stores found\n');
   }
 
-  // ===== STEP 4: Create or update branches =====
-  console.log('📋 Step 4: Setting up branches...');
-  const createdBranches = [];
+  // ===== STEP 4: Create locations and stores (branches) =====
+  console.log('📋 Step 4: Setting up locations and stores...');
+  const createdStores = [];
   
   for (const branchDef of BRANCHES) {
-    const existing = await prisma.branches.findFirst({
+    // Check if store exists
+    let store = await prisma.stores.findFirst({
       where: {
         tenant_id: TENANT_ID,
+        company_id: company.id,
         code: branchDef.code,
+      },
+      include: {
+        locations: true,
       },
     });
 
-    if (existing) {
-      console.log(`   ℹ️  Branch ${branchDef.name} already exists`);
-      createdBranches.push(existing);
+    if (store) {
+      console.log(`   ℹ️  Store ${branchDef.name} already exists`);
+      createdStores.push(store);
     } else {
-      const branch = await prisma.branches.create({
+      // Create location first
+      const location = await prisma.locations.create({
         data: {
           tenant_id: TENANT_ID,
           company_id: company.id,
-          code: branchDef.code,
-          name: branchDef.name,
+          code: `LOC-${branchDef.code}`,
+          name: `${branchDef.name} Location`,
           address: branchDef.address,
-          status: 'ACTIVE',
+          type: 'WAREHOUSE',
+          country: 'ID',
+          currency: 'IDR',
           created_at: new Date(),
           updated_at: new Date(),
         },
       });
-      console.log(`   ✅ Created branch: ${branch.name} (${branch.code})`);
-      createdBranches.push(branch);
+
+      // Create store
+      store = await prisma.stores.create({
+        data: {
+          tenant_id: TENANT_ID,
+          company_id: company.id,
+          location_id: location.id,
+          code: branchDef.code,
+          name: branchDef.name,
+          type: branchDef.type,
+          status: 'active',
+          country: 'ID',
+          currency: 'IDR',
+          timezone: 'Asia/Jakarta',
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
+      
+      console.log(`   ✅ Created store: ${store.name} (${store.code})`);
+      createdStores.push(store);
     }
   }
-  console.log(`✅ ${createdBranches.length} branches ready\n`);
+  console.log(`✅ ${createdStores.length} stores ready\n`);
 
-  // ===== STEP 5: Create primary location for company =====
-  console.log('📋 Step 5: Setting up primary location...');
-  let primaryLocation = await prisma.locations.findFirst({
-    where: {
-      tenant_id: TENANT_ID,
-      company_id: company.id,
-      branch_id: createdBranches[0].id,
-    },
-  });
-
-  if (!primaryLocation) {
-    primaryLocation = await prisma.locations.create({
-      data: {
-        tenant_id: TENANT_ID,
-        company_id: company.id,
-        branch_id: createdBranches[0].id,
-        name: 'HQ - Double Six',
-        address: createdBranches[0].address,
-        type: 'WAREHOUSE',
-        status: 'ACTIVE',
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
+  // Update company primary location if not set
+  if (!company.primary_location_id && createdStores.length > 0) {
+    const firstStore = await prisma.stores.findUnique({
+      where: { id: createdStores[0].id },
+      select: { location_id: true },
     });
-    console.log(`   ✅ Created primary location\n`);
-  } else {
-    console.log(`   ℹ️  Primary location already exists\n`);
+    
+    await prisma.companies.update({
+      where: { id: company.id },
+      data: { primary_location_id: firstStore.location_id },
+    });
+    console.log('   ℹ️  Updated company primary location\n');
   }
 
-  // Update company with primary location
-  await prisma.companies.update({
-    where: { id: company.id },
-    data: { primary_location_id: primaryLocation.id },
-  });
-
-  // ===== STEP 6: Clean up and create users =====
-  console.log('📋 Step 6: Setting up users...');
+  // ===== STEP 5: Clean up and create users =====
+  console.log('📋 Step 5: Setting up users...');
   const loginCredentials: Array<{
     name: string;
     email: string;
@@ -274,7 +277,7 @@ async function main() {
       });
     } else {
       // Create new user
-      const hashedPassword = await bcrypt.hash(userDef.password, 10);
+      const hashedPassword = hashPassword(userDef.password);
       
       user = await prisma.users.create({
         data: {
@@ -317,8 +320,8 @@ async function main() {
 
   console.log(`\n✅ ${USERS.length} users ready\n`);
 
-  // ===== STEP 7: Generate login report =====
-  console.log('📋 Step 7: Generating login credentials report...\n');
+  // ===== STEP 6: Generate login report =====
+  console.log('📋 Step 6: Generating login credentials report...\n');
   
   const reportLines = [
     '═══════════════════════════════════════════════════════════════════════',
@@ -365,14 +368,14 @@ async function main() {
   });
 
   reportLines.push('═══════════════════════════════════════════════════════════════════════');
-  reportLines.push('                          BRANCH INFORMATION');
+  reportLines.push('                          BRANCH/STORE INFORMATION');
   reportLines.push('═══════════════════════════════════════════════════════════════════════');
   reportLines.push('');
 
-  createdBranches.forEach((branch, idx) => {
-    reportLines.push(`${idx + 1}. ${branch.name} (${branch.code})`);
-    reportLines.push(`   Address: ${branch.address}`);
-    reportLines.push(`   Status: ${branch.status}`);
+  createdStores.forEach((store, idx) => {
+    reportLines.push(`${idx + 1}. ${store.name} (${store.code})`);
+    reportLines.push(`   Type: ${store.type}`);
+    reportLines.push(`   Status: ${store.status}`);
     reportLines.push('');
   });
 
