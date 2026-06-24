@@ -67,7 +67,27 @@ export class ModuleStateGuard implements CanActivate {
       },
     });
 
-    if (!moduleStatus || !moduleStatus.enabled) {
+    if (!moduleStatus) {
+      // Auto-provision module row as enabled when first accessed. This ensures
+      // new tenants and newly-added module keys don't require manual DB seeding.
+      try {
+        await this.prisma.admin_module_statuses.create({
+          data: {
+            id: require('crypto').randomUUID(),
+            tenant_id,
+            module_key: requiredModule,
+            enabled: true,
+            updated_by: 'system',
+            updated_at: new Date(),
+          },
+        });
+      } catch (_) {
+        // Race condition: another request may have just created it. Safe to continue.
+      }
+      return true;
+    }
+
+    if (!moduleStatus.enabled) {
       throw new ForbiddenException(
         `Module '${requiredModule}' is not activated for this workspace.`,
       );

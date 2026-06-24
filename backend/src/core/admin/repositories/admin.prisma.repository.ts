@@ -25,11 +25,20 @@ export class AdminPrismaRepository extends IAdminRepository {
     tenant_id: string,
     dto: ToggleModuleDto,
   ): Promise<AdminModuleStatus> {
-    const updated = await this.prisma.admin_module_statuses.update({
+    // Upsert: create the row if it doesn't exist yet (handles newly-added module keys).
+    const updated = await this.prisma.admin_module_statuses.upsert({
       where: { tenant_id_module_key: { tenant_id: tenant_id, module_key: dto.moduleKey } },
-      data: {
+      update: {
         enabled: dto.enabled,
         updated_by: dto.updatedBy,
+        updated_at: new Date(),
+      },
+      create: {
+        id: uuidv4(),
+        tenant_id: tenant_id,
+        module_key: dto.moduleKey,
+        enabled: dto.enabled,
+        updated_by: dto.updatedBy || 'system',
         updated_at: new Date(),
       },
     });

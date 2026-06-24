@@ -13,6 +13,9 @@ export enum AdminModuleKey {
   PROCUREMENT = "procurement",
   ADMIN = "admin",
   IT = "it",
+  SALES = "sales",
+  MARKETING = "marketing",
+  RETAIL = "retail",
 }
 
 export class ToggleModuleDto {
