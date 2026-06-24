@@ -37,25 +37,17 @@ export const GlobalFinancialFilterBar: React.FC = () => {
       .then((data) => {
         setPeriods(data);
         
-        // Auto-select latest open period if none selected
+        // Auto-select latest open period locally (but don't auto-apply — let user click Apply)
         if (!state.periodId && data.length > 0) {
           const latestOpen = data.find(p => p.status === 'OPEN') || data[0];
           setLocalState(prev => ({ ...prev, periodId: latestOpen.id }));
-          
-          // If companyId is also set, auto-apply
-          if (state.companyId) {
-            updateFilters({
-              companyId: state.companyId,
-              periodId: latestOpen.id,
-            });
-          }
         }
       })
       .catch((err) => {
         systemLogger.failure("Failed to list accounting periods", { error: err }, state.correlationId);
       })
       .finally(() => setLoading(false));
-  }, [session, state.companyId, state.periodId, updateFilters]);
+  }, [session, state.companyId, state.periodId]);
 
   const handleApply = () => {
     audit.log({

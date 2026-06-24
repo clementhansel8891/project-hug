@@ -63,7 +63,7 @@ export function CtoChartsSection({ pendingApprovals, processedPayments }: CtoPro
         <WorkspacePanel
           title="OPEX Budget Burn (Technology)"
           description="IT / SaaS budget vs actual spend & forecast (Rp M)"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="flex items-center justify-between p-4 bg-muted rounded-2xl border border-border my-5">
             <SimpleKpi label="Budget (Apr)"  value="Rp 220M" color="text-muted-foreground"    />
@@ -103,7 +103,7 @@ export function CtoChartsSection({ pendingApprovals, processedPayments }: CtoPro
         <WorkspacePanel
           title="Budget vs. Actual by Dept"
           description="Over-run detection — red bar = budget exceeded"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="h-[320px] w-full mt-3">
             <ResponsiveContainer width="100%" height="100%">
@@ -129,7 +129,7 @@ export function CtoChartsSection({ pendingApprovals, processedPayments }: CtoPro
         <WorkspacePanel
           title="Workflow Request Velocity"
           description="7-day approval throughput and task pipeline — live"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="grid grid-cols-2 gap-3 mt-4 mb-4">
             <div className="rounded-2xl bg-primary/5 border border-primary/10 p-3 text-center">

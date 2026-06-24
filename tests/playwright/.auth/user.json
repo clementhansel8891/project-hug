@@ -6,7 +6,7 @@
       "localStorage": [
         {
           "name": "ZENVIX_SESSION",
-          "value": "{\"user_id\":\"41f40428-cf93-4ebe-8fbf-a20d68d2cae0\",\"tenant_id\":\"tnt-hsf6mt\",\"location_id\":\"540036c1-10aa-49e6-8141-bf7e66044195\",\"role\":\"SUPERADMIN\",\"department_id\":\"93c5b4be-413b-450d-aa9e-99826f7aec68\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWY0MDQyOC1jZjkzLTRlYmUtOGZiZi1hMjBkNjhkMmNhZTAiLCJlbWFpbCI6InN5bnRodGVzdCtzeW50aHRlc3QtcGhhc2UxYXV0aC0xNzgyMTE5MzA3NTA1LWluZTkza0B6ZW52aXgudGVzdCIsImlhdCI6MTc4MjExOTMxNCwiZXhwIjoxNzgyMjA1NzE0fQ.cou5OK-b0nHvs1kGQkQlRaxyN9mTNgUSkns3LNKPNKw\",\"permissions\":[\"VIEW_FINANCIALS\",\"VIEW_INVENTORY\",\"VIEW_DEVICES\",\"VIEW_HR\",\"VIEW_AUDIT\",\"MANAGE_STORE\"]}"
+          "value": "{\"user_id\":\"886872f0-000f-4c08-b7f6-9a0902531dd4\",\"tenant_id\":\"tnt-wnjl5w\",\"location_id\":\"67cb949c-c3c4-4968-9fc9-4ef9fadeb96c\",\"role\":\"SUPERADMIN\",\"department_id\":\"3e11d050-e525-406f-ac62-d0902bf94564\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODY4NzJmMC0wMDBmLTRjMDgtYjdmNi05YTA5MDI1MzFkZDQiLCJlbWFpbCI6InN5bnRodGVzdCtzeW50aHRlc3QtcGhhc2UxYXV0aC0xNzgyMjY2MjQ0MTU0LWdiMmlmMEB6ZW52aXgudGVzdCIsImlhdCI6MTc4MjI2NjI1MywiZXhwIjoxNzgyMzUyNjUzfQ.R8cv3GnZgH4tuxZ1-ak6JqY-AJdcGyfmjZLsKMM4Lqc\",\"permissions\":[\"VIEW_FINANCIALS\",\"VIEW_INVENTORY\",\"VIEW_DEVICES\",\"VIEW_HR\",\"VIEW_AUDIT\",\"MANAGE_STORE\"]}"
         },
         {
           "name": "sidebar-collapsed",
@@ -14,7 +14,7 @@
         },
         {
           "name": "ZENVIX_TOKEN",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MWY0MDQyOC1jZjkzLTRlYmUtOGZiZi1hMjBkNjhkMmNhZTAiLCJlbWFpbCI6InN5bnRodGVzdCtzeW50aHRlc3QtcGhhc2UxYXV0aC0xNzgyMTE5MzA3NTA1LWluZTkza0B6ZW52aXgudGVzdCIsImlhdCI6MTc4MjExOTMxNCwiZXhwIjoxNzgyMjA1NzE0fQ.cou5OK-b0nHvs1kGQkQlRaxyN9mTNgUSkns3LNKPNKw"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4ODY4NzJmMC0wMDBmLTRjMDgtYjdmNi05YTA5MDI1MzFkZDQiLCJlbWFpbCI6InN5bnRodGVzdCtzeW50aHRlc3QtcGhhc2UxYXV0aC0xNzgyMjY2MjQ0MTU0LWdiMmlmMEB6ZW52aXgudGVzdCIsImlhdCI6MTc4MjI2NjI1MywiZXhwIjoxNzgyMzUyNjUzfQ.R8cv3GnZgH4tuxZ1-ak6JqY-AJdcGyfmjZLsKMM4Lqc"
         },
         {
           "name": "ops_cart",

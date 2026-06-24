@@ -67,12 +67,12 @@ export function CfoChartsSection({ summaryData }: { summaryData?: any }) {
         <WorkspacePanel
           title="Treasury Liquidity & 6-Month Runway"
           description="Net cash reserve vs aggregate inflows and outflows (Rp M)"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="grid grid-cols-3 gap-4 my-5 p-4 bg-muted rounded-2xl border border-border">
-            <SimpleKpi label="Inflows (Period)"  value={summaryData ? `Rp ${Number(summaryData.revenue).toLocaleString()}` : "Loading..."}  color="text-success" />
-            <SimpleKpi label="Outflows (Period)" value={summaryData ? `Rp ${Number(summaryData.expense).toLocaleString()}` : "Loading..."}  color="text-destructive"    />
-            <SimpleKpi label="Net Reserve"    value={summaryData ? `Rp ${Number(summaryData.netProfit).toLocaleString()}` : "Loading..."} color="text-primary"  />
+            <SimpleKpi label="Inflows (Period)"  value={summaryData?.revenue != null ? `Rp ${Number(summaryData.revenue).toLocaleString()}` : "Rp 0"}  color="text-success" />
+            <SimpleKpi label="Outflows (Period)" value={summaryData?.expense != null ? `Rp ${Number(summaryData.expense).toLocaleString()}` : "Rp 0"}  color="text-destructive"    />
+            <SimpleKpi label="Net Reserve"    value={summaryData?.netProfit != null ? `Rp ${Number(summaryData.netProfit).toLocaleString()}` : "Rp 0"} color="text-primary"  />
           </div>
           <div className="h-[260px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -99,7 +99,7 @@ export function CfoChartsSection({ summaryData }: { summaryData?: any }) {
         <WorkspacePanel
           title="A/R Aging Report"
           description="Outstanding receivables by age — flags collection risk"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="flex items-center justify-between my-5">
             <div>
@@ -132,7 +132,7 @@ export function CfoChartsSection({ summaryData }: { summaryData?: any }) {
         <WorkspacePanel
           title="Accounts Payable Pipeline"
           description="Outstanding liabilities by category — due vs overdue (Rp M)"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="h-[280px] w-full mt-3">
             <ResponsiveContainer width="100%" height="100%">
@@ -153,7 +153,7 @@ export function CfoChartsSection({ summaryData }: { summaryData?: any }) {
         <WorkspacePanel
           title="Enterprise Asset Allocation"
           description="Capital deployment breakdown across liquidity classes"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           <div className="h-[280px] w-full relative mt-3">
             <ResponsiveContainer width="100%" height="100%">
@@ -184,7 +184,7 @@ export function CfoChartsSection({ summaryData }: { summaryData?: any }) {
         <WorkspacePanel
           title="Compliance Health Radar"
           description="Cross-departmental governance adherence scoring"
-          className="rounded-3xl border-border bg-white shadow-sm"
+          className="rounded-3xl border-border bg-card shadow-sm"
         >
           {/* Score pills */}
           <div className="flex flex-wrap gap-1.5 mt-3 mb-3">

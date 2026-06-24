@@ -1,13 +1,13 @@
 # Production Readiness Report — Zenvix Business Flow Suite v2
 
-_Generated: Mon, 22 Jun 2026 12:46:13 GMT_
+_Generated: Wed, 24 Jun 2026 02:06:56 GMT_
 _Audit version: 1.0.0_
 
 ---
 
 ## Executive Summary
 
-- **Overall Readiness Score:** 80.1%
+- **Overall Readiness Score:** 79.7%
 - **Modules Ready (GO):** 22 / 24
 - **Go-Live Status:** ❌ NOT READY
 - **Total Blockers:** 0 (P0: 0, P1: 0, P2: 0)
@@ -194,7 +194,7 @@ _No blockers identified for this module._
 | Partial | 0 |
 | Stub | 0 |
 | Broken | 0 |
-| **Total** | **29** |
+| **Total** | **26** |
 
 #### Workflow Test Results
 
@@ -234,7 +234,7 @@ _No blockers identified for this module._
 | Partial | 0 |
 | Stub | 11 |
 | Broken | 0 |
-| **Total** | **247** |
+| **Total** | **249** |
 
 #### Workflow Test Results
 
@@ -250,11 +250,11 @@ _No blockers identified for this module._
 | Status | Count |
 | --- | --- |
 | Connected | 4 |
-| Disconnected | 1 |
+| Disconnected | 3 |
 | Mock Data | 0 |
-| **Total** | **5** |
+| **Total** | **7** |
 
-#### Go-Live Readiness: 87.5% — ✅ **GO**
+#### Go-Live Readiness: 82.9% — ✅ **GO**
 
 #### Blockers
 
@@ -760,8 +760,8 @@ _No blockers identified for this module._
 
 | Status | Count |
 | --- | --- |
-| Passed | 6 |
-| Failed | 0 |
+| Passed | 5 |
+| Failed | 1 |
 | Skipped | 0 |
 | **Total** | **6** |
 
@@ -774,7 +774,7 @@ _No blockers identified for this module._
 | Mock Data | 0 |
 | **Total** | **12** |
 
-#### Go-Live Readiness: 90.8% — ✅ **GO**
+#### Go-Live Readiness: 85.0% — ✅ **GO**
 
 #### Blockers
 

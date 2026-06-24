@@ -20,7 +20,7 @@ interface CashflowTrendChartProps {
 
 export const CashflowTrendChart: React.FC<CashflowTrendChartProps> = ({ data, currentCash, minimumSafeCash }) => {
   return (
-    <div className="h-[400px] w-full bg-white p-4 rounded-xl border border-primary/10 shadow-sm mt-4">
+    <div className="h-[400px] w-full bg-card p-4 rounded-xl border border-primary/10 shadow-sm mt-4">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-sm font-bold uppercase tracking-tighter text-muted-foreground">Deterministic Cash Projection (30 Days)</h3>
         <div className="flex gap-4">
