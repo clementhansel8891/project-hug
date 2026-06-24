@@ -46,14 +46,14 @@ async function main() {
   const productsWithPrices = await prisma.item_masters.findMany({
     where: {
       tenant_id: TENANT_ID,
-      price: { not: null },
+      base_price: { gt: 0 },
     },
     take: 100, // Sample first 100 products to avoid timeout
     select: {
       id: true,
       sku: true,
       name: true,
-      price: true,
+      base_price: true,
     },
   });
 
@@ -72,13 +72,13 @@ async function main() {
         },
       });
 
-      if (!existing && product.price) {
+      if (!existing && product.base_price) {
         await prisma.price_versions.create({
           data: {
             tenant_id: TENANT_ID,
             company_id: company.id,
             sku_id: product.id,
-            price: product.price,
+            price: product.base_price,
             is_current: true,
             created_at: new Date(),
             updated_at: new Date(),
@@ -204,15 +204,22 @@ async function main() {
   });
 
   if (!salesPosition) {
+    // Use first store's location for position
+    const firstStoreLocation = stores[0]?.location_id;
+    
+    if (!firstStoreLocation) {
+      throw new Error('No store location found for creating position');
+    }
+
     salesPosition = await prisma.positions.create({
       data: {
         tenant_id: TENANT_ID,
         company_id: company.id,
-        title: 'Sales Associate',
-        code: 'SPG',
+        location_id: firstStoreLocation,
         department_id: salesDept.id,
-        level: 'STAFF',
-        status: 'active',
+        title: 'Sales Associate',
+        grade: 'STAFF',
+        status: 'open',
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -247,7 +254,7 @@ async function main() {
           email: user.email,
           phone: user.phone,
           department_id: salesDept.id,
-          position_id: salesPosition.id,
+          positions: salesPosition.id, // Store position ID as string
           location_id: defaultStore.location_id,
           hire_date: new Date(),
           status: 'active',
