@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { AuthRoutingController } from "./auth-routing.controller";
 import { CompanyRegistrationController } from "./company-registration.controller";
 import { CompanyRegistrationService } from "./company-registration.service";
 import { ModuleStateGuard } from "./guards/module-state.guard";
@@ -15,7 +16,7 @@ import { ProvisioningDbRepository } from "./repositories/provisioning.db.reposit
 import { useDbPersistence } from "../../shared/persistence.mode";
 
 @Module({
-  controllers: [AuthController, CompanyRegistrationController],
+  controllers: [AuthController, AuthRoutingController, CompanyRegistrationController],
   providers: [
     AuthService,
     CompanyRegistrationService,

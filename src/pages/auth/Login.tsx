@@ -36,7 +36,10 @@ export default function Login() {
     setAuthError("");
     const result = await login(values);
     if (result.success) {
-      navigate("/core/dashboard");
+      // Use redirect path from routing info, or default to dashboard
+      const redirectPath = (result as any).redirect_to || "/core/dashboard";
+      console.log("[Login] Redirecting to:", redirectPath);
+      navigate(redirectPath);
     } else {
       // Feedback_Message on failed submit; react-hook-form preserves entered input.
       setAuthError(result.error || "Failed to login");

@@ -165,6 +165,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ],
             };
             setSession(newSession);
+
+            // Get routing info based on user role and schedule
+            try {
+              const routingData = await apiRequest<any>("/v1/auth/routing-info", "GET", { token: data.token } as any);
+              console.log("[AuthContext] Routing info received:", routingData);
+              
+              if (routingData.data && routingData.data.context) {
+                // Update session with store/location context from schedule
+                const updatedSession = {
+                  ...newSession,
+                  location_id: routingData.data.context.location_id || "",
+                  store_id: routingData.data.context.store_id,
+                  store_name: routingData.data.context.store_name,
+                  schedule_id: routingData.data.context.schedule_id,
+                  shift_type: routingData.data.context.shift_type,
+                };
+                setSession(updatedSession);
+                console.log("[AuthContext] Session updated with schedule context:", updatedSession);
+              }
+              
+              return { 
+                success: true, 
+                redirect_to: routingData.data?.redirect_to || "/core/dashboard",
+                context: routingData.data?.context
+              };
+            } catch (routingError) {
+              console.warn("[AuthContext] Routing info failed, using default:", routingError);
+              return { success: true, redirect_to: "/core/dashboard" };
+            }
           } else {
             console.warn("[AuthContext] User has no companies associated.");
           }
