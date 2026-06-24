@@ -8,6 +8,9 @@ interface RequestWithUser extends Request {
 
 interface LoginRoutingInfo {
   redirect_to: string;
+  message?: string;
+  shift_status?: 'active' | 'upcoming' | 'recently_ended' | 'ended' | 'not_scheduled';
+  shift_end?: string;
   context?: {
     store_id?: string;
     store_name?: string;
@@ -15,6 +18,7 @@ interface LoginRoutingInfo {
     shift_id?: string;
     shift_start?: string;
     shift_end?: string;
+    shift_status?: 'active' | 'upcoming' | 'recently_ended';
   };
 }
 
@@ -68,23 +72,18 @@ export class AuthRoutingController {
 
     // If EMPLOYEE role, check for active schedule today
     if (userRole === 'EMPLOYEE' && employee) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-
       const now = new Date();
 
-      // Find active shift for today (allow 2 hours before start, 1 hour after end)
-      const activeShift = await this.prisma.hr_work_shifts.findFirst({
+      // Find shift for today (allow 2 hours before, check if recently ended)
+      const todayShift = await this.prisma.hr_work_shifts.findFirst({
         where: {
           tenant_id: user.tenant_id,
           employee_id: employee.id,
           start_time: {
-            lte: new Date(now.getTime() + 2 * 60 * 60 * 1000), // Allow login 2 hours before shift
+            lte: new Date(now.getTime() + 2 * 60 * 60 * 1000), // Allow login 2 hours before
           },
           end_time: {
-            gte: new Date(now.getTime() - 1 * 60 * 60 * 1000), // Allow login 1 hour after shift ends
+            gte: new Date(now.getTime() - 4 * 60 * 60 * 1000), // Look back 4 hours
           },
         },
         include: {
@@ -95,52 +94,101 @@ export class AuthRoutingController {
           },
         },
         orderBy: {
-          start_time: 'asc',
+          start_time: 'desc',
         },
       });
 
-      if (activeShift && activeShift.locations) {
-        const stores = activeShift.locations.stores || [];
-        
-        // Filter out E2E test stores and prefer real stores
-        const realStores = stores.filter(s => 
-          !s.name?.includes('E2E-') && 
-          !s.name?.includes('E2E ') &&
-          !s.code?.includes('E2E') &&
-          !s.deleted_at
-        );
-        
-        // Prefer Seminyak (BS-03) if multiple stores available
-        const store = realStores.find(s => s.code === 'BS-03' || s.name === 'Seminyak') 
-                     || realStores[0] 
-                     || stores.filter(s => !s.deleted_at)[0];
-        
-        if (store) {
-          console.log(`[AuthRouting] ✅ Resolved store: ${store.name} (${store.code})`);
-          console.log(`[AuthRouting] Location: ${activeShift.locations.name} (${activeShift.location_id})`);
-          console.log(`[AuthRouting] Shift: ${activeShift.id.slice(-6)} | ${activeShift.start_time} to ${activeShift.end_time}`);
-          
+      if (todayShift) {
+        const shiftStart = new Date(todayShift.start_time);
+        const shiftEnd = new Date(todayShift.end_time);
+        const isBeforeShift = now < shiftStart;
+        const isDuringShift = now >= shiftStart && now <= shiftEnd;
+        const isAfterShift = now > shiftEnd;
+        const hoursSinceEnd = (now.getTime() - shiftEnd.getTime()) / (1000 * 60 * 60);
+
+        // If shift ended more than 1 hour ago
+        if (isAfterShift && hoursSinceEnd > 1) {
+          console.log(`[AuthRouting] ⚠️  Shift ended ${hoursSinceEnd.toFixed(1)} hours ago`);
           return {
             success: true,
             data: {
-              redirect_to: '/m/retail/operational/pos',
-              context: {
-                store_id: store.id,
-                store_name: store.name,
-                location_id: activeShift.location_id || undefined,
-                shift_id: activeShift.id,
-                shift_start: activeShift.start_time?.toISOString(),
-                shift_end: activeShift.end_time?.toISOString(),
-              },
+              redirect_to: '/m/retail/management',
+              message: 'Your shift has ended. You now have access to retail management.',
+              shift_status: 'ended',
+              shift_end: shiftEnd.toISOString(),
             },
           };
-        } else {
-          console.warn(`[AuthRouting] ⚠️  No valid store found for shift ${activeShift.id} at location ${activeShift.location_id}`);
-          // Fall through to default routing
         }
-      } else if (userRole === 'EMPLOYEE') {
-        console.warn(`[AuthRouting] ⚠️  No active shift found for employee ${employee.id}`);
+
+        // If before shift or during shift or within 1 hour after
+        const locations = todayShift.locations;
+        if (locations) {
+          const stores = locations.stores || [];
+          
+          // Filter E2E stores
+          const realStores = stores.filter(s => 
+            !s.name?.includes('E2E-') && 
+            !s.name?.includes('E2E ') &&
+            !s.code?.includes('E2E') &&
+            !s.deleted_at
+          );
+          
+          // Prefer Seminyak
+          const store = realStores.find(s => s.code === 'BS-03' || s.name === 'Seminyak') 
+                       || realStores[0] 
+                       || stores.filter(s => !s.deleted_at)[0];
+          
+          if (store) {
+            let message = '';
+            if (isBeforeShift) {
+              const minutesUntil = Math.floor((shiftStart.getTime() - now.getTime()) / (1000 * 60));
+              message = `Your shift starts in ${minutesUntil} minutes.`;
+            } else if (isDuringShift) {
+              message = 'Your shift is active.';
+            } else {
+              message = 'Your shift recently ended. Please close any open shifts.';
+            }
+
+            console.log(`[AuthRouting] ✅ Resolved store: ${store.name} (${store.code})`);
+            console.log(`[AuthRouting] Location: ${locations.name} (${todayShift.location_id})`);
+            console.log(`[AuthRouting] Shift status: ${isDuringShift ? 'active' : isBeforeShift ? 'upcoming' : 'recently ended'}`);
+            
+            return {
+              success: true,
+              data: {
+                redirect_to: '/m/retail/operational/pos',
+                message,
+                context: {
+                  store_id: store.id,
+                  store_name: store.name,
+                  location_id: todayShift.location_id || undefined,
+                  shift_id: todayShift.id,
+                  shift_start: todayShift.start_time?.toISOString(),
+                  shift_end: todayShift.end_time?.toISOString(),
+                  shift_status: isDuringShift ? 'active' : isBeforeShift ? 'upcoming' : 'recently_ended',
+                },
+              },
+            };
+          }
+        }
       }
+
+      // No shift found for today
+      console.warn(`[AuthRouting] ⚠️  No shift scheduled for employee ${employee.id}`);
+      
+      // Check if it's a holiday or day off
+      const isWeekend = now.getDay() === 0 || now.getDay() === 6; // Sunday or Saturday
+      
+      return {
+        success: true,
+        data: {
+          redirect_to: '/m/retail/management',
+          message: isWeekend 
+            ? 'No shift scheduled today. Enjoy your day off!'
+            : 'No shift scheduled for today. You have access to retail management.',
+          shift_status: 'not_scheduled',
+        },
+      };
     }
 
     // Default routing for non-EMPLOYEE or no active schedule

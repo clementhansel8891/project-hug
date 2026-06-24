@@ -190,6 +190,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               return { 
                 success: true, 
                 redirect_to: routingInfo.redirect_to || "/core/dashboard",
+                message: routingInfo.message,
+                shift_status: routingInfo.shift_status,
                 context: routingInfo.context
               };
             } catch (routingError) {

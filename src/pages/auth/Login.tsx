@@ -38,7 +38,13 @@ export default function Login() {
     if (result.success) {
       // Use redirect path from routing info, or default to dashboard
       const redirectPath = (result as any).redirect_to || "/core/dashboard";
+      const message = (result as any).message;
+      
       console.log("[Login] Redirecting to:", redirectPath);
+      if (message) {
+        console.log("[Login] Shift status:", message);
+        // You could show a toast here if you have a toast system
+      }
       navigate(redirectPath);
     } else {
       // Feedback_Message on failed submit; react-hook-form preserves entered input.
