@@ -75,7 +75,7 @@ export class AuthRoutingController {
 
       const now = new Date();
 
-      // Find active shift for today
+      // Find active shift for today (allow 2 hours before start, 1 hour after end)
       const activeShift = await this.prisma.hr_work_shifts.findFirst({
         where: {
           tenant_id: user.tenant_id,
@@ -84,7 +84,7 @@ export class AuthRoutingController {
             lte: new Date(now.getTime() + 2 * 60 * 60 * 1000), // Allow login 2 hours before shift
           },
           end_time: {
-            gte: now, // Shift hasn't ended yet
+            gte: new Date(now.getTime() - 1 * 60 * 60 * 1000), // Allow login 1 hour after shift ends
           },
         },
         include: {
