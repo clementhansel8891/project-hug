@@ -66,7 +66,11 @@ export class RetailDbRepository implements IRetailRepository {
   async listStores(ctx: TenantContext,
     location_id?: string,
   ): Promise<RetailStore[]> {
-    const where: any = { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), deleted_at: null };
+    // Don't filter by company_id for stores - stores belong to the tenant level
+    const where: any = { 
+      tenant_id: ctx.tenant_id,
+      deleted_at: null 
+    };
     if (location_id) where.location_id = location_id;
 
     const store = await this.prisma.stores.findMany({
