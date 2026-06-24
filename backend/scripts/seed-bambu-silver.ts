@@ -174,7 +174,7 @@ async function main() {
 
   // ===== STEP 4: Create locations and stores (branches) =====
   console.log('📋 Step 4: Setting up locations and stores...');
-  const createdStores = [];
+  const createdStores: Array<{ id: string; code: string; name: string; type: string; status: string }> = [];
   
   for (const branchDef of BRANCHES) {
     // Check if store exists
@@ -184,14 +184,17 @@ async function main() {
         company_id: company.id,
         code: branchDef.code,
       },
-      include: {
-        locations: true,
-      },
     });
 
     if (store) {
       console.log(`   ℹ️  Store ${branchDef.name} already exists`);
-      createdStores.push(store);
+      createdStores.push({ 
+        id: store.id, 
+        code: store.code, 
+        name: store.name, 
+        type: store.type, 
+        status: store.status 
+      });
     } else {
       // Create location first
       const location = await prisma.locations.create({
@@ -210,7 +213,7 @@ async function main() {
       });
 
       // Create store
-      store = await prisma.stores.create({
+      const newStore = await prisma.stores.create({
         data: {
           tenant_id: TENANT_ID,
           company_id: company.id,
@@ -227,8 +230,14 @@ async function main() {
         },
       });
       
-      console.log(`   ✅ Created store: ${store.name} (${store.code})`);
-      createdStores.push(store);
+      console.log(`   ✅ Created store: ${newStore.name} (${newStore.code})`);
+      createdStores.push({ 
+        id: newStore.id, 
+        code: newStore.code, 
+        name: newStore.name, 
+        type: newStore.type, 
+        status: newStore.status 
+      });
     }
   }
   console.log(`✅ ${createdStores.length} stores ready\n`);
@@ -240,11 +249,13 @@ async function main() {
       select: { location_id: true },
     });
     
-    await prisma.companies.update({
-      where: { id: company.id },
-      data: { primary_location_id: firstStore.location_id },
-    });
-    console.log('   ℹ️  Updated company primary location\n');
+    if (firstStore) {
+      await prisma.companies.update({
+        where: { id: company.id },
+        data: { primary_location_id: firstStore.location_id },
+      });
+      console.log('   ℹ️  Updated company primary location\n');
+    }
   }
 
   // ===== STEP 5: Clean up and create users =====
