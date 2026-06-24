@@ -176,8 +176,9 @@ async function main() {
       data: {
         tenant_id: TENANT_ID,
         company_id: COMPANY_ID,
+        department_id: salesDept.id,
+        created_by: employee.user_id || 'system',
         name: `${employee.first_name} - ${shiftName}`,
-        type: 'WEEKLY',
         status: 'active',
         start_date: new Date('2026-06-01'),
         end_date: new Date('2026-12-31'),
