@@ -110,7 +110,7 @@ export class AuthRoutingController {
             context: {
               store_id: store.id,
               store_name: store.name,
-              location_id: activeShift.location_id,
+              location_id: activeShift.location_id || undefined,
               shift_id: activeShift.id,
               shift_start: activeShift.start_time?.toISOString(),
               shift_end: activeShift.end_time?.toISOString(),
