@@ -1,0 +1,275 @@
+═══════════════════════════════════════════════════════════════════════
+SCHEMA DISCOVERY - All Critical Tables
+═══════════════════════════════════════════════════════════════════════
+
+1. SALES_ORDERS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    column_name     |          data_type          | is_nullable 
+--------------------+-----------------------------+-------------
+ id                 | text                        | NO
+ tenant_id          | text                        | NO
+ opportunity_id     | text                        | NO
+ quote_id           | text                        | YES
+ customer_name      | text                        | NO
+ amount             | numeric                     | NO
+ currency           | text                        | NO
+ status             | text                        | NO
+ inventory_check    | text                        | NO
+ finance_invoice_id | text                        | YES
+ created_by         | text                        | NO
+ created_at         | timestamp without time zone | NO
+ updated_at         | timestamp without time zone | NO
+ company_id         | text                        | YES
+ ecommerce_id       | text                        | YES
+(15 rows)
+
+
+2. SALES_ORDER_ITEMS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ column_name | data_type | is_nullable 
+-------------+-----------+-------------
+ id          | text      | NO
+ tenant_id   | text      | NO
+ order_id    | text      | NO
+ product_id  | text      | NO
+ quantity    | numeric   | NO
+ unit_price  | numeric   | NO
+ total_price | numeric   | NO
+(7 rows)
+
+
+3. STOCK_MOVEMENTS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    column_name     |          data_type          | is_nullable 
+--------------------+-----------------------------+-------------
+ id                 | text                        | NO
+ tenant_id          | text                        | NO
+ product_id         | text                        | NO
+ from_location_id   | text                        | YES
+ to_location_id     | text                        | YES
+ quantity           | numeric                     | NO
+ type               | text                        | NO
+ reference_id       | text                        | NO
+ performed_by       | text                        | NO
+ created_at         | timestamp without time zone | NO
+ from_department_id | text                        | YES
+ to_department_id   | text                        | YES
+ reference_type     | text                        | YES
+ department_id      | text                        | YES
+ location_id        | text                        | NO
+ transfer_group_id  | text                        | YES
+ expires_at         | timestamp without time zone | YES
+ reservation_id     | text                        | YES
+ updated_at         | timestamp without time zone | NO
+ company_id         | text                        | YES
+(20 rows)
+
+
+4. STOCK_LEVELS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    column_name     |          data_type          | is_nullable 
+--------------------+-----------------------------+-------------
+ id                 | text                        | NO
+ tenant_id          | text                        | NO
+ location_id        | text                        | NO
+ product_id         | text                        | NO
+ on_hand            | numeric                     | NO
+ reserved           | numeric                     | NO
+ available          | numeric                     | NO
+ min_buffer         | numeric                     | NO
+ max_capacity       | numeric                     | NO
+ last_stock_take_at | timestamp without time zone | YES
+ created_at         | timestamp without time zone | NO
+ updated_at         | timestamp without time zone | NO
+ department_id      | text                        | YES
+ in_transit         | numeric                     | NO
+ company_id         | text                        | YES
+ damaged            | numeric                     | NO
+ in_repair          | numeric                     | NO
+(17 rows)
+
+
+5. FINANCE_JOURNAL_ENTRIES TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   column_name    |          data_type          | is_nullable 
+------------------+-----------------------------+-------------
+ id               | text                        | NO
+ tenant_id        | text                        | NO
+ fiscal_period_id | text                        | NO
+ ref              | text                        | NO
+ description      | text                        | YES
+ posting_date     | timestamp without time zone | NO
+ status           | text                        | NO
+ previous_hash    | text                        | YES
+ entry_hash       | text                        | YES
+ created_at       | timestamp without time zone | NO
+ updated_at       | timestamp without time zone | NO
+ company_id       | text                        | YES
+ effective_date   | timestamp without time zone | NO
+ journal_type     | text                        | NO
+ ledger_sequence  | bigint                      | YES
+ source_event_id  | text                        | YES
+ memo             | text                        | YES
+(17 rows)
+
+
+6. FINANCE_JOURNAL_LINES TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   column_name    |          data_type          | is_nullable 
+------------------+-----------------------------+-------------
+ id               | text                        | NO
+ tenant_id        | text                        | NO
+ journal_entry_id | text                        | NO
+ account_id       | text                        | NO
+ account_code     | text                        | NO
+ description      | text                        | YES
+ side             | text                        | NO
+ amount           | numeric                     | NO
+ debit            | numeric                     | NO
+ credit           | numeric                     | NO
+ branch_id        | text                        | YES
+ location_id      | text                        | YES
+ department_id    | text                        | YES
+ cost_center_id   | text                        | YES
+ project_id       | text                        | YES
+ created_at       | timestamp without time zone | NO
+ updated_at       | timestamp without time zone | NO
+ company_id       | text                        | YES
+(18 rows)
+
+
+7. PAYMENT_TRANSACTIONS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       column_name        |          data_type          | is_nullable 
+--------------------------+-----------------------------+-------------
+ id                       | text                        | NO
+ tenant_id                | text                        | NO
+ external_reference       | text                        | YES
+ type                     | text                        | NO
+ amount                   | numeric                     | NO
+ currency                 | text                        | NO
+ destination              | text                        | NO
+ source                   | text                        | YES
+ channel                  | text                        | NO
+ provider_id              | text                        | YES
+ idempotency_key          | text                        | NO
+ status                   | text                        | NO
+ ledger_sync_at           | timestamp without time zone | YES
+ created_by               | text                        | NO
+ approved_by              | text                        | YES
+ approved_at              | timestamp without time zone | YES
+ created_at               | timestamp without time zone | NO
+ updated_at               | timestamp without time zone | NO
+ evidence_pack_id         | text                        | YES
+ ledger_sync_triggered_at | timestamp without time zone | YES
+ settlement_id            | text                        | YES
+ department_id            | text                        | YES
+ extra_info               | jsonb                       | YES
+ purpose                  | text                        | YES
+ workflow_request_id      | text                        | YES
+ external_ref             | text                        | YES
+ fee_absorbed_by          | text                        | YES
+ gateway_fee              | numeric                     | YES
+ last_checked_at          | timestamp without time zone | YES
+ method                   | text                        | YES
+ net_amount               | numeric                     | YES
+ payment_status           | text                        | NO
+ platform_fee             | numeric                     | YES
+ platform_fee_pending     | numeric                     | YES
+ platform_fee_realized    | numeric                     | YES
+ retry_count              | integer                     | YES
+ company_id               | text                        | YES
+(37 rows)
+
+
+8. MONEY_SOURCES TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    column_name     |          data_type          | is_nullable 
+--------------------+-----------------------------+-------------
+ id                 | text                        | NO
+ tenant_id          | text                        | NO
+ name               | text                        | NO
+ type               | text                        | NO
+ currency           | text                        | NO
+ balance            | numeric                     | NO
+ pending_settlement | numeric                     | NO
+ provider           | text                        | YES
+ last_updated       | timestamp without time zone | NO
+ updated_at         | timestamp without time zone | NO
+ company_id         | text                        | YES
+ department_id      | text                        | YES
+ ecommerce_id       | text                        | YES
+ max_limit          | numeric                     | YES
+ min_limit          | numeric                     | YES
+ store_id           | text                        | YES
+(16 rows)
+
+
+9. HR_ATTENDANCE_RECORDS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      column_name      |          data_type          | is_nullable 
+-----------------------+-----------------------------+-------------
+ id                    | text                        | NO
+ tenant_id             | text                        | NO
+ employee_id           | text                        | NO
+ location_id           | text                        | NO
+ date                  | timestamp without time zone | NO
+ check_in              | jsonb                       | YES
+ check_out             | jsonb                       | YES
+ status                | text                        | NO
+ type                  | text                        | NO
+ metadata              | jsonb                       | YES
+ created_at            | timestamp without time zone | NO
+ updated_at            | timestamp without time zone | NO
+ deleted_at            | timestamp without time zone | YES
+ shift_id              | text                        | YES
+ work_duration_minutes | integer                     | NO
+ work_schedule_id      | text                        | YES
+ work_shift_id         | text                        | YES
+ event_reference_id    | text                        | YES
+ audit_log             | jsonb                       | YES
+ check_in_time         | timestamp without time zone | YES
+ check_out_time        | timestamp without time zone | YES
+ company_id            | text                        | YES
+ device_id             | text                        | YES
+ early_leave_minutes   | integer                     | NO
+ is_locked             | boolean                     | NO
+ lateness_minutes      | integer                     | NO
+ overtime_minutes      | integer                     | NO
+ retail_id             | text                        | YES
+ source                | text                        | YES
+(29 rows)
+
+
+10. RETAIL_SHIFTS TABLE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      column_name      |          data_type          | is_nullable 
+-----------------------+-----------------------------+-------------
+ id                    | text                        | NO
+ tenant_id             | text                        | NO
+ store_id              | text                        | NO
+ employee_id           | text                        | NO
+ start_time            | timestamp without time zone | NO
+ end_time              | timestamp without time zone | YES
+ opening_cash          | numeric                     | NO
+ closing_cash          | numeric                     | YES
+ expected_cash         | numeric                     | YES
+ status                | text                        | NO
+ notes                 | text                        | YES
+ created_at            | timestamp without time zone | NO
+ updated_at            | timestamp without time zone | NO
+ actual_cash           | numeric                     | YES
+ reconciliation_reason | text                        | YES
+ variance              | numeric                     | YES
+ closing_note          | text                        | YES
+ company_id            | text                        | YES
+ compliance_note       | text                        | YES
+ ecommerce_id          | text                        | YES
+ closed_by_id          | text                        | YES
+ opened_by_id          | text                        | YES
+(22 rows)
+
+
+═══════════════════════════════════════════════════════════════════════
+SCHEMA DISCOVERY COMPLETE
+═══════════════════════════════════════════════════════════════════════

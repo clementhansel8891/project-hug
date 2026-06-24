@@ -184,13 +184,6 @@ export function getStatusBadgeClasses(status: string) {
     case 'RUNNING':
     case 'ACTIVE':
       return STATUS_BADGE_VARIANTS.PROCESSING;
-    case 'COMPLETED':
-      return STATUS_BADGE_VARIANTS.COMPLETED;
-    case 'FAILED':
-      return STATUS_BADGE_VARIANTS.FAILED;
-    case 'CANCELLED':
-    case 'CANCELLED':
-      return STATUS_BADGE_VARIANTS.CANCELLED;
     default:
       return STATUS_BADGE_VARIANTS.PENDING;
   }
