@@ -1246,8 +1246,12 @@ export class RetailDbRepository implements IRetailRepository {
   async getShift(ctx: TenantContext,
     shift_id: string,
   ): Promise<RetailShift | null> {
+    // Only use id and tenant_id - shift id is unique (PK)
     const shift = await this.prisma.retail_shifts.findFirst({
-      where: { id: shift_id, ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }) },
+      where: { 
+        id: shift_id, 
+        tenant_id: ctx.tenant_id 
+      },
       include: { retail_cash_movements: true }
     });
     return shift ? this.mapShift(shift) : null;
@@ -1257,8 +1261,12 @@ export class RetailDbRepository implements IRetailRepository {
     shift_id: string,
     status: string,
   ): Promise<RetailShift> {
+    // Only use id and tenant_id - shift id is unique (PK)
     const shift = await this.prisma.retail_shifts.update({
-      where: { id: shift_id, ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }) },
+      where: { 
+        id: shift_id, 
+        tenant_id: ctx.tenant_id 
+      },
       data: { status: status as any },
     });
     return this.mapShift(shift);
@@ -1274,8 +1282,12 @@ export class RetailDbRepository implements IRetailRepository {
     tx?: Prisma.TransactionClient,
   ): Promise<RetailShift> {
     const db = tx || this.prisma;
+    // Only use id and tenant_id - shift id is unique (PK)
     const shift = await db.retail_shifts.update({
-      where: { id: shift_id, ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }) },
+      where: { 
+        id: shift_id, 
+        tenant_id: ctx.tenant_id 
+      },
       data: {
         status: "reconciled",
         actual_cash: data.actual_cash,
