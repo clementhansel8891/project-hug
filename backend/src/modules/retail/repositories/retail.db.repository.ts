@@ -1164,8 +1164,14 @@ export class RetailDbRepository implements IRetailRepository {
     data: CloseShiftDto,
     closed_by_id?: string,
   ): Promise<RetailShift> {
+    // Only use id and tenant_id for lookup - shift id is already unique (PK)
+    // Including company_id from context can cause mismatch if shift was created
+    // with a different company_id or if context company_id doesn't match
     const shift = await this.prisma.retail_shifts.update({
-      where: { id: shift_id, ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }) },
+      where: { 
+        id: shift_id, 
+        tenant_id: ctx.tenant_id 
+      },
       data: {
         end_time: new Date(),
         closing_cash: data.closing_cash,
