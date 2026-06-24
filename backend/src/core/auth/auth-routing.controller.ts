@@ -87,11 +87,7 @@ export class AuthRoutingController {
           },
         },
         include: {
-          locations: {
-            include: {
-              stores: true,
-            },
-          },
+          locations: true, // Get location info
         },
         orderBy: {
           start_time: 'desc',
@@ -120,23 +116,42 @@ export class AuthRoutingController {
           };
         }
 
-        // If before shift or during shift or within 1 hour after
-        const locations = todayShift.locations;
-        if (locations) {
-          const stores = locations.stores || [];
-          
-          // Filter E2E stores
+        // Fetch stores at this shift's location
+        // CRITICAL: Query stores explicitly by location_id and filter deleted stores
+        if (!todayShift.location_id) {
+          console.error(`[AuthRouting] ❌ Shift ${todayShift.id} has no location_id`);
+          return {
+            success: true,
+            data: {
+              redirect_to: '/m/retail/management',
+              message: 'Your shift has no location assigned. Please contact support.',
+              shift_status: 'not_scheduled',
+            },
+          };
+        }
+
+        const stores = await this.prisma.stores.findMany({
+          where: {
+            location_id: todayShift.location_id,
+            deleted_at: null, // Filter out deleted stores
+            tenant_id: user.tenant_id, // Ensure same tenant
+          },
+        });
+        
+        if (stores.length > 0) {
+          // Filter out E2E test stores
           const realStores = stores.filter(s => 
             !s.name?.includes('E2E-') && 
             !s.name?.includes('E2E ') &&
-            !s.code?.includes('E2E') &&
-            !s.deleted_at
+            !s.code?.includes('E2E')
           );
           
-          // Prefer Seminyak
-          const store = realStores.find(s => s.code === 'BS-03' || s.name === 'Seminyak') 
-                       || realStores[0] 
-                       || stores.filter(s => !s.deleted_at)[0];
+          // Prefer active stores over inactive ones
+          const activeStores = realStores.filter(s => s.status === 'active');
+          const validStores = activeStores.length > 0 ? activeStores : realStores;
+          
+          // Pick first valid store
+          const store = validStores[0] || stores[0];
           
           if (store) {
             let message = '';
@@ -149,9 +164,11 @@ export class AuthRoutingController {
               message = 'Your shift recently ended. Please close any open shifts.';
             }
 
-            console.log(`[AuthRouting] ✅ Resolved store: ${store.name} (${store.code})`);
-            console.log(`[AuthRouting] Location: ${locations.name} (${todayShift.location_id})`);
+            console.log(`[AuthRouting] ✅ Resolved store: ${store.name} (${store.id}) for shift ${todayShift.id}`);
+            console.log(`[AuthRouting] Store code: ${store.code}, Status: ${store.status}`);
+            console.log(`[AuthRouting] Location: ${todayShift.locations?.name} (${todayShift.location_id})`);
             console.log(`[AuthRouting] Shift status: ${isDuringShift ? 'active' : isBeforeShift ? 'upcoming' : 'recently ended'}`);
+            console.log(`[AuthRouting] Total stores at location: ${stores.length}, Valid stores: ${validStores.length}`);
             
             return {
               success: true,
@@ -169,7 +186,29 @@ export class AuthRoutingController {
                 },
               },
             };
+          } else {
+            // Edge case: no valid stores found after filtering
+            console.error(`[AuthRouting] ❌ No valid stores found for shift ${todayShift.id} at location ${todayShift.location_id}`);
+            return {
+              success: true,
+              data: {
+                redirect_to: '/m/retail/management',
+                message: 'Unable to determine store for your shift. Please contact support.',
+                shift_status: 'not_scheduled',
+              },
+            };
           }
+        } else {
+          // Edge case: no stores at this location
+          console.error(`[AuthRouting] ❌ No stores found at location ${todayShift.location_id} for shift ${todayShift.id}`);
+          return {
+            success: true,
+            data: {
+              redirect_to: '/m/retail/management',
+              message: 'No store found at your shift location. Please contact support.',
+              shift_status: 'not_scheduled',
+            },
+          };
         }
       }
 
