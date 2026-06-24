@@ -140,12 +140,29 @@ export const RetailProvider: React.FC<{ children: ReactNode }> = ({
           ? fetchedStores.find(s => s.id === (session as any).store_id)
           : null;
         
+        // LOG WARNING if shift store not found
+        if ((session as any).store_id && !targetStore) {
+          console.warn(
+            `[RetailContext] Shift store ${(session as any).store_id} not found in stores list.`,
+            `Available stores:`, fetchedStores.map(s => ({ id: s.id, name: s.name, code: s.code }))
+          );
+        }
+        
         // PRIORITY 2: Use saved store from localStorage
         if (!targetStore && savedStoreId) {
           targetStore = fetchedStores.find(s => s.id === savedStoreId);
+          if (targetStore) {
+            console.log(`[RetailContext] Using saved store: ${targetStore.name}`);
+          }
         }
         
-        let targetChannel = fetchedChannels.find(c => c.id === savedChannelId);
+        let targetChannel = savedChannelId ? fetchedChannels.find(c => c.id === savedChannelId) : null;
+        
+        // PRIORITY 3: Fallback to first available store (last resort)
+        if (!targetStore && !targetChannel && fetchedStores.length > 0) {
+          targetStore = fetchedStores[0];
+          console.warn(`[RetailContext] Using fallback store: ${targetStore.name} (${targetStore.code})`);
+        }
 
         if (targetStore) {
           setActiveStore(targetStore);
@@ -156,13 +173,6 @@ export const RetailProvider: React.FC<{ children: ReactNode }> = ({
           setActiveChannel(targetChannel);
           if (session.location_id !== targetChannel.id) {
             updateLocationRef.current(targetChannel.id);
-          }
-        } else if (fetchedStores.length > 0) {
-          // Default to first store if nothing saved
-          const defaultStore = fetchedStores[0];
-          setActiveStore(defaultStore);
-          if (session.location_id !== defaultStore.locationId) {
-            updateLocationRef.current(defaultStore.locationId);
           }
         }
       } else if (currentActiveStore) {

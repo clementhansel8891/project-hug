@@ -99,23 +99,41 @@ export class AuthRoutingController {
         },
       });
 
-      if (activeShift && activeShift.locations?.stores?.[0]) {
-        const store = activeShift.locations.stores[0];
+      if (activeShift && activeShift.locations) {
+        const stores = activeShift.locations.stores || [];
         
-        return {
-          success: true,
-          data: {
-            redirect_to: '/m/retail/operational/pos',
-            context: {
-              store_id: store.id,
-              store_name: store.name,
-              location_id: activeShift.location_id || undefined,
-              shift_id: activeShift.id,
-              shift_start: activeShift.start_time?.toISOString(),
-              shift_end: activeShift.end_time?.toISOString(),
+        // Filter out E2E test stores and prefer real stores
+        const realStores = stores.filter(s => 
+          !s.name?.includes('E2E-') && 
+          !s.code?.includes('E2E') &&
+          !s.deleted_at
+        );
+        
+        // Use real store if available, otherwise fall back to first valid store
+        const store = realStores[0] || stores.filter(s => !s.deleted_at)[0];
+        
+        if (store) {
+          console.log(`[AuthRouting] Resolved store: ${store.name} (${store.code}) [ID: ${store.id}] for shift ${activeShift.id}`);
+          console.log(`[AuthRouting] Available stores at location: ${stores.length}, filtered to: ${realStores.length} real stores`);
+          
+          return {
+            success: true,
+            data: {
+              redirect_to: '/m/retail/operational/pos',
+              context: {
+                store_id: store.id,
+                store_name: store.name,
+                location_id: activeShift.location_id || undefined,
+                shift_id: activeShift.id,
+                shift_start: activeShift.start_time?.toISOString(),
+                shift_end: activeShift.end_time?.toISOString(),
+              },
             },
-          },
-        };
+          };
+        } else {
+          console.warn(`[AuthRouting] No valid store found for shift ${activeShift.id} at location ${activeShift.location_id}`);
+          // Fall through to default routing
+        }
       }
     }
 

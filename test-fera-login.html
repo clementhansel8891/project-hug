@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Fera Login Routing</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #0f0;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #0f0;
+            border-radius: 5px;
+        }
+        h2 { color: #0ff; }
+        pre {
+            background: #000;
+            padding: 10px;
+            overflow-x: auto;
+            border: 1px solid #333;
+        }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0ff; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Fera Login Routing Test</h1>
+    
+    <div class="section">
+        <h2>Step 1: Login</h2>
+        <button onclick="testLogin()">Test Fera Login</button>
+        <div id="loginResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 2: Get Routing Info</h2>
+        <button onclick="testRouting()">Test Routing Endpoint</button>
+        <div id="routingResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 3: Full Login Flow</h2>
+        <button onclick="testFullFlow()">Test Complete Flow</button>
+        <div id="flowResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>Step 4: Clear Browser Cache</h2>
+        <button onclick="clearCache()">Clear Local Storage & Reload</button>
+        <p class="warning">⚠️ This will log you out and clear all cached data</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://150.109.15.108:3001/v1';
+        let currentToken = null;
+
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.innerHTML = '<p>🔄 Testing login...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'fera@bambusilver.com',
+                        password: 'Fera2024!'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.token) {
+                    currentToken = data.token;
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Login successful!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Login failed - no token</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        async function testRouting() {
+            const resultDiv = document.getElementById('routingResult');
+            
+            if (!currentToken) {
+                resultDiv.innerHTML = '<p class="error">❌ Please login first</p>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p>🔄 Testing routing endpoint...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/routing-info`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'x-tenant-id': 'tnt-3rlhko'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Routing info received!</p>
+                    <p><strong>Redirect To:</strong> <span class="warning">${data.data?.redirect_to || 'NOT SET'}</span></p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        async function testFullFlow() {
+            const resultDiv = document.getElementById('flowResult');
+            resultDiv.innerHTML = '<p>🔄 Testing full login flow...</p>';
+            
+            try {
+                // Step 1: Login
+                const loginResponse = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'fera@bambusilver.com',
+                        password: 'Fera2024!'
+                    })
+                });
+                
+                const loginData = await loginResponse.json();
+                
+                if (!loginData.token) {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Login failed</p>
+                        <pre>${JSON.stringify(loginData, null, 2)}</pre>
+                    `;
+                    return;
+                }
+                
+                // Step 2: Get routing info
+                const routingResponse = await fetch(`${API_URL}/auth/routing-info`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${loginData.token}`,
+                        'x-tenant-id': 'tnt-3rlhko'
+                    }
+                });
+                
+                const routingData = await routingResponse.json();
+                
+                const redirectPath = routingData.data?.redirect_to || '/core/dashboard';
+                const hasContext = !!routingData.data?.context;
+                
+                let status = '';
+                if (redirectPath === '/retail/operational/pos' && hasContext) {
+                    status = `<p class="success">✅ CORRECT: Should redirect to POS with store context</p>`;
+                } else if (redirectPath === '/core/dashboard') {
+                    status = `<p class="error">❌ WRONG: Redirecting to dashboard instead of POS</p>`;
+                } else {
+                    status = `<p class="warning">⚠️ UNEXPECTED: Redirecting to ${redirectPath}</p>`;
+                }
+                
+                resultDiv.innerHTML = `
+                    <h3>Full Flow Results:</h3>
+                    ${status}
+                    <p><strong>User Role:</strong> ${loginData.user?.user_companies?.[0]?.role || 'UNKNOWN'}</p>
+                    <p><strong>Redirect Path:</strong> ${redirectPath}</p>
+                    <p><strong>Has Context:</strong> ${hasContext ? 'Yes' : 'No'}</p>
+                    ${hasContext ? `
+                        <p><strong>Store:</strong> ${routingData.data.context.store_name}</p>
+                        <p><strong>Shift ID:</strong> ${routingData.data.context.shift_id}</p>
+                    ` : ''}
+                    <h4>Login Response:</h4>
+                    <pre>${JSON.stringify(loginData, null, 2)}</pre>
+                    <h4>Routing Response:</h4>
+                    <pre>${JSON.stringify(routingData, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function clearCache() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('✅ Cache cleared! The page will now reload.\n\n' +
+                  '⚠️ After reload, press Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac) to hard refresh.');
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
