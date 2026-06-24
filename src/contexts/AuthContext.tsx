@@ -195,9 +195,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           } else {
             console.warn("[AuthContext] User has no companies associated.");
+            return { success: true, redirect_to: "/core/dashboard" };
           }
-
-          return { success: true };
         }
         console.error("[AuthContext] Login failed: No token in response");
         return { success: false, error: "Login failed" };
