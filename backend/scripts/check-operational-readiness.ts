@@ -265,7 +265,7 @@ async function main() {
   const activePrices = await prisma.price_versions.count({ 
     where: { 
       tenant_id: TENANT_ID, 
-      active: true 
+      is_current: true 
     } 
   });
   
