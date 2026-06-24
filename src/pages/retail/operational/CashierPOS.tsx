@@ -511,6 +511,38 @@ const CashierPOS = () => {
                 <RefreshCw className={`w-3.5 h-3.5 ${isProductsLoading ? 'animate-spin' : ''}`} /> Sync Catalog
               </Button>
 
+              {activeShift && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => navigate('/m/retail/operational/shift-close')}
+                  className="h-12 rounded-xl font-black italic uppercase text-[10px] tracking-widest gap-2"
+                >
+                  <Power className="w-3.5 h-3.5" /> Close Shift
+                </Button>
+              )}
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-12 h-12 rounded-2xl bg-secondary hover:bg-accent hover:text-accent-foreground text-foreground transition-all"
+                onClick={() => {
+                  if (activeShift) {
+                    toast({
+                      title: "Shift Still Active",
+                      description: "Please close your shift before logging out.",
+                      variant: "destructive",
+                    });
+                  } else {
+                    // Logout logic - will be implemented with auth context
+                    window.location.href = "/login";
+                  }
+                }}
+                title="Logout"
+              >
+                <LogOut className="w-5 h-5" />
+              </Button>
+
               <Button
                 variant="ghost"
                 size="icon"
