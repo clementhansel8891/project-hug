@@ -105,7 +105,7 @@ export class AuthRoutingController {
         return {
           success: true,
           data: {
-            redirect_to: '/retail/operational/pos',
+            redirect_to: '/m/retail/operational/pos',
             context: {
               store_id: store.id,
               store_name: store.name,
