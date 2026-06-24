@@ -129,9 +129,9 @@ async function main() {
   }
   console.log(`✅ Found tenant: ${tenant.name}\n`);
 
-  // ===== STEP 2: Get the main company =====
-  console.log('📋 Step 2: Finding main company...');
-  const company = await prisma.companies.findFirst({
+  // ===== STEP 2: Get or create the main company =====
+  console.log('📋 Step 2: Finding/creating main company...');
+  let company = await prisma.companies.findFirst({
     where: {
       tenant_id: TENANT_ID,
       name: COMPANY_NAME,
@@ -139,9 +139,26 @@ async function main() {
   });
 
   if (!company) {
-    throw new Error(`Company ${COMPANY_NAME} not found for tenant ${TENANT_ID}`);
+    // Check if there's an existing company for this tenant
+    const existingCompany = await prisma.companies.findFirst({
+      where: {
+        tenant_id: TENANT_ID,
+      },
+    });
+
+    if (existingCompany) {
+      // Rename existing company to Bambu Silver
+      company = await prisma.companies.update({
+        where: { id: existingCompany.id },
+        data: { name: COMPANY_NAME },
+      });
+      console.log(`✅ Renamed existing company "${existingCompany.name}" to "${COMPANY_NAME}"\n`);
+    } else {
+      throw new Error(`No company found for tenant ${TENANT_ID}`);
+    }
+  } else {
+    console.log(`✅ Found company: ${company.name} (${company.id})\n`);
   }
-  console.log(`✅ Found company: ${company.name} (${company.id})\n`);
 
   // ===== STEP 3: Clean up unwanted stores (branches) =====
   console.log('📋 Step 3: Cleaning up unwanted stores/branches...');
