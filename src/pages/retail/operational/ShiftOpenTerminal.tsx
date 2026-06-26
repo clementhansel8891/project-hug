@@ -41,14 +41,27 @@ const ShiftOpenTerminal = () => {
   
       setIsOpening(true);
       try {
-        await retailService.openShift(
+        const result = await retailService.openShift(
           session.tenant_id!,
           session,
           activeStore.id,
           parseInt(openingCash.replace(/[^0-9]/g, '')) || 0,
           "terminal-pos"
         );
-        toast({ title: "Session Initialized", description: "Fiscal shift is now active." });
+        
+        // Check for cash handover mismatch warning
+        if (result?.cash_handover_warning) {
+          const w = result.cash_handover_warning;
+          toast({ 
+            title: "⚠️ Cash Handover Mismatch", 
+            description: w.message,
+            variant: "destructive",
+            duration: 15000,
+          });
+        } else {
+          toast({ title: "Session Initialized", description: "Fiscal shift is now active." });
+        }
+        
         await refreshState();
       navigate("/m/retail/operational/gateway");
     } catch (error: any) {

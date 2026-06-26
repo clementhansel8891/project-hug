@@ -845,7 +845,7 @@ export class RetailService {
     userId: string,
     data: OpenShiftDto,
     user_id?: string,
-  ): Promise<RetailShift> {
+  ): Promise<RetailShift & { cash_handover_warning?: { previous_closing_cash: number; opening_cash: number; variance: number; previous_shift_id: string; message: string } }> {
     // 1. Resolve Employee ID from User ID (Retail shifts require an Employee record)
     const resolvedEmployeeId = await this.resolveEmployeeId(ctx, userId);
 
@@ -858,6 +858,54 @@ export class RetailService {
     if (active) {
       throw new BadRequestException("Shift already active for this employee and store.");
     }
+
+    // 2. Check previous shift's closing cash at this store for handover validation
+    let cashHandoverWarning: { previous_closing_cash: number; opening_cash: number; variance: number; previous_shift_id: string; message: string } | undefined;
+    const previousShift = await this.prisma.retail_shifts.findFirst({
+      where: {
+        tenant_id: ctx.tenant_id,
+        store_id: data.store_id,
+        status: 'closed',
+      },
+      orderBy: { start_time: 'desc' },
+      select: { id: true, closing_cash: true, expected_cash: true, employee_id: true },
+    });
+
+    if (previousShift && previousShift.closing_cash !== null) {
+      const prevClosing = Number(previousShift.closing_cash);
+      const currentOpening = Number(data.opening_cash || 0);
+      const handoverVariance = currentOpening - prevClosing;
+      
+      // If the opening cash doesn't match the previous shift's closing cash, flag it
+      if (Math.abs(handoverVariance) > 1) { // Allow Rp 1 tolerance for rounding
+        cashHandoverWarning = {
+          previous_closing_cash: prevClosing,
+          opening_cash: currentOpening,
+          variance: handoverVariance,
+          previous_shift_id: previousShift.id,
+          message: `Cash handover mismatch: previous shift closed with ${prevClosing.toLocaleString('id-ID')}, but this shift opens with ${currentOpening.toLocaleString('id-ID')}. Variance: ${handoverVariance > 0 ? '+' : ''}${handoverVariance.toLocaleString('id-ID')}. Please verify and provide clarification.`,
+        };
+
+        // Log audit event for the mismatch
+        if (user_id) {
+          await this.auditService.log({
+            tenant_id: ctx.tenant_id,
+            user_id,
+            module: "retail",
+            action: "CASH_HANDOVER_MISMATCH",
+            entity_type: "SHIFT",
+            entity_id: previousShift.id,
+            metadata: {
+              previous_closing_cash: prevClosing,
+              opening_cash: currentOpening,
+              variance: handoverVariance,
+              store_id: data.store_id,
+            },
+          });
+        }
+      }
+    }
+
     const shift = await this.retailRepository.openShift(
       ctx,
       location_id,
@@ -878,6 +926,10 @@ export class RetailService {
       });
     }
 
+    // Return shift with optional cash handover warning
+    if (cashHandoverWarning) {
+      return { ...shift, cash_handover_warning: cashHandoverWarning };
+    }
     return shift;
   }
 
