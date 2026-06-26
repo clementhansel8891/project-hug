@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,8 @@ import {
   Trash2,
   CheckCircle,
   Barcode,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/format";
@@ -91,6 +93,7 @@ export default function RetailInventory() {
   const session = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name");
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -102,16 +105,59 @@ export default function RetailInventory() {
   const [locations, setLocations] = useState<{id: string, name: string}[]>([]);
   const [selectedLocation, setSelectedLocation] = useState(session.location_id || "all");
 
-  const fetchInventory = async () => {
+  // Pagination state
+  const PAGE_SIZE = 30;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+
+  // Debounce search input for server-side search
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchTerm(value);
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(() => {
+      setDebouncedSearch(value);
+      setCurrentPage(1); // Reset to first page on new search
+    }, 400);
+  }, []);
+
+  // Map sort UI values to backend sort params
+  const getSortParams = useCallback((sort: string) => {
+    switch (sort) {
+      case "stock-asc": return { sortBy: "quantity" as const, sortDir: "asc" as const };
+      case "stock-desc": return { sortBy: "quantity" as const, sortDir: "desc" as const };
+      case "value": return { sortBy: "price" as const, sortDir: "desc" as const };
+      case "name":
+      default: return { sortBy: "name" as const, sortDir: "asc" as const };
+    }
+  }, []);
+
+  const fetchInventory = useCallback(async () => {
     setIsLoading(true);
     try {
+      const sortParams = getSortParams(sortBy);
       const [invData, cats, locs] = await Promise.all([
         retailService.listInventory(session.tenant_id!, session, { 
-          locationId: selectedLocation === "all" ? undefined : selectedLocation 
+          page: currentPage,
+          pageSize: PAGE_SIZE,
+          locationId: selectedLocation === "all" ? undefined : selectedLocation,
+          categoryId: selectedCategory === "all" ? undefined : selectedCategory,
+          q: debouncedSearch || undefined,
+          sortBy: sortParams.sortBy,
+          sortDir: sortParams.sortDir,
         }),
         inventoryService.listCategories(session.tenant_id!, session),
         inventoryService.listLocations(session.tenant_id!, session)
       ]);
+
+      // Extract pagination meta from the response
+      const meta = (invData as any)?.meta;
+      if (meta) {
+        setTotalItems(meta.total || 0);
+      } else {
+        setTotalItems((invData || []).length);
+      }
 
       const mapped: InventoryItem[] = (invData || []).map(p => {
         const meta = (p.metadata ?? {}) as {
@@ -151,13 +197,13 @@ export default function RetailInventory() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [session.tenant_id, selectedLocation, selectedCategory, currentPage, debouncedSearch, sortBy, getSortParams]);
 
   useEffect(() => {
     if (session.tenant_id) {
       fetchInventory();
     }
-  }, [session.tenant_id, selectedLocation]);
+  }, [session.tenant_id, fetchInventory]);
 
   // Dialog states
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -199,15 +245,9 @@ export default function RetailInventory() {
   ).length;
 
   // Filter and sort inventory
+  // Server handles: search (q), category, sorting, pagination
+  // Client handles: stock status filter (low/critical/ok) as it's computed from metadata
   const filteredInventory = (Array.isArray(inventory) ? inventory : []).filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.barcode?.includes(searchTerm);
-
-      const matchesCategory = selectedCategory === "all" || item.categoryId === selectedCategory;
-
-      if (!matchesSearch || !matchesCategory) return false;
-
       if (filterStatus === "low")
         return (
           item.stock !== undefined &&
@@ -220,14 +260,6 @@ export default function RetailInventory() {
           item.stock > item.reorderPoint
         );
       return true;
-    })
-    .sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "stock-asc") return (a.stock || 0) - (b.stock || 0);
-      if (sortBy === "stock-desc") return (b.stock || 0) - (a.stock || 0);
-      if (sortBy === "value")
-        return (b.stock || 0) * b.price - (a.stock || 0) * a.price;
-      return 0;
     });
 
   const getStockStatus = (item: InventoryItem) => {
@@ -598,17 +630,17 @@ export default function RetailInventory() {
         <div className="p-4 bg-muted border-b border-white/5 rounded-t-[2rem]">
           <InventoryFilterHub 
             search={searchTerm}
-            onSearchChange={setSearchTerm}
+            onSearchChange={handleSearchChange}
             category={selectedCategory}
-            onCategoryChange={setSelectedCategory}
+            onCategoryChange={(val) => { setSelectedCategory(val); setCurrentPage(1); }}
             categories={categories}
             status={filterStatus}
             onStatusChange={setFilterStatus}
             location={selectedLocation}
-            onLocationChange={setSelectedLocation}
+            onLocationChange={(val) => { setSelectedLocation(val); setCurrentPage(1); }}
             locations={locations}
             sortBy={sortBy}
-            onSortChange={setSortBy}
+            onSortChange={(val) => { setSortBy(val); setCurrentPage(1); }}
             advancedActions={
               <div className="flex gap-3">
                 <Button 
@@ -739,6 +771,35 @@ export default function RetailInventory() {
               )}
             </ScrollArea>
           </CardContent>
+          {/* Pagination Controls */}
+          <div className="flex items-center justify-between px-4 py-3 border-t">
+            <span className="text-sm text-muted-foreground">
+              Showing {filteredInventory.length > 0 ? ((currentPage - 1) * PAGE_SIZE) + 1 : 0}–{Math.min(currentPage * PAGE_SIZE, totalItems)} of {totalItems} items
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage <= 1}
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <span className="text-sm font-medium px-2">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage >= totalPages}
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </Card>
 
         {/* Reorder Requests Panel */}

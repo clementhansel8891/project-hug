@@ -373,7 +373,7 @@ export const retailService = {
     const qs = new URLSearchParams();
     if (options?.page) qs.set("page", String(options.page));
     if (options?.pageSize) qs.set("pageSize", String(options.pageSize));
-    if (options?.categoryId) qs.set("categoryId", options.categoryId);
+    if (options?.categoryId) qs.set("category_id", options.categoryId);
     if (options?.type) qs.set("type", options.type);
     if (options?.minPrice !== undefined)
       qs.set("minPrice", String(options.minPrice));
@@ -908,7 +908,7 @@ export const retailService = {
     },
   ) {
     const qs = new URLSearchParams();
-    if (options?.categoryId) qs.set("categoryId", options.categoryId);
+    if (options?.categoryId) qs.set("category_id", options.categoryId);
     if (options?.type) qs.set("type", options.type);
     if (options?.minPrice !== undefined)
       qs.set("minPrice", String(options.minPrice));

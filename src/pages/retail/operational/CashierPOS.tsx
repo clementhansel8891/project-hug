@@ -260,6 +260,7 @@ const CashierPOS = () => {
 
   useEffect(() => {
     if (barcodeValue.length >= 8) {
+      // First: try local lookup in already-loaded products
       const product = products.find(
         (p) => p.sku === barcodeValue || p.barcode === barcodeValue,
       );
@@ -271,15 +272,52 @@ const CashierPOS = () => {
           description: `${product.name} added.`,
         });
       } else {
-        toastRef.current({
-          title: "Scan Alert",
-          description: `Barcode [${barcodeValue}] not recognized in catalog.`,
-          variant: "destructive"
-        });
+        // Fallback: server-side search by barcode/sku
+        const barcode = barcodeValue;
         setBarcodeValue("");
+        (async () => {
+          try {
+            const results = await retailService.listInventory(
+              session.tenant_id!,
+              session,
+              {
+                q: barcode,
+                locationId: activeStore?.id || session.location_id,
+                pageSize: 5,
+              },
+            );
+            const match = (results || []).find(
+              (p) => p.sku === barcode || p.barcode === barcode,
+            );
+            if (match) {
+              addToCart(match);
+              // Also add to local product list so repeated scans work immediately
+              setProducts((prev) => {
+                if (prev.some((p) => p.id === match.id)) return prev;
+                return [...prev, match];
+              });
+              toastRef.current({
+                title: "Item Scanned",
+                description: `${match.name} added.`,
+              });
+            } else {
+              toastRef.current({
+                title: "Scan Alert",
+                description: `Barcode [${barcode}] not recognized in catalog.`,
+                variant: "destructive",
+              });
+            }
+          } catch {
+            toastRef.current({
+              title: "Scan Alert",
+              description: `Barcode [${barcode}] not recognized in catalog.`,
+              variant: "destructive",
+            });
+          }
+        })();
       }
     }
-  }, [barcodeValue, products, addToCart]);
+  }, [barcodeValue, products, addToCart, session, activeStore]);
 
   // Products are already server-filtered by categoryId; we only need local text search
   const filteredProducts = useMemo(() => {
