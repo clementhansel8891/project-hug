@@ -46,7 +46,7 @@ import {
   SkipBranchCheck,
 } from "../../core/auth/guards/branch-gating.guard";
 import { RequiredModule } from "../../shared/decorators/required-module.decorator";
-import { LocationGuard } from "../../shared/guards/location.guard";
+import { LocationGuard, SkipLocationCheck } from "../../shared/guards/location.guard";
 
 interface RequestWithTenant extends Request {
   tenantContext: TenantContext;
@@ -177,14 +177,12 @@ export class RetailController {
   async listStores(@Req() request: RequestWithTenant) {
     const { tenant_id, location_id, role } = request.tenantContext;
 
-    // For Global Fleet View / Management, privileged roles should see all stores.
-    // Managers/Staff remain scoped to their assigned location.
-    const isPrivileged = ["SUPERADMIN", "OWNER", "ADMIN"].includes(role || "");
-    const effectivelocation_id = isPrivileged ? undefined : location_id;
-
+    // All retail-module users can see all stores since SPG staff rotate between
+    // branches according to external schedules. Access control is enforced at the
+    // shift level (users can only open shifts at stores they're scheduled for).
     const stores = await this.retailService.listStores(
       request.tenantContext,
-      effectivelocation_id,
+      undefined,
     );
     return this.respond(request.tenantContext, stores);
   }
@@ -609,6 +607,7 @@ export class RetailController {
   }
 
   @Get("shifts/active")
+  @SkipLocationCheck()
   async getActiveShift(
     @Req() request: RequestWithTenant,
     @Query("store_id") store_id: string,
@@ -629,6 +628,7 @@ export class RetailController {
   }
 
   @Post("shifts/open")
+  @SkipLocationCheck()
   async openShift(
     @Req() request: RequestWithTenant,
     @Body() data: OpenShiftDto,
@@ -646,6 +646,7 @@ export class RetailController {
   }
 
   @Put("shifts/:id/close")
+  @SkipLocationCheck()
   async closeShift(
     @Req() request: RequestWithTenant,
     @Param("id") shift_id: string,
@@ -662,6 +663,7 @@ export class RetailController {
   }
 
   @Post("shifts/:id/reconcile")
+  @SkipLocationCheck()
   async reconcileShift(
     @Req() request: RequestWithTenant,
     @Param("id") shift_id: string,
@@ -678,6 +680,7 @@ export class RetailController {
   }
 
   @Post("shifts/:id/cash-movement")
+  @SkipLocationCheck()
   async recordCashMovement(
     @Req() request: RequestWithTenant,
     @Param("id") shift_id: string,
@@ -695,6 +698,7 @@ export class RetailController {
 
 
   @Get("shifts")
+  @SkipLocationCheck()
   async listShifts(
     @Req() request: RequestWithTenant,
     @Query("store_id") store_id?: string,
@@ -709,6 +713,7 @@ export class RetailController {
   }
 
   @Get("shifts/:id")
+  @SkipLocationCheck()
   async getShift(
     @Req() request: RequestWithTenant,
     @Param("id") shift_id: string,
