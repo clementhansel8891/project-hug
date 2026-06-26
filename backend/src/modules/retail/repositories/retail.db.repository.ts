@@ -2017,17 +2017,25 @@ export class RetailDbRepository implements IRetailRepository {
 
       let departmentId = dept?.id;
       if (!departmentId) {
-        const newDept = await tx.departments.create({
-          data: {
-            id: uuidv4(),
-            updated_at: new Date(),
-            ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
-            name: "Retail Operations",
-            code: "RET",
-            status: "active",
-          },
+        const existingDept = await tx.departments.findFirst({
+          where: { tenant_id: ctx.tenant_id, code: "RET" },
+          select: { id: true },
         });
-        departmentId = newDept.id;
+        if (existingDept) {
+          departmentId = existingDept.id;
+        } else {
+          const newDept = await tx.departments.create({
+            data: {
+              id: uuidv4(),
+              updated_at: new Date(),
+              ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+              name: "Retail Operations",
+              code: "RET",
+              status: "active",
+            },
+          });
+          departmentId = newDept.id;
+        }
       }
 
       // 4. Process Items & Order
@@ -2340,22 +2348,23 @@ export class RetailDbRepository implements IRetailRepository {
           },
         });
 
+        const actualCount = adj.actualCount ?? adj.actual_count ?? 0;
         const currentOnHand = stock ? Number(stock.on_hand) : 0;
         totalExpected += currentOnHand;
-        totalCounted += adj.actualCount;
+        totalCounted += actualCount;
 
         if (stock) {
-          console.log(`[RETAIL_OPNAME] Updating Product ${productId} at ${store.location_id} to ${adj.actualCount}`);
+          console.log(`[RETAIL_OPNAME] Updating Product ${productId} at ${store.location_id} to ${actualCount}`);
           await tx.stock_levels.update({
             where: { id: stock.id },
             data: {
-              on_hand: adj.actualCount,
-              available: new Prisma.Decimal(adj.actualCount.toString()).minus(stock.reserved),
+              on_hand: actualCount,
+              available: new Prisma.Decimal(actualCount.toString()).minus(stock.reserved),
               last_stock_take_at: new Date(),
             },
           });
         } else {
-          console.log(`[RETAIL_OPNAME] Creating new stock level for Product ${productId} with Count ${adj.actualCount}`);
+          console.log(`[RETAIL_OPNAME] Creating new stock level for Product ${productId} with Count ${actualCount}`);
           await tx.stock_levels.create({
             data: {
               id: uuidv4(),
@@ -2364,8 +2373,8 @@ export class RetailDbRepository implements IRetailRepository {
               location_id: store.location_id,
               product_id: productId,
               department_id: null,
-              on_hand: adj.actualCount,
-              available: adj.actualCount,
+              on_hand: actualCount,
+              available: actualCount,
               last_stock_take_at: new Date(),
             },
           });
@@ -2380,7 +2389,7 @@ export class RetailDbRepository implements IRetailRepository {
             product_id: productId,
             location_id: store.location_id,
             to_location_id: store.location_id,
-            quantity: adj.actualCount - currentOnHand,
+            quantity: actualCount - currentOnHand,
             type: "STOCK_OPNAME",
             reference_id: opnameRef,
             reference_type: adj.serial_number ? "UNIT_SCAN" : "BULK_SCAN",
