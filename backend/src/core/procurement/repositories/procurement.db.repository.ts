@@ -611,13 +611,24 @@ export class ProcurementDbRepository extends IProcurementRepository {
     const mapped = mapRequisitionToColumns(
       data as unknown as Record<string, unknown>,
     ) as Record<string, any>;
+
+    // Resolve requester: user_id → employee_id (FK target is employees table)
+    let requesterId = data.createdBy || "system";
+    const employee = await this.prisma.employees.findFirst({
+      where: { user_id: requesterId, tenant_id: ctx.tenant_id },
+      select: { id: true },
+    });
+    if (employee) {
+      requesterId = employee.id;
+    }
+
     const created = await this.prisma.procurement_requisitions.create({
       data: {
         id: uuidv4(),
         updated_at: new Date(),
         ...mapped,
         ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
-        requester_id: data.createdBy || "system",
+        requester_id: requesterId,
         category: data.category || "General",
         currency: data.currency || "IDR",
         budget_class: "OPEX",
