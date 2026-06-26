@@ -915,15 +915,15 @@ export class InventoryDbRepository implements IInventoryRepository {
   }
 
   async createAuditCycle(ctx: TenantContext, data: any): Promise<any> {
-    const { location_id, department_id, createdBy, description, name, ...rest } = data;
+    const { location_id, department_id, createdBy, description, name, notes, ...rest } = data;
     return this.prisma.inventory_audit_cycles.create({
       data: {
         id: uuidv4(),
         updated_at: new Date(),
         tenant_id: ctx.tenant_id,
-        location_code: location_id,
+        location_code: location_id || data.location_code || null,
         department_code: department_id || null,
-        opened_by: createdBy || "system",
+        opened_by: createdBy || ctx.user_id || "system",
         ...rest,
       },
     });
