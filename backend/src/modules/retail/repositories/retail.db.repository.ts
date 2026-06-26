@@ -1900,7 +1900,7 @@ export class RetailDbRepository implements IRetailRepository {
       // 1. Idempotency Gatekeeper
       if (idempotency_key) {
         const existing = await tx.sys_idempotency_keys.findUnique({
-          where: { tenant_id_key: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), key: idempotency_key } },
+          where: { tenant_id_key: { tenant_id: ctx.tenant_id, key: idempotency_key } },
         });
 
         if (existing) {
@@ -1918,7 +1918,7 @@ export class RetailDbRepository implements IRetailRepository {
         await tx.sys_idempotency_keys.create({
           data: {
             id: uuidv4(),
-            ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+            tenant_id: ctx.tenant_id,
             key: idempotency_key,
             endpoint: "/retail/checkout",
             status: "PENDING",
@@ -2226,7 +2226,7 @@ export class RetailDbRepository implements IRetailRepository {
       // 8. Finalize Idempotency
       if (idempotency_key) {
         await tx.sys_idempotency_keys.update({
-          where: { tenant_id_key: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), key: idempotency_key } },
+          where: { tenant_id_key: { tenant_id: ctx.tenant_id, key: idempotency_key } },
           data: {
             status: "COMPLETED",
             response_snapshot: result as any,

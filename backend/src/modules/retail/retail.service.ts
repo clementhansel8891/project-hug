@@ -94,6 +94,15 @@ export class RetailService {
     return this.retailRepository.getStore(ctx, store_id);
   }
 
+  async getStoreByLocation(ctx: TenantContext, location_id: string): Promise<RetailStore | null> {
+    const store = await this.prisma.stores.findFirst({
+      where: { tenant_id: ctx.tenant_id, location_id, status: 'active', deleted_at: null },
+      orderBy: { created_at: 'desc' },
+    });
+    if (!store) return null;
+    return { id: store.id, name: store.name, locationId: store.location_id } as any;
+  }
+
   async createStore(ctx: TenantContext,
     data: CreateStoreDto,
     user_id: string,

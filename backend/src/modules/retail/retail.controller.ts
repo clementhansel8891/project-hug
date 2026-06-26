@@ -1156,9 +1156,15 @@ export class RetailController {
   ) {
     const { tenant_id, user_id, role, location_id } = request.tenantContext;
 
-    // Enforce location_id for non-admins
+    // For non-admin roles without an explicit store_id, resolve from location
     if (role !== "SUPERADMIN" && role !== "OWNER" && role !== "ADMIN") {
-      data.store_id = location_id!;
+      if (!data.store_id || data.store_id === location_id) {
+        // Look up store by location_id instead of using raw location_id as store_id
+        const storeByLocation = await this.retailService.getStoreByLocation(request.tenantContext, location_id!);
+        if (storeByLocation) {
+          data.store_id = storeByLocation.id;
+        }
+      }
     }
 
     // BUG-10 FIX: Validate active shift before submitting opname
@@ -1230,9 +1236,14 @@ export class RetailController {
   ) {
     const { tenant_id, user_id, role, location_id } = request.tenantContext;
 
-    // Enforce location_id for non-admins
+    // For non-admin roles without an explicit store_id, resolve from location
     if (role !== "SUPERADMIN" && role !== "OWNER" && role !== "ADMIN") {
-      data.store_id = location_id!;
+      if (!data.store_id || data.store_id === location_id) {
+        const storeByLocation = await this.retailService.getStoreByLocation(request.tenantContext, location_id!);
+        if (storeByLocation) {
+          data.store_id = storeByLocation.id;
+        }
+      }
     }
 
     // BUG-10 FIX: Validate active shift before receiving goods
