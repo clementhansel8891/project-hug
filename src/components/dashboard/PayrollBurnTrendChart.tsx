@@ -42,7 +42,7 @@ export const PayrollBurnTrendChart: React.FC<PayrollBurnTrendChartProps> = ({ da
           <BarChart data={data} margin={{ top: 5, right: 10, left: -25, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
             <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569', textTransform: 'uppercase' }} />
-            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569' }} tickFormatter={(val) => `$${val/1000}k`} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569' }} tickFormatter={(val) => `Rp ${val/1000}k`} />
             <Tooltip 
               cursor={{ fill: 'rgba(255,255,255,0.02)' }}
               contentStyle={{ 

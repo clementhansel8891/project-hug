@@ -89,7 +89,7 @@ export const FinancialTrajectoryChart: React.FC<FinancialTrajectoryChartProps> =
               axisLine={false} 
               tickLine={false} 
               tick={{ fontSize: 10, fontWeight: 800, fill: mutedFg }}
-              tickFormatter={(value) => `$${value / 1000}k`}
+              tickFormatter={(value) => `Rp ${value / 1000}k`}
             />
             <Tooltip 
               contentStyle={{ 

@@ -96,7 +96,7 @@ export const ArApWaterfallChart: React.FC = () => {
           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover/metric:text-success transition-colors">Net Working Cap</p>
           <div className="flex items-center gap-2 mt-2">
             <ArrowUpRight className="h-4 w-4 text-success" />
-            <p className="text-2xl font-black text-foreground">$27.0k</p>
+            <p className="text-2xl font-black text-foreground">Rp 405jt</p>
           </div>
         </div>
         <div className="group/metric flex flex-col items-center text-center p-4 rounded-2xl bg-secondary/30 transition-all hover:bg-secondary/50">

@@ -42,7 +42,7 @@ export const MarketingRoiChart: React.FC<MarketingRoiChartProps> = ({ data = [] 
           <ComposedChart data={formattedData} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
             <XAxis dataKey="week" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569', textTransform: 'uppercase' }} />
-            <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569' }} tickFormatter={(val) => `$${val/1000}k`} />
+            <YAxis yAxisId="left" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569' }} tickFormatter={(val) => `Rp ${val/1000}k`} />
             <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 800, fill: '#475569' }} tickFormatter={(val) => `${val}x`} />
             <Tooltip 
               contentStyle={{ 

@@ -63,7 +63,7 @@ export const HrCapitalWidget: React.FC<HrCapitalWidgetProps> = ({ distribution }
             <BadgeDollarSign className="h-3.5 w-3.5" />
             <span className="text-[9px] font-black uppercase tracking-widest">Payroll Burn</span>
           </div>
-          <p className="text-2xl font-black text-foreground tracking-tighter">$184k<span className="text-[10px] font-bold text-muted-foreground ml-1">/mo</span></p>
+          <p className="text-2xl font-black text-foreground tracking-tighter">Rp 2.76M<span className="text-[10px] font-bold text-muted-foreground ml-1">/bln</span></p>
         </div>
         <div className="flex flex-col gap-1 cursor-pointer group/stat text-right" onClick={() => navigate('/core/hr/people')}>
           <div className="flex items-center justify-end gap-2 text-muted-foreground group-hover/stat:text-primary transition-colors">
