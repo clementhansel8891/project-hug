@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowDownRight, Minus, LucideIcon } from 'lucide-react';
 import * as Icons from 'lucide-react';
 import { ResponsiveContainer, LineChart, Line } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import { formatCurrency } from '@/lib/format';
 
 interface KpiRibbonCardProps {
   label: string;
@@ -74,7 +75,7 @@ export const KpiRibbonCard: React.FC<KpiRibbonCardProps> = ({
       <div className="space-y-2 relative z-10">
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
         <h3 className="text-4xl font-black tracking-tighter text-foreground">
-          {currency ? (typeof value === 'number' ? `$${(value / 1000).toFixed(1)}k` : value) : value}
+          {currency ? (typeof value === 'number' ? formatCurrency(value) : value) : value}
         </h3>
       </div>
 

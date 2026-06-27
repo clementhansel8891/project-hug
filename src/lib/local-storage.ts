@@ -142,7 +142,7 @@ export const getSettings = (): AppSettings => getItem<AppSettings>(STORAGE_KEYS.
   printerEnabled: true,
   soundEnabled: true,
   offlineMode: false,
-  currency: 'USD',
+  currency: 'IDR',
   branches: [
     { id: '1', name: 'Main Branch', address: '123 Main St', phone: '555-0100', isMain: true },
   ],
@@ -158,7 +158,7 @@ export const getAppState = () => getItem<{ lastSync: string; isOnline: boolean }
 export const setAppState = (state: { lastSync: string; isOnline: boolean }) => setItem(STORAGE_KEYS.APP_STATE, state);
 
 // Theme
-export const getTheme = () => getItem<'light' | 'dark'>(STORAGE_KEYS.THEME, 'light');
+export const getTheme = () => getItem<'light' | 'dark'>(STORAGE_KEYS.THEME, 'dark');
 export const setTheme = (theme: 'light' | 'dark') => setItem(STORAGE_KEYS.THEME, theme);
 
 // Clear all data (for logout/reset)

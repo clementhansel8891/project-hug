@@ -50,10 +50,27 @@ export class AdminController {
     const data = await this.adminService.getDashboardMetrics(tenant_id, period);
     
     // Maintain kpis structure for backward compatibility/simpler frontend mapping if needed
+    // Fetch tenant currency for proper formatting
+    const company = await this.adminService['prisma'].companies.findFirst({
+      where: { tenant_id },
+      select: { currency: true },
+    });
+    const currency = company?.currency || 'IDR';
+    
+    const formatRevenue = (amount: number, curr: string) => {
+      if (curr === 'IDR') {
+        if (amount >= 1_000_000_000) return `Rp ${(amount / 1_000_000_000).toFixed(1)}B`;
+        if (amount >= 1_000_000) return `Rp ${(amount / 1_000_000).toFixed(2)}M`;
+        if (amount >= 1_000) return `Rp ${(amount / 1_000).toFixed(0)}K`;
+        return `Rp ${amount.toFixed(0)}`;
+      }
+      return `$${(amount / 1_000_000).toFixed(2)}M`;
+    };
+
     const kpis = [
       {
         label: "Revenue",
-        value: `$${(data.metrics.revenue / 1000000).toFixed(2)}M`,
+        value: formatRevenue(data.metrics.revenue, currency),
         delta: "Live DB Aggregate",
         icon: "Briefcase",
         trend: 'up'

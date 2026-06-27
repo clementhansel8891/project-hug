@@ -92,7 +92,7 @@ const initialState: AppState = {
 
   isOnline: true,
   pendingSyncCount: 0,
-  theme: "light",
+  theme: "dark",
 
   settings: storage.getSettings(),
   activeApp: "core",
