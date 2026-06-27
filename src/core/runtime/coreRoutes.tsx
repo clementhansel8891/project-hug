@@ -78,6 +78,12 @@ import InventoryAuditLog from "@/pages/core/inventory/InventoryAuditLog";
 import InventoryInsights from "@/pages/core/inventory/InventoryInsights";
 import WarehouseWorkspaceLayout from "@/pages/core/warehouse/WarehouseWorkspaceLayout";
 import WarehouseManagement from "@/pages/core/warehouse/WarehouseManagement";
+import StorageHierarchy from "@/pages/core/warehouse/StorageHierarchy";
+import WarehouseReceiving from "@/pages/core/warehouse/WarehouseReceiving";
+import WarehousePicking from "@/pages/core/warehouse/WarehousePicking";
+import WarehousePacking from "@/pages/core/warehouse/WarehousePacking";
+import OccupancyTrends from "@/pages/core/warehouse/OccupancyTrends";
+import WarehouseAudit from "@/pages/core/warehouse/WarehouseAudit";
 import IotEventFeed from "@/pages/core/inventory/IotEventFeed";
 import TransferDesk from "@/pages/core/inventory/TransferDesk";
 import InventoryStockOpname from "@/pages/core/inventory/InventoryStockOpname";
@@ -579,6 +585,12 @@ export function buildCoreRoutes(): JSX.Element[] {
       }
     >
       <Route index element={<WarehouseManagement />} />
+      <Route path="hierarchy" element={<StorageHierarchy />} />
+      <Route path="receiving" element={<WarehouseReceiving />} />
+      <Route path="picking" element={<WarehousePicking />} />
+      <Route path="packing" element={<WarehousePacking />} />
+      <Route path="analytics" element={<OccupancyTrends />} />
+      <Route path="audit" element={<WarehouseAudit />} />
       <Route
         path="dashboard"
         element={

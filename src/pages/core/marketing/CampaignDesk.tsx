@@ -508,7 +508,7 @@ export default function CampaignDesk() {
                          </div>
                          <div className="space-y-1">
                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Current Spend</p>
-                            <p className="text-2xl font-black">$12,450</p>
+                            <p className="text-2xl font-black">Rp 12,4jt</p>
                          </div>
                          <div className="space-y-1">
                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total Leads</p>
