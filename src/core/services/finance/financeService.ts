@@ -663,7 +663,7 @@ export const financeService = {
     session: SessionContext,
     id: string,
   ): Promise<void> {
-    return apiRequest<void>(`/v1/finance/periods/${id}/lock`, "POST", session);
+    return apiRequest<void>(`/v1/finance/fiscal-periods/${id}/lock`, "POST", session, { status: "SOFT_LOCK" });
   },
 
   async approvePeriodClose(
@@ -672,7 +672,7 @@ export const financeService = {
     id: string,
   ): Promise<void> {
     return apiRequest<void>(
-      `/v1/finance/periods/${id}/approve-close`,
+      `/v1/finance/fiscal-periods/${id}/close`,
       "POST",
       session,
     );
@@ -683,7 +683,7 @@ export const financeService = {
     session: SessionContext,
     id: string,
   ): Promise<void> {
-    return apiRequest<void>(`/v1/finance/periods/${id}/fail`, "POST", session);
+    return apiRequest<void>(`/v1/finance/fiscal-periods/${id}/lock`, "POST", session, { status: "HARD_LOCK" });
   },
 
   async reopenPeriod(
@@ -691,7 +691,7 @@ export const financeService = {
     session: SessionContext,
     id: string,
   ): Promise<void> {
-    return apiRequest<void>(`/v1/finance/periods/${id}/reopen`, "POST", session);
+    return apiRequest<void>(`/v1/finance/fiscal-periods/${id}/lock`, "POST", session, { status: "OPEN" });
   },
 
   async forceClosePeriod(
@@ -700,7 +700,7 @@ export const financeService = {
     id: string,
   ): Promise<void> {
     return apiRequest<void>(
-      `/v1/finance/periods/${id}/force-close`,
+      `/v1/finance/fiscal-periods/${id}/close`,
       "POST",
       session,
     );
@@ -838,13 +838,21 @@ export const financeService = {
     return apiRequest<any[]>("/v1/finance/jv/profiles", "GET", session);
   },
 
+  async getJVProfileDetail(session: SessionContext, profileId: string): Promise<any> {
+    return apiRequest<any>(`/v1/finance/jv/profiles/${profileId}`, "GET", session);
+  },
+
+  async createJVProfile(session: SessionContext, data: any): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/profiles", "POST", session, data);
+  },
+
   async getJVLedger(session: SessionContext, filters?: any): Promise<any[]> {
     const query = filters ? new URLSearchParams(filters).toString() : "";
     return apiRequest<any[]>(`/v1/finance/jv/ledger?${query}`, "GET", session);
   },
 
   async getJVNetSettlement(session: SessionContext, periodId: string): Promise<any[]> {
-    return apiRequest<any[]>(`/v1/finance/jv/settlement?periodId=${periodId}`, "GET", session);
+    return apiRequest<any[]>(`/v1/finance/jv/settlement-summary?periodId=${periodId}`, "GET", session);
   },
 
   async getJVParticipations(session: SessionContext): Promise<any[]> {
@@ -857,6 +865,81 @@ export const financeService = {
 
   async acceptJVInvite(session: SessionContext, token: string): Promise<any> {
     return apiRequest<any>("/v1/finance/jv/accept-invite", "POST", session, { token });
+  },
+
+  // ─── JV Expenses ─────────────────────────────────────────────────────
+  async getJVExpenses(session: SessionContext, profileId: string, status?: string): Promise<any[]> {
+    const params = new URLSearchParams({ profile_id: profileId });
+    if (status) params.set('status', status);
+    return apiRequest<any[]>(`/v1/finance/jv/expenses?${params}`, "GET", session);
+  },
+
+  async createJVExpense(session: SessionContext, data: any): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/expenses", "POST", session, data);
+  },
+
+  async approveJVExpense(session: SessionContext, expenseId: string): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/expenses/approve", "POST", session, { expense_id: expenseId });
+  },
+
+  async rejectJVExpense(session: SessionContext, expenseId: string, reason: string): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/expenses/reject", "POST", session, { expense_id: expenseId, reason });
+  },
+
+  // ─── JV Settlements ──────────────────────────────────────────────────
+  async getJVSettlements(session: SessionContext, profileId: string, status?: string): Promise<any[]> {
+    const params = new URLSearchParams({ profile_id: profileId });
+    if (status) params.set('status', status);
+    return apiRequest<any[]>(`/v1/finance/jv/settlements?${params}`, "GET", session);
+  },
+
+  async getJVSettlementDetail(session: SessionContext, id: string): Promise<any> {
+    return apiRequest<any>(`/v1/finance/jv/settlements/${id}`, "GET", session);
+  },
+
+  async generateJVSettlement(session: SessionContext, data: any): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/settlements/generate", "POST", session, data);
+  },
+
+  async confirmJVSettlement(session: SessionContext, settlementId: string): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/settlements/confirm", "POST", session, { settlement_id: settlementId });
+  },
+
+  async markJVSettlementPaid(session: SessionContext, settlementId: string, paymentRef: string, notes?: string): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/settlements/paid", "POST", session, { settlement_id: settlementId, payment_ref: paymentRef, notes });
+  },
+
+  async disputeJVSettlement(session: SessionContext, settlementId: string, notes: string): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/settlements/dispute", "POST", session, { settlement_id: settlementId, notes });
+  },
+
+  // ─── JV Permissions ──────────────────────────────────────────────────
+  async getJVPermissions(session: SessionContext, participantId: string): Promise<any> {
+    return apiRequest<any>(`/v1/finance/jv/permissions/${participantId}`, "GET", session);
+  },
+
+  async setJVPermission(session: SessionContext, data: any): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/permissions", "POST", session, data);
+  },
+
+  async setJVBulkPermissions(session: SessionContext, data: any): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/permissions/bulk", "POST", session, data);
+  },
+
+  // ─── JV P&L Report ───────────────────────────────────────────────────
+  async getJVPnL(session: SessionContext, profileId: string, month?: number, year?: number): Promise<any> {
+    const params = new URLSearchParams({ profile_id: profileId });
+    if (month) params.set('month', month.toString());
+    if (year) params.set('year', year.toString());
+    return apiRequest<any>(`/v1/finance/jv/pnl?${params}`, "GET", session);
+  },
+
+  // ─── JV Activity Log ─────────────────────────────────────────────────
+  async getJVActivityLog(session: SessionContext, profileId?: string, limit?: number): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (profileId) params.set('profile_id', profileId);
+    if (limit) params.set('limit', limit.toString());
+    return apiRequest<any[]>(`/v1/finance/jv/activity?${params}`, "GET", session);
   },
 };
 

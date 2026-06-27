@@ -128,7 +128,7 @@ export class TenantMiddleware implements NestMiddleware {
 
         if (jvParticipation) {
           activeRole = "JV_PARTNER";
-          console.log(`[JV-MIRROR] User ${user_id} granted PARTNER access to host ${tenant_id}`);
+          console.log(`[JV-MIRROR] User ${user_id} granted PARTNER access to host ${tenant_id} (role: ${jvParticipation.role})`);
           
           // Apply JV Scope to headers if not already set or override
           const scope = jvParticipation.jv_profiles.scopes[0];
@@ -136,7 +136,15 @@ export class TenantMiddleware implements NestMiddleware {
             req.headers["x-branch-id"] = scope.branch_id || req.headers["x-branch-id"];
             req.headers["x-ecommerce-id"] = scope.ecommerce_id || req.headers["x-ecommerce-id"];
           }
-          req.is_jv_read_only = true;
+
+          // Enrich request with JV context for downstream guards/services
+          req.jv_context = {
+            participant_id: jvParticipation.id,
+            jv_role: jvParticipation.role, // OPERATOR or NON_OPERATOR
+            jv_profile_id: jvParticipation.jv_profile_id,
+            home_tenant_id: verifiedUser.tenant_id,
+          };
+          req.is_jv_read_only = jvParticipation.role === 'NON_OPERATOR';
         } else {
           throw new UnauthorizedException(
             `Access Denied: No active Joint Venture participation found for user ${user_id} in tenant ${tenant_id}`,
@@ -149,6 +157,7 @@ export class TenantMiddleware implements NestMiddleware {
     }
 
     // Attach tenant context to request object
+    const jvCtx = req.jv_context;
     req.tenantContext = {
       tenant_id: tenant_id as string,
       company_id: company_id as string,
@@ -158,6 +167,12 @@ export class TenantMiddleware implements NestMiddleware {
       user_id,
       role: activeRole,
       is_jv_read_only: req.is_jv_read_only,
+      // JV enriched context
+      is_jv_context: !!jvCtx,
+      jv_participant_id: jvCtx?.participant_id,
+      jv_role: jvCtx?.jv_role,
+      jv_profile_id: jvCtx?.jv_profile_id,
+      jv_home_tenant_id: jvCtx?.home_tenant_id,
     };
 
     req.user = verifiedUser;

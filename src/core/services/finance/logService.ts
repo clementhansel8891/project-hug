@@ -1,4 +1,5 @@
-// src/core/services/finance/logService.ts
+import { apiRequest } from "@/core/api/apiClient";
+import type { SessionContext } from "@/core/security/session";
 import { v4 as uuidv4 } from "uuid";
 
 export type AuditLog = {
@@ -7,24 +8,26 @@ export type AuditLog = {
   userId: string;
   action: string;
   details: string;
-  timestamp: string; // ISO string
+  timestamp: string;
 };
 
-// Mock in-memory log store
-const logs: AuditLog[] = [];
-
 /**
- * LogService provides audit logging functionality for finance module
+ * LogService provides audit logging functionality for the finance module.
+ * Writes to the backend audit system AND maintains a client-side buffer
+ * for immediate UI display without waiting for round-trip.
  */
+const clientBuffer: AuditLog[] = [];
+
 export const logService = {
   /**
-   * Create a new log entry
+   * Create a new log entry — writes to backend audit system
    */
   log: (
     tenantId: string,
     userId: string,
     action: string,
     details: string = "",
+    session?: SessionContext,
   ) => {
     const logEntry: AuditLog = {
       id: uuidv4(),
@@ -34,38 +37,67 @@ export const logService = {
       details,
       timestamp: new Date().toISOString(),
     };
-    logs.push(logEntry);
-    console.log("[LogService] Log created:", logEntry);
+
+    // Buffer locally for immediate display
+    clientBuffer.unshift(logEntry);
+    if (clientBuffer.length > 200) clientBuffer.pop();
+
+    // Fire-and-forget write to backend
+    if (session) {
+      apiRequest("/v1/finance/audit-log", "POST", session, {
+        module: "FINANCE",
+        action,
+        entity_type: "FINANCE_OP",
+        metadata: { details },
+      }).catch(() => { /* non-critical */ });
+    }
+
     return logEntry;
   },
 
   /**
-   * List all logs for a tenant
-   * Can later be extended to filter by user, date range, or action
+   * List all logs for a tenant — fetches from backend, merges with buffer
    */
-  listLogs: (tenantId: string): AuditLog[] => {
-    return (Array.isArray(logs) ? logs : []).filter((log) => log.tenantId === tenantId);
+  listLogs: async (tenantId: string, session?: SessionContext): Promise<AuditLog[]> => {
+    if (session) {
+      try {
+        const serverLogs = await apiRequest<any[]>("/v1/finance/audit-log?module=FINANCE&limit=100", "GET", session);
+        if (Array.isArray(serverLogs)) {
+          return serverLogs.map(l => ({
+            id: l.id,
+            tenantId: l.tenant_id || tenantId,
+            userId: l.user_id || "system",
+            action: l.action || "",
+            details: l.metadata?.details || l.description || "",
+            timestamp: l.created_at || l.timestamp || "",
+          }));
+        }
+      } catch {
+        // Fall back to client buffer
+      }
+    }
+    return clientBuffer.filter(log => log.tenantId === tenantId);
   },
 
   /**
-   * Find logs by userId
+   * List logs by userId
    */
   listLogsByUser: (tenantId: string, userId: string): AuditLog[] => {
-    return (Array.isArray(logs) ? logs : []).filter(
+    return clientBuffer.filter(
       (log) => log.tenantId === tenantId && log.userId === userId,
     );
   },
 
   /**
-   * Clear all logs (mock only, for testing)
+   * Clear client buffer
    */
   clearLogs: (tenantId?: string) => {
     if (tenantId) {
-      for (let i = logs.length - 1; i >= 0; i--) {
-        if (logs[i].tenantId === tenantId) logs.splice(i, 1);
+      for (let i = clientBuffer.length - 1; i >= 0; i--) {
+        if (clientBuffer[i].tenantId === tenantId) clientBuffer.splice(i, 1);
       }
     } else {
-      logs.length = 0;
+      clientBuffer.length = 0;
     }
   },
 };

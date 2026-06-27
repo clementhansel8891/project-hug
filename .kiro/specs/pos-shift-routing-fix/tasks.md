@@ -20,10 +20,10 @@ Query the production database on VPS to understand the current state of stores a
 4. Document findings
 
 **Acceptance Criteria:**
-- [ ] Know the correct store ID for Seminyak (BS-03)
-- [ ] Know which store(s) the current shifts are pointing to
-- [ ] Understand if the problematic store is a test store or real store
-- [ ] Have a clear picture of the database state
+- [x] Know the correct store ID for Seminyak (BS-03)
+- [x] Know which store(s) the current shifts are pointing to
+- [x] Understand if the problematic store is a test store or real store
+- [x] Have a clear picture of the database state
 
 **Files Involved:**
 - VPS database queries (no code changes)
@@ -91,10 +91,10 @@ Update Fera and Nana's work shifts to reference the correct Seminyak store locat
 4. Test by querying the shifts again with the diagnostic query
 
 **Acceptance Criteria:**
-- [ ] Fera's shift (8am-3pm) points to Seminyak store location
+- [x] Fera's shift (8am-3pm) points to Seminyak store location
 - [ ] Nana's shift (3pm-10pm) points to Seminyak store location
 - [ ] When querying shifts with store join, correct store name appears
-- [ ] No orphaned shifts (all shifts have valid location with store)
+- [x] No orphaned shifts (all shifts have valid location with store)
 
 **SQL Update:**
 ```sql
@@ -173,7 +173,7 @@ Improve the auth routing controller to handle edge cases where a location has mu
 6. Deploy to VPS
 
 **Acceptance Criteria:**
-- [ ] Controller filters out deleted stores
+- [x] Controller filters out deleted stores
 - [ ] Controller prefers active stores over inactive ones
 - [ ] Logs show which store is being resolved from shift
 - [ ] Gracefully handles case where location has no stores

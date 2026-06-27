@@ -264,7 +264,7 @@ const InventoryVisibility = () => {
           low: sData.lowStock ?? sData.lowStockCount ?? 0,
           totalValue: Number(sData.totalValue ?? 0),
           totalCapitalValue: Number(sData.totalCapitalValue ?? 0),
-          currency: sData.currency || "USD"
+          currency: sData.currency || "IDR"
         });
       }
 
@@ -875,9 +875,9 @@ const InventoryVisibility = () => {
           { label: "Branch SOH", value: stats?.totalSOH ?? 0 },
           { 
             label: "Branch Value (Capital)", 
-            value: stats?.totalCapitalValue ? new Intl.NumberFormat("en-US", {
+            value: stats?.totalCapitalValue ? new Intl.NumberFormat("id-ID", {
               style: "currency",
-              currency: stats.currency || "USD",
+              currency: stats.currency || "IDR",
               minimumFractionDigits: 0,
               maximumFractionDigits: 0,
             }).format(stats.totalCapitalValue) : "0", 
@@ -885,9 +885,9 @@ const InventoryVisibility = () => {
           },
           { 
             label: "Branch Value (Selling)", 
-            value: stats?.totalValue ? new Intl.NumberFormat("en-US", {
+            value: stats?.totalValue ? new Intl.NumberFormat("id-ID", {
               style: "currency",
-              currency: stats.currency || "USD",
+              currency: stats.currency || "IDR",
               minimumFractionDigits: 0,
               maximumFractionDigits: 0,
             }).format(stats.totalValue) : "0", 

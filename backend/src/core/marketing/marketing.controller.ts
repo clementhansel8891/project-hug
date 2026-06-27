@@ -667,6 +667,13 @@ export class MarketingController {
     return { success: true, tenant_id: scope.tenant_id, count: data.length, data };
   }
 
+  @Get("messages")
+  async getMessages(@Req() request: RequestWithTenant, @Query("conversationId") conversationId?: string) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.omnichannel.getMessages(request.tenantContext, conversationId);
+    return { success: true, tenant_id: scope.tenant_id, count: data.length, data };
+  }
+
   // --- OAuth Callbacks ---
   //
   // OAuth callbacks and provider webhooks are external entry points (browser

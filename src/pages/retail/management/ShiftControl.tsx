@@ -494,7 +494,7 @@ const ShiftControl = () => {
                             <td className="py-3 px-2 text-center">
                               <Badge className={`text-[8px] font-black italic uppercase ${
                                 shift.status === "active" || shift.status === "open"
-                                  ? "bg-success text-success"
+                                  ? "bg-success/10 text-success"
                                   : shift.status === "closed"
                                     ? "bg-secondary text-muted-foreground"
                                     : "bg-warning text-warning"

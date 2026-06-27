@@ -104,6 +104,7 @@ export function CoreLayout() {
     const saved = localStorage.getItem("sidebar-collapsed");
     return saved === "true";
   });
+  const [userExplicitCollapse, setUserExplicitCollapse] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("sidebar-collapsed", String(isCollapsed));
@@ -114,6 +115,16 @@ export function CoreLayout() {
   const { logout } = useAuth();
   const { unreadCounts } = useNotifications();
   const location = useLocation();
+
+  // Auto-collapse main sidebar when inside a department workspace (has its own secondary nav)
+  const DEPT_WORKSPACE_PREFIXES = ['/core/finance', '/core/hr', '/core/procurement', '/core/inventory', '/core/warehouse', '/core/it', '/core/sales', '/core/marketing', '/core/payment'];
+  const isInDepartmentWorkspace = DEPT_WORKSPACE_PREFIXES.some(prefix => location.pathname.startsWith(prefix) && location.pathname !== prefix);
+
+  useEffect(() => {
+    if (isInDepartmentWorkspace && !userExplicitCollapse) {
+      setIsCollapsed(true);
+    }
+  }, [isInDepartmentWorkspace, userExplicitCollapse]);
   const { settings } = appState;
   const activatedIds = settings.activatedModuleIds || [];
   const allContracts = getAllModuleContracts();
@@ -133,7 +144,10 @@ export function CoreLayout() {
     baseNavSections[3] // Backbone
   ];
 
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
+  const toggleSidebar = () => {
+    setUserExplicitCollapse(true);
+    setIsCollapsed(!isCollapsed);
+  };
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">

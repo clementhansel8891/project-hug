@@ -79,7 +79,6 @@ export class IncentivesController {
   }
 
   @Post('process-payouts')
-
   processPayouts(
     @Body() data: { tenant_id: string; company_id: string; start_date: string; end_date: string }
   ) {
@@ -89,5 +88,20 @@ export class IncentivesController {
       new Date(data.start_date),
       new Date(data.end_date)
     );
+  }
+
+  @Get('attributions')
+  getAttributions(@Query('tenant_id') tenant_id: string, @Query('company_id') company_id?: string) {
+    return this.incentivesService.getAttributions(tenant_id, company_id);
+  }
+
+  @Get('payouts')
+  getPayouts(@Query('tenant_id') tenant_id: string, @Query('company_id') company_id?: string) {
+    return this.incentivesService.getPayouts(tenant_id, company_id);
+  }
+
+  @Get('employee/:id')
+  getEmployeeIncentives(@Param('id') employeeId: string, @Query('tenant_id') tenant_id: string) {
+    return this.incentivesService.getEmployeeIncentives(tenant_id, employeeId);
   }
 }

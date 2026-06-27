@@ -589,16 +589,14 @@ export default function RetailShifts() {
               </h4>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 {[
-                  { label: '$100', key: 'hundreds', value: 100 },
-                  { label: '$50', key: 'fifties', value: 50 },
-                  { label: '$20', key: 'twenties', value: 20 },
-                  { label: '$10', key: 'tens', value: 10 },
-                  { label: '$5', key: 'fives', value: 5 },
-                  { label: '$1', key: 'ones', value: 1 },
-                  { label: '25¢', key: 'quarters', value: 0.25 },
-                  { label: '10¢', key: 'dimes', value: 0.1 },
-                  { label: '5¢', key: 'nickels', value: 0.05 },
-                  { label: '1¢', key: 'pennies', value: 0.01 },
+                  { label: 'Rp 100.000', key: 'hundreds', value: 100000 },
+                  { label: 'Rp 50.000', key: 'fifties', value: 50000 },
+                  { label: 'Rp 20.000', key: 'twenties', value: 20000 },
+                  { label: 'Rp 10.000', key: 'tens', value: 10000 },
+                  { label: 'Rp 5.000', key: 'fives', value: 5000 },
+                  { label: 'Rp 1.000', key: 'ones', value: 1000 },
+                  { label: 'Rp 500', key: 'quarters', value: 500 },
+                  { label: 'Rp 200', key: 'dimes', value: 200 },
                 ].map((denom) => (
                   <div key={denom.key} className="flex items-center gap-2">
                     <span className="w-10 text-muted-foreground">{denom.label}</span>

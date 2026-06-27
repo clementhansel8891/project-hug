@@ -193,7 +193,7 @@ const PricingPromoDesk = () => {
                 <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary/20">
                   <Percent className="w-5 h-5" />
                 </div>
-                <Badge className="bg-success text-success font-black italic text-[8px] uppercase tracking-widest border border-success/20">
+                <Badge className="bg-success/10 text-success border-none text-[8px] font-black italic uppercase tracking-widest px-3 py-2 rounded-xl">
                   LIVE
                 </Badge>
               </div>

@@ -18,10 +18,10 @@
 export const FALLBACK_TEXT = "—";
 
 /** The single locale used for all canonical formatting (Requirement 5.5). */
-export const DEFAULT_LOCALE = "en-US";
+export const DEFAULT_LOCALE = "id-ID";
 
 /** The default currency used when a caller does not specify one. */
-export const DEFAULT_CURRENCY = "USD";
+export const DEFAULT_CURRENCY = "IDR";
 
 /** Consistent default precision for plain numbers (Requirement 5.5). */
 const DEFAULT_NUMBER_FRACTION_DIGITS = 2;

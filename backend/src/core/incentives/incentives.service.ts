@@ -606,4 +606,42 @@ export class IncentivesService {
         return [];
     }
   }
+
+  // --- List endpoints for frontend ---
+
+  async getAttributions(tenant_id: string, company_id?: string) {
+    const where: any = { tenant_id };
+    if (company_id) where.company_id = company_id;
+    return this.prisma.sales_attributions.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      take: 100,
+    });
+  }
+
+  async getPayouts(tenant_id: string, company_id?: string) {
+    const where: any = { tenant_id };
+    if (company_id) where.company_id = company_id;
+    return this.prisma.sales_incentive_payouts.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      take: 100,
+    });
+  }
+
+  async getEmployeeIncentives(tenant_id: string, employeeId: string) {
+    const [attributions, payouts] = await Promise.all([
+      this.prisma.sales_attributions.findMany({
+        where: { tenant_id, employee_id: employeeId },
+        orderBy: { created_at: 'desc' },
+        take: 50,
+      }),
+      this.prisma.sales_incentive_payouts.findMany({
+        where: { tenant_id, employee_id: employeeId },
+        orderBy: { created_at: 'desc' },
+        take: 20,
+      }),
+    ]);
+    return { attributions, payouts };
+  }
 }

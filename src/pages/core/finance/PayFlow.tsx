@@ -353,7 +353,7 @@ export default function PayFlow() {
                     <Fingerprint className="w-5 h-5 text-success mt-0.5" />
                     <div>
                       <p className="text-sm font-medium text-white">Biometric Authorization</p>
-                      <p className="text-xs text-muted-foreground">Transactions over $10k require CFO physical YubiKey or Biometric approval.</p>
+                      <p className="text-xs text-muted-foreground">Transactions over Rp 150jt require CFO physical YubiKey or Biometric approval.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">

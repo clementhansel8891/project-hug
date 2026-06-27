@@ -222,7 +222,7 @@ export default function DepartmentAttendanceStudio({
                         variant="outline" 
                         className={cn(
                           "text-[8px] font-black uppercase tracking-tighter px-1.5 py-0.5 border-none",
-                          record.status === "Present" && "bg-success text-success",
+                          record.status === "Present" && "bg-success/10 text-success",
                           record.status === "On Duty" && "bg-primary/10 text-primary",
                           record.status === "Absent" && "bg-destructive text-destructive",
                           record.status === "Late" && "bg-warning text-warning"

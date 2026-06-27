@@ -266,7 +266,7 @@ export default function RosterGrid() {
   return (
     <div className="space-y-6">
       {statusMessage && (
-        <div className="rounded-lg bg-success border border-success/30 p-3 text-success text-sm animate-in fade-in slide-in-from-top-1">
+        <div className="rounded-lg bg-success/10 border border-success/30 p-3 text-success text-sm animate-in fade-in slide-in-from-top-1">
           {statusMessage}
         </div>
       )}
@@ -464,7 +464,7 @@ export default function RosterGrid() {
                     </td>
                     <td className="p-3 text-sm text-muted-foreground">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                        employee.status === "active" ? "bg-success text-success" :
+                        employee.status === "active" ? "bg-success/10 text-success" :
                         employee.status === "promoted" ? "bg-primary text-primary" :
                         employee.status === "suspended" ? "bg-warning text-warning" :
                         employee.status === "probation" ? "bg-primary text-primary" :

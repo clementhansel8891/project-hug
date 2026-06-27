@@ -43,7 +43,7 @@ export default function GrowthTrajectory() {
   ];
 
   const kpis = data?.kpis || [];
-  const totalRevenue = kpis.find((k: any) => k.label === "Revenue")?.value || "$4.9M";
+  const totalRevenue = kpis.find((k: any) => k.label === "Revenue")?.value || "Rp 73.5M";
 
   const growthMetrics = [
     { label: "Revenue Growth", value: "+23%", icon: DollarSign },
@@ -95,7 +95,7 @@ export default function GrowthTrajectory() {
                 <ComposedChart data={revenueData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={gridStroke} />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700, fill: tickFill }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700, fill: tickFill }} tickFormatter={(v) => `$${(v / 1000000).toFixed(1)}M`} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700, fill: tickFill }} tickFormatter={(v) => `Rp ${(v / 1000000).toFixed(1)}M`} />
                   <Tooltip contentStyle={{ backgroundColor: theme === "dark" ? "#1e293b" : "#fff", borderRadius: "0.75rem", border: "none", boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.15)" }} />
                   <Area type="monotone" dataKey="revenue" fill={colors[1] + "30"} stroke={colors[1]} strokeWidth={3} name="Revenue" />
                   <Bar dataKey="expenses" fill={tickFill} opacity={0.3} radius={[4, 4, 0, 0]} name="Expenses" />
@@ -113,10 +113,10 @@ export default function GrowthTrajectory() {
             </CardHeader>
             <CardContent className="space-y-4">
               {[
-                { quarter: "Q1 2026", target: "$12.5M", actual: "$11.8M", pct: 94 },
-                { quarter: "Q2 2026", target: "$14.0M", actual: "$14.9M", pct: 106 },
-                { quarter: "Q3 2026", target: "$16.0M", actual: "In Progress", pct: 62 },
-                { quarter: "Q4 2026", target: "$18.5M", actual: "Projected", pct: 0 },
+                { quarter: "Q1 2026", target: "Rp 187.5M", actual: "Rp 177M", pct: 94 },
+                { quarter: "Q2 2026", target: "Rp 210M", actual: "Rp 223.5M", pct: 106 },
+                { quarter: "Q3 2026", target: "Rp 240M", actual: "In Progress", pct: 62 },
+                { quarter: "Q4 2026", target: "Rp 277.5M", actual: "Projected", pct: 0 },
               ].map((q, i) => (
                 <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-secondary/30 border border-border">
                   <div>
@@ -142,11 +142,11 @@ export default function GrowthTrajectory() {
             </CardHeader>
             <CardContent className="space-y-4">
               {[
-                { driver: "Retail POS Expansion", impact: "High", contribution: "+$2.1M" },
-                { driver: "New Customer Onboarding", impact: "High", contribution: "+$1.8M" },
-                { driver: "Upsell to Enterprise", impact: "Medium", contribution: "+$950K" },
-                { driver: "Geographic Expansion", impact: "Medium", contribution: "+$720K" },
-                { driver: "Product Innovation", impact: "Low", contribution: "+$340K" },
+                { driver: "Retail POS Expansion", impact: "High", contribution: "+Rp 31.5M" },
+                { driver: "New Customer Onboarding", impact: "High", contribution: "+Rp 27M" },
+                { driver: "Upsell to Enterprise", impact: "Medium", contribution: "+Rp 14.25M" },
+                { driver: "Geographic Expansion", impact: "Medium", contribution: "+Rp 10.8M" },
+                { driver: "Product Innovation", impact: "Low", contribution: "+Rp 5.1M" },
               ].map((d, i) => (
                 <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-secondary/30 border border-border">
                   <div>

@@ -1,5 +1,5 @@
 import { BarChart3, TrendingUp } from "lucide-react";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/core/ui/PageHeader";
 
 export default function OccupancyTrends() {
   const monthlyData = [

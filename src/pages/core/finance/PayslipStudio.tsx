@@ -209,9 +209,9 @@ export default function PayslipStudio() {
                                   <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{comp.title}</h4>
                                   <div className="space-y-1">
                                      {[
-                                       { label: 'Basic Salary', val: '$8,500.00' },
-                                       { label: 'Performance Bonus', val: '$1,200.00' },
-                                       { label: 'Shift Allowance', val: '$450.00' }
+                                       { label: 'Basic Salary', val: 'Rp 12.750.000' },
+                                       { label: 'Performance Bonus', val: 'Rp 1.800.000' },
+                                       { label: 'Shift Allowance', val: 'Rp 675.000' }
                                      ].map((row, idx) => (
                                        <div key={idx} className="flex justify-between text-[10px] py-1">
                                           <span className="font-bold text-muted-foreground uppercase tracking-wider">{row.label}</span>
@@ -227,9 +227,9 @@ export default function PayslipStudio() {
                                   <h4 className="text-[10px] font-black text-destructive uppercase tracking-[0.2em]">{comp.title}</h4>
                                   <div className="space-y-1">
                                      {[
-                                       { label: 'Income Tax (WHT)', val: '-$1,850.00' },
-                                       { label: 'Health Insurance', val: '-$220.00' },
-                                       { label: 'Loan Repayment', val: '-$500.00' }
+                                       { label: 'Income Tax (WHT)', val: '-Rp 2.775.000' },
+                                       { label: 'Health Insurance', val: '-Rp 330.000' },
+                                       { label: 'Loan Repayment', val: '-Rp 750.000' }
                                      ].map((row, idx) => (
                                        <div key={idx} className="flex justify-between text-[10px] py-1">
                                           <span className="font-bold text-muted-foreground uppercase tracking-wider">{row.label}</span>
@@ -245,7 +245,7 @@ export default function PayslipStudio() {
                                   <div className="flex justify-between items-end">
                                      <div className="space-y-1">
                                         <p className="text-[10px] font-black text-primary uppercase tracking-widest">NET PAYABLE AMOUNT</p>
-                                        <p className="text-4xl font-black italic tracking-tighter uppercase">$7,580.00</p>
+                                        <p className="text-4xl font-black italic tracking-tighter uppercase">Rp 11.370.000</p>
                                      </div>
                                      <div className="text-right">
                                         <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Transfer Mode</p>

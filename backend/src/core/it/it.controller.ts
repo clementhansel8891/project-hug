@@ -259,6 +259,40 @@ export class ITController {
     return { success: true, tenant_id: scope.tenant_id, count: data.length, data };
   }
 
+  @Delete("devices/:id")
+  @Roles(UserRole.ADMIN)
+  async deleteDevice(
+    @Req() request: RequestWithTenant,
+    @Param("id") device_id: string,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    await this.prisma.it_devices.updateMany({
+      where: { id: device_id, tenant_id: scope.tenant_id },
+      data: { status: 'DECOMMISSIONED', updated_at: new Date() },
+    });
+    return { success: true, message: "Device decommissioned" };
+  }
+
+  @Get("topology")
+  async getTopology(@Req() request: RequestWithTenant) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    // Build topology from locations + devices
+    const [locations, devices] = await Promise.all([
+      this.prisma.locations.findMany({ where: { tenant_id: scope.tenant_id } }),
+      this.prisma.it_devices.findMany({ where: { tenant_id: scope.tenant_id, status: { not: 'DECOMMISSIONED' } } }),
+    ]);
+
+    const nodes = locations.map((loc: any) => ({
+      id: loc.id,
+      type: 'LOCATION',
+      name: loc.name,
+      code: loc.code,
+      devices: devices.filter((d: any) => d.location_id === loc.id),
+    }));
+
+    return { success: true, tenant_id: scope.tenant_id, data: { nodes, totalDevices: devices.length, totalLocations: locations.length } };
+  }
+
   // ==================== Monitoring ====================
 
   @Get("monitoring/stats")

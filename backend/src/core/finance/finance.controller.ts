@@ -280,6 +280,115 @@ export class FinanceController {
     return this.financeService.getAssetAuditPack(ctx, id);
   }
 
+  // --- Asset Write Operations ---
+  @Post('assets')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async createAsset(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.createAsset(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/:id/capitalize')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async capitalizeAsset(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: any) {
+    return this.financeService.capitalizeAsset(ctx, id, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/:id/depreciation')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async postDepreciation(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: any) {
+    return this.financeService.postDepreciation(ctx, id, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/depreciation/schedule-run')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.SUPERADMIN)
+  async runScheduledDepreciation(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.runScheduledDepreciation(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/:id/impairment')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async recordImpairment(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: any) {
+    return this.financeService.recordImpairment(ctx, id, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/:id/revaluation')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async recordRevaluation(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: any) {
+    return this.financeService.recordRevaluation(ctx, id, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/:id/disposal')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async disposeAsset(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: any) {
+    return this.financeService.disposeAsset(ctx, id, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/:id/status')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async updateAssetStatus(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: { status: string }) {
+    return this.financeService.updateAssetStatus(ctx, id, dto.status, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('assets/audit-pack/verify')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.SUPERADMIN)
+  async verifyAssetAuditPack(@TenantCtx() ctx: TenantContext, @Body() dto: { assetId: string }) {
+    return this.financeService.verifyAssetAuditPack(ctx, dto.assetId, ctx.user_id || 'SYSTEM');
+  }
+
+  // --- CAPEX Requests ---
+  @Get('capex/requests')
+  async listCapexRequests(@TenantCtx() ctx: TenantContext) {
+    return this.financeService.listCapexRequests(ctx);
+  }
+
+  @Post('capex/requests')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.MANAGER)
+  async createCapexRequest(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.createCapexRequest(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('capex/requests/:id/approve')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async approveCapexRequest(@TenantCtx() ctx: TenantContext, @Param('id') id: string) {
+    return this.financeService.approveCapexRequest(ctx, id, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('capex/requests/:id/reject')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async rejectCapexRequest(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: { reason: string }) {
+    return this.financeService.rejectCapexRequest(ctx, id, dto.reason, ctx.user_id || 'SYSTEM');
+  }
+
+  @Post('capex/budgets')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async setCapexBudget(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.setCapexBudget(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  // --- Payment Requests ---
+  @Post('payment-requests')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.MANAGER)
+  async createPaymentRequest(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.createPaymentRequest(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Patch('payments/:id/status')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async updatePaymentStatus(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: { status: string }) {
+    return this.financeService.updatePaymentStatus(ctx, id, dto.status, ctx.user_id || 'SYSTEM');
+  }
+
+  // --- Audit Log ---
+  @Get('audit-log')
+  async listAuditLog(@TenantCtx() ctx: TenantContext, @Query('module') module?: string, @Query('limit') limit?: string) {
+    return this.financeService.listAuditLog(ctx, module, parseInt(limit || '100'));
+  }
+
+  @Post('audit-log')
+  async createAuditLog(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.createAuditLog(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
   // --- Loans ---
   @Get('loans')
   async listLoans(@TenantCtx() ctx: TenantContext) {

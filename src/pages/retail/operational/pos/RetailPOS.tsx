@@ -35,17 +35,17 @@ const INVENTORY = [
   {
     id: "item-001",
     name: "Premium Coffee Beans",
-    price: 15.0,
+    price: 225000,
     category: "Coffee",
   },
-  { id: "item-002", name: "Ceramic Mug", price: 12.5, category: "Merchandise" },
-  { id: "item-003", name: "Tote Bag", price: 8.0, category: "Merchandise" },
-  { id: "item-004", name: "Gift Card $50", price: 50.0, category: "Services" },
-  { id: "item-005", name: "Dark Roast Blend", price: 18.0, category: "Coffee" },
+  { id: "item-002", name: "Ceramic Mug", price: 187500, category: "Merchandise" },
+  { id: "item-003", name: "Tote Bag", price: 120000, category: "Merchandise" },
+  { id: "item-004", name: "Gift Card Rp 750.000", price: 750000, category: "Services" },
+  { id: "item-005", name: "Dark Roast Blend", price: 270000, category: "Coffee" },
   {
     id: "item-006",
     name: "Travel Tumbler",
-    price: 24.0,
+    price: 360000,
     category: "Merchandise",
   },
 ];

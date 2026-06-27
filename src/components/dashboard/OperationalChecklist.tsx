@@ -8,7 +8,7 @@ export const OperationalChecklist: React.FC = () => {
     { id: '1', label: 'Verify Nightly Backup Integrity', completed: true },
     { id: '2', label: 'Review Pending Staff Leave Requests', completed: false },
     { id: '3', label: 'Sync Retail Inventory with Master Ledger', completed: false },
-    { id: '4', label: 'Audit High-Value Transactions (> $10k)', completed: false },
+    { id: '4', label: 'Audit High-Value Transactions (> Rp 150jt)', completed: false },
     { id: '5', label: 'Monitor IoT Sensor Gateway Latency', completed: true },
   ]);
 

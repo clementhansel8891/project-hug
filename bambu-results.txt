@@ -1,0 +1,926 @@
+
+Running 53 tests using 1 worker
+
+  x   1 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:71:7 ΓÇ║ Login ΓÇ║ Login as Bambu Silver owner succeeds (20.1s)
+  x   2 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Dashboard (/core) (16ms)
+  x   3 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Home (/core/finance) (15ms)
+  x   4 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Ledger (/core/finance/ledger) (14ms)
+  x   5 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Treasury (/core/finance/treasury) (15ms)
+  x   6 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance PayFlow (/core/finance/payflow) (14ms)
+  x   7 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Receivables (/core/finance/receivables) (14ms)
+  x   8 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Payables (/core/finance/payables) (14ms)
+  x   9 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Close Period (/core/finance/close) (16ms)
+  x  10 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Assets (/core/finance/assets) (21ms)
+  x  11 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance JV (/core/finance/jv) (19ms)
+  x  12 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Operations (/core/finance/operations) (14ms)
+  x  13 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Workflow (/core/finance/workflow) (20ms)
+  x  14 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Audit Log (/core/finance/audit-log) (16ms)
+  x  15 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Home (/core/hr) (26ms)
+  x  16 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR People (/core/hr/people) (16ms)
+  x  17 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR PayCycle (/core/hr/paycycle) (19ms)
+  x  18 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Workflow (/core/hr/workflow) (17ms)
+  x  19 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Audit Log (/core/hr/audit-log) (24ms)
+  x  20 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Home (/core/procurement) (15ms)
+  x  21 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Suppliers (/core/procurement/suppliers) (18ms)
+  x  22 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement PO (/core/procurement/po) (15ms)
+  x  23 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Workflow (/core/procurement/workflow) (18ms)
+  x  24 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Audit Log (/core/procurement/audit-log) (16ms)
+  x  25 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Home (/core/inventory) (19ms)
+  x  26 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Stock (/core/inventory/stock) (19ms)
+  x  27 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Receiving (/core/inventory/receiving) (18ms)
+  x  28 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Transfers (/core/inventory/transfers) (16ms)
+  x  29 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Adjustments (/core/inventory/adjustments) (16ms)
+  x  30 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Workflow (/core/inventory/workflow) (19ms)
+  x  31 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Audit Log (/core/inventory/audit-log) (22ms)
+  x  32 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Home (/core/warehouse) (17ms)
+  x  33 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Receiving (/core/warehouse/receiving) (22ms)
+  x  34 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Workflow (/core/warehouse/workflow) (30ms)
+  x  35 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Audit (/core/warehouse/audit) (21ms)
+  x  36 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Home (/core/sales) (20ms)
+  x  37 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Leads (/core/sales/leads) (14ms)
+  x  38 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Opportunities (/core/sales/opportunities) (17ms)
+  x  39 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Quotes (/core/sales/quotes) (15ms)
+  x  40 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Orders (/core/sales/orders) (17ms)
+  x  41 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Workflow (/core/sales/workflow) (18ms)
+  x  42 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Audit Log (/core/sales/audit-log) (16ms)
+  x  43 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Home (/core/marketing) (22ms)
+  x  44 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Campaigns (/core/marketing/campaigns) (23ms)
+  x  45 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Analytics (/core/marketing/analytics) (15ms)
+  x  46 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Leads (/core/marketing/leads) (15ms)
+  x  47 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Workflow (/core/marketing/workflow) (21ms)
+  x  48 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Audit Log (/core/marketing/audit-log) (21ms)
+  x  49 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Home (/core/it) (15ms)
+  x  50 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Devices (/core/it/devices) (14ms)
+  x  51 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Topology (/core/it/topology) (15ms)
+  x  52 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Accounts (/core/it/accounts) (19ms)
+  x  53 [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Settings (/core/settings) (22ms)
+
+
+  1) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:71:7 ΓÇ║ Login ΓÇ║ Login as Bambu Silver owner succeeds 
+
+    TimeoutError: locator.waitFor: Timeout 10000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[type="email"], input[name="email"]').first() to be visible[22m
+
+
+      75 |     // Find and fill email
+      76 |     const emailInput = page.locator('input[type="email"], input[name="email"]').first();
+    > 77 |     await emailInput.waitFor({ state: 'visible', timeout: 10000 });
+         |                      ^
+      78 |     await emailInput.fill(LOGIN_EMAIL);
+      79 |
+      80 |     // Fill password
+        at C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\bambu-full-check.spec.ts:77:22
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-Login-Login-as-Bambu-Silver-owner-succeeds-chromium\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    attachment #2: video (video/webm) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-Login-Login-as-Bambu-Silver-owner-succeeds-chromium\video.webm
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\bambu-full-check-Login-Login-as-Bambu-Silver-owner-succeeds-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-Login-Login-as-Bambu-Silver-owner-succeeds-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-Login-Login-as-Bambu-Silver-owner-succeeds-chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  2) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Dashboard (/core) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-Render-Check-Dashboard-core--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-Render-Check-Dashboard-core--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-Render-Check-Dashboard-core--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  3) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Home (/core/finance) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-4e7c7--Finance-Home-core-finance--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-4e7c7--Finance-Home-core-finance--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-4e7c7--Finance-Home-core-finance--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  4) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Ledger (/core/finance/ledger) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-f754d-Ledger-core-finance-ledger--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-f754d-Ledger-core-finance-ledger--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-f754d-Ledger-core-finance-ledger--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  5) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Treasury (/core/finance/treasury) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-62196-sury-core-finance-treasury--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-62196-sury-core-finance-treasury--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-62196-sury-core-finance-treasury--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  6) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance PayFlow (/core/finance/payflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-50bbe-yFlow-core-finance-payflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-50bbe-yFlow-core-finance-payflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-50bbe-yFlow-core-finance-payflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  7) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Receivables (/core/finance/receivables) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-82769-s-core-finance-receivables--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-82769-s-core-finance-receivables--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-82769-s-core-finance-receivables--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  8) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Payables (/core/finance/payables) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-32e6a-bles-core-finance-payables--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-32e6a-bles-core-finance-payables--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-32e6a-bles-core-finance-payables--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  9) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Close Period (/core/finance/close) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-3adc3--Period-core-finance-close--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-3adc3--Period-core-finance-close--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-3adc3--Period-core-finance-close--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  10) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Assets (/core/finance/assets) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-52f38-Assets-core-finance-assets--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-52f38-Assets-core-finance-assets--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-52f38-Assets-core-finance-assets--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  11) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance JV (/core/finance/jv) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-a8c53-Finance-JV-core-finance-jv--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-a8c53-Finance-JV-core-finance-jv--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-a8c53-Finance-JV-core-finance-jv--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  12) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Operations (/core/finance/operations) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-4254c-ns-core-finance-operations--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-4254c-ns-core-finance-operations--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-4254c-ns-core-finance-operations--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  13) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Workflow (/core/finance/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-c5ab0-flow-core-finance-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-c5ab0-flow-core-finance-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-c5ab0-flow-core-finance-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  14) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Audit Log (/core/finance/audit-log) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-04ebb-Log-core-finance-audit-log--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-04ebb-Log-core-finance-audit-log--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-04ebb-Log-core-finance-audit-log--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  15) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Home (/core/hr) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-Render-Check-HR-Home-core-hr--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-Render-Check-HR-Home-core-hr--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-Render-Check-HR-Home-core-hr--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  16) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR People (/core/hr/people) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-70b7c-k-HR-People-core-hr-people--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-70b7c-k-HR-People-core-hr-people--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-70b7c-k-HR-People-core-hr-people--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  17) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR PayCycle (/core/hr/paycycle) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-45d30--PayCycle-core-hr-paycycle--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-45d30--PayCycle-core-hr-paycycle--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-45d30--PayCycle-core-hr-paycycle--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  18) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Workflow (/core/hr/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-31c8a--Workflow-core-hr-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-31c8a--Workflow-core-hr-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-31c8a--Workflow-core-hr-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  19) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Audit Log (/core/hr/audit-log) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-d74f8-udit-Log-core-hr-audit-log--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-d74f8-udit-Log-core-hr-audit-log--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-d74f8-udit-Log-core-hr-audit-log--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  20) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Home (/core/procurement) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-dd4ca-ment-Home-core-procurement--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-dd4ca-ment-Home-core-procurement--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-dd4ca-ment-Home-core-procurement--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  21) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Suppliers (/core/procurement/suppliers) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-953ec-core-procurement-suppliers--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-953ec-core-procurement-suppliers--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-953ec-core-procurement-suppliers--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  22) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement PO (/core/procurement/po) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-79a46-ent-PO-core-procurement-po--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-79a46-ent-PO-core-procurement-po--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-79a46-ent-PO-core-procurement-po--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  23) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Workflow (/core/procurement/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-67134--core-procurement-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-67134--core-procurement-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-67134--core-procurement-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  24) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Audit Log (/core/procurement/audit-log) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-90973-core-procurement-audit-log--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-90973-core-procurement-audit-log--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-90973-core-procurement-audit-log--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  25) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Home (/core/inventory) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-39679-entory-Home-core-inventory--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-39679-entory-Home-core-inventory--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-39679-entory-Home-core-inventory--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  26) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Stock (/core/inventory/stock) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-fa4e1-Stock-core-inventory-stock--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-fa4e1-Stock-core-inventory-stock--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-fa4e1-Stock-core-inventory-stock--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  27) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Receiving (/core/inventory/receiving) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-12722-g-core-inventory-receiving--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-12722-g-core-inventory-receiving--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-12722-g-core-inventory-receiving--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  28) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Transfers (/core/inventory/transfers) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-62c33-s-core-inventory-transfers--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-62c33-s-core-inventory-transfers--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-62c33-s-core-inventory-transfers--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  29) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Adjustments (/core/inventory/adjustments) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-5a709-core-inventory-adjustments--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-5a709-core-inventory-adjustments--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-5a709-core-inventory-adjustments--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  30) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Workflow (/core/inventory/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-70d25-ow-core-inventory-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-70d25-ow-core-inventory-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-70d25-ow-core-inventory-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  31) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Audit Log (/core/inventory/audit-log) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-5bdd5-g-core-inventory-audit-log--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-5bdd5-g-core-inventory-audit-log--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-5bdd5-g-core-inventory-audit-log--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  32) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Home (/core/warehouse) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-47c3f-ehouse-Home-core-warehouse--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-47c3f-ehouse-Home-core-warehouse--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-47c3f-ehouse-Home-core-warehouse--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  33) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Receiving (/core/warehouse/receiving) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-a72e0-g-core-warehouse-receiving--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-a72e0-g-core-warehouse-receiving--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-a72e0-g-core-warehouse-receiving--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  34) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Workflow (/core/warehouse/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-045a4-ow-core-warehouse-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-045a4-ow-core-warehouse-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-045a4-ow-core-warehouse-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  35) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Audit (/core/warehouse/audit) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-f9107-Audit-core-warehouse-audit--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-f9107-Audit-core-warehouse-audit--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-f9107-Audit-core-warehouse-audit--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  36) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Home (/core/sales) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-ee1c6-heck-Sales-Home-core-sales--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-ee1c6-heck-Sales-Home-core-sales--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-ee1c6-heck-Sales-Home-core-sales--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  37) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Leads (/core/sales/leads) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-396e8-les-Leads-core-sales-leads--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-396e8-les-Leads-core-sales-leads--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-396e8-les-Leads-core-sales-leads--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  38) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Opportunities (/core/sales/opportunities) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-699f8-s-core-sales-opportunities--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-699f8-s-core-sales-opportunities--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-699f8-s-core-sales-opportunities--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  39) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Quotes (/core/sales/quotes) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-63fbc-s-Quotes-core-sales-quotes--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-63fbc-s-Quotes-core-sales-quotes--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-63fbc-s-Quotes-core-sales-quotes--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  40) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Orders (/core/sales/orders) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-92cf5-s-Orders-core-sales-orders--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-92cf5-s-Orders-core-sales-orders--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-92cf5-s-Orders-core-sales-orders--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  41) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Workflow (/core/sales/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-fb50b-rkflow-core-sales-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-fb50b-rkflow-core-sales-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-fb50b-rkflow-core-sales-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  42) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Audit Log (/core/sales/audit-log) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-a055a-t-Log-core-sales-audit-log--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-a055a-t-Log-core-sales-audit-log--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-a055a-t-Log-core-sales-audit-log--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  43) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Home (/core/marketing) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-714cd-keting-Home-core-marketing--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-714cd-keting-Home-core-marketing--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-714cd-keting-Home-core-marketing--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  44) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Campaigns (/core/marketing/campaigns) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-61456-s-core-marketing-campaigns--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-61456-s-core-marketing-campaigns--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-61456-s-core-marketing-campaigns--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  45) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Analytics (/core/marketing/analytics) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-daa0e-s-core-marketing-analytics--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-daa0e-s-core-marketing-analytics--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-daa0e-s-core-marketing-analytics--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  46) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Leads (/core/marketing/leads) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-f2e01-Leads-core-marketing-leads--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-f2e01-Leads-core-marketing-leads--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-f2e01-Leads-core-marketing-leads--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  47) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Workflow (/core/marketing/workflow) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-b1bb4-ow-core-marketing-workflow--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-b1bb4-ow-core-marketing-workflow--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-b1bb4-ow-core-marketing-workflow--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  48) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Audit Log (/core/marketing/audit-log) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-dc6bf-g-core-marketing-audit-log--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-dc6bf-g-core-marketing-audit-log--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-dc6bf-g-core-marketing-audit-log--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  49) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Home (/core/it) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-Render-Check-IT-Home-core-it--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-Render-Check-IT-Home-core-it--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-Render-Check-IT-Home-core-it--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  50) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Devices (/core/it/devices) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-640f8-IT-Devices-core-it-devices--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-640f8-IT-Devices-core-it-devices--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-640f8-IT-Devices-core-it-devices--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  51) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Topology (/core/it/topology) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-75a8e--Topology-core-it-topology--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-75a8e--Topology-core-it-topology--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-75a8e--Topology-core-it-topology--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  52) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Accounts (/core/it/accounts) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-fe862--Accounts-core-it-accounts--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-fe862--Accounts-core-it-accounts--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-fe862--Accounts-core-it-accounts--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  53) [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Settings (/core/settings) 
+
+    Error: Error reading storage state from tests/playwright/.auth/bambu-silver.json:
+    ENOENT: no such file or directory, open 'C:\Users\user\Documents\Software-Developer\zenvix-demo\business-flow-suite-v2\tests\playwright\.auth\bambu-silver.json'
+
+    Error Context: test-results\bambu-full-check-All-Pages-d8551-eck-Settings-core-settings--chromium\error-context.md
+
+    attachment #2: trace (application/zip) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\bambu-full-check-All-Pages-d8551-eck-Settings-core-settings--chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\bambu-full-check-All-Pages-d8551-eck-Settings-core-settings--chromium\trace.zip
+
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+  53 failed
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:71:7 ΓÇ║ Login ΓÇ║ Login as Bambu Silver owner succeeds 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Dashboard (/core) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Home (/core/finance) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Ledger (/core/finance/ledger) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Treasury (/core/finance/treasury) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance PayFlow (/core/finance/payflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Receivables (/core/finance/receivables) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Payables (/core/finance/payables) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Close Period (/core/finance/close) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Assets (/core/finance/assets) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance JV (/core/finance/jv) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Operations (/core/finance/operations) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Workflow (/core/finance/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Finance Audit Log (/core/finance/audit-log) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Home (/core/hr) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR People (/core/hr/people) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR PayCycle (/core/hr/paycycle) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Workflow (/core/hr/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ HR Audit Log (/core/hr/audit-log) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Home (/core/procurement) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Suppliers (/core/procurement/suppliers) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement PO (/core/procurement/po) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Workflow (/core/procurement/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Procurement Audit Log (/core/procurement/audit-log) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Home (/core/inventory) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Stock (/core/inventory/stock) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Receiving (/core/inventory/receiving) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Transfers (/core/inventory/transfers) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Adjustments (/core/inventory/adjustments) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Workflow (/core/inventory/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Inventory Audit Log (/core/inventory/audit-log) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Home (/core/warehouse) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Receiving (/core/warehouse/receiving) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Workflow (/core/warehouse/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Warehouse Audit (/core/warehouse/audit) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Home (/core/sales) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Leads (/core/sales/leads) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Opportunities (/core/sales/opportunities) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Quotes (/core/sales/quotes) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Orders (/core/sales/orders) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Workflow (/core/sales/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Sales Audit Log (/core/sales/audit-log) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Home (/core/marketing) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Campaigns (/core/marketing/campaigns) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Analytics (/core/marketing/analytics) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Leads (/core/marketing/leads) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Workflow (/core/marketing/workflow) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Marketing Audit Log (/core/marketing/audit-log) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Home (/core/it) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Devices (/core/it/devices) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Topology (/core/it/topology) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ IT Accounts (/core/it/accounts) 
+    [chromium] ΓÇ║ tests\playwright\bambu-full-check.spec.ts:106:9 ΓÇ║ All Pages Render Check ΓÇ║ Settings (/core/settings) 

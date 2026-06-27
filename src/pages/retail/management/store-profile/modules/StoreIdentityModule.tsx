@@ -209,7 +209,7 @@ export const StoreIdentityModule: React.FC = () => {
                 <DollarSign className="w-3 h-3" /> Settlement Currency
               </Label>
               <Select
-                value={selectedStore.currency || "USD"}
+                value={selectedStore.currency || "IDR"}
                 disabled={!canEditStore}
                 onValueChange={(value) =>
                   updateLocalConfig({ currency: value })

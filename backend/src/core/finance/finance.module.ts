@@ -36,6 +36,9 @@ import { ReportingEngineService } from './services/reporting-engine.service';
 import { ArCreditMemoService } from './ar/services/ar-credit-memo.service';
 import { JVAllocationService } from './services/jv-allocation.service';
 import { JVReportingService } from './services/jv-reporting.service';
+import { JVExpenseService } from './services/jv-expense.service';
+import { JVSettlementService } from './services/jv-settlement.service';
+import { JVPermissionService } from './services/jv-permission.service';
 
 // Repositories
 import { CoaDbRepository } from './repositories/coa.db.repository';
@@ -288,6 +291,9 @@ function getRepository(dbClass: any, mockClass: any, fallbackClass?: any) {
     ArCreditMemoService,
     JVAllocationService,
     JVReportingService,
+    JVExpenseService,
+    JVSettlementService,
+    JVPermissionService,
     AssetService,
     DepreciationScheduler,
     CostingEngineService,

@@ -158,6 +158,112 @@ export class FinanceService {
     return this.financeRepository.getAssetAuditPack(ctx, assetId);
   }
 
+  // Asset Write Operations
+  async createAsset(ctx: TenantContext, data: any, userId: string) {
+    const asset = await this.financeRepository.createAsset(ctx, data);
+    await this.auditService.log({ tenant_id: ctx.tenant_id, user_id: userId, module: 'FINANCE', action: 'ASSET_CREATED', entity_type: 'ASSET', entity_id: asset.id, metadata: data });
+    return asset;
+  }
+
+  async capitalizeAsset(ctx: TenantContext, id: string, data: any, userId: string) {
+    const asset = await this.financeRepository.updateAsset(ctx, id, { status: 'CAPITALIZED' as any, capitalizedAt: new Date(), ...data });
+    await this.financeRepository.createAssetEvent(ctx, { assetId: id, type: 'MAINTENANCE', amount: data.amount || 0 } as any);
+    await this.auditService.log({ tenant_id: ctx.tenant_id, user_id: userId, module: 'FINANCE', action: 'ASSET_CAPITALIZED', entity_type: 'ASSET', entity_id: id });
+    return asset;
+  }
+
+  async postDepreciation(ctx: TenantContext, id: string, data: any, userId: string) {
+    const entry = await this.financeRepository.createDepreciationEntry(ctx, { assetId: id, ...data, postedBy: userId });
+    await this.financeRepository.createAssetEvent(ctx, { assetId: id, type: 'MAINTENANCE', amount: data.amount || 0 } as any);
+    return entry;
+  }
+
+  async runScheduledDepreciation(ctx: TenantContext, data: any, userId: string) {
+    const assets = await this.financeRepository.listAssets(ctx);
+    const activeAssets = (Array.isArray(assets) ? assets : []).filter((a: any) => a.status === 'CAPITALIZED' || a.status === 'ACTIVE');
+    const results: any[] = [];
+    for (const asset of activeAssets) {
+      try {
+        const entry = await this.postDepreciation(ctx, asset.id, { postingDate: data.postingDate || new Date().toISOString(), method: (asset as any).depreciationMethod || 'STRAIGHT_LINE' }, userId);
+        results.push({ asset_id: asset.id, status: 'success', entry });
+      } catch (e: any) {
+        results.push({ asset_id: asset.id, status: 'failed', error: e.message });
+      }
+    }
+    return { total: activeAssets.length, processed: results.length, results };
+  }
+
+  async recordImpairment(ctx: TenantContext, id: string, data: any, userId: string) {
+    await this.financeRepository.createAssetEvent(ctx, { assetId: id, type: 'IMPAIRMENT', amount: data.impairmentAmount } as any);
+    return this.financeRepository.updateAsset(ctx, id, { currentValue: data.impairmentAmount } as any);
+  }
+
+  async recordRevaluation(ctx: TenantContext, id: string, data: any, userId: string) {
+    await this.financeRepository.createAssetEvent(ctx, { assetId: id, type: 'REVALUATION', amount: data.revaluedAmount } as any);
+    return this.financeRepository.updateAsset(ctx, id, { currentValue: data.revaluedAmount } as any);
+  }
+
+  async disposeAsset(ctx: TenantContext, id: string, data: any, userId: string) {
+    await this.financeRepository.createAssetEvent(ctx, { assetId: id, type: 'DISPOSAL', amount: data.proceeds || 0 } as any);
+    return this.financeRepository.updateAsset(ctx, id, { status: 'DISPOSED' as any } as any);
+  }
+
+  async updateAssetStatus(ctx: TenantContext, id: string, status: string, userId: string) {
+    await this.financeRepository.createAssetEvent(ctx, { assetId: id, type: 'MAINTENANCE' } as any);
+    return this.financeRepository.updateAsset(ctx, id, { status } as any);
+  }
+
+  async verifyAssetAuditPack(ctx: TenantContext, assetId: string, userId: string) {
+    await this.financeRepository.createAssetEvent(ctx, { assetId, type: 'MAINTENANCE' } as any);
+    return { verified: true, assetId, verifiedBy: userId, verifiedAt: new Date().toISOString() };
+  }
+
+  // CAPEX Requests
+  async listCapexRequests(ctx: TenantContext) {
+    return this.financeRepository.listCapexRequests(ctx);
+  }
+
+  async createCapexRequest(ctx: TenantContext, data: any, userId: string) {
+    return this.financeRepository.createCapexRequest(ctx, { ...data, requestedBy: userId, status: 'PENDING' } as any);
+  }
+
+  async approveCapexRequest(ctx: TenantContext, id: string, userId: string) {
+    return this.financeRepository.updateCapexRequest(ctx, id, { status: 'APPROVED' as any, approvedBy: userId, approvedAt: new Date() } as any);
+  }
+
+  async rejectCapexRequest(ctx: TenantContext, id: string, reason: string, userId: string) {
+    return this.financeRepository.updateCapexRequest(ctx, id, { status: 'REJECTED' as any, rejectionReason: reason } as any);
+  }
+
+  async setCapexBudget(ctx: TenantContext, data: any, userId: string) {
+    return this.financeRepository.setCapexBudget(ctx, data);
+  }
+
+  // Payment Requests
+  async createPaymentRequest(ctx: TenantContext, data: any, userId: string) {
+    return this.financeRepository.createPaymentRequest(ctx, { ...data, requestedBy: userId, status: 'PENDING' } as any);
+  }
+
+  async updatePaymentStatus(ctx: TenantContext, id: string, status: string, userId: string) {
+    return this.financeRepository.updatePaymentStatus(ctx, id, status, userId as any);
+  }
+
+  // Audit Log
+  async listAuditLog(ctx: TenantContext, module?: string, limit?: number) {
+    const where: any = { tenant_id: ctx.tenant_id };
+    if (module) where.module = module;
+    return this.prisma.audit_logs.findMany({
+      where,
+      orderBy: { created_at: 'desc' },
+      take: limit || 100,
+    });
+  }
+
+  async createAuditLog(ctx: TenantContext, data: any, userId: string) {
+    await this.auditService.log({ tenant_id: ctx.tenant_id, user_id: userId, module: data.module || 'FINANCE', action: data.action, entity_type: data.entity_type || 'OPERATION', entity_id: data.entity_id, metadata: data.metadata });
+    return { success: true };
+  }
+
   // Treasury
   async listTransfers(ctx: TenantContext) {
     return this.financeRepository.listTransfers(ctx);

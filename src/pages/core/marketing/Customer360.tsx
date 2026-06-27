@@ -109,7 +109,7 @@ export default function Customer360() {
         <div className="col-span-12 lg:col-span-8 space-y-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              {[
-               { label: 'Estimated LTV', val: '$4,280', color: 'text-primary', sub: 'Last 12 month cycle' },
+               { label: 'Estimated LTV', val: 'Rp 64.2jt', color: 'text-primary', sub: 'Last 12 month cycle' },
                { label: 'Strategic Purchases', val: '14', color: 'text-muted-foreground dark:text-white', sub: 'Unified Offline + Online' },
                { label: 'Engagement CTR', val: '24.2%', color: 'text-success', sub: 'High-velocity interaction' },
              ].map((stat, i) => (

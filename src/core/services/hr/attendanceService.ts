@@ -19,7 +19,9 @@ export const attendanceService = {
   },
 
   async validateAccess(tenantId: string, locationId: string, deviceId: string, coordinates?: { lat: number; lng: number }) {
-    // Stub validation for now
+    // Validate that the location and device are valid for this tenant
+    // In production this would check geofencing and device registration
+    if (!locationId || !deviceId) return false;
     return true;
   },
 

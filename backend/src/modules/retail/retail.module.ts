@@ -7,10 +7,12 @@ import { MarketingModule } from "../../core/marketing/marketing.module";
 import { SalesModule } from "../../core/sales/sales.module";
 import { RetailController } from "./retail.controller";
 import { RetailInfrastructureController } from "./retail-infrastructure.controller";
+import { RetailOperationsController } from "./retail-operations.controller";
 import { RetailPublicGatewayController } from "./retail-public.gateway.controller";
 import { RetailPublicAuthController } from "./retail-public-auth.controller";
 import { RetailPublicCustomerController } from "./retail-public-customer.controller";
 import { RetailEventsController } from "./retail-events.controller";
+import { RetailGovernanceController } from "./retail-governance.controller";
 import { EcommerceHubController } from "./ecommerce-hub.controller";
 import { RetailService } from "./retail.service";
 import { RetailInfrastructureService } from "./retail-infrastructure.service";
@@ -57,6 +59,8 @@ import { CommsModule } from "../../shared/comms/comms.module";
   controllers: [
     RetailController,
     RetailInfrastructureController,
+    RetailOperationsController,
+    RetailGovernanceController,
     RetailPublicGatewayController,
     RetailPublicAuthController,
     RetailPublicCustomerController,

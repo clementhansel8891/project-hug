@@ -1,5 +1,5 @@
 import { Package, Clock, CheckCircle2 } from "lucide-react";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/core/ui/PageHeader";
 
 export default function WarehouseReceiving() {
   const inboundOrders = [

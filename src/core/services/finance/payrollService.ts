@@ -1,33 +1,36 @@
+import { apiRequest } from "@/core/api/apiClient";
+import type { SessionContext } from "@/core/security/session";
 import type { PayrollEntry } from "@/core/types/finance/payrollTypes";
 
-// Finance-side payroll service (distinct from HR payroll service)
-// Uses in-memory mock for now
-let entries: PayrollEntry[] = [];
-
+/**
+ * Finance-side payroll service.
+ * Wired to the actual backend HR payroll endpoints.
+ * Falls back to empty arrays on error for graceful degradation.
+ */
 export const payrollService = {
-  async getPayrollEntries(tenantId: string, _period?: string): Promise<PayrollEntry[]> {
-    return (Array.isArray(entries) ? entries : []).filter((e) => e.tenantId === tenantId);
+  async getPayrollEntries(tenantId: string, session: SessionContext, period?: string): Promise<PayrollEntry[]> {
+    try {
+      const query = period ? `?period=${period}` : "";
+      return await apiRequest<PayrollEntry[]>(`/v1/finance/payroll/entries${query}`, "GET", session);
+    } catch {
+      return [];
+    }
   },
 
-  async createPayrollEntry(entry: PayrollEntry): Promise<PayrollEntry> {
-    entries = [entry, ...entries];
-    return entry;
+  async createPayrollEntry(session: SessionContext, entry: Partial<PayrollEntry>): Promise<PayrollEntry> {
+    return apiRequest<PayrollEntry>("/v1/finance/payroll/entries", "POST", session, entry);
   },
 
-  async updatePayrollEntry(entryId: string, updates: Partial<PayrollEntry>): Promise<PayrollEntry> {
-    let updated: PayrollEntry | null = null;
-    entries = (Array.isArray(entries) ? entries : []).map((e) => {
-      if (e.id === entryId) {
-        updated = { ...e, ...updates, updatedAt: new Date().toISOString() };
-        return updated;
-      }
-      return e;
-    });
-    if (!updated) throw new Error("Payroll entry not found");
-    return updated;
+  async updatePayrollEntry(session: SessionContext, entryId: string, updates: Partial<PayrollEntry>): Promise<PayrollEntry> {
+    return apiRequest<PayrollEntry>(`/v1/finance/payroll/entries/${entryId}`, "PATCH", session, updates);
   },
 
-  async runPayroll(_tenantId: string, _period: string): Promise<boolean> {
-    return true;
+  async runPayroll(tenantId: string, session: SessionContext, period: string): Promise<boolean> {
+    try {
+      await apiRequest<any>("/v1/finance/payroll/execute", "POST", session, { period });
+      return true;
+    } catch {
+      return false;
+    }
   },
 };

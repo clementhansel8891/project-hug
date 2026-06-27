@@ -346,7 +346,7 @@ export default function SalesIntelligenceEngine() {
                 <div className="grid grid-cols-2 gap-8">
                    <Card className="glass-card border-none shadow-xl rounded-[2.5rem] p-8 text-center bg-success">
                       <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Avg. Deal Value</p>
-                      <p className="text-3xl font-black italic text-success">$42.8K</p>
+                      <p className="text-3xl font-black italic text-success">Rp 642M</p>
                    </Card>
                    <Card className="glass-card border-none shadow-xl rounded-[2.5rem] p-8 text-center bg-primary">
                       <p className="text-[10px] font-black uppercase text-muted-foreground mb-1 tracking-widest">Churn Index</p>

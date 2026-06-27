@@ -455,6 +455,43 @@ export class SalesController {
     return { success: true, tenant_id: scope.tenant_id, count: data.length, data };
   }
 
+  @Put("alerts/:id/ack")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async acknowledgeAlert(@Req() request: RequestWithTenant, @Param('id') id: string) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const user_id = this.requireActor(request);
+    await this.prisma.sales_alerts.updateMany({
+      where: { id, tenant_id: scope.tenant_id },
+      data: { acknowledged: true, updated_at: new Date() },
+    });
+    return { success: true, id, acknowledged: true };
+  }
+
+  @Put("quotes/:id/send")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async sendQuoteToCustomer(@Req() request: RequestWithTenant, @Param('id') id: string) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const user_id = this.requireActor(request);
+    await this.prisma.sales_quotes.updateMany({
+      where: { id, tenant_id: scope.tenant_id },
+      data: { status: 'SENT', updated_at: new Date() },
+    });
+    return { success: true, id, status: 'SENT' };
+  }
+
+  @Post("leads/sync-marketing")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async syncLeadFromMarketing(@Req() request: RequestWithTenant, @Body() dto: any) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const user_id = this.requireActor(request);
+    // Create a lead from marketing data
+    const lead = await this.salesService.createLead(scope, {
+      ...dto,
+      source: 'MARKETING_SYNC',
+    }, user_id);
+    return { success: true, tenant_id: scope.tenant_id, data: lead };
+  }
+
   @Post("sla-sweep")
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   async runSlaSweep(@Req() request: RequestWithTenant) {

@@ -1,5 +1,5 @@
 import { Boxes, Clock, User } from "lucide-react";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/core/ui/PageHeader";
 
 export default function WarehousePicking() {
   const pickLists = [

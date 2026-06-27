@@ -69,3 +69,36 @@ export enum JVAllocationType {
   COST = 'COST',
   PROFIT = 'PROFIT',
 }
+
+export enum JVExpenseStatus {
+  DRAFT = 'DRAFT',
+  SUBMITTED = 'SUBMITTED',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  ALLOCATED = 'ALLOCATED',
+}
+
+export enum JVSettlementStatus {
+  DRAFT = 'DRAFT',
+  CONFIRMED = 'CONFIRMED',
+  INVOICED = 'INVOICED',
+  PAID = 'PAID',
+  DISPUTED = 'DISPUTED',
+}
+
+export enum JVAccessLevel {
+  NONE = 'none',
+  READ = 'read',
+  WRITE = 'write',
+  MANAGE = 'manage',
+}
+
+export enum JVModuleKey {
+  EXPENSES = 'expenses',
+  PROCUREMENT = 'procurement',
+  INVENTORY = 'inventory',
+  POS = 'pos',
+  SALES = 'sales',
+  FINANCE_READ = 'finance_read',
+  FINANCE_WRITE = 'finance_write',
+}

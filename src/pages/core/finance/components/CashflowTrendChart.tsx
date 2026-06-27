@@ -50,7 +50,7 @@ export const CashflowTrendChart: React.FC<CashflowTrendChartProps> = ({ data, cu
             axisLine={false}
             tickLine={false}
             tick={{ fontSize: 10, fontWeight: 'bold' }}
-            tickFormatter={(value) => `$${value}`}
+            tickFormatter={(value) => `Rp ${value}`}
           />
           <Tooltip 
             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}

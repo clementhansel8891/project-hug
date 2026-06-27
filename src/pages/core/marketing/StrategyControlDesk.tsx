@@ -43,7 +43,7 @@ export default function StrategyControlDesk() {
           type: "REALLOCATION",
           title: "High-Intent Meta Reallocation",
           description: "Shift 15% of budget from low-performing LinkedIn nodes to High-Intent Meta Ads for Q4 retail push.",
-          impact: "+$45k Est. Revenue",
+          impact: "+Rp 675jt Est. Revenue",
           confidence: 94,
           status: "PENDING"
         },
@@ -123,7 +123,7 @@ export default function StrategyControlDesk() {
               <Badge className="bg-success text-success border-none">TIGHTER ROI</Badge>
             </div>
             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Potential Yield</p>
-            <h3 className="text-4xl font-black italic tracking-tighter">+$124.5k</h3>
+            <h3 className="text-4xl font-black italic tracking-tighter">+Rp 1.87M</h3>
           </Card>
 
           <Card className="glass-card p-8 rounded-[2.5rem] card-premium">

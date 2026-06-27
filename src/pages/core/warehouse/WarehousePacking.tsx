@@ -1,5 +1,5 @@
 import { ClipboardList, Package, Truck } from "lucide-react";
-import { PageHeader } from "@/components/shared/PageHeader";
+import { PageHeader } from "@/core/ui/PageHeader";
 
 export default function WarehousePacking() {
   const packingQueue = [

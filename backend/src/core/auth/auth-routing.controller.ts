@@ -173,7 +173,7 @@ export class AuthRoutingController {
             return {
               success: true,
               data: {
-                redirect_to: '/m/retail/operational/pos',
+                redirect_to: '/m/retail/operational',
                 message,
                 context: {
                   store_id: store.id,

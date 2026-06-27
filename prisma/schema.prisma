@@ -6836,6 +6836,111 @@ model finance_jv_ledger {
   tenants        tenants  @relation(fields: [tenant_id], references: [id])
 }
 
+/// ─── JV PERMISSIONS: Granular module-level access for each participant ───
+model finance_jv_permissions {
+  id             String @id @default(uuid())
+  participant_id String
+  /// Module key: "expenses", "procurement", "inventory", "pos", "sales", "finance_read", "finance_write"
+  module         String
+  /// Access level: "none", "read", "write", "manage"
+  access_level   String @default("read")
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now())
+
+  @@unique([participant_id, module])
+}
+
+/// ─── JV EXPENSES: Costs logged by either party against the JV ───
+model finance_jv_expenses {
+  id              String   @id @default(uuid())
+  tenant_id       String
+  jv_profile_id   String
+  submitted_by    String
+  submitter_tenant_id String
+  category_id     String?
+  description     String
+  amount          Decimal  @db.Decimal(20, 4)
+  currency        String   @default("IDR")
+  receipt_url     String?
+  /// Status: DRAFT, SUBMITTED, APPROVED, REJECTED, ALLOCATED
+  status          String   @default("DRAFT")
+  approved_by     String?
+  approved_at     DateTime?
+  rejection_reason String?
+  expense_date    DateTime
+  period_id       String?
+  /// Which allocation rule to use: "equal", "by_share", "custom", "category_burden"
+  split_method    String   @default("by_share")
+  /// Custom split overrides (JSON array of {participant_id, pct})
+  custom_split    Json?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+  allocations     finance_jv_expense_allocations[]
+}
+
+/// ─── JV EXPENSE ALLOCATIONS: How each expense is distributed among participants ───
+model finance_jv_expense_allocations {
+  id              String   @id @default(uuid())
+  expense_id      String
+  participant_id  String
+  tenant_id       String
+  amount          Decimal  @db.Decimal(20, 4)
+  burden_pct      Decimal  @db.Decimal(20, 4)
+  created_at      DateTime @default(now())
+  expense         finance_jv_expenses @relation(fields: [expense_id], references: [id])
+}
+
+/// ─── JV SETTLEMENTS: Periodic net settlement between parties ───
+model finance_jv_settlements {
+  id              String   @id @default(uuid())
+  tenant_id       String
+  jv_profile_id   String
+  period_start    DateTime
+  period_end      DateTime
+  /// Status: DRAFT, CONFIRMED, INVOICED, PAID, DISPUTED
+  status          String   @default("DRAFT")
+  generated_by    String
+  generated_at    DateTime @default(now())
+  confirmed_by    String?
+  confirmed_at    DateTime?
+  paid_at         DateTime?
+  payment_ref     String?
+  notes           String?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+  lines           finance_jv_settlement_lines[]
+}
+
+/// ─── JV SETTLEMENT LINES: Per-participant breakdown in a settlement ───
+model finance_jv_settlement_lines {
+  id                String   @id @default(uuid())
+  settlement_id     String
+  participant_id    String
+  participant_tenant_id String
+  revenue_allocated Decimal  @db.Decimal(20, 4)
+  cost_burden       Decimal  @db.Decimal(20, 4)
+  expenses_borne    Decimal  @db.Decimal(20, 4)
+  net_payable       Decimal  @db.Decimal(20, 4)
+  /// Direction: "RECEIVABLE" (host owes partner) or "PAYABLE" (partner owes host)
+  direction         String
+  created_at        DateTime @default(now())
+  settlement        finance_jv_settlements @relation(fields: [settlement_id], references: [id])
+}
+
+/// ─── JV ACTIVITY LOG: Audit trail for all JV operations ───
+model finance_jv_activity_log {
+  id              String   @id @default(uuid())
+  tenant_id       String
+  jv_profile_id   String
+  actor_id        String
+  actor_tenant_id String
+  action          String
+  entity_type     String
+  entity_id       String?
+  details         Json?
+  created_at      DateTime @default(now())
+}
+
 model payroll_disbursement_logs {
   id              String          @id @default(uuid())
   tenant_id       String

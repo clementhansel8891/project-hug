@@ -29,8 +29,8 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
 
   const formatCurrency = (val: number | undefined) => {
     if (val === undefined || val === null) return "0";
-    const currency = stats.currency || "USD";
-    return new Intl.NumberFormat("en-US", {
+    const currency = stats.currency || "IDR";
+    return new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: currency,
       minimumFractionDigits: 0,

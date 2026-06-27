@@ -186,7 +186,7 @@ export default function SalesOverview() {
                   <YAxis 
                     axisLine={false} 
                     tickLine={false} 
-                    tickFormatter={(value) => `$${(value/1000)}k`} 
+                    tickFormatter={(value) => `Rp ${(value/1000)}k`} 
                     tick={{ fontSize: 10, fontWeight: 900, fill: '#94a3b8' }}
                   />
                   <Tooltip 

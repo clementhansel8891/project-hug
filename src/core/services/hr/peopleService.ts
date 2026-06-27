@@ -1,3 +1,4 @@
+import { apiRequest } from "@/core/api/apiClient";
 import { hrService } from "@/core/services/hr/hrService";
 import { attendanceService } from "@/core/services/hr/attendanceService";
 import { payrollService } from "@/core/services/hr/payrollService";
@@ -35,11 +36,24 @@ export const peopleService = {
     const employeeTrainings = (Array.isArray(trainings) ? trainings : []).filter(r => r.employeeId === employeeId);
     const employeeLeaves = (Array.isArray(leaves) ? leaves : []).filter(r => r.employeeId === employeeId);
     
-    // Contracts, Reviews, Workflows - Stub for now
-    const contracts: any[] = [];
-    const reviews: any[] = [];
-    const cycles: any[] = [];
-    const workflows: any[] = [];
+    // Contracts, Reviews, Workflows - fetch from HR backend
+    let contracts: any[] = [];
+    let reviews: any[] = [];
+    let cycles: any[] = [];
+    let workflows: any[] = [];
+
+    try {
+      const [contractsData, reviewsData, workflowsData] = await Promise.all([
+        apiRequest<any[]>(`/v1/hr/employees/${employeeId}/contracts`, "GET", actor).catch(() => []),
+        apiRequest<any[]>(`/v1/hr/performance/reviews?employeeId=${employeeId}`, "GET", actor).catch(() => []),
+        apiRequest<any[]>(`/v1/hr/workflow-requests?employeeId=${employeeId}`, "GET", actor).catch(() => []),
+      ]);
+      contracts = Array.isArray(contractsData) ? contractsData : [];
+      reviews = Array.isArray(reviewsData) ? reviewsData : [];
+      workflows = Array.isArray(workflowsData) ? workflowsData : [];
+    } catch {
+      // Graceful degradation — these sections just show empty
+    }
 
     return {
       employee,

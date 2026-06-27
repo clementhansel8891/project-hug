@@ -56,7 +56,7 @@ export const EmployeeDetailModal: React.FC<EmployeeDetailModalProps> = ({
               </div>
             </div>
             <div className="flex gap-2">
-               <Badge className="bg-success text-success border-success/20 px-3 py-1 rounded-lg font-black uppercase text-[10px]">
+               <Badge className="bg-success/10 text-success border-success/20 px-3 py-1 rounded-lg font-black uppercase text-[10px]">
                   {employee.status}
                </Badge>
             </div>
@@ -129,7 +129,7 @@ export const EmployeeDetailModal: React.FC<EmployeeDetailModalProps> = ({
                                    <td className="p-4">09:00 - 18:00</td>
                                    <td className="p-4">08:54 / 18:02</td>
                                    <td className="p-4">
-                                      <Badge className="bg-success text-success border-transparent text-[9px] font-black uppercase">{entry.status}</Badge>
+                                      <Badge className="bg-success/10 text-success border-transparent text-[9px] font-black uppercase">{entry.status}</Badge>
                                    </td>
                                 </tr>
                               ))}

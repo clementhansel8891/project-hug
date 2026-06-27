@@ -192,6 +192,21 @@ export class OmnichannelService {
   }
 
   /**
+   * Get messages, optionally filtered by conversation (contact_id)
+   */
+  async getMessages(ctx: TenantContext, conversationId?: string) {
+    const where: any = MultiTenancyUtil.getScope(ctx);
+    if (conversationId) where.contact_id = conversationId;
+
+    return this.prisma.marketing_omnichannel_messages.findMany({
+      where,
+      include: { contact: true },
+      orderBy: { sent_at: 'desc' },
+      take: 100,
+    });
+  }
+
+  /**
    * Process incoming Meta webhooks (WhatsApp/Messenger)
    */
   async processInboundWebhook(payload: any) {

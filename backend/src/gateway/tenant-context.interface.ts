@@ -42,9 +42,34 @@ export interface TenantContext {
   role?: string;
   
   /**
-   * JV Mirror Mode flag
+   * JV Mirror Mode flag (legacy — kept for backward compat)
    */
   is_jv_read_only?: boolean;
+
+  /**
+   * JV Context flag — true when user is operating under a JV participation
+   */
+  is_jv_context?: boolean;
+
+  /**
+   * JV Participant record ID (from finance_jv_participants)
+   */
+  jv_participant_id?: string;
+
+  /**
+   * JV Participant Role: "OPERATOR" or "NON_OPERATOR"
+   */
+  jv_role?: string;
+
+  /**
+   * JV Profile ID being accessed
+   */
+  jv_profile_id?: string;
+
+  /**
+   * The partner's home tenant ID (their own company)
+   */
+  jv_home_tenant_id?: string;
 }
 
 /**

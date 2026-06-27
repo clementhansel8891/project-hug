@@ -121,7 +121,7 @@ export default function FinancialOperationsDesk() {
             <CardContent className="p-8">
               <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">Total Revenue Pool</div>
               <div className="text-3xl font-black italic tracking-tighter flex items-end gap-2">
-                $1.2M <span className="text-sm font-bold text-success mb-1">+4.2%</span>
+                Rp 18.6M <span className="text-sm font-bold text-success mb-1">+4.2%</span>
               </div>
               <div className="flex items-center gap-2 mt-4 text-[10px] font-bold text-success uppercase">
                 <ShieldCheck className="w-3 h-3" />
@@ -287,7 +287,7 @@ export default function FinancialOperationsDesk() {
                               <div className="flex justify-between items-start">
                                  <div className="space-y-0.5">
                                     <p className="text-[10px] font-black italic uppercase">ACME CORP PROTOCOL</p>
-                                    <p className="text-[12px] font-black text-warning italic">$42,500.00 OVERDUE</p>
+                                    <p className="text-[12px] font-black text-warning italic">Rp 637.500.000 OVERDUE</p>
                                  </div>
                                  <Badge className="bg-warning text-white border-none text-[8px] px-2 py-0">Tier 1</Badge>
                               </div>

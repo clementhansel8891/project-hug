@@ -337,7 +337,7 @@ export default function MarketingAnalytics() {
             </div>
             <h3 className="text-3xl font-black uppercase italic tracking-tighter italic leading-none">Yield Optimization Strategy</h3>
             <p className="text-lg font-medium italic italic opacity-60 italic leading-relaxed italic max-w-4xl italic">
-               "Cross-channel telemetry authorizes a <strong>+22.4% ROI lift</strong> by re-allocating $14.5k from low-yield Google Ads clusters into the <strong>High-Intent Meta Ads</strong> network. Attribution lag is currently at <strong>nominal levels</strong>."
+               "Cross-channel telemetry authorizes a <strong>+22.4% ROI lift</strong> by re-allocating Rp 217jt from low-yield Google Ads clusters into the <strong>High-Intent Meta Ads</strong> network. Attribution lag is currently at <strong>nominal levels</strong>."
             </p>
          </div>
          <Button className="h-20 px-12 rounded-[2.5rem] bg-primary hover:bg-primary shadow-2xl shadow-indigo-500/30 font-black text-sm uppercase tracking-widest gap-4 group transition-all hover:scale-105 active:scale-95 text-white whitespace-nowrap relative z-10">

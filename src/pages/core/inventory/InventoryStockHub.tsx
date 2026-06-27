@@ -266,7 +266,7 @@ export default function InventoryStockHub() {
       outOfStock: statsData?.out_of_stock_count ?? statsData?.outOfStockCount ?? items.filter(i => (i.currentStock || 0) === 0).length,
       totalValue: statsData?.total_valuation ?? statsData?.totalValuation ?? 0,
       capitalValue: statsData?.capital_value ?? statsData?.capitalValue ?? 0,
-      currency: statsData?.currency || "USD"
+      currency: statsData?.currency || "IDR"
     };
   }, [globalStats, totalCount, items]);
 
