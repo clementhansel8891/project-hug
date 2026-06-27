@@ -53,7 +53,7 @@ export const BranchLeaderboard: React.FC<BranchLeaderboardProps> = ({ data }) =>
                           <MapPin className="h-3 w-3 text-primary" />
                           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{data.name}</p>
                         </div>
-                        <p className="text-xl font-black text-foreground">${(data.revenue / 1000).toFixed(1)}k</p>
+                        <p className="text-xl font-black text-foreground">Rp {(data.revenue / 1000).toFixed(1)}k</p>
                         <div className="mt-2 flex items-center gap-1.5">
                            <div className="h-1 w-12 bg-white/5 rounded-full overflow-hidden">
                               <div className="h-full bg-primary" style={{ width: `${data.percentOfTotal}%` }} />

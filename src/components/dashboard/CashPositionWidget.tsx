@@ -57,7 +57,7 @@ export const CashPositionWidget: React.FC<CashPositionWidgetProps> = ({ data: pr
           </ResponsiveContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">Total Net</p>
-            <p className="text-3xl font-black text-foreground tracking-tighter">${(total / 1000000).toFixed(1)}M</p>
+            <p className="text-3xl font-black text-foreground tracking-tighter">Rp {(total / 1000000).toFixed(1)}M</p>
           </div>
         </div>
 
@@ -75,7 +75,7 @@ export const CashPositionWidget: React.FC<CashPositionWidgetProps> = ({ data: pr
                    </div>
                 </div>
               </div>
-              <p className="text-sm font-black text-foreground">${(item.value / 1000).toFixed(0)}k</p>
+              <p className="text-sm font-black text-foreground">Rp {(item.value / 1000).toFixed(0)}k</p>
             </div>
           ))}
           <div className="mt-6 border-t border-white/5 pt-6 flex items-center justify-between">

@@ -57,7 +57,7 @@ export const ProcurementPipelineWidget: React.FC<ProcurementPipelineWidgetProps>
            <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Open PO Value</span>
         </div>
-        <span className="text-2xl font-black text-primary tracking-tighter">$432,500</span>
+        <span className="text-2xl font-black text-primary tracking-tighter">Rp 432.5jt</span>
       </div>
       
       {/* Subtle background glow */}
