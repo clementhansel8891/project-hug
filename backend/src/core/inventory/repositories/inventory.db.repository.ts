@@ -39,7 +39,8 @@ export class InventoryDbRepository implements IInventoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getDashboard(ctx: TenantContext, location_id?: string): Promise<any> {
-    const baseScope = { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }) };
+    // Items are tenant-scoped (company_id may be NULL on imported items)
+    const baseScope = { tenant_id: ctx.tenant_id };
     
     // Fetch company currency
     const company = await this.prisma.companies.findFirst({
@@ -139,7 +140,8 @@ export class InventoryDbRepository implements IInventoryRepository {
 
   async getItems(ctx: TenantContext, location_id?: string, page: number = 1, limit: number = 100, search?: string, category_id?: string, status?: string, is_anomaly?: boolean, sortBy?: "name" | "quantity" | "created_at", sortOrder?: "asc" | "desc"): Promise<InventoryItem[]> {
     const skip = (page - 1) * limit;
-    const scope = MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true });
+    // Items are tenant-scoped (company_id may be NULL on imported items)
+    const scope = { tenant_id: ctx.tenant_id };
     
     // Detect if location_id is actually a Branch (Tenant) ID
     let branchTenantId: string | undefined;
@@ -284,8 +286,8 @@ export class InventoryDbRepository implements IInventoryRepository {
   }
 
   async countItems(ctx: TenantContext, location_id?: string, search?: string, category_id?: string, is_anomaly?: boolean): Promise<number> {
-    const scope = MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true });
-    const where: any = { ...scope, status: { not: "deleted" } };
+    // Items are tenant-scoped (company_id may be NULL on imported items)
+    const where: any = { tenant_id: ctx.tenant_id, status: { not: "deleted" } };
 
     if (search) {
       where.OR = [
@@ -977,7 +979,7 @@ export class InventoryDbRepository implements IInventoryRepository {
 
   async itemExistsBySku(ctx: TenantContext, sku: string): Promise<boolean> {
     const count = await this.prisma.item_masters.count({
-      where: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), sku: sku },
+      where: { tenant_id: ctx.tenant_id, sku: sku },
     });
     return count > 0;
   }
@@ -1188,7 +1190,7 @@ export class InventoryDbRepository implements IInventoryRepository {
 
   async getPendingItems(ctx: TenantContext): Promise<InventoryItem[]> {
     const products = await this.prisma.item_masters.findMany({
-      where: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), status: "pending" },
+      where: { tenant_id: ctx.tenant_id, status: "pending" },
       include: { product_categories: true },
     });
 
