@@ -54,12 +54,16 @@ export function EcommerceAnalytics() {
 
   const activeChannels = channels.filter(c => c.status === "active");
   const totalCustomers = customers.length;
-  const customersWithCart = customers.filter(c =>
-    c.retail_carts?.some((cart: any) => cart.retail_cart_items?.length > 0)
-  ).length;
-  const customersWithWishlist = customers.filter(c =>
-    c.retail_wishlists?.some((wl: any) => wl.retail_wishlist_items?.length > 0)
-  ).length;
+  const customersWithCart = customers.filter(c => {
+    const cart = c.retail_carts;
+    if (Array.isArray(cart)) return cart.some((ct: any) => ct.retail_cart_items?.length > 0);
+    return cart?.retail_cart_items?.length > 0;
+  }).length;
+  const customersWithWishlist = customers.filter(c => {
+    const wl = c.retail_wishlists;
+    if (Array.isArray(wl)) return wl.some((w: any) => w.retail_wishlist_items?.length > 0);
+    return wl?.retail_wishlist_items?.length > 0;
+  }).length;
 
   if (loading) return (
     <div className="flex items-center justify-center py-32">
@@ -190,10 +194,10 @@ export function EcommerceAnalytics() {
                         <p className="text-[10px] text-muted-foreground">{c.email}</p>
                       </div>
                       <div className="flex gap-2">
-                        {c.retail_carts?.some((cart: any) => cart.retail_cart_items?.length > 0) && (
+                        {(() => { const cart = c.retail_carts; return (Array.isArray(cart) ? cart.some((ct: any) => ct.retail_cart_items?.length > 0) : cart?.retail_cart_items?.length > 0); })() && (
                           <Badge className="text-[8px] bg-warning/10 text-warning border-none">Cart</Badge>
                         )}
-                        {c.retail_wishlists?.some((wl: any) => wl.retail_wishlist_items?.length > 0) && (
+                        {(() => { const wl = c.retail_wishlists; return (Array.isArray(wl) ? wl.some((w: any) => w.retail_wishlist_items?.length > 0) : wl?.retail_wishlist_items?.length > 0); })() && (
                           <Badge className="text-[8px] bg-success/10 text-success border-none">Wishlist</Badge>
                         )}
                       </div>

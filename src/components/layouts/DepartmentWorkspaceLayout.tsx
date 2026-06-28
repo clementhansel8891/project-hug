@@ -242,10 +242,10 @@ export default function DepartmentWorkspaceLayout({
           </div>
         }
         left={
-          <div className="h-full flex flex-col bg-card backdrop-blur-2xl border-r border-border relative overflow-hidden w-64 md:w-80">
-            <div className={cn("absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b pointer-events-none opacity-20", fromC5)} />
+          <div className="h-full flex flex-col bg-card backdrop-blur-2xl border-r border-border relative w-64 md:w-80">
+            <div className={cn("absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b pointer-events-none opacity-20 z-0", fromC5)} />
             
-            <ScrollArea className="flex-1 relative z-10">
+            <ScrollArea className="flex-1 relative z-10 h-full">
               <div className="p-4 md:p-8 space-y-12">
                 <SidebarIdentityCard />
 
