@@ -475,10 +475,7 @@ const InventoryVisibility = () => {
     }),
   });
 
-  // Keep old state vars for backward compat but wire through form
-  const [bufferValue, setBufferValue] = useState<number>(0);
-  const [isUpdatingBuffer, setIsUpdatingBuffer] = useState(false);
-  const [globalMinStock, setGlobalMinStock] = useState<number>(0);
+  // bufferValue/isUpdatingBuffer/globalMinStock already declared above — wired through form
 
   const handleUpdateBuffer = () => {
     bufferMutation.mutate({

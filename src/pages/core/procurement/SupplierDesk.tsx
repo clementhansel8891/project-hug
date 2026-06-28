@@ -652,7 +652,7 @@ export default function SupplierDesk() {
             </div>
           </div>
         </DialogContent>
-      </Dialog>  </div>
+      </Dialog>
 
       <Dialog open={categoryDialogOpen} onOpenChange={(open) => { if (!open && !categoryIsPending) { categoryForm.reset(); setCategoryDialogOpen(false); } }}>
         <DialogContent className="max-w-xl">
@@ -684,7 +684,6 @@ export default function SupplierDesk() {
                   </Button>
                 </fieldset>
               </form>
-              </div>
             </div>
 
             <div className="space-y-2">
