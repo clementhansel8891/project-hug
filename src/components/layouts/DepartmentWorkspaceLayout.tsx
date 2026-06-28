@@ -168,7 +168,7 @@ export default function DepartmentWorkspaceLayout({
 
       <PageShell
         header={
-          <div className="space-y-4 px-4 md:px-10 py-4 md:py-8 border-b border-white/5 bg-white/5 backdrop-blur-md">
+          <div className="space-y-4 px-4 md:px-10 py-4 md:py-8 border-b border-border bg-background/80 backdrop-blur-md">
             <div className="flex items-center gap-3">
               {/* Mobile hamburger */}
               <Button
@@ -221,7 +221,7 @@ export default function DepartmentWorkspaceLayout({
                      <HeaderIcon className="h-6 w-6 md:h-10 md:w-10 text-white" />
                   </div>
                   <div>
-                     <h2 className="text-xl md:text-5xl font-black tracking-tighter text-muted-foreground dark:text-white uppercase italic leading-none">{title}</h2>
+                     <h2 className="text-xl md:text-5xl font-black tracking-tighter text-foreground uppercase italic leading-none">{title}</h2>
                      <p className="text-[8px] md:text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] leading-relaxed italic mt-2 md:mt-4 flex items-center gap-2">
                         <Target className={cn("h-3 w-3 md:h-4 md:w-4", textC)} /> {subtitle}
                      </p>
@@ -230,7 +230,7 @@ export default function DepartmentWorkspaceLayout({
                
                <div className="flex items-center gap-2 md:gap-4">
                   {headerActions}
-                  <div className="hidden sm:flex items-center gap-3 bg-white dark:bg-muted px-4 py-2.5 rounded-2xl border border-border dark:border-white/5 shadow-sm">
+                  <div className="hidden sm:flex items-center gap-3 bg-background px-4 py-2.5 rounded-2xl border border-border shadow-sm">
                      <span className={cn("h-1.5 w-1.5 rounded-full animate-pulse", bgC)} />
                      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Telemetry Active</span>
                   </div>
@@ -242,7 +242,7 @@ export default function DepartmentWorkspaceLayout({
           </div>
         }
         left={
-          <div className="h-full flex flex-col bg-white/40 dark:bg-muted backdrop-blur-2xl border-r border-border/50 dark:border-white/5 relative overflow-hidden w-64 md:w-80">
+          <div className="h-full flex flex-col bg-card backdrop-blur-2xl border-r border-border relative overflow-hidden w-64 md:w-80">
             <div className={cn("absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b pointer-events-none opacity-20", fromC5)} />
             
             <ScrollArea className="flex-1 relative z-10">
@@ -282,15 +282,15 @@ export default function DepartmentWorkspaceLayout({
               </div>
             </ScrollArea>
             
-            <div className="p-6 border-t border-border/50 dark:border-white/5 bg-white/20 dark:bg-muted backdrop-blur-3xl relative z-10">
-               <div className="flex items-center justify-between p-5 rounded-[1.5rem] bg-white dark:bg-white/5 shadow-xl border border-border dark:border-white/5 group hover:shadow-2xl transition-all duration-500 cursor-pointer">
+            <div className="p-6 border-t border-border bg-card backdrop-blur-3xl relative z-10">
+               <div className="flex items-center justify-between p-5 rounded-[1.5rem] bg-background shadow-xl border border-border group hover:shadow-2xl transition-all duration-500 cursor-pointer">
                   <div className="flex items-center gap-4">
                      <div className="relative">
                         <div className={cn("h-2.5 w-2.5 rounded-full animate-ping absolute inset-0 opacity-40", bgC)} />
                         <div className={cn("h-2.5 w-2.5 rounded-full relative z-10 shadow-lg", bgC)} />
                      </div>
                      <div className="space-y-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground dark:text-white leading-none">{pulseLabel}</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground leading-none">{pulseLabel}</p>
                         <p className={cn("text-[8px] font-black uppercase tracking-[0.2em] animate-pulse italic leading-none", textC)}>Operational</p>
                      </div>
                   </div>

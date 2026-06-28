@@ -60,7 +60,7 @@ export async function apiRequest<T>(
     headers["x-tenant-id"] = finalTenantId;
   }
 
-  const finalLocationId = locationId || session?.location_id;
+  const finalLocationId = locationId;
   if (finalLocationId) {
     headers["x-location-id"] = finalLocationId;
   }

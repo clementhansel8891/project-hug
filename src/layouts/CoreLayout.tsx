@@ -145,12 +145,13 @@ export function CoreLayout() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar — hidden entirely on desktop when inside department workspace (has own nav) */}
       <aside
         className={cn(
           "fixed lg:static inset-y-0 left-0 z-50 bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out border-r border-sidebar-border shadow-xl",
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          isCollapsed ? "w-20" : "w-64"
+          isCollapsed ? "w-20" : "w-64",
+          isInDepartmentWorkspace && "lg:hidden"
         )}
       >
         <div className="flex flex-col h-full relative">
