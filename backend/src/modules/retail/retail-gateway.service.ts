@@ -299,9 +299,10 @@ export class RetailGatewayService {
     const rCtx = await this.resolveCompanyCtx(ctx);
     let cart = await this.retailService.getCart(rCtx, customer_id);
     if (!cart) {
-      cart = await this.retailService.createCart(rCtx, customer_id);
+      await this.retailService.createCart(rCtx, customer_id);
+      cart = await this.retailService.getCart(rCtx, customer_id);
     }
-    return this.mapCartResponse(cart);
+    return this.mapCartResponse(cart || { id: null, retail_cart_items: [] });
   }
 
   async addToCart(ctx: TenantContext, customer_id: string, data: CartItemDto) {
@@ -371,9 +372,10 @@ export class RetailGatewayService {
     const rCtx = await this.resolveCompanyCtx(ctx);
     let wishlist = await this.retailService.getWishlist(rCtx, customer_id);
     if (!wishlist) {
-      wishlist = await this.retailService.upsertWishlist(rCtx, customer_id);
+      await this.retailService.upsertWishlist(rCtx, customer_id);
+      wishlist = await this.retailService.getWishlist(rCtx, customer_id);
     }
-    return this.mapWishlistResponse(wishlist);
+    return this.mapWishlistResponse(wishlist || { id: null, retail_wishlist_items: [] });
   }
 
   async addToWishlist(
@@ -709,14 +711,15 @@ export class RetailGatewayService {
   }
 
   private mapCartResponse(cart: any) {
-    const items = cart.items.map((item: any) => ({
+    const rawItems = cart.retail_cart_items || cart.items || [];
+    const items = rawItems.map((item: any) => ({
       id: item.id,
       product_id: item.product_id,
-      sku: item.product?.sku,
-      name: item.product?.name,
-      quantity: item.quantity,
+      sku: item.item_masters?.sku || item.product?.sku,
+      name: item.item_masters?.name || item.product?.name,
+      quantity: Number(item.quantity),
       unit_price: Number(item.unit_price),
-      totalPrice: Number(item.unit_price) * item.quantity,
+      totalPrice: Number(item.unit_price) * Number(item.quantity),
     }));
 
     const subtotal = items.reduce(
@@ -734,13 +737,14 @@ export class RetailGatewayService {
   }
 
   private mapWishlistResponse(wishlist: any) {
+    const rawItems = wishlist.retail_wishlist_items || wishlist.items || [];
     return {
       id: wishlist.id,
-      items: wishlist.items.map((item: any) => ({
+      items: rawItems.map((item: any) => ({
         id: item.id,
         product_id: item.product_id,
-        sku: item.product?.sku,
-        name: item.product?.name,
+        sku: item.item_masters?.sku || item.product?.sku,
+        name: item.item_masters?.name || item.product?.name,
       })),
     };
   }
