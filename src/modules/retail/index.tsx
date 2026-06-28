@@ -24,6 +24,8 @@ import StaffAssignments from "@/pages/retail/management/StaffAssignments";
 import ShiftControl from "@/pages/retail/management/ShiftControl";
 
 import EcommerceConnector from "@/pages/retail/management/EcommerceConnector";
+import { EcommerceAnalytics } from "@/pages/retail/management/EcommerceAnalytics";
+import { RetailCustomerActivity as RetailCustomerActivityBase } from "@/pages/retail/management/RetailCustomerActivity";
 import InfrastructureControl from "@/pages/retail/management/InfrastructureControl";
 import OrderFulfillment from "@/pages/retail/management/OrderFulfillment";
 import PricingPromoDesk from "@/pages/retail/management/PricingPromoDesk";
@@ -55,6 +57,7 @@ import LogHub from "@/pages/core/logs/LogHub";
 import WorkflowInbox from "@/pages/core/WorkflowInbox";
 
 // Governance Wrappers
+const RetailCustomerActivity = () => <RetailCustomerActivityBase />;
 const RetailSchedulePage = () => <DepartmentScheduleStudio workspaceDeptId="RETAIL" title="Retail Operations" noShell={true} />;
 const RetailAttendancePage = () => <DepartmentAttendanceStudio workspaceDeptId="RETAIL" title="Retail Operations" noShell={true} />;
 const RetailAdminPage = () => <DeptAdmin departmentId="RETAIL" departmentName="Retail Operations" noShell={true} />;
@@ -176,6 +179,26 @@ const PAGES: ReadonlyArray<ModulePageDefinition> = [
     menuGroup: "management",
     requiredPermissions: [PERMISSIONS.RETAIL_ACCESS],
     component: EcommerceConnector,
+  },
+  {
+    id: "mgt-ecommerce-analytics",
+    moduleId: MODULE_ID,
+    title: "E-Commerce Analytics",
+    route: "/m/retail/management/ecommerce-analytics",
+    icon: "BarChart3",
+    menuGroup: "management",
+    requiredPermissions: [PERMISSIONS.RETAIL_ACCESS],
+    component: EcommerceAnalytics,
+  },
+  {
+    id: "mgt-customers",
+    moduleId: MODULE_ID,
+    title: "Customer Activity",
+    route: "/m/retail/management/customers",
+    icon: "Users",
+    menuGroup: "management",
+    requiredPermissions: [PERMISSIONS.RETAIL_ACCESS],
+    component: RetailCustomerActivity,
   },
   {
     id: "mgt-infrastructure",

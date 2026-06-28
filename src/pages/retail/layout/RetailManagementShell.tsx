@@ -59,7 +59,7 @@ const SECTIONS: MenuSection[] = [
   {
     title: "E-COMMERCE",
     items: [
-      { label: "Commerce Channels", to: "/m/retail/management/channels", icon: Globe2 },
+      { label: "Commerce Channels", to: "/m/retail/management/ecommerce", icon: Globe2 },
       { label: "E-Commerce Analytics", to: "/m/retail/management/ecommerce-analytics", icon: BarChart2 },
       { label: "Customer Activity", to: "/m/retail/management/customers", icon: UserCheck },
     ],
