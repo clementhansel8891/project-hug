@@ -117,9 +117,9 @@ export class PublicOrderItemDto {
 }
 
 export class RetailPublicOrderRequestDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  externalReference: string;
+  externalReference?: string;
 
   @IsOptional()
   @ValidateNested()

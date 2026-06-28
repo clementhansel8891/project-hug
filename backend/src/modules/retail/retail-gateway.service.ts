@@ -231,13 +231,14 @@ export class RetailGatewayService {
       resolvedCtx,
       data.email,
     );
-    if (!customer || !customer.auth) {
+    const customerAuth = customer?.retail_customer_auth || customer?.auth;
+    if (!customer || !customerAuth) {
       throw new UnauthorizedException("Invalid email or password");
     }
 
     const isValid = await bcrypt.compare(
       data.password,
-      customer.auth.password_hash,
+      customerAuth.password_hash,
     );
     if (!isValid) {
       throw new UnauthorizedException("Invalid email or password");
@@ -295,32 +296,34 @@ export class RetailGatewayService {
   // --- Cart ---
 
   async getCart(ctx: TenantContext, customer_id: string) {
-    let cart = await this.retailService.getCart(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    let cart = await this.retailService.getCart(rCtx, customer_id);
     if (!cart) {
-      cart = await this.retailService.createCart(ctx, customer_id);
+      cart = await this.retailService.createCart(rCtx, customer_id);
     }
     return this.mapCartResponse(cart);
   }
 
   async addToCart(ctx: TenantContext, customer_id: string, data: CartItemDto) {
-    let cart = await this.retailService.getCart(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    let cart = await this.retailService.getCart(rCtx, customer_id);
     if (!cart) {
-      cart = await this.retailService.createCart(ctx, customer_id);
+      cart = await this.retailService.createCart(rCtx, customer_id);
     }
 
     const { items: products } = await this.retailService.listProducts(
-      ctx,
+      rCtx,
       { page: 1, pageSize: 200 },
     );
     const product = products.find((p) => p.id === data.product_id);
     if (!product) throw new NotFoundException("Product not found");
 
-    await this.retailService.updateCartItem(ctx, cart.id, data.product_id, {
+    await this.retailService.updateCartItem(rCtx, cart.id, data.product_id, {
       quantity: new Prisma.Decimal(data.quantity),
       unit_price: new Prisma.Decimal(String(product.base_price)),
     });
 
-    return this.getCart(ctx, customer_id);
+    return this.getCart(rCtx, customer_id);
   }
 
   async updateCartItem(
@@ -329,42 +332,46 @@ export class RetailGatewayService {
     item_id: string,
     data: UpdateCartItemDto,
   ) {
-    const cart = await this.retailService.getCart(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    const cart = await this.retailService.getCart(rCtx, customer_id);
     if (!cart) throw new NotFoundException("Cart not found");
 
     const item = cart.items.find((i: any) => i.id === item_id);
     if (!item) throw new NotFoundException("Item not found in cart");
 
-    await this.retailService.updateCartItem(ctx, cart.id, item.product_id, {
+    await this.retailService.updateCartItem(rCtx, cart.id, item.product_id, {
       quantity: new Prisma.Decimal(data.quantity),
       unit_price: new Prisma.Decimal(String(item.unit_price)),
     });
 
-    return this.getCart(ctx, customer_id);
+    return this.getCart(rCtx, customer_id);
   }
 
   async removeFromCart(ctx: TenantContext, customer_id: string, item_id: string) {
-    const cart = await this.retailService.getCart(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    const cart = await this.retailService.getCart(rCtx, customer_id);
     if (!cart) throw new NotFoundException("Cart not found");
 
-    await this.retailService.removeCartItem(ctx, cart.id, item_id);
-    return this.getCart(ctx, customer_id);
+    await this.retailService.removeCartItem(rCtx, cart.id, item_id);
+    return this.getCart(rCtx, customer_id);
   }
 
   async clearCart(ctx: TenantContext, customer_id: string) {
-    const cart = await this.retailService.getCart(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    const cart = await this.retailService.getCart(rCtx, customer_id);
     if (!cart) return { success: true };
 
-    await this.retailService.clearCart(ctx, cart.id);
+    await this.retailService.clearCart(rCtx, cart.id);
     return { success: true };
   }
 
   // --- Wishlist ---
 
   async getWishlist(ctx: TenantContext, customer_id: string) {
-    let wishlist = await this.retailService.getWishlist(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    let wishlist = await this.retailService.getWishlist(rCtx, customer_id);
     if (!wishlist) {
-      wishlist = await this.retailService.upsertWishlist(ctx, customer_id);
+      wishlist = await this.retailService.upsertWishlist(rCtx, customer_id);
     }
     return this.mapWishlistResponse(wishlist);
   }
@@ -374,15 +381,16 @@ export class RetailGatewayService {
     customer_id: string,
     data: WishlistItemDto,
   ) {
-    let wishlist = await this.retailService.getWishlist(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    let wishlist = await this.retailService.getWishlist(rCtx, customer_id);
     if (!wishlist) {
-      wishlist = await this.retailService.upsertWishlist(ctx, customer_id);
+      wishlist = await this.retailService.upsertWishlist(rCtx, customer_id);
     }
 
     let product_id = data.product_id;
     if (!product_id && data.sku) {
       const { items: products } = await this.retailService.listProducts(
-        ctx,
+        rCtx,
         { page: 1, pageSize: 200 },
       );
       const product = products.find((p) => p.sku === data.sku);
@@ -391,8 +399,8 @@ export class RetailGatewayService {
 
     if (!product_id) throw new NotFoundException("Product not found");
 
-    await this.retailService.addWishlistItem(ctx, wishlist.id, product_id);
-    return this.getWishlist(ctx, customer_id);
+    await this.retailService.addWishlistItem(rCtx, wishlist.id, product_id);
+    return this.getWishlist(rCtx, customer_id);
   }
 
   async removeFromWishlist(
@@ -400,11 +408,12 @@ export class RetailGatewayService {
     customer_id: string,
     item_id: string,
   ) {
-    const wishlist = await this.retailService.getWishlist(ctx, customer_id);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+    const wishlist = await this.retailService.getWishlist(rCtx, customer_id);
     if (!wishlist) throw new NotFoundException("Wishlist not found");
 
-    await this.retailService.removeWishlistItem(ctx, wishlist.id, item_id);
-    return this.getWishlist(ctx, customer_id);
+    await this.retailService.removeWishlistItem(rCtx, wishlist.id, item_id);
+    return this.getWishlist(rCtx, customer_id);
   }
 
   // --- Orders ---
@@ -741,23 +750,36 @@ export class RetailGatewayService {
     clientId: string,
     clientSecret: string,
     payload: {
-      from_phone: string;
+      from?: string;
+      from_phone?: string;
       body: string;
       external_id?: string;
       customer_id?: string;
     },
   ) {
     await this.authenticateChannel(ctx, clientId, clientSecret);
+    const rCtx = await this.resolveCompanyCtx(ctx);
+
+    const phone = payload.from_phone || payload.from;
 
     // 1. Identify or register customer by phone
-    let customer = await this.retailService.getCustomerByPhone(ctx, payload.from_phone);
+    let customer = phone ? await this.retailService.getCustomerByPhone(rCtx, phone) : null;
     if (!customer && payload.customer_id) {
-      customer = await this.retailService.getCustomerById(ctx, payload.customer_id);
+      customer = await this.retailService.getCustomerById(rCtx, payload.customer_id);
+    }
+
+    if (!customer && phone) {
+      // Auto-register customer from WhatsApp contact
+      customer = await this.retailService.createCustomer(rCtx, {
+        name: `WhatsApp ${phone}`,
+        email: `wa-${phone.replace(/[^0-9]/g, '')}@storefront.local`,
+        phone: phone,
+      });
     }
 
     if (!customer) {
-      console.warn(`[Chat Bridge] Unknown sender ${payload.from_phone}. Ignoring...`);
-      return { success: false, error: "Customer not found" };
+      console.warn(`[Chat Bridge] Unknown sender ${phone}. Cannot resolve customer.`);
+      return { success: false, error: "Customer not found and no phone provided" };
     }
 
     // 2. Resolve or create chat room for this customer
