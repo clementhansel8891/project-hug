@@ -34,7 +34,7 @@ export class RetailEventsService {
     const auditEntry = await this.prisma.audit_logs.create({
       data: {
           updated_at: new Date(),
-        id: "9rqvpdqj",
+        id: crypto.randomUUID(),
         tenant_id: event.scope?.tenant_id!,
         module: "retail",
         action: event.type,
