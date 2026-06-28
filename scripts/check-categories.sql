@@ -1,2 +1,2 @@
-SELECT company_id, COUNT(*) as cat_count FROM product_categories WHERE tenant_id = 'tnt-3rlhko' GROUP BY company_id;
-SELECT id, name, tenant_id, company_id FROM product_categories WHERE tenant_id = 'tnt-3rlhko' LIMIT 10;
+SELECT company_id, COUNT(*) as cats FROM product_categories WHERE tenant_id = 'tnt-3rlhko' GROUP BY company_id;
+SELECT id, name, company_id FROM product_categories WHERE tenant_id = 'tnt-3rlhko' LIMIT 10;
