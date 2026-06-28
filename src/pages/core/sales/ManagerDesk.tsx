@@ -311,7 +311,7 @@ export default function ManagerDesk() {
                                  )}
                               </div>
                               <div className="space-y-1">
-                                 <p className="text-xs font-black uppercase tracking-tight text-muted-foreground dark:text-white">{alert.type.replace('_', ' ')}</p>
+                                 <p className="text-xs font-black uppercase tracking-tight text-foreground">{alert.type.replace('_', ' ')}</p>
                                  <p className="text-[11px] font-medium text-muted-foreground leading-relaxed italic">"{alert.message}"</p>
                               </div>
                               <div className="pt-2 flex justify-between items-center text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground">

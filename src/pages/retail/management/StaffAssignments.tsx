@@ -280,7 +280,7 @@ const StaffAssignments = () => {
                 <div className="relative flex-1">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
                   <Input
-                    className="pl-12 h-12 bg-secondary/5 border-none rounded-xl text-sm font-bold italic placeholder:text-muted-foreground/60 focus-visible:ring-primary"
+                    className="pl-12 h-12 bg-secondary/5 border-none rounded-xl text-sm font-bold italic placeholder:text-muted-foreground focus-visible:ring-primary"
                     placeholder="Search Personnel, Role, or ID..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -453,7 +453,7 @@ const StaffAssignments = () => {
                                     variant="ghost"
                                     size="icon"
                                     onClick={(e) => e.stopPropagation()}
-                                    className="h-8 w-8 rounded-xl text-muted-foreground/60 hover:text-muted-foreground hover:bg-secondary/10"
+                                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-muted-foreground hover:bg-secondary/10"
                                   >
                                     <MoreHorizontal className="w-4 h-4" />
                                   </Button>

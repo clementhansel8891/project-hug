@@ -262,7 +262,7 @@ const ShiftCloseTerminal = () => {
                     Petty Cash: {netAdjustments < 0 ? "-" : "+"}{formatCurrency(Math.abs(netAdjustments), "IDR", "id-ID")}
                   </div>
                 )}
-                <p className="text-[10px] text-primary mt-4 uppercase font-black italic tracking-widest opacity-60">
+                <p className="text-[10px] text-primary mt-4 uppercase font-black italic tracking-widest">
                   Aggregated from Live Transaction Stream
                 </p>
               </CardContent>
@@ -278,7 +278,7 @@ const ShiftCloseTerminal = () => {
                 <div className="text-6xl font-black text-foreground tracking-tighter italic">
                   {formatCurrency(expectedCard, "IDR", "id-ID")}
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-4 uppercase font-black italic tracking-widest opacity-60 text-right">
+                <p className="text-[10px] text-muted-foreground mt-4 uppercase font-black italic tracking-widest text-right">
                   Verified PCI Gateway Consolidations
                 </p>
               </CardContent>

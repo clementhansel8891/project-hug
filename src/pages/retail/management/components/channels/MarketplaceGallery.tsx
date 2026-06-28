@@ -28,7 +28,7 @@ export const MarketplaceGallery = ({ onSelect }: MarketplaceGalleryProps) => {
         </h3>
         <Badge
           variant="outline"
-          className="font-black italic text-[9px] border-border uppercase opacity-60"
+          className="font-black italic text-[9px] border-border uppercase"
         >
           Regional Presets
         </Badge>

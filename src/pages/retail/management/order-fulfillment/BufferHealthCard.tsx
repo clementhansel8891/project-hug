@@ -16,7 +16,7 @@ export const BufferHealthCard = () => {
         <div className="text-2xl font-black italic tracking-tighter text-success flex items-baseline gap-1">
           {safePercentage}%
         </div>
-        <div className="text-[10px] font-bold italic opacity-60 mt-4 uppercase leading-relaxed">
+        <div className="text-[10px] font-bold italic  mt-4 uppercase leading-relaxed">
           Catalog Safe for E-Commerce Visibility
           <br />
           ATS {"=>"} SOH - Safety Buffer

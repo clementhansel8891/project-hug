@@ -234,10 +234,10 @@ export default function OmnichannelInbox() {
 
   return (
     <div className="p-4 h-[calc(100vh-120px)] animate-in fade-in duration-700">
-      <div className="h-full flex gap-0 overflow-hidden bg-white/40 dark:bg-muted backdrop-blur-3xl border border-white/20 dark:border-border/20 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.25)] relative">
+      <div className="h-full flex gap-0 overflow-hidden bg-white/40 dark:bg-muted backdrop-blur-3xl border border-border rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.25)] relative">
         {/* Sidebar: Strategic Registry */}
-        <div className="w-96 border-r border-white/10 dark:border-border/10 flex flex-col bg-white/40 dark:bg-muted backdrop-blur-xl shrink-0">
-          <div className="p-8 border-b border-white/10 dark:border-border/10 space-y-8">
+        <div className="w-96 border-r border-border flex flex-col bg-white/40 dark:bg-muted backdrop-blur-xl shrink-0">
+          <div className="p-8 border-b border-border space-y-8">
             <div className="flex items-center justify-between">
                <div className="space-y-1">
                   <h2 className="text-3xl font-black tracking-tighter uppercase italic leading-none">Inbox</h2>
@@ -377,13 +377,13 @@ export default function OmnichannelInbox() {
                         </Avatar>
                         <div className="flex-1 min-w-0 py-0.5 space-y-1">
                            <div className="flex justify-between items-center">
-                              <p className="text-sm font-black uppercase tracking-tight text-muted-foreground dark:text-white group-hover:text-primary transition-colors italic leading-none">{conv.contactName}</p>
+                              <p className="text-sm font-black uppercase tracking-tight text-foreground group-hover:text-primary transition-colors italic leading-none">{conv.contactName}</p>
                               <span className="text-[9px] font-black text-muted-foreground uppercase tracking-tighter">
                                 {conv.lastTimestamp ? new Date(conv.lastTimestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
                               </span>
                            </div>
-                           <p className="text-[11px] font-medium text-muted-foreground dark:text-muted-foreground line-clamp-1 italic italic leading-relaxed italic truncate">"{conv.lastMessage}"</p>
-                           <div className="flex items-center justify-between mt-2 pt-1 border-t border-white/10 dark:border-border/10">
+                           <p className="text-[11px] font-medium text-muted-foreground line-clamp-1 italic italic leading-relaxed italic truncate">"{conv.lastMessage}"</p>
+                           <div className="flex items-center justify-between mt-2 pt-1 border-t border-border">
                               <div className="flex items-center gap-3">
                                  <div className={cn(
                                    "p-1.5 rounded-lg shadow-sm",
@@ -419,7 +419,7 @@ export default function OmnichannelInbox() {
           {selectedConv ? (
             <>
               {/* Chat Header */}
-              <div className="p-8 border-b border-white/10 dark:border-border/10 flex items-center justify-between shrink-0 bg-white/60 dark:bg-muted backdrop-blur-2xl z-10">
+              <div className="p-8 border-b border-border flex items-center justify-between shrink-0 bg-white/60 dark:bg-muted backdrop-blur-2xl z-10">
                 <div className="flex items-center gap-6">
                   <Avatar className="h-16 w-16 rounded-2xl ring-4 ring-indigo-500/10 shadow-2xl group-hover:scale-110 transition-transform duration-500">
                     <AvatarFallback className="bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-primary font-black text-xl italic">
@@ -486,7 +486,7 @@ export default function OmnichannelInbox() {
                 ) : (
                   <div className="p-10 space-y-12 max-w-5xl mx-auto">
                     <div className="flex justify-center relative">
-                      <div className="absolute inset-x-0 top-1/2 h-px bg-white/10 dark:bg-muted -translate-y-1/2" />
+                      <div className="absolute inset-x-0 top-1/2 h-px bg-border -translate-y-1/2" />
                       <Badge variant="outline" className="relative z-10 text-[9px] font-black uppercase tracking-[0.3em] bg-white/80 dark:bg-muted backdrop-blur-md border-none shadow-xl py-2 px-6 rounded-full text-muted-foreground italic">
                         Quantum Link Authorized • High Priority Protocol
                       </Badge>
@@ -499,11 +499,11 @@ export default function OmnichannelInbox() {
                         <div key={msg.id} className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
                           {isNewDay && (
                             <div className="flex items-center gap-6 py-6">
-                              <div className="h-px flex-1 bg-white/10 dark:bg-muted" />
-                              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic opacity-60">
+                              <div className="h-px flex-1 bg-border" />
+                              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">
                                 {new Date(msg.sent_at).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
                               </span>
-                              <div className="h-px flex-1 bg-white/10 dark:bg-muted" />
+                              <div className="h-px flex-1 bg-border" />
                             </div>
                           )}
                           
@@ -515,7 +515,7 @@ export default function OmnichannelInbox() {
                               "max-w-[75%] p-6 rounded-[2.5rem] text-sm shadow-2xl relative overflow-hidden group/msg",
                               msg.direction === 'OUTBOUND' 
                                 ? "bg-primary text-white rounded-tr-none shadow-indigo-500/20" 
-                                : "bg-white/80 dark:bg-muted text-muted-foreground dark:text-muted-foreground rounded-tl-none border border-white/20 dark:border-border/20 shadow-black/5 backdrop-blur-md"
+                                : "bg-white/80 dark:bg-muted text-muted-foreground rounded-tl-none border border-border shadow-black/5 backdrop-blur-md"
                             )}>
                               {msg.direction === 'OUTBOUND' && (
                                 <div className="absolute top-0 right-0 h-24 w-24 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12 group-hover/msg:scale-150 transition-transform duration-700" />
@@ -528,7 +528,7 @@ export default function OmnichannelInbox() {
                               "flex items-center gap-3 px-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0",
                               msg.direction === 'OUTBOUND' ? "flex-row-reverse" : "flex-row"
                             )}>
-                              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic opacity-60">
+                              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic">
                                 {new Date(msg.sent_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                                 {msg.direction === 'OUTBOUND' && (
@@ -549,7 +549,7 @@ export default function OmnichannelInbox() {
               </ScrollArea>
 
               {/* Message Input Cluster */}
-              <div className="p-8 border-t border-white/10 dark:border-border/10 shrink-0 bg-white/60 dark:bg-muted backdrop-blur-2xl z-10">
+              <div className="p-8 border-t border-border shrink-0 bg-white/60 dark:bg-muted backdrop-blur-2xl z-10">
                 <div className="max-w-5xl mx-auto flex items-end gap-6">
                   <div className="flex gap-2 pb-2">
                      <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/50 dark:bg-muted shadow-md hover:scale-110 transition-all text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
@@ -614,8 +614,8 @@ export default function OmnichannelInbox() {
 
         {/* Right Sidebar: Intelligence Matrix */}
         {selectedConv && (
-          <div className="w-96 border-l border-white/10 dark:border-border/10 bg-white/40 dark:bg-muted backdrop-blur-xl flex flex-col shrink-0 overflow-y-auto animate-in slide-in-from-right duration-700">
-            <div className="p-10 text-center bg-white/60 dark:bg-muted backdrop-blur-2xl border-b border-white/10 dark:border-border/10">
+          <div className="w-96 border-l border-border bg-white/40 dark:bg-muted backdrop-blur-xl flex flex-col shrink-0 overflow-y-auto animate-in slide-in-from-right duration-700">
+            <div className="p-10 text-center bg-white/60 dark:bg-muted backdrop-blur-2xl border-b border-border">
               <div className="relative mx-auto w-32 h-32 mb-8">
                 <div className="absolute inset-0 bg-primary rounded-full animate-ping blur-xl" />
                 <Avatar className="h-32 w-32 border-8 border-white dark:border-border shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] relative group-hover:scale-105 transition-transform duration-500">
@@ -641,7 +641,7 @@ export default function OmnichannelInbox() {
                   <BrainCircuit className="h-4 w-4 text-primary" />
                 </div>
                 
-                <div className="bg-white/60 dark:bg-muted backdrop-blur-md rounded-[2.5rem] p-8 shadow-2xl border border-white/20 dark:border-border/20 space-y-8">
+                <div className="bg-white/60 dark:bg-muted backdrop-blur-md rounded-[2.5rem] p-8 shadow-2xl border border-border space-y-8">
                   <div className="space-y-3">
                     <div className="flex justify-between items-end">
                       <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">Growth Index</span>
@@ -652,7 +652,7 @@ export default function OmnichannelInbox() {
                     </div>
                   </div>
                   
-                  <div className="flex justify-between items-center pt-2 border-t border-white/10">
+                  <div className="flex justify-between items-center pt-2 border-t border-border">
                     <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">Lead Rating</span>
                     <Badge className="bg-primary text-white font-black text-[9px] uppercase tracking-widest px-4 py-1 h-6 rounded-full border-none shadow-lg shadow-indigo-500/20">PREMIUM</Badge>
                   </div>
@@ -661,7 +661,7 @@ export default function OmnichannelInbox() {
 
               <div className="space-y-6">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic leading-none">Environment</p>
-                <div className="space-y-6 bg-white/40 dark:bg-muted p-8 rounded-[2.5rem] border border-white/10 dark:border-border/10 shadow-sm backdrop-blur-md">
+                <div className="space-y-6 bg-white/40 dark:bg-muted p-8 rounded-[2.5rem] border border-border shadow-sm backdrop-blur-md">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-3"><Globe className="h-4 w-4 text-primary" /> REGION</span>
                     <span className="text-xs font-black uppercase italic">CALIFORNIA, US</span>
@@ -680,7 +680,7 @@ export default function OmnichannelInbox() {
                      VIEW 360 REPORT
                    </Link>
                  </Button>
-                 <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/20 dark:bg-muted border border-white/10">
+                 <div className="flex items-start gap-4 p-5 rounded-2xl bg-white/20 dark:bg-muted border border-border">
                     <Target className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                     <p className="text-[10px] text-muted-foreground font-medium leading-relaxed italic">
                       "Strategic Insight: Client demonstrates high intent for Enterprise Q4. Authorize high-touch conversion protocol."

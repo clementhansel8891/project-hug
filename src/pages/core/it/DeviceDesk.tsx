@@ -148,7 +148,7 @@ export default function DeviceDesk() {
              <div className="absolute top-0 right-0 p-8 opacity-10">
                 <Laptop className="h-24 w-24" />
              </div>
-             <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60 mb-2">Device Management</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-foreground/80 mb-2">Device Management</p>
              <h3 className="text-3xl font-black tracking-tighter uppercase italic">{selectedDevice?.deviceName}</h3>
           </div>
           <div className="p-8 space-y-6">

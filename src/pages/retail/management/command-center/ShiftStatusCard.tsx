@@ -56,7 +56,7 @@ export const ShiftStatusCard: React.FC<ShiftStatusCardProps> = ({
           </div>
           <p
             className={cn(
-              "text-xs font-bold uppercase tracking-widest italic opacity-60",
+              "text-xs font-bold uppercase tracking-widest italic ",
               activeShift ? "text-primary" : "text-muted-foreground",
             )}
           >

@@ -156,14 +156,14 @@ export default function SalesAuditLog() {
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
-                <History className="h-6 w-6 text-muted-foreground dark:text-white" />
+                <History className="h-6 w-6 text-foreground" />
                 Strategic Operation Trail
               </CardTitle>
               <CardDescription className="text-sm font-medium">Global auditable events for stage transitions, approval nodes, and high-stakes engagements.</CardDescription>
             </div>
             <div className="flex gap-4">
                <div className="flex bg-muted dark:bg-muted p-1.5 rounded-[1.5rem] shadow-inner">
-                  <Button variant="ghost" size="sm" className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest bg-white dark:bg-muted shadow-md text-muted-foreground dark:text-white">ALL OPERATIONS</Button>
+                  <Button variant="ghost" size="sm" className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest bg-white dark:bg-muted shadow-md text-foreground">ALL OPERATIONS</Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate("/core/compliance")} className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors">FINANCIAL</Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate("/core/compliance")} className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors">SECURITY</Button>
                </div>
@@ -187,12 +187,12 @@ export default function SalesAuditLog() {
                   <tr key={item.id} className="group hover:bg-muted dark:hover:bg-muted transition-all cursor-default">
                     <td className="px-10 py-8">
                        <div className="space-y-1">
-                          <p className="text-xs font-black uppercase tracking-tight text-muted-foreground dark:text-white">{formatDate(item.createdAt)}</p>
+                          <p className="text-xs font-black uppercase tracking-tight text-foreground">{formatDate(item.createdAt)}</p>
                           <p className="text-[10px] font-bold text-muted-foreground">{new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</p>
                        </div>
                     </td>
                     <td className="px-10 py-8">
-                       <Badge variant="outline" className="rounded-full font-black text-[9px] px-3 py-1 border-border dark:border-border uppercase tracking-[0.1em] text-muted-foreground dark:text-white bg-white dark:bg-muted shadow-sm">{item.action}</Badge>
+                       <Badge variant="outline" className="rounded-full font-black text-[9px] px-3 py-1 border-border dark:border-border uppercase tracking-[0.1em] text-foreground bg-white dark:bg-muted shadow-sm">{item.action}</Badge>
                     </td>
                     <td className="px-10 py-8">
                        <div className="flex items-center gap-3">

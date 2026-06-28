@@ -183,7 +183,7 @@ const EcommerceConnector = () => {
                 <div className="text-2xl font-black italic tracking-tighter">
                   {k.value}
                 </div>
-                <div className="text-[9px] font-black uppercase tracking-widest opacity-60 mt-0.5">
+                <div className="text-[9px] font-black uppercase tracking-widest  mt-0.5">
                   {k.label}
                 </div>
               </div>

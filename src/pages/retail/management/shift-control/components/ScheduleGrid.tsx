@@ -276,7 +276,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
     }
 
     return (
-      <div className="bg-muted rounded-3xl border border-white/5 shadow-2xl backdrop-blur-3xl flex flex-col w-full h-full min-h-[600px] text-foreground">
+      <div className="bg-muted rounded-3xl border border-border shadow-2xl backdrop-blur-3xl flex flex-col w-full h-full min-h-[600px] text-foreground">
         <ViewControls
           viewMode={viewMode}
           onViewModeChange={onViewModeChange}
@@ -309,7 +309,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
                     !isCurrentMonth && "opacity-30 grayscale",
                     isToday
                       ? "bg-primary/10 border-primary"
-                      : "bg-muted border-white/5 hover:border-primary hover:shadow-lg",
+                      : "bg-muted border-border hover:border-primary hover:shadow-lg",
                   )}
                 >
                   <span
@@ -349,7 +349,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
   const visibleDates = getVisibleDays();
 
   return (
-    <div className="bg-muted rounded-3xl border border-white/5 shadow-2xl backdrop-blur-3xl flex flex-col w-full min-h-full text-foreground">
+    <div className="bg-muted rounded-3xl border border-border shadow-2xl backdrop-blur-3xl flex flex-col w-full min-h-full text-foreground">
       <ViewControls
         viewMode={viewMode}
         onViewModeChange={onViewModeChange}
@@ -360,8 +360,8 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
       <div className="w-full flex-1">
         <div className="flex flex-col w-full relative">
           {/* Days Header */}
-          <div className="flex border-b border-white/5 bg-muted sticky top-0 z-30 backdrop-blur-md">
-            <div className="w-20 shrink-0 border-r border-white/5 flex items-center justify-center bg-black/20">
+          <div className="flex border-b border-border bg-muted sticky top-0 z-30 backdrop-blur-md">
+            <div className="w-20 shrink-0 border-r border-border flex items-center justify-center bg-secondary/50">
               <Clock className="w-4 h-4 text-muted-foreground" />
             </div>
             {(Array.isArray(visibleDates) ? visibleDates : []).map((date, idx) => {
@@ -369,7 +369,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
               return (
                 <div
                   key={idx}
-                  className="flex-1 min-w-[150px] p-4 text-center border-r border-white/5 relative group"
+                  className="flex-1 min-w-[150px] p-4 text-center border-r border-border relative group"
                 >
                   <div
                     className={cn(
@@ -402,11 +402,11 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
 
           <div className="flex relative">
             {/* Time Axis */}
-            <div className="w-20 shrink-0 border-r border-white/5 bg-black/20 flex flex-col pt-2">
+            <div className="w-20 shrink-0 border-r border-border bg-secondary/50 flex flex-col pt-2">
               {(Array.isArray(HOURS) ? HOURS : []).map((hour) => (
                 <div
                   key={hour}
-                  className="h-20 border-b border-white/5 flex items-start justify-center pt-2"
+                  className="h-20 border-b border-border flex items-start justify-center pt-2"
                 >
                   <span className="text-[10px] font-bold text-muted-foreground uppercase">
                     {hour.toString().padStart(2, "0")}:00
@@ -420,13 +420,13 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
               {(Array.isArray(visibleDates) ? visibleDates : []).map((date, dayIdx) => (
                 <div
                   key={dayIdx}
-                  className="flex-1 min-w-[150px] border-r border-white/5 relative group h-full"
+                  className="flex-1 min-w-[150px] border-r border-border relative group h-full"
                   onDragOver={handleDragOver}
                 >
                   {(Array.isArray(HOURS) ? HOURS : []).map((hour) => (
                     <div
                       key={hour}
-                      className="h-20 border-b border-white/[0.03] relative hover:bg-primary/5 transition-colors"
+                      className="h-20 border-b border-border/50 relative hover:bg-primary/5 transition-colors"
                       onDrop={(e) => handleDrop(e, date.getDay(), hour)}
                       onClick={(e) => {
                         if (e.target === e.currentTarget)
@@ -478,7 +478,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({
                                 e.stopPropagation();
                                 onShiftDelete(shift.id);
                               }}
-                              className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/40 text-muted-foreground opacity-0 group-hover/shift:opacity-100 hover:text-destructive hover:bg-destructive transition-all z-40"
+                              className="absolute top-2 right-2 p-1.5 rounded-lg bg-secondary text-muted-foreground opacity-0 group-hover/shift:opacity-100 hover:text-destructive hover:bg-destructive transition-all z-40"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -528,8 +528,8 @@ const ViewControls = ({
   onDateChange: (date: Date) => void;
 }) => {
   return (
-    <div className="p-6 border-b border-white/5 flex flex-col lg:flex-row items-center justify-between gap-6 bg-muted sticky top-0 z-40 backdrop-blur-md">
-      <div className="flex items-center gap-4 bg-black/40 p-1 rounded-2xl border border-white/5">
+    <div className="p-6 border-b border-border flex flex-col lg:flex-row items-center justify-between gap-6 bg-muted sticky top-0 z-40 backdrop-blur-md">
+      <div className="flex items-center gap-4 bg-secondary p-1 rounded-2xl border border-border">
         <Button
           variant="ghost"
           size="icon"
@@ -591,7 +591,7 @@ const ViewControls = ({
         </Button>
       </div>
 
-      <div className="flex items-center gap-1.5 bg-black/40 p-1.5 rounded-[1.25rem] border border-white/5">
+      <div className="flex items-center gap-1.5 bg-secondary p-1.5 rounded-[1.25rem] border border-border">
         {(["daily", "weekly", "monthly"] as const).map((mode) => (
           <Button
             key={mode}

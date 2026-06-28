@@ -132,7 +132,7 @@ export const AuditTrailModal: React.FC<AuditTrailModalProps> = ({
                       </div>
 
                       <div className="bg-secondary/60 hover:bg-secondary/60 transition-colors p-5 rounded-xl border border-white/5 space-y-4">
-                        <p className="text-[11px] font-medium text-muted-foreground/60 leading-relaxed italic">
+                        <p className="text-[11px] font-medium text-muted-foreground leading-relaxed italic">
                           &ldquo;{entry.details}&rdquo;
                         </p>
 

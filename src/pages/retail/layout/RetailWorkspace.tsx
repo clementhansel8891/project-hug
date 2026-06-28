@@ -101,7 +101,7 @@ const RetailWorkspace = () => {
     <GenesisGuard>
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* 1. Welcoming Hero */}
-        <div className="bg-secondary rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl">
+        <div className="bg-primary rounded-[2rem] p-8 text-primary-foreground relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 p-12 opacity-5">
             <Layout className="w-80 h-80" />
           </div>
@@ -139,7 +139,7 @@ const RetailWorkspace = () => {
                 {section.apps.map((app) => (
                   <Card
                     key={app.id}
-                    className="group hover:border-primary hover:shadow-2xl transition-all cursor-pointer bg-white/[0.03] border border-white/5 rounded-[2rem] overflow-hidden backdrop-blur-3xl"
+                    className="group hover:border-primary hover:shadow-2xl transition-all cursor-pointer bg-card border border-border rounded-[2rem] overflow-hidden backdrop-blur-3xl"
                     onClick={() => navigate(app.route)}
                   >
                     <CardContent className="p-6 space-y-4">
@@ -165,7 +165,7 @@ const RetailWorkspace = () => {
         </div>
 
         {/* 3. Operational Quick-Jump */}
-        <div className="p-1 border border-white/5 mt-12 bg-white/[0.02] rounded-[2.5rem] shadow-2xl flex items-center justify-between backdrop-blur-3xl">
+        <div className="p-1 border border-border mt-12 bg-card rounded-[2.5rem] shadow-2xl flex items-center justify-between backdrop-blur-3xl">
           <div className="px-8 flex items-center gap-4">
             <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
               <Monitor className="w-5 h-5 text-primary" />

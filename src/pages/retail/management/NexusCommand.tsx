@@ -175,7 +175,7 @@ export default function NexusCommand() {
                     <Rocket className="h-8 w-8 text-primary/70" />
                  </div>
                  <h3 className="text-2xl font-black italic tracking-tighter uppercase leading-none">Strategic <br /> Force Multiplier</h3>
-                 <p className="text-sm font-medium opacity-60 italic italic leading-relaxed">
+                 <p className="text-sm font-medium text-muted-foreground italic leading-relaxed">
                     Deploy executive resources across global subsidiaries to maximize operational yield and minimize risk.
                  </p>
               </div>

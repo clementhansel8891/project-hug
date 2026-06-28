@@ -57,7 +57,7 @@ export default function PulseDesk() {
           <div className="flex items-center gap-2 text-destructive font-black text-[10px] uppercase tracking-[0.3em]">
             <BrainCircuit className="h-3 w-3" /> Human Capital Intelligence Node
           </div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-muted-foreground dark:text-white">
+          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-foreground">
             Pulse Desk
           </h1>
           <p className="text-sm text-muted-foreground font-medium">Real-time organizational health, culture metrics, and workforce telemetry.</p>
@@ -101,7 +101,7 @@ export default function PulseDesk() {
                 <div className="space-y-1">
                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">{stat.label}</p>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-black tracking-tighter text-muted-foreground dark:text-white leading-none">{stat.value}</span>
+                    <span className="text-4xl font-black tracking-tighter text-foreground leading-none">{stat.value}</span>
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{stat.unit}</span>
                   </div>
                 </div>
@@ -120,7 +120,7 @@ export default function PulseDesk() {
         {/* Workforce Health Map */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
-             <h3 className="text-xl font-black tracking-tight uppercase italic text-muted-foreground dark:text-muted-foreground flex items-center gap-3">
+             <h3 className="text-xl font-black tracking-tight uppercase italic text-foreground flex items-center gap-3">
                <Activity className="h-6 w-6 text-destructive" /> Organizational Health Map
              </h3>
              <Badge className="bg-destructive text-destructive border-none px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-full">Active Monitoring</Badge>
@@ -131,7 +131,7 @@ export default function PulseDesk() {
               <div key={i} className="group p-8 rounded-[2rem] bg-white dark:bg-muted border border-border dark:border-border hover:shadow-xl transition-all duration-500">
                 <div className="flex items-center justify-between mb-6">
                   <div className="space-y-1">
-                    <p className="text-sm font-black text-muted-foreground dark:text-white uppercase tracking-tight italic">{item.label}</p>
+                    <p className="text-sm font-black text-foreground uppercase tracking-tight italic">{item.label}</p>
                     <p className={cn(
                       "text-[9px] font-black uppercase tracking-[0.2em]",
                       item.status === 'Healthy' ? "text-success" : 
@@ -139,7 +139,7 @@ export default function PulseDesk() {
                     )}>{item.status}</p>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-black tracking-tighter text-muted-foreground dark:text-white">{item.score}%</span>
+                    <span className="text-2xl font-black tracking-tighter text-foreground">{item.score}%</span>
                   </div>
                 </div>
                 <div className="h-2 w-full bg-muted dark:bg-muted rounded-full overflow-hidden">
@@ -160,16 +160,16 @@ export default function PulseDesk() {
         {/* Tactical Pulse Panel */}
         <div className="space-y-6">
            <div className="flex items-center gap-3">
-             <h3 className="text-xl font-black tracking-tight uppercase italic text-muted-foreground dark:text-muted-foreground flex items-center gap-3">
+             <h3 className="text-xl font-black tracking-tight uppercase italic text-foreground flex items-center gap-3">
                <Zap className="h-6 w-6 text-warning" /> Tactical Insights
              </h3>
            </div>
 
-           <div className="p-8 rounded-[3rem] bg-muted dark:bg-muted text-white relative overflow-hidden group shadow-2xl shadow-slate-900/20">
-              <div className="absolute top-0 right-0 h-40 w-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+           <div className="p-8 rounded-[3rem] bg-card border border-border text-foreground relative overflow-hidden group shadow-2xl">
+              <div className="absolute top-0 right-0 h-40 w-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-150 transition-transform duration-1000" />
               <div className="relative z-10 space-y-8">
                  <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 italic">Culture Pulse Sync</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground italic">Culture Pulse Sync</p>
                     <span className="h-2 w-2 rounded-full bg-success animate-pulse" />
                  </div>
 
@@ -181,20 +181,20 @@ export default function PulseDesk() {
                     <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Sentiment Hub Verification</p>
                  </div>
 
-                 <div className="space-y-4 pt-6 border-t border-white/10">
+                 <div className="space-y-4 pt-6 border-t border-border">
                     {[
                       { label: "Direct Reports", score: "94%" },
                       { label: "Cross-Functional", score: "82%" },
                       { label: "Leadership", score: "89%" },
                     ].map((row) => (
                       <div key={row.label} className="flex items-center justify-between">
-                         <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">{row.label}</span>
+                         <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{row.label}</span>
                          <span className="text-[10px] font-black tracking-widest text-success">{row.score}</span>
                       </div>
                     ))}
                  </div>
 
-                 <Button className="w-full bg-white text-muted-foreground hover:bg-muted text-[10px] font-black uppercase tracking-[0.2em] py-8 rounded-[2rem] shadow-xl group">
+                 <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-[10px] font-black uppercase tracking-[0.2em] py-8 rounded-[2rem] shadow-xl group">
                     View Talent Heatmap
                     <ArrowUpRight className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                  </Button>

@@ -308,7 +308,7 @@ export default function CoreSettings() {
                        </div>
                        <div>
                           <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Legal Entity</p>
-                          <p className="font-black italic text-muted-foreground dark:text-white">#{profile?.code || 'ROOT_TENANT'}</p>
+                          <p className="font-black italic text-foreground">#{profile?.code || 'ROOT_TENANT'}</p>
                        </div>
                     </div>
                     <p className="text-sm text-primary font-medium italic">

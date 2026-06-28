@@ -124,7 +124,7 @@ export const InventoryIntelligence: React.FC<InventoryIntelligenceProps> = ({
                       ? `${(item.currentStock / 1000).toFixed(1)}k`
                       : item.currentStock}
                   </span>
-                  <span className="text-[9px] font-black uppercase tracking-[0.1em] opacity-60">
+                  <span className="text-[9px] font-black uppercase tracking-[0.1em] ">
                     Units
                   </span>
                 </div>

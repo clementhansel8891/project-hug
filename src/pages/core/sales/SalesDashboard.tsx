@@ -342,7 +342,7 @@ export default function SalesDashboard() {
                           <item.icon className={cn("h-6 w-6", `text-${item.color}-500`)} />
                        </div>
                        <div>
-                          <p className="text-sm font-black text-muted-foreground dark:text-white">{item.label}</p>
+                          <p className="text-sm font-black text-foreground">{item.label}</p>
                           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">Current Lifecycle Stat</p>
                        </div>
                     </div>

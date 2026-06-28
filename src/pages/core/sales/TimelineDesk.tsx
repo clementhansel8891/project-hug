@@ -322,7 +322,7 @@ export default function TimelineDesk() {
                                 
                                 <div className="flex flex-col items-end gap-3 shrink-0">
                                    <div className="text-right">
-                                      <p className="text-xs font-black tracking-tighter text-muted-foreground dark:text-white uppercase">{formatDate(item.createdAt)}</p>
+                                      <p className="text-xs font-black tracking-tighter text-foreground uppercase">{formatDate(item.createdAt)}</p>
                                       <p className="text-[10px] font-bold text-muted-foreground">{new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                    </div>
                                    <Badge className={cn(

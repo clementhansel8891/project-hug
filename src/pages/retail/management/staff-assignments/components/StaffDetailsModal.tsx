@@ -227,10 +227,10 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
                 Access Sub-Scopes
               </div>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-secondary border border-border text-muted-foreground/60 font-black italic tracking-widest text-[9px] uppercase px-3 py-1">
+                <Badge className="bg-secondary border border-border text-muted-foreground font-black italic tracking-widest text-[9px] uppercase px-3 py-1">
                   RETAIL_CORE
                 </Badge>
-                <Badge className="bg-secondary border border-border text-muted-foreground/60 font-black italic tracking-widest text-[9px] uppercase px-3 py-1">
+                <Badge className="bg-secondary border border-border text-muted-foreground font-black italic tracking-widest text-[9px] uppercase px-3 py-1">
                   POS_EXEC
                 </Badge>
                 {staff.roleTitle.includes("Head") ||

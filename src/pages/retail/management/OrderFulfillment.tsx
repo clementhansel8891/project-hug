@@ -243,7 +243,7 @@ const OrderFulfillment = () => {
                           ? `${formatNumber((stats.priority / loadedOrders.length) * 100, { maximumFractionDigits: 1 })}%`
                           : "—"}
                       </div>
-                      <div className="text-[10px] font-bold italic opacity-60 mt-4 uppercase">
+                      <div className="text-[10px] font-bold italic  mt-4 uppercase">
                         High-value share of orders
                       </div>
                     </div>

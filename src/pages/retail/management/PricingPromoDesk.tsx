@@ -251,7 +251,7 @@ const PricingPromoDesk = () => {
                 <div className="text-2xl font-black italic tracking-tighter">
                   SECURED
                 </div>
-                <div className="text-[10px] font-bold italic opacity-60 mt-4 uppercase">
+                <div className="text-[10px] font-bold italic  mt-4 uppercase">
                   No Policy Violations
                 </div>
               </div>

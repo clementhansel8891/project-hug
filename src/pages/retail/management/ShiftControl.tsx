@@ -295,7 +295,7 @@ const ShiftControl = () => {
     <div className="flex flex-col min-h-screen bg-secondary selection:bg-primary selection:text-foreground relative overflow-hidden">
 
       {/* Header Tier */}
-      <div className="px-10 py-8 border-b border-white/5 bg-background/50 backdrop-blur-3xl shrink-0 flex flex-col lg:flex-row lg:items-center justify-between gap-6 sticky top-0 z-50">
+      <div className="px-10 py-8 border-b border-border bg-background/50 backdrop-blur-3xl shrink-0 flex flex-col lg:flex-row lg:items-center justify-between gap-6 sticky top-0 z-50">
         <div className="flex items-center gap-6">
           <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-foreground shadow-xl shadow-indigo-600/20">
             <Users className="w-7 h-7" />
@@ -352,7 +352,7 @@ const ShiftControl = () => {
         <div className="max-w-[1600px] mx-auto p-6 space-y-10 relative z-10">
           {/* Workforce Vitals */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="rounded-2xl p-6 bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-3xl group">
+            <Card className="rounded-2xl p-6 bg-card border border-border shadow-2xl backdrop-blur-3xl group">
               <div className="flex justify-between items-start mb-8">
                 <div className="p-4 rounded-2xl bg-success/10 text-success border border-success/20">
                   <Users className="w-6 h-6" />
@@ -372,7 +372,7 @@ const ShiftControl = () => {
               </div>
             </Card>
 
-            <Card className="rounded-2xl p-6 bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-3xl">
+            <Card className="rounded-2xl p-6 bg-card border border-border shadow-2xl backdrop-blur-3xl">
               <div className="flex justify-between items-start mb-8">
                 <div className="p-4 rounded-2xl bg-primary/10 text-primary border border-primary">
                   <BarChart3 className="w-6 h-6" />
@@ -392,7 +392,7 @@ const ShiftControl = () => {
               </div>
             </Card>
 
-            <Card className="rounded-2xl p-6 bg-white/[0.03] border border-white/5 shadow-2xl backdrop-blur-3xl">
+            <Card className="rounded-2xl p-6 bg-card border border-border shadow-2xl backdrop-blur-3xl">
               <div className="flex justify-between items-start mb-8">
                 <div className="p-4 rounded-2xl bg-warning text-warning border border-warning/20">
                   <Award className="w-6 h-6" />
@@ -434,7 +434,7 @@ const ShiftControl = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-3">
-              <Card className="rounded-[2rem] border-none bg-white/[0.02] shadow-2xl overflow-hidden backdrop-blur-md">
+              <Card className="rounded-[2rem] border-none bg-card shadow-2xl overflow-hidden backdrop-blur-md">
                  <div className="p-2">
                     <ScheduleGrid
                       shifts={scheduledShifts}
@@ -451,7 +451,7 @@ const ShiftControl = () => {
 
             <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Shift Records Table — displays open time, close time, counted cash, operator name */}
-              <Card className="rounded-[2rem] bg-white/[0.03] border border-white/5 shadow-2xl p-6 space-y-6 md:col-span-2">
+              <Card className="rounded-[2rem] bg-card border border-border shadow-2xl p-6 space-y-6 md:col-span-2">
                 <div className="flex items-center justify-between">
                   <div className="text-[10px] font-black italic uppercase tracking-[0.3em] text-muted-foreground">
                     Shift Records
@@ -468,7 +468,7 @@ const ShiftControl = () => {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-white/10">
+                        <tr className="border-b border-border">
                           <th className="text-left text-[10px] font-black italic uppercase tracking-widest text-muted-foreground py-3 px-2">Operator</th>
                           <th className="text-left text-[10px] font-black italic uppercase tracking-widest text-muted-foreground py-3 px-2">Open Time</th>
                           <th className="text-left text-[10px] font-black italic uppercase tracking-widest text-muted-foreground py-3 px-2">Close Time</th>
@@ -476,9 +476,9 @@ const ShiftControl = () => {
                           <th className="text-center text-[10px] font-black italic uppercase tracking-widest text-muted-foreground py-3 px-2">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/5">
+                      <tbody className="divide-y divide-border">
                         {(Array.isArray(shifts) ? shifts : []).map((shift) => (
-                          <tr key={shift.id} className="hover:bg-white/[0.02] transition-colors">
+                          <tr key={shift.id} className="hover:bg-muted/50 transition-colors">
                             <td className="py-3 px-2 font-bold text-foreground">
                               {(shift as any).operator_name || (shift as any).operatorName || shift.userId || "Unknown"}
                             </td>
@@ -512,7 +512,7 @@ const ShiftControl = () => {
             </div>
 
             <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="rounded-[2rem] bg-white/[0.03] border border-white/5 shadow-2xl p-6 space-y-10">
+              <Card className="rounded-[2rem] bg-card border border-border shadow-2xl p-6 space-y-10">
                 <div className="flex items-center justify-between">
                    <div className="text-[10px] font-black italic uppercase tracking-[0.3em] text-muted-foreground">
                      Operational Pulse

@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-06-28T06:44:31.380Z",
+  "total": 172,
+  "success": 156,
+  "fail": 16,
+  "issues": [
+    "light/hr_scheduling: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/hr_payroll: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/hr_vault: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/hr_lex: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/hr_cases: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/sales_overview: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/sales_leads: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/sales_pipeline: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/sales_opportunities: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/sales_incentives: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/marketing_campaigns: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/marketing_funnels: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/inventory_opname: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "light/warehouse_mgmt: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "dark/it_health: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor",
+    "dark/comms_mail: page.goto: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://150.109.15.108:3010/cor"
+  ]
+}

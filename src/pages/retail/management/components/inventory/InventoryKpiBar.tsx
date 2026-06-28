@@ -43,19 +43,19 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
       {/* Top Row: Core Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Card 1: Branch SKUs */}
-        <Card className="border border-border dark:border-white/5 shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Branch SKUs</CardTitle>
             <Layers className="h-4 w-4 text-primary opacity-50" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black tracking-tighter text-muted-foreground dark:text-white">{formatValue(stats.totalSKUs)}</div>
+            <div className="text-3xl font-black tracking-tighter text-foreground">{formatValue(stats.totalSKUs)}</div>
             <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-widest italic">Active models</p>
           </CardContent>
         </Card>
 
         {/* Card 2: Branch On Hand */}
-        <Card className="border border-border dark:border-white/5 shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Branch On Hand</CardTitle>
             <Package className="h-4 w-4 text-success opacity-50" />
@@ -67,7 +67,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
         </Card>
 
         {/* Card 3: Out of Stock */}
-        <Card className="border border-border dark:border-white/5 shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Out of Stock</CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive opacity-50" />
@@ -79,7 +79,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
         </Card>
 
         {/* Card 4: Low Stock */}
-        <Card className="border border-border dark:border-white/5 shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Low Stock</CardTitle>
             <AlertTriangle className="h-4 w-4 text-warning opacity-50" />

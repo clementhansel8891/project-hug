@@ -35,7 +35,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
                 <Smartphone className="w-8 h-8 text-info shadow-[0_0_15px_rgba(56,189,248,0.6)]" />
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-info opacity-60 italic">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-info  italic">
                   Global Fleet Uptime
                 </p>
                 <div className="flex items-baseline gap-2">

@@ -226,7 +226,7 @@ export default function InventoryDashboard() {
                      { label: "Expiry Warning", value: metrics.expiry_warning_count },
                    ].map((node) => (
                      <div key={node.label} className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">{node.label}</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{node.label}</span>
                         <span className="text-[10px] font-black tracking-widest">{node.value}</span>
                      </div>
                    ))}

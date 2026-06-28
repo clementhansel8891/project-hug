@@ -1,0 +1,1793 @@
+{
+  "critical": [
+    {
+      "page": "finance_invoices",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7409930214897971,
+      "issues": [
+        "High low-contrast area count (103) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.30864197530864196,
+      "lightRegionsPercent": 51.620370370370374,
+      "midtonePercent": 48.07098765432099,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 103
+    },
+    {
+      "page": "finance_payflow",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7478798716955816,
+      "issues": [
+        "High low-contrast area count (101) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.3809799382716049,
+      "lightRegionsPercent": 61.27989969135802,
+      "midtonePercent": 38.339120370370374,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 101
+    },
+    {
+      "page": "finance_policy",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8462113072062432,
+      "issues": [
+        "High low-contrast area count (104) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.4436728395061728,
+      "lightRegionsPercent": 76.04648919753086,
+      "midtonePercent": 23.509837962962962,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 104
+    },
+    {
+      "page": "finance_receivables",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8384454630569371,
+      "issues": [
+        "High low-contrast area count (101) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.39544753086419754,
+      "lightRegionsPercent": 75.3954475308642,
+      "midtonePercent": 24.209104938271604,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 101
+    },
+    {
+      "page": "finance_treasury",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7760855843412376,
+      "issues": [
+        "High low-contrast area count (116) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.39544753086419754,
+      "lightRegionsPercent": 70.92496141975309,
+      "midtonePercent": 28.679591049382715,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 116
+    },
+    {
+      "page": "inventory_stock",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9065198737431492,
+      "issues": [
+        "High low-contrast area count (116) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.4147376543209877,
+      "lightRegionsPercent": 92.81925154320987,
+      "midtonePercent": 6.766010802469136,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 116
+    },
+    {
+      "page": "payment_dashboard",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8029946705680638,
+      "issues": [
+        "High low-contrast area count (139) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 1.0416666666666665,
+      "lightRegionsPercent": 73.61111111111111,
+      "midtonePercent": 25.34722222222222,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 139
+    },
+    {
+      "page": "payment_execution",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8142603118152011,
+      "issues": [
+        "High low-contrast area count (110) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 1.2345679012345678,
+      "lightRegionsPercent": 74.37307098765432,
+      "midtonePercent": 24.39236111111111,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 110
+    },
+    {
+      "page": "payment_providers",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8232794167201369,
+      "issues": [
+        "High low-contrast area count (145) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.935570987654321,
+      "lightRegionsPercent": 74.2332175925926,
+      "midtonePercent": 24.831211419753085,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 145
+    },
+    {
+      "page": "payment_refunds",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8053295633398165,
+      "issues": [
+        "High low-contrast area count (153) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.8198302469135802,
+      "lightRegionsPercent": 74.06925154320987,
+      "midtonePercent": 25.110918209876544,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 153
+    },
+    {
+      "page": "retail_mgmt_inventory",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.896858952800566,
+      "issues": [
+        "High low-contrast area count (202) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 1.0397232587064678,
+      "lightRegionsPercent": 89.6513526119403,
+      "midtonePercent": 9.308924129353233,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 202
+    },
+    {
+      "page": "retail_mgmt_shifts",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 224,
+        "b": 224
+      },
+      "avgLuminance": 0.759206225836026,
+      "issues": [
+        "High low-contrast area count (185) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.33602150537634407,
+      "lightRegionsPercent": 66.1580522971652,
+      "midtonePercent": 33.50592619745846,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 185
+    },
+    {
+      "page": "retail_ops_receiving",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.008614992478751774,
+      "issues": [
+        "High dark-pixel ratio (98.9%) in light mode — possible dark text on dark background or incorrect theme",
+        "Light theme page has low average luminance (0.01) — theme might not be applied correctly"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 98.93422067901234,
+      "lightRegionsPercent": 0.34239969135802467,
+      "midtonePercent": 0.7233796296296297,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 5
+    },
+    {
+      "page": "retail_workspace",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9117633694697637,
+      "issues": [
+        "High low-contrast area count (186) — possible invisible text on light background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 0.29398148148148145,
+      "lightRegionsPercent": 90.37731481481481,
+      "midtonePercent": 9.328703703703704,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 186
+    },
+    {
+      "page": "payment_execution",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.05071093678336073,
+      "issues": [
+        "High low-contrast area count (101) — possible invisible text on dark background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 81.39467592592592,
+      "lightRegionsPercent": 0.8294753086419754,
+      "midtonePercent": 17.775848765432098,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 101
+    },
+    {
+      "page": "payment_providers",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04369635831172122,
+      "issues": [
+        "High low-contrast area count (102) — possible invisible text on dark background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 83.2224151234568,
+      "lightRegionsPercent": 0.5883487654320988,
+      "midtonePercent": 16.18923611111111,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 102
+    },
+    {
+      "page": "payment_refunds",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04511551594458306,
+      "issues": [
+        "High low-contrast area count (101) — possible invisible text on dark background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 82.56655092592592,
+      "lightRegionsPercent": 0.48225308641975306,
+      "midtonePercent": 16.951195987654323,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 101
+    },
+    {
+      "page": "procurement_po",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.0440026745024904,
+      "issues": [
+        "High low-contrast area count (102) — possible invisible text on dark background",
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "critical",
+      "darkRegionsPercent": 86.68981481481481,
+      "lightRegionsPercent": 1.017554012345679,
+      "midtonePercent": 12.292631172839506,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 102
+    }
+  ],
+  "warning": [
+    {
+      "page": "core_dashboard",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9222008698403398,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.4243827160493827,
+      "lightRegionsPercent": 88.74421296296296,
+      "midtonePercent": 10.831404320987655,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 61
+    },
+    {
+      "page": "finance_assets",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.84757578744895,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3616898148148148,
+      "lightRegionsPercent": 78.84355709876543,
+      "midtonePercent": 20.794753086419753,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 96
+    },
+    {
+      "page": "finance_jv",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8577610526254089,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.48225308641975306,
+      "lightRegionsPercent": 81.88175154320987,
+      "midtonePercent": 17.63599537037037,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 65
+    },
+    {
+      "page": "finance_ledger",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8477902506080821,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.31828703703703703,
+      "lightRegionsPercent": 80.63271604938271,
+      "midtonePercent": 19.048996913580247,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 71
+    },
+    {
+      "page": "finance_payables",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7764407892242376,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.4099151234567901,
+      "lightRegionsPercent": 71.91840277777779,
+      "midtonePercent": 27.671682098765434,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 94
+    },
+    {
+      "page": "hr_cases",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8857987017948324,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3472222222222222,
+      "lightRegionsPercent": 80.59895833333334,
+      "midtonePercent": 19.053819444444446,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 71
+    },
+    {
+      "page": "hr_org",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8634706364514,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.44849537037037035,
+      "lightRegionsPercent": 80.53144290123457,
+      "midtonePercent": 19.020061728395063,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 74
+    },
+    {
+      "page": "hr_pulse",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.2546653055775053,
+      "issues": [
+        "High dark-pixel ratio (71.5%) in light mode — possible dark text on dark background or incorrect theme"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 71.4988425925926,
+      "lightRegionsPercent": 23.177083333333336,
+      "midtonePercent": 5.324074074074074,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 9
+    },
+    {
+      "page": "hr_scheduling",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.886469056510667,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.5979938271604938,
+      "lightRegionsPercent": 83.8059413580247,
+      "midtonePercent": 15.596064814814813,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 71
+    },
+    {
+      "page": "hr_talent",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8581269955585443,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.4099151234567901,
+      "lightRegionsPercent": 79.33545524691358,
+      "midtonePercent": 20.25462962962963,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 66
+    },
+    {
+      "page": "hr_vault",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8855950821192153,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.41956018518518523,
+      "lightRegionsPercent": 80.61342592592592,
+      "midtonePercent": 18.96701388888889,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 72
+    },
+    {
+      "page": "inventory_adjustments",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.834894986335494,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.4099151234567901,
+      "lightRegionsPercent": 82.2241512345679,
+      "midtonePercent": 17.36593364197531,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 63
+    },
+    {
+      "page": "inventory_receiving",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7914145630468846,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.2797067901234568,
+      "lightRegionsPercent": 57.581018518518526,
+      "midtonePercent": 42.139274691358025,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 63
+    },
+    {
+      "page": "inventory_transfers",
+      "theme": "light",
+      "dominantBg": {
+        "r": 224,
+        "g": 224,
+        "b": 224
+      },
+      "avgLuminance": 0.8188566412199624,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3809799382716049,
+      "lightRegionsPercent": 58.84452160493827,
+      "midtonePercent": 40.77449845679013,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 65
+    },
+    {
+      "page": "it_accounts",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7656242772777988,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3134645061728395,
+      "lightRegionsPercent": 69.7241512345679,
+      "midtonePercent": 29.962384259259263,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 94
+    },
+    {
+      "page": "it_dashboard",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8803703516079819,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.7040895061728395,
+      "lightRegionsPercent": 84.71739969135803,
+      "midtonePercent": 14.578510802469136,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 77
+    },
+    {
+      "page": "it_devices",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.43186827347023543,
+      "issues": [
+        "High dark-pixel ratio (44.7%) in light mode — possible dark text on dark background or incorrect theme"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 44.70003858024691,
+      "lightRegionsPercent": 38.55613425925926,
+      "midtonePercent": 16.743827160493826,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 36
+    },
+    {
+      "page": "logs",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9240755519299813,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.30864197530864196,
+      "lightRegionsPercent": 92.78067129629629,
+      "midtonePercent": 6.910686728395062,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 61
+    },
+    {
+      "page": "marketing_campaigns",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9024885901748303,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.6028163580246914,
+      "lightRegionsPercent": 85.74942129629629,
+      "midtonePercent": 13.647762345679013,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 64
+    },
+    {
+      "page": "marketing_customer360",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.26343628381439055,
+      "issues": [
+        "High dark-pixel ratio (70.1%) in light mode — possible dark text on dark background or incorrect theme"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 70.13888888888889,
+      "lightRegionsPercent": 23.210841049382715,
+      "midtonePercent": 6.650270061728395,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 26
+    },
+    {
+      "page": "marketing_dashboard",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.26934135763728245,
+      "issues": [
+        "High dark-pixel ratio (65.4%) in light mode — possible dark text on dark background or incorrect theme"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 65.36940586419753,
+      "lightRegionsPercent": 23.234953703703702,
+      "midtonePercent": 11.395640432098766,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 18
+    },
+    {
+      "page": "marketing_funnels",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8810393335102373,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.7089120370370371,
+      "lightRegionsPercent": 86.29918981481481,
+      "midtonePercent": 12.991898148148149,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 51
+    },
+    {
+      "page": "marketing_omnichannel",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.25254885472226846,
+      "issues": [
+        "High dark-pixel ratio (71.5%) in light mode — possible dark text on dark background or incorrect theme"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 71.4891975308642,
+      "lightRegionsPercent": 22.897376543209877,
+      "midtonePercent": 5.613425925925926,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 10
+    },
+    {
+      "page": "procurement_contracts",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8661649448493504,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3761574074074074,
+      "lightRegionsPercent": 80.52179783950618,
+      "midtonePercent": 19.10204475308642,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 77
+    },
+    {
+      "page": "procurement_po",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8754639170641598,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.5063657407407407,
+      "lightRegionsPercent": 81.50077160493827,
+      "midtonePercent": 17.992862654320987,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 89
+    },
+    {
+      "page": "procurement_suppliers",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8694483555244793,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.4629629629629629,
+      "lightRegionsPercent": 81.51041666666666,
+      "midtonePercent": 18.02662037037037,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 89
+    },
+    {
+      "page": "retail_mgmt_devices",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9291788497805872,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.15972222222222224,
+      "lightRegionsPercent": 93.93981481481481,
+      "midtonePercent": 5.900462962962963,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 93
+    },
+    {
+      "page": "retail_mgmt_orders",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9354546814098288,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.18287037037037038,
+      "lightRegionsPercent": 94.77777777777779,
+      "midtonePercent": 5.039351851851852,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 89
+    },
+    {
+      "page": "retail_mgmt_pricing",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9021967392632246,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.16203703703703703,
+      "lightRegionsPercent": 95.74305555555556,
+      "midtonePercent": 4.094907407407407,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 67
+    },
+    {
+      "page": "retail_mgmt_staff",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9262874920842201,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3194444444444445,
+      "lightRegionsPercent": 91.82407407407408,
+      "midtonePercent": 7.856481481481481,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 96
+    },
+    {
+      "page": "sales_orders",
+      "theme": "light",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.34126699137896804,
+      "issues": [
+        "High dark-pixel ratio (45.5%) in light mode — possible dark text on dark background or incorrect theme"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 45.48128858024691,
+      "lightRegionsPercent": 28.631365740740737,
+      "midtonePercent": 25.88734567901235,
+      "suspectedInvisibleText": false,
+      "lowContrastAreas": 20
+    },
+    {
+      "page": "sales_quotes",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8998432728417374,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.6510416666666667,
+      "lightRegionsPercent": 86.20756172839506,
+      "midtonePercent": 13.141396604938272,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 56
+    },
+    {
+      "page": "settings",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7850802102791735,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.13503086419753085,
+      "lightRegionsPercent": 53.34683641975309,
+      "midtonePercent": 46.51813271604938,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 66
+    },
+    {
+      "page": "tools",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.9281361101456616,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.19290123456790123,
+      "lightRegionsPercent": 89.71836419753086,
+      "midtonePercent": 10.088734567901234,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 68
+    },
+    {
+      "page": "warehouse_hierarchy",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8786919923849855,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.4340277777777778,
+      "lightRegionsPercent": 83.73842592592592,
+      "midtonePercent": 15.827546296296296,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 88
+    },
+    {
+      "page": "warehouse_mgmt",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8940958256212911,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.3038194444444445,
+      "lightRegionsPercent": 85.12731481481481,
+      "midtonePercent": 14.56886574074074,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 69
+    },
+    {
+      "page": "warehouse_picking",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.8731659899336967,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.28935185185185186,
+      "lightRegionsPercent": 83.29475308641975,
+      "midtonePercent": 16.415895061728396,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 63
+    },
+    {
+      "page": "warehouse_receiving",
+      "theme": "light",
+      "dominantBg": {
+        "r": 256,
+        "g": 256,
+        "b": 256
+      },
+      "avgLuminance": 0.7972202604522264,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 0.28935185185185186,
+      "lightRegionsPercent": 48.71238425925926,
+      "midtonePercent": 50.998263888888886,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 89
+    },
+    {
+      "page": "finance_assets",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04437204987650983,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.984375,
+      "lightRegionsPercent": 0.7233796296296297,
+      "midtonePercent": 15.292245370370368,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 56
+    },
+    {
+      "page": "finance_cfo",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.024675199336640856,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 93.93807870370371,
+      "lightRegionsPercent": 0.6751543209876543,
+      "midtonePercent": 5.386766975308642,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 62
+    },
+    {
+      "page": "finance_invoices",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.03758214756887541,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 87.60609567901234,
+      "lightRegionsPercent": 0.7282021604938271,
+      "midtonePercent": 11.665702160493826,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 68
+    },
+    {
+      "page": "finance_ledger",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.045291020278019865,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.64679783950618,
+      "lightRegionsPercent": 0.7330246913580246,
+      "midtonePercent": 15.620177469135802,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 60
+    },
+    {
+      "page": "finance_payables",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04736459071409324,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.43942901234568,
+      "lightRegionsPercent": 0.8198302469135802,
+      "midtonePercent": 15.74074074074074,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 58
+    },
+    {
+      "page": "finance_payflow",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.03742328921669211,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 87.7121913580247,
+      "lightRegionsPercent": 0.7667824074074074,
+      "midtonePercent": 11.5210262345679,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 67
+    },
+    {
+      "page": "finance_policy",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.04826058900330036,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.40567129629629,
+      "lightRegionsPercent": 0.8391203703703705,
+      "midtonePercent": 15.755208333333334,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 69
+    },
+    {
+      "page": "finance_receivables",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.047088703407556255,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.46354166666666,
+      "lightRegionsPercent": 0.8005401234567902,
+      "midtonePercent": 15.735918209876543,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 62
+    },
+    {
+      "page": "finance_treasury",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.04553862478802792,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.90721450617285,
+      "lightRegionsPercent": 0.7523148148148148,
+      "midtonePercent": 15.340470679012347,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 62
+    },
+    {
+      "page": "hr_cases",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.033114391598746525,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 92.50096450617285,
+      "lightRegionsPercent": 0.626929012345679,
+      "midtonePercent": 6.872106481481481,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 69
+    },
+    {
+      "page": "hr_org",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.045057552329478195,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.73842592592592,
+      "lightRegionsPercent": 0.7330246913580246,
+      "midtonePercent": 15.52854938271605,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 65
+    },
+    {
+      "page": "hr_people",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04765067477246321,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.47800925925925,
+      "lightRegionsPercent": 0.8584104938271605,
+      "midtonePercent": 15.66358024691358,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 66
+    },
+    {
+      "page": "hr_scheduling",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.034976999992538206,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 88.58989197530865,
+      "lightRegionsPercent": 0.8150077160493827,
+      "midtonePercent": 10.595100308641975,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 82
+    },
+    {
+      "page": "hr_talent",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04535919520373505,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.07291666666666,
+      "lightRegionsPercent": 0.6896219135802469,
+      "midtonePercent": 16.237461419753085,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 62
+    },
+    {
+      "page": "hr_vault",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.03244222411419652,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 93.79340277777779,
+      "lightRegionsPercent": 0.699266975308642,
+      "midtonePercent": 5.507330246913581,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 67
+    },
+    {
+      "page": "inventory_adjustments",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.0384983404302593,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 88.17515432098766,
+      "lightRegionsPercent": 0.8777006172839507,
+      "midtonePercent": 10.947145061728394,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 57
+    },
+    {
+      "page": "inventory_receiving",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.032959683968474165,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 93.91878858024691,
+      "lightRegionsPercent": 0.7282021604938271,
+      "midtonePercent": 5.3530092592592595,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 70
+    },
+    {
+      "page": "it_accounts",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04417794641154984,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.88310185185185,
+      "lightRegionsPercent": 0.5883487654320988,
+      "midtonePercent": 15.52854938271605,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 62
+    },
+    {
+      "page": "it_dashboard",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.1326389645887522,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 78.37577160493827,
+      "lightRegionsPercent": 10.435956790123457,
+      "midtonePercent": 11.188271604938272,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 82
+    },
+    {
+      "page": "it_devices",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04152039282106436,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 84.43769290123457,
+      "lightRegionsPercent": 0.5690586419753086,
+      "midtonePercent": 14.993248456790123,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 61
+    },
+    {
+      "page": "it_health",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.03511138782011328,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 90.8371913580247,
+      "lightRegionsPercent": 1.1381172839506173,
+      "midtonePercent": 8.024691358024691,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 79
+    },
+    {
+      "page": "logs",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.023991339460805273,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 94.05381944444444,
+      "lightRegionsPercent": 0.6365740740740741,
+      "midtonePercent": 5.309606481481482,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 78
+    },
+    {
+      "page": "marketing_campaigns",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.04322240147670481,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 88.39699074074075,
+      "lightRegionsPercent": 1.519097222222222,
+      "midtonePercent": 10.083912037037036,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 56
+    },
+    {
+      "page": "marketing_customer360",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.03294068467818524,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 92.89158950617285,
+      "lightRegionsPercent": 1.3069058641975309,
+      "midtonePercent": 5.80150462962963,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 53
+    },
+    {
+      "page": "marketing_funnels",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.03873581699645235,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 89.59780092592592,
+      "lightRegionsPercent": 1.398533950617284,
+      "midtonePercent": 9.00366512345679,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 60
+    },
+    {
+      "page": "payment_dashboard",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.05505996757836832,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 81.53452932098766,
+      "lightRegionsPercent": 0.7571373456790124,
+      "midtonePercent": 17.708333333333336,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 91
+    },
+    {
+      "page": "procurement_contracts",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.04812477752428436,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 83.43942901234568,
+      "lightRegionsPercent": 0.8873456790123456,
+      "midtonePercent": 15.673225308641975,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 66
+    },
+    {
+      "page": "procurement_suppliers",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.045749991035578474,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 84.5727237654321,
+      "lightRegionsPercent": 0.9934413580246915,
+      "midtonePercent": 14.43383487654321,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 59
+    },
+    {
+      "page": "retail_mgmt_shifts",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.12970690677360913,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 73.57343597262953,
+      "lightRegionsPercent": 1.1653836754643205,
+      "midtonePercent": 25.26118035190616,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 100
+    },
+    {
+      "page": "sales_dashboard",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.03417905210069548,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 92.86265432098766,
+      "lightRegionsPercent": 1.2586805555555556,
+      "midtonePercent": 5.87866512345679,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 66
+    },
+    {
+      "page": "sales_orders",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.040468793394009515,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 90.71180555555556,
+      "lightRegionsPercent": 1.3647762345679013,
+      "midtonePercent": 7.923418209876543,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 51
+    },
+    {
+      "page": "sales_overview",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 32,
+        "g": 32,
+        "b": 32
+      },
+      "avgLuminance": 0.034173540887543506,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 92.86265432098766,
+      "lightRegionsPercent": 1.2586805555555556,
+      "midtonePercent": 5.87866512345679,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 66
+    },
+    {
+      "page": "settings",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.031182195944209706,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 89.68460648148148,
+      "lightRegionsPercent": 0.7040895061728395,
+      "midtonePercent": 9.611304012345679,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 58
+    },
+    {
+      "page": "warehouse_hierarchy",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.040969433239518724,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 86.16898148148148,
+      "lightRegionsPercent": 0.8969907407407407,
+      "midtonePercent": 12.934027777777779,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 77
+    },
+    {
+      "page": "warehouse_mgmt",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.031614124133643645,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 90.11381172839506,
+      "lightRegionsPercent": 0.7571373456790124,
+      "midtonePercent": 9.129050925925926,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 97
+    },
+    {
+      "page": "warehouse_picking",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.038505568241118254,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 87.1141975308642,
+      "lightRegionsPercent": 0.7378472222222222,
+      "midtonePercent": 12.14795524691358,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 76
+    },
+    {
+      "page": "warehouse_receiving",
+      "theme": "dark",
+      "dominantBg": {
+        "r": 0,
+        "g": 0,
+        "b": 32
+      },
+      "avgLuminance": 0.03737546402317229,
+      "issues": [
+        "Suspected invisible or very low-contrast text detected"
+      ],
+      "severity": "warning",
+      "darkRegionsPercent": 87.29745370370371,
+      "lightRegionsPercent": 0.7474922839506173,
+      "midtonePercent": 11.955054012345679,
+      "suspectedInvisibleText": true,
+      "lowContrastAreas": 73
+    }
+  ],
+  "okCount": 101,
+  "timestamp": "2026-06-28T06:57:50.066Z"
+}

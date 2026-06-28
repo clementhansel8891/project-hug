@@ -161,7 +161,7 @@ export default function Customer360Desk() {
         {/* Left Sidebar: Entity Cluster */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-6 overflow-hidden">
           <Card className="flex-1 rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group/registry">
-            <CardHeader className="p-10 pb-6 border-b border-white/10 dark:border-border/10 shrink-0">
+            <CardHeader className="p-10 pb-6 border-b border-border shrink-0">
                <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground italic">Entity Cluster</p>
@@ -211,7 +211,7 @@ export default function Customer360Desk() {
                             IQ {customer.score || 0}
                           </Badge>
                         </div>
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest truncate leading-none italic opacity-60">{customer.email || "NO TRANSMISSION LINK"}</p>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest truncate leading-none italic">{customer.email || "NO TRANSMISSION LINK"}</p>
                       </div>
                     </button>
                   ))}
@@ -259,7 +259,7 @@ export default function Customer360Desk() {
                           {profile.score > 80 ? "HIGH VALUE ASSET" : "STRATEGIC NODE"}
                         </Badge>
                       </div>
-                      <div className="flex flex-wrap justify-center md:justify-start gap-10 text-[11px] font-black uppercase tracking-[0.2em] opacity-60 italic">
+                      <div className="flex flex-wrap justify-center md:justify-start gap-10 text-[11px] font-black uppercase tracking-[0.2em] text-primary-foreground/80 italic">
                         <span className="flex items-center gap-3"><Mail className="h-4.5 w-4.5 text-primary" /> {profile.email}</span>
                         <span className="flex items-center gap-3"><Phone className="h-4.5 w-4.5 text-primary" /> {profile.phone || "UNVERIFIED"}</span>
                         {profile.company && (
@@ -275,24 +275,24 @@ export default function Customer360Desk() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mt-16 pt-12 border-t border-white/10 relative z-10">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mt-16 pt-12 border-t border-primary-foreground/20 relative z-10">
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic leading-none">Intelligence IQ</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-foreground/70 italic leading-none">Intelligence IQ</p>
                     <p className="text-5xl font-black tracking-tighter italic">{profile.score}</p>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic leading-none">Engagement Velocity</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-foreground/70 italic leading-none">Engagement Velocity</p>
                     <div className="flex items-center gap-3">
                        <ActivitySquare className="h-6 w-6 text-primary animate-pulse" />
                        <p className="text-3xl font-black tracking-tighter italic uppercase">Critical</p>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic leading-none">Yield Potential</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-foreground/70 italic leading-none">Yield Potential</p>
                     <p className="text-5xl font-black tracking-tighter text-success italic">ULTRA</p>
                   </div>
                   <div className="space-y-2 text-right md:text-left">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 italic leading-none">Operational Status</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-foreground/70 italic leading-none">Operational Status</p>
                     <Badge className="bg-success text-white border-none text-[12px] font-black px-6 py-2 rounded-full uppercase tracking-widest shadow-2xl shadow-emerald-500/20">
                        {profile.status}
                     </Badge>
@@ -303,7 +303,7 @@ export default function Customer360Desk() {
               {/* Intelligence & Lifecycle Matrix */}
               <Tabs defaultValue="timeline" className="w-full flex-1 flex flex-col min-h-0">
                 <CardHeader className="p-0 shrink-0">
-                   <TabsList className="glass-card p-2 rounded-[2rem] shadow-inner border border-white/10 w-fit h-auto">
+                   <TabsList className="glass-card p-2 rounded-[2rem] shadow-inner border border-border w-fit h-auto">
                       <TabsTrigger value="timeline" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">Strategic Timeline</TabsTrigger>
                       <TabsTrigger value="insights" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">ROI Intelligence</TabsTrigger>
                       <TabsTrigger value="history" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">Conversion Trail</TabsTrigger>
@@ -313,13 +313,13 @@ export default function Customer360Desk() {
                 <div className="flex-1 min-h-0 mt-10 overflow-hidden">
                    <TabsContent value="timeline" className="h-full m-0 outline-none">
                      <Card className="h-full rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group/timeline">
-                       <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10 flex flex-row items-center justify-between shrink-0">
+                       <CardHeader className="p-12 pb-6 border-b border-border flex flex-row items-center justify-between shrink-0">
                           <div className="space-y-2">
                              <CardTitle className="text-2xl font-black uppercase tracking-tighter flex items-center gap-4 italic leading-none">
                                 <Clock className="h-8 w-8 text-primary group-hover/timeline:rotate-12 transition-transform duration-500" />
                                 Strategic Lifecycle
                              </CardTitle>
-                             <CardDescription className="text-sm font-medium italic italic opacity-60">Complete temporal audit of every relationship interaction and conversion event.</CardDescription>
+                             <CardDescription className="text-sm font-medium italic">Complete temporal audit of every relationship interaction and conversion event.</CardDescription>
                           </div>
                           <Badge className="bg-primary text-primary font-black text-[10px] px-4 py-1.5 rounded-full border-none uppercase tracking-widest shadow-inner">LIVE TELEMETRY</Badge>
                        </CardHeader>
@@ -360,7 +360,7 @@ export default function Customer360Desk() {
                                           </div>
                                           <div className="text-right">
                                              <p className="text-[10px] font-black uppercase tracking-widest text-primary italic leading-none">{formatDate(item.timestamp)}</p>
-                                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic opacity-60">{new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">{new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                           </div>
                                         </div>
                                         <p className="text-base font-medium text-muted-foreground dark:text-muted-foreground italic leading-relaxed italic max-w-3xl relative z-10">
@@ -393,7 +393,7 @@ export default function Customer360Desk() {
                            <div className="space-y-10 relative z-10">
                               <div className="space-y-2">
                                 <h3 className="text-4xl font-black uppercase tracking-tighter italic leading-none">Predictive IQ</h3>
-                                <p className="text-sm font-medium italic italic opacity-60">AI-driven behavior modelling and churn probability delta.</p>
+                                <p className="text-sm font-medium italic text-muted-foreground">AI-driven behavior modelling and churn probability delta.</p>
                               </div>
                               <div className="space-y-12 pt-4">
                                  <div className="space-y-4">
@@ -428,7 +428,7 @@ export default function Customer360Desk() {
                                 <p className="text-[12px] font-black uppercase tracking-[0.4em] opacity-40 italic">Strategic Yield</p>
                                 <h3 className="text-4xl font-black uppercase tracking-tighter italic leading-none">Authorization Recommended</h3>
                               </div>
-                              <p className="text-lg font-medium italic italic opacity-60 leading-relaxed italic italic">
+                              <p className="text-lg font-medium italic text-muted-foreground leading-relaxed">
                                 "Unified intelligence authorizes an <strong>immediate remarketing injection</strong> for high-intent conversion nodes. ROI projection suggests a <strong>4.2x multiplier</strong> in the current quarter."
                               </p>
                            </div>
@@ -450,7 +450,7 @@ export default function Customer360Desk() {
                   </div>
                </div>
                <div className="text-center space-y-4 relative z-10">
-                 <h3 className="text-5xl font-black uppercase tracking-tighter italic leading-none text-muted-foreground dark:text-white">Zero Entity Context</h3>
+                 <h3 className="text-5xl font-black uppercase tracking-tighter italic leading-none text-foreground">Zero Entity Context</h3>
                  <p className="text-base font-black uppercase tracking-[0.4em] text-muted-foreground max-w-[450px] mx-auto leading-relaxed italic italic">Authorize a strategic relationship node from the cluster to synchronize unified 360 intelligence.</p>
                </div>
                <Button className="h-16 px-12 rounded-full bg-primary text-white font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl animate-bounce mt-10">SELECT NODE</Button>

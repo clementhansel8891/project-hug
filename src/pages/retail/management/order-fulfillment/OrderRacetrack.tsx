@@ -377,7 +377,7 @@ export const OrderRacetrack: React.FC<OrderRacetrackProps> = ({
                               </div>
                             ) : order.status === "cancelled" ||
                               order.status === "refunded" ? (
-                              <span className="text-[10px] font-bold italic text-muted-foreground/60 uppercase">
+                              <span className="text-[10px] font-bold italic text-muted-foreground uppercase">
                                 N/A
                               </span>
                             ) : (

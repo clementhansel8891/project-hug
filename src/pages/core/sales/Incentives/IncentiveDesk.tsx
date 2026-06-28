@@ -238,7 +238,7 @@ export default function IncentiveDesk() {
         <div className="grid gap-10 md:grid-cols-2">
             <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
                <CardHeader className="p-10 pb-4">
-                  <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3 text-muted-foreground dark:text-white">
+                  <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3 text-foreground">
                      <Target className="h-6 w-6 text-primary" />
                      Performance Leaders
                   </CardTitle>

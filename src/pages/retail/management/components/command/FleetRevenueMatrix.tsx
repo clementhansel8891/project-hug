@@ -213,7 +213,7 @@ export const FleetRevenueMatrix: React.FC<FleetRevenueMatrixProps> = ({
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[80px] -mr-32 -mt-32 group-hover/velocity:scale-150 transition-transform duration-1000" />
             <div className="relative z-10 flex flex-col h-full justify-between">
               <div>
-                <h4 className="text-[10px] font-black italic uppercase tracking-[0.3em] opacity-60 mb-8">Velocity Stream (7D)</h4>
+                <h4 className="text-[10px] font-black italic uppercase tracking-[0.3em]  mb-8">Velocity Stream (7D)</h4>
                 <div className="h-[180px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={timeSeries}>
@@ -249,7 +249,7 @@ export const FleetRevenueMatrix: React.FC<FleetRevenueMatrixProps> = ({
                 </div>
               </div>
               <div className="pt-8 border-t border-border flex items-center justify-between">
-                 <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-60">Strategic Peak Yield</p>
+                 <p className="text-[10px] font-black uppercase tracking-[0.3em] ">Strategic Peak Yield</p>
                  <TrendingUp className="w-5 h-5 text-foreground/40" />
               </div>
             </div>

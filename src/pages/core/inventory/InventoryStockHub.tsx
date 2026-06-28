@@ -488,7 +488,7 @@ export default function InventoryStockHub() {
                       </TableCell>
                       <TableCell className="py-6 text-right">
                         <div className="flex flex-col items-end">
-                          <span className={`text-sm font-black ${item.currentStock <= item.minStock ? 'text-destructive' : 'text-muted-foreground dark:text-white'}`}>
+                          <span className={`text-sm font-black ${item.currentStock <= item.minStock ? 'text-destructive' : 'text-foreground'}`}>
                             {formatNumber(item.currentStock ?? 0)} {item.unit || 'units'}
                           </span>
                           {item.currentStock <= item.minStock && (
@@ -533,7 +533,7 @@ export default function InventoryStockHub() {
           <div className="p-6 border-t flex items-center justify-between bg-muted dark:bg-muted">
             <div className="flex items-center gap-4">
               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                Showing <span className="text-muted-foreground dark:text-white">{items.length}</span> of <span className="text-muted-foreground dark:text-white">{formatNumber(totalCount)}</span> Items
+                Showing <span className="text-foreground">{items.length}</span> of <span className="text-foreground">{formatNumber(totalCount)}</span> Items
               </p>
             </div>
             
@@ -578,7 +578,7 @@ export default function InventoryStockHub() {
           <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-[0.3em]">
             <Layers className="h-3 w-3" /> LOGISTICS_ENGINE
           </div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-muted-foreground dark:text-white">
+          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-foreground">
             Stock Hub
           </h1>
           <p className="text-sm text-muted-foreground font-medium italic">Strategic inventory visibility and logistics command.</p>

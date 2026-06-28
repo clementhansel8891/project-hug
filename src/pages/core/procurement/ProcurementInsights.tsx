@@ -99,7 +99,7 @@ export default function ProcurementInsights() {
           <div className="flex items-center gap-2 text-warning font-black text-[10px] uppercase tracking-[0.3em]">
             <Activity className="h-3 w-3" /> Supply Intelligence Node
           </div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-muted-foreground dark:text-white">
+          <h1 className="text-4xl font-black tracking-tighter uppercase italic text-foreground">
             Procurement Insights
           </h1>
           <p className="text-sm text-muted-foreground font-medium">Strategic spend analytics and cross-departmental integration telemetry.</p>
@@ -142,7 +142,7 @@ export default function ProcurementInsights() {
               <div className="space-y-4">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{data.label}</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black tracking-tighter text-muted-foreground dark:text-white leading-none">
+                  <span className="text-4xl font-black tracking-tighter text-foreground leading-none">
                     {loading ? "..." : data.count}
                   </span>
                   <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest italic">Units Pending</span>
@@ -204,13 +204,13 @@ export default function ProcurementInsights() {
                       <Zap className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="text-sm font-black text-muted-foreground dark:text-white tracking-tight uppercase">{insight.label}</p>
+                      <p className="text-sm font-black text-foreground tracking-tight uppercase">{insight.label}</p>
                       <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">{insight.category}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-8">
                     <div className="text-right">
-                      <p className="text-xl font-black tracking-tighter text-muted-foreground dark:text-white leading-none">{insight.value}</p>
+                      <p className="text-xl font-black tracking-tighter text-foreground leading-none">{insight.value}</p>
                       <p className="text-[9px] font-bold text-success uppercase tracking-widest mt-1">Calculated</p>
                     </div>
                     <ArrowUpRight className="h-5 w-5 text-muted-foreground group-hover:text-warning transition-colors" />

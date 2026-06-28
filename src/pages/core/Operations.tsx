@@ -194,7 +194,7 @@ export default function CoreOperations() {
                     <Database className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white">Persistence Queue</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-foreground">Persistence Queue</p>
                     <p className="text-[10px] font-bold text-muted-foreground mt-1">{syncStatus.pending_count} pending / {syncStatus.failed_count} failed</p>
                   </div>
                 </div>
@@ -300,7 +300,7 @@ export default function CoreOperations() {
                 <Link2 className="h-4 w-4" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black italic tracking-tighter text-muted-foreground dark:text-white">
+                <span className="text-3xl font-black italic tracking-tighter text-foreground">
                   {retailStats.ecommerceChannels?.active || 0}
                 </span>
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1">
@@ -329,7 +329,7 @@ export default function CoreOperations() {
             <div key={module.id} className="rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white">
+                  <p className="text-xs font-black uppercase tracking-widest text-foreground">
                     {module.name}
                   </p>
                   <p className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">
@@ -371,7 +371,7 @@ export default function CoreOperations() {
               <div key={alertItem.id} className="rounded-2xl border p-5 bg-card shadow-sm hover:border-destructive/30 transition-colors">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white mb-1">
+                    <p className="text-xs font-black uppercase tracking-widest text-foreground mb-1">
                       {alertItem.title}
                     </p>
                     <p className="text-[10px] font-medium text-muted-foreground leading-relaxed italic">
@@ -419,7 +419,7 @@ export default function CoreOperations() {
                     )}
                   </div>
                   <div>
-                    <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground dark:text-white">
+                    <p className="text-[11px] font-black uppercase tracking-widest text-foreground">
                       {item.label}
                     </p>
                     <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-tighter mt-1">
@@ -451,7 +451,7 @@ export default function CoreOperations() {
             <div key={tenant.id} className="rounded-2xl border p-6 bg-card shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <p className="text-sm font-black uppercase tracking-widest text-muted-foreground dark:text-white mb-1">
+                  <p className="text-sm font-black uppercase tracking-widest text-foreground mb-1">
                     {tenant.name}
                   </p>
                   <div className="flex items-center gap-2">

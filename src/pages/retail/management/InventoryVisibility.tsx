@@ -976,7 +976,7 @@ const InventoryVisibility = () => {
       <div className="flex-1">
         <Tabs defaultValue="ledger" className="flex flex-col">
           <div className="max-w-[1600px] mx-auto pt-4 shrink-0">
-            <TabsList className="h-14 p-1.5 bg-muted backdrop-blur-md border border-white/5 rounded-[1.2rem] shadow-sm w-full md:w-auto overflow-x-auto overflow-y-hidden no-scrollbar">
+            <TabsList className="h-14 p-1.5 bg-muted backdrop-blur-md border border-border rounded-[1.2rem] shadow-sm w-full md:w-auto overflow-x-auto overflow-y-hidden no-scrollbar">
               {[
                 { val: "ledger", label: "Ledger", icon: Layers },
                 { val: "opname", label: "Opname", icon: ClipboardCheck },
@@ -1149,9 +1149,9 @@ const InventoryVisibility = () => {
               </div>
 
               {pendingItems.length === 0 ? (
-                <div className="h-[400px] rounded-2xl bg-white/[0.02] border border-dashed border-white/5 flex flex-col items-center justify-center text-center p-8">
-                  <div className="w-16 h-16 rounded-2xl bg-white/5 shadow-sm flex items-center justify-center mb-4 border border-white/5">
-                    <ShieldCheck className="w-8 h-8 text-muted-foreground/60" />
+                <div className="h-[400px] rounded-2xl bg-muted/50 border border-dashed border-border flex flex-col items-center justify-center text-center p-8">
+                  <div className="w-16 h-16 rounded-2xl bg-muted shadow-sm flex items-center justify-center mb-4 border border-border">
+                    <ShieldCheck className="w-8 h-8 text-muted-foreground" />
                   </div>
                   <h3 className="text-lg font-black italic tracking-tight">
                     All Clear!
@@ -1165,7 +1165,7 @@ const InventoryVisibility = () => {
                   {(Array.isArray(pendingItems) ? pendingItems : []).map((item) => (
                     <Card
                       key={item.id}
-                      className="rounded-[2rem] border border-white/5 shadow-xl overflow-hidden bg-white/[0.03] p-6 border-l-4 border-l-indigo-600 backdrop-blur-3xl"
+                      className="rounded-[2rem] border border-border shadow-xl overflow-hidden bg-card p-6 border-l-4 border-l-indigo-600 backdrop-blur-3xl"
                     >
                       <div className="flex justify-between items-start mb-4">
                         <Badge className="bg-primary/5 text-primary hover:bg-primary/10 rounded-lg text-[10px] font-black italic uppercase">
@@ -1315,9 +1315,9 @@ const InventoryVisibility = () => {
       />
 
       <Dialog open={isBufferDialogOpen} onOpenChange={setIsBufferDialogOpen}>
-        <DialogContent className="max-w-md rounded-[2.5rem] bg-muted backdrop-blur-2xl border-white/10 shadow-2xl p-8">
+        <DialogContent className="max-w-md rounded-[2.5rem] bg-background backdrop-blur-2xl border-border shadow-2xl p-8">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black italic uppercase tracking-widest text-white flex items-center gap-3">
+            <DialogTitle className="text-xl font-black italic uppercase tracking-widest text-foreground flex items-center gap-3">
               <ShieldCheck className="w-6 h-6 text-primary" />
               Stock Threshold
             </DialogTitle>
@@ -1334,7 +1334,7 @@ const InventoryVisibility = () => {
                   <input
                     id="buffer-min"
                     type="number"
-                    className="w-full h-14 bg-muted border border-white/5 rounded-2xl px-6 font-black italic text-lg text-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                    className="w-full h-14 bg-secondary border border-border rounded-2xl px-6 font-black italic text-lg text-foreground focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
                     {...bufferForm.register("minBuffer", { valueAsNumber: true })}
                     aria-describedby={bufferForm.formState.errors.minBuffer ? "buffer-min-error" : undefined}
                     aria-invalid={!!bufferForm.formState.errors.minBuffer}
@@ -1356,7 +1356,7 @@ const InventoryVisibility = () => {
                   <input
                     id="buffer-global"
                     type="number"
-                    className="w-full h-14 bg-muted border border-white/5 rounded-2xl px-6 font-black italic text-lg text-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                    className="w-full h-14 bg-secondary border border-border rounded-2xl px-6 font-black italic text-lg text-foreground focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
                     {...bufferForm.register("globalMinStock", { valueAsNumber: true })}
                     aria-describedby={bufferForm.formState.errors.globalMinStock ? "buffer-global-error" : undefined}
                     aria-invalid={!!bufferForm.formState.errors.globalMinStock}
@@ -1382,7 +1382,7 @@ const InventoryVisibility = () => {
                 variant="outline"
                 disabled={bufferMutation.isPending}
                 onClick={() => setIsBufferDialogOpen(false)}
-                className="h-12 rounded-xl font-black italic text-xs uppercase tracking-widest border-white/5 bg-transparent text-muted-foreground hover:bg-muted"
+                className="h-12 rounded-xl font-black italic text-xs uppercase tracking-widest border-border bg-transparent text-muted-foreground hover:bg-muted"
               >
                 Cancel
               </Button>

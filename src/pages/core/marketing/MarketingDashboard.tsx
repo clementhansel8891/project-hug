@@ -204,7 +204,7 @@ export default function MarketingDashboard() {
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">{stat.label}</p>
               </div>
               <div className="h-[2px] w-12 bg-muted dark:bg-muted rounded-full" />
-              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground opacity-60 italic">{stat.sub}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">{stat.sub}</p>
             </CardContent>
           </GlassCard>
         ))}
@@ -221,7 +221,7 @@ export default function MarketingDashboard() {
                    <p className="text-[10px] font-black uppercase tracking-widest text-primary animate-pulse italic">Physical Matrix Online</p>
                 </div>
                 <h3 className="text-5xl font-black tracking-tighter italic uppercase leading-none">Storefront Tactical Yield</h3>
-                <p className="text-base font-medium italic italic opacity-60 max-w-xl italic">"Real-time synchronization between omnichannel marketing nodes and physical retail footprints."</p>
+                <p className="text-base font-medium italic max-w-xl text-primary-foreground/80">"Real-time synchronization between omnichannel marketing nodes and physical retail footprints."</p>
              </div>
              <div className="flex gap-16">
                 <div className="text-center space-y-2">
@@ -229,14 +229,14 @@ export default function MarketingDashboard() {
                       <Users className="h-10 w-10 text-white" />
                    </div>
                    <h4 className="text-4xl font-black italic">{formatNumber(metrics.moduleContributions.retail.walkInCustomers)}</h4>
-                   <p className="text-[10px] font-black uppercase tracking-widest text-primary italic opacity-60">Store Walk-ins</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/80 italic">Store Walk-ins</p>
                 </div>
                 <div className="text-center space-y-2">
                    <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-white/10 group-hover:bg-success transition-colors">
                       <ActivitySquare className="h-10 w-10 text-white" />
                    </div>
                    <h4 className="text-4xl font-black italic">{formatNumber(metrics.moduleContributions.retail.loyaltyActive)}</h4>
-                   <p className="text-[10px] font-black uppercase tracking-widest text-primary italic opacity-60">Loyalty Active</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/80 italic">Loyalty Active</p>
                 </div>
              </div>
           </div>
@@ -247,13 +247,13 @@ export default function MarketingDashboard() {
         {/* Campaign Cluster Matrix */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-8">
            <Card className="flex-1 rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group">
-              <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10 flex flex-row items-center justify-between">
+              <CardHeader className="p-12 pb-6 border-b border-border flex flex-row items-center justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-3xl font-black tracking-tighter flex items-center gap-4 uppercase italic">
                     <Rocket className="h-8 w-8 text-primary group-hover:translate-x-2 transition-transform duration-500" />
                     Campaign Cluster Matrix
                   </CardTitle>
-                  <CardDescription className="text-sm font-medium italic italic">Real-time execution state and audience targeting across active strategic nodes.</CardDescription>
+                  <CardDescription className="text-sm font-medium italic">Real-time execution state and audience targeting across active strategic nodes.</CardDescription>
                 </div>
                 <Button variant="ghost" className="h-12 px-6 rounded-2xl bg-muted dark:bg-muted border-none font-black uppercase tracking-widest text-[10px] gap-3 hover:bg-primary hover:text-white transition-all shadow-sm" onClick={() => navigate("/core/marketing/automation")}>
                    CAMPAIGN STUDIO <ArrowUpRight className="h-4 w-4" />
@@ -277,15 +277,15 @@ export default function MarketingDashboard() {
                               </Badge>
                            </div>
                            <h4 className="text-2xl font-black uppercase tracking-tighter italic mb-2 group-hover/card:text-primary transition-colors leading-none">{item.name}</h4>
-                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-8 italic opacity-60 leading-relaxed italic">{item.audience}</p>
+                           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-8 italic leading-relaxed">{item.audience}</p>
                            
                            <div className="grid grid-cols-2 gap-6 pt-6 border-t border-border dark:border-border relative z-10">
                               <div className="space-y-1">
-                                 <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">Strategic Budget</p>
+                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">Strategic Budget</p>
                                  <p className="text-xl font-black text-primary italic">{formatCurrency(item.budget, item.currency)}</p>
                               </div>
                               <div className="space-y-1 text-right">
-                                 <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">Protocol</p>
+                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">Protocol</p>
                                  <Badge variant="secondary" className="rounded-full text-[9px] font-black px-3 py-1 uppercase tracking-widest bg-muted dark:bg-muted text-muted-foreground border-none italic">{item.objective}</Badge>
                               </div>
                            </div>
@@ -307,7 +307,7 @@ export default function MarketingDashboard() {
         {/* Tactical Alerts Feed */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-8">
            <Card className="flex-1 rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group/alerts">
-              <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10">
+              <CardHeader className="p-12 pb-6 border-b border-border">
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 bg-primary rounded-2xl flex items-center justify-center shadow-2xl group-hover/alerts:scale-110 transition-transform">
                      <Bell className="h-6 w-6 text-white" />
@@ -316,7 +316,7 @@ export default function MarketingDashboard() {
                     Tactical Intelligence
                   </CardTitle>
                 </div>
-                <CardDescription className="text-xs font-medium italic italic mt-2">Real-time ingestion spikes, campaign health, and handoff SLAs.</CardDescription>
+                <CardDescription className="text-xs font-medium italic mt-2">Real-time ingestion spikes, campaign health, and handoff SLAs.</CardDescription>
               </CardHeader>
               <ScrollArea className="flex-1 bg-black/5 dark:bg-white/5">
                  <div className="p-8 space-y-6">
@@ -345,10 +345,10 @@ export default function MarketingDashboard() {
                             )}
                          </div>
                          <div className="space-y-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary opacity-60 italic leading-none">{item.type.replace('_', ' ')}</p>
-                            <p className="text-base font-medium text-muted-foreground dark:text-muted-foreground leading-relaxed italic italic">"{item.message}"</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary italic leading-none">{item.type.replace('_', ' ')}</p>
+                            <p className="text-base font-medium text-muted-foreground leading-relaxed italic">"{item.message}"</p>
                          </div>
-                         <div className="flex justify-between items-center pt-4 border-t border-border dark:border-border text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                         <div className="flex justify-between items-center pt-4 border-t border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                             <span className="flex items-center gap-2 italic"><ActivitySquare className="h-3.5 w-3.5 text-primary" /> Real-time Telemetry</span>
                             <span className="text-primary italic">ACTION PENDING</span>
                          </div>
@@ -379,7 +379,7 @@ export default function MarketingDashboard() {
                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">Strategy Optimization Active</p>
             </div>
             <h3 className="text-3xl font-black uppercase italic tracking-tighter italic">Total Growth Intelligence</h3>
-            <p className="text-lg font-medium italic italic opacity-60 italic leading-relaxed italic max-w-3xl">
+            <p className="text-lg font-medium italic leading-relaxed text-muted-foreground max-w-3xl">
                "Current telemetry suggests an <strong>immediate +15% budget reallocation</strong> to High-Intent Meta Ads nodes. AI analysis indicates a potential <strong>3.2x ROI multiplier</strong> in the Enterprise Sector for Q4."
             </p>
          </div>

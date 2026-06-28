@@ -368,7 +368,7 @@ export default function PayFlow() {
             <div className="bg-muted text-muted-foreground p-6 flex flex-col justify-between">
               <div>
                 <ShieldCheck className="w-8 h-8 text-primary mb-4" />
-                <DialogTitle className="text-xl mb-2 text-white">Secure Payment Protocol</DialogTitle>
+                <DialogTitle className="text-xl mb-2 text-foreground">Secure Payment Protocol</DialogTitle>
                 <p className="text-sm text-muted-foreground">
                   All decentralized payments are hashed, signed by internal HSM prior to broadcast, and routed strictly per RBAC limits.
                 </p>
@@ -376,14 +376,14 @@ export default function PayFlow() {
                   <div className="flex items-start gap-3">
                     <Fingerprint className="w-5 h-5 text-success mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-white">Biometric Authorization</p>
+                      <p className="text-sm font-medium text-foreground">Biometric Authorization</p>
                       <p className="text-xs text-muted-foreground">Transactions over Rp 150jt require CFO physical YubiKey or Biometric approval.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Building2 className="w-5 h-5 text-primary mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-white">Treasury Gateway</p>
+                      <p className="text-sm font-medium text-foreground">Treasury Gateway</p>
                       <p className="text-xs text-muted-foreground">Funds are pulled from unified internal treasury pools linked to source accounts.</p>
                     </div>
                   </div>

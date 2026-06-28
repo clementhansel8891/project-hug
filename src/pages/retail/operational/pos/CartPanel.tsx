@@ -132,7 +132,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({
                         {item.name}
                       </h4>
                       <div
-                        className={`mt-1 text-[9px] font-black uppercase tracking-widest opacity-60 ${
+                        className={`mt-1 text-[9px] font-black uppercase tracking-widest ${
                           isActive ? "text-primary-foreground" : "text-muted-foreground"
                         }`}
                       >
