@@ -225,7 +225,7 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
                     checked={selected.includes(barcode)}
                     onCheckedChange={() => toggleSelect(barcode)}
                   />
-                  <div className="font-mono font-bold text-muted-foreground bg-white border border-border px-3 py-1 rounded-lg">
+                  <div className="font-mono font-bold text-muted-foreground bg-card border border-border px-3 py-1 rounded-lg">
                     {barcode}
                   </div>
                 </div>

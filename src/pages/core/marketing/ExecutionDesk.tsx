@@ -207,7 +207,7 @@ export default function ExecutionDesk() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -222,7 +222,7 @@ export default function ExecutionDesk() {
           </Button>
           <Button 
             variant="outline"
-            className="h-[4.5rem] px-10 rounded-[2rem] border-border dark:border-border bg-white dark:bg-muted shadow-2xl font-black text-sm gap-3 group transition-all hover:scale-105 active:scale-95"
+            className="h-[4.5rem] px-10 rounded-[2rem] border-border dark:border-border bg-card dark:bg-muted shadow-2xl font-black text-sm gap-3 group transition-all hover:scale-105 active:scale-95"
             onClick={() => setRunOpen(true)}
           >
             <Plus className="h-6 w-6 group-hover:rotate-90 transition-transform duration-500" /> 
@@ -241,7 +241,7 @@ export default function ExecutionDesk() {
          ].map(ch => (
            <Card key={ch.name} className="rounded-[2rem] border-none shadow-xl glass-card group hover:shadow-2xl transition-all">
               <CardContent className="p-6 flex items-center gap-4">
-                 <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                 <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                     <ch.icon className="h-6 w-6 text-primary" />
                  </div>
                  <div className="flex-1 min-w-0">
@@ -380,7 +380,7 @@ export default function ExecutionDesk() {
                      "Campaign runs are currently optimized for <strong>High-Conversion Windows</strong>. Automated sync with Google Ads is live."
                   </p>
                   <Button 
-                    className="w-full h-16 bg-white text-primary hover:bg-muted border-none rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl gap-3 group/btn"
+                    className="w-full h-16 bg-card text-primary hover:bg-muted border-none rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl gap-3 group/btn"
                     onClick={() => setRunOpen(true)}
                   >
                      <Plus className="h-5 w-5 group-hover/btn:rotate-90 transition-transform duration-500" />

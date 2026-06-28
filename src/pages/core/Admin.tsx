@@ -124,7 +124,7 @@ export default function CoreAdmin() {
           description="Platform-wide security and governance settings."
         >
           <div className="space-y-4">
-            <div className="flex items-center justify-between rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm">
+            <div className="flex items-center justify-between rounded-2xl border p-5 bg-card dark:bg-muted shadow-sm">
               <div className="flex items-center gap-4">
                 <div className="h-10 w-10 rounded-xl bg-primary dark:bg-primary flex items-center justify-center">
                   <ShieldCheck className="h-5 w-5 text-primary" />
@@ -155,7 +155,7 @@ export default function CoreAdmin() {
             {(Array.isArray(recentActivity) ? recentActivity : []).slice(0, 5).map((log: any) => (
               <div
                 key={log.id || log.title}
-                className="rounded-2xl border p-4 bg-white dark:bg-muted shadow-sm hover:shadow-md transition-shadow"
+                className="rounded-2xl border p-4 bg-card dark:bg-muted shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white italic">
@@ -200,7 +200,7 @@ export default function CoreAdmin() {
               </Button>
             </div>
           ))}
-          <div className="flex items-center justify-between rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm border-primary">
+          <div className="flex items-center justify-between rounded-2xl border p-5 bg-card dark:bg-muted shadow-sm border-primary">
             <div className="flex items-center gap-3">
               <Database className="h-5 w-5 text-primary" />
               <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Emergency Authorization Required</span>

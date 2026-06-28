@@ -100,7 +100,7 @@ const DeviceModal = ({ dev, onClose }: DeviceModalProps) => {
         if (!v) handleClose();
       }}
     >
-      <DialogContent className="max-w-lg rounded-3xl border-none shadow-2xl bg-white">
+      <DialogContent className="max-w-lg rounded-3xl border-none shadow-2xl bg-card">
         {dev && (
           <>
             <DialogHeader>

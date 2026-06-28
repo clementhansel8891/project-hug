@@ -112,7 +112,7 @@ export default function WhiteLabelSettings() {
                   <div className="space-y-4">
                     <Label>Agency Logo</Label>
                     <div className="flex items-center gap-6 p-4 border-2 border-dashed border-border dark:border-border rounded-xl bg-muted dark:bg-muted">
-                      <div className="h-16 w-16 bg-white dark:bg-muted rounded-lg flex items-center justify-center border border-border dark:border-border shadow-sm overflow-hidden">
+                      <div className="h-16 w-16 bg-card dark:bg-muted rounded-lg flex items-center justify-center border border-border dark:border-border shadow-sm overflow-hidden">
                         <img src={config.logoUrl} alt="Preview" className="max-h-full max-w-full object-contain" />
                       </div>
                       <div className="flex-1 space-y-1">
@@ -138,7 +138,7 @@ export default function WhiteLabelSettings() {
                   <div className="space-y-2">
                     <Label>Custom CSS</Label>
                     <textarea 
-                      className="w-full min-h-[120px] p-3 rounded-lg border border-border dark:border-border bg-white dark:bg-muted font-mono text-sm"
+                      className="w-full min-h-[120px] p-3 rounded-lg border border-border dark:border-border bg-card dark:bg-muted font-mono text-sm"
                       placeholder="/* Add custom dashboard styles here */"
                       value={config.customCss}
                       onChange={(e) => setConfig({...config, customCss: e.target.value})}
@@ -182,7 +182,7 @@ export default function WhiteLabelSettings() {
                           <span className="font-mono text-primary">CNAME</span>
                           <span className="text-muted-foreground">Value: lb.zenvix.ai</span>
                         </div>
-                        <div className="h-10 bg-white dark:bg-muted border rounded flex items-center px-3 justify-between">
+                        <div className="h-10 bg-card dark:bg-muted border rounded flex items-center px-3 justify-between">
                           <code className="text-xs">{config.customDomain || "app.your-agency.com"}</code>
                           <Badge variant="outline" className="text-[10px] text-warning border-warning bg-warning">Pending</Badge>
                         </div>
@@ -244,7 +244,7 @@ export default function WhiteLabelSettings() {
 
         {/* Right: Preview */}
         <div className="space-y-6">
-          <Card className="border-border/60 dark:border-border/60 shadow-lg sticky top-8 bg-white dark:bg-muted overflow-hidden">
+          <Card className="border-border/60 dark:border-border/60 shadow-lg sticky top-8 bg-card dark:bg-muted overflow-hidden">
             <CardHeader className="border-b border-border dark:border-border py-3 bg-muted dark:bg-muted">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
                 <Eye className="h-4 w-4 text-primary" />
@@ -253,7 +253,7 @@ export default function WhiteLabelSettings() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="aspect-[4/5] w-full bg-muted dark:bg-muted p-4">
-                <div className="h-full w-full bg-white dark:bg-muted rounded-lg shadow-2xl border border-border dark:border-border overflow-hidden flex flex-col">
+                <div className="h-full w-full bg-card dark:bg-muted rounded-lg shadow-2xl border border-border dark:border-border overflow-hidden flex flex-col">
                   {/* Top Nav Preview */}
                   <div className="h-10 border-b border-border dark:border-border px-3 flex items-center justify-between">
                     <img src={config.logoUrl} className="h-5 object-contain" alt="Logo" />

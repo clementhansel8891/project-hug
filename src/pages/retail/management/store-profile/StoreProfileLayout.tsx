@@ -237,7 +237,7 @@ export const StoreProfileLayout: React.FC<{ children: React.ReactNode }> = ({
               onValueChange={setSelectedStoreId}
               disabled={isStoreManager}
             >
-              <SelectTrigger className="w-[280px] h-10 rounded-xl border-border bg-secondary/5 font-black italic text-[11px] shadow-sm hover:bg-white transition-all">
+              <SelectTrigger className="w-[280px] h-10 rounded-xl border-border bg-secondary/5 font-black italic text-[11px] shadow-sm hover:bg-muted transition-all">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="rounded-xl border-border shadow-2xl p-1.5">

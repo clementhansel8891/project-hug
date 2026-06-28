@@ -197,7 +197,7 @@ const RegisterModal = ({ open, tab, onClose, onSave }: RegisterModalProps) => {
       }}
     >
       <DialogContent
-        className="max-w-lg rounded-3xl border-none shadow-2xl bg-white max-h-[90vh] overflow-y-auto"
+        className="max-w-lg rounded-3xl border-none shadow-2xl bg-card max-h-[90vh] overflow-y-auto"
         aria-describedby="register-modal-description"
       >
         <DialogHeader>

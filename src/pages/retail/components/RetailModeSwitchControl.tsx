@@ -45,7 +45,7 @@ export const RetailModeSwitchControl = ({ variant = "default" }: { variant?: "de
         className={cn(
           "h-8 px-4 font-black text-[10px] uppercase tracking-widest gap-2 rounded-lg transition-all",
           mode === "management"
-            ? isTactical ? "bg-white/10 text-white shadow-sm shadow-indigo-500/20" : "bg-white text-primary shadow-sm"
+            ? isTactical ? "bg-white/10 text-white shadow-sm shadow-indigo-500/20" : "bg-card text-primary shadow-sm"
             : isTactical ? "text-white/40 hover:text-white" : "text-muted-foreground hover:text-primary",
         )}
         onClick={() => handleSwitch("management")}
@@ -59,7 +59,7 @@ export const RetailModeSwitchControl = ({ variant = "default" }: { variant?: "de
         className={cn(
           "h-8 px-4 font-black text-[10px] uppercase tracking-widest gap-2 rounded-lg transition-all",
           mode === "operational"
-            ? isTactical ? "bg-primary text-white shadow-lg shadow-indigo-600/40" : "bg-white text-primary shadow-sm"
+            ? isTactical ? "bg-primary text-white shadow-lg shadow-indigo-600/40" : "bg-card text-primary shadow-sm"
             : isTactical ? "text-white/40 hover:text-white" : "text-muted-foreground hover:text-primary",
         )}
         onClick={() => handleSwitch("operational")}

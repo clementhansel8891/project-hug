@@ -69,7 +69,7 @@ export function TransferManifestDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-muted max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-4xl rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl bg-card dark:bg-muted max-h-[90vh] flex flex-col">
         <DialogHeader className="p-8 bg-muted dark:bg-muted border-b border-border dark:border-border">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
@@ -183,7 +183,7 @@ export function TransferManifestDialog({
             Zenvix Logistics Core v2.4
           </div>
           <Button 
-            className="rounded-xl px-8 h-12 bg-white text-muted-foreground font-black uppercase tracking-widest text-[10px] hover:bg-muted"
+            className="rounded-xl px-8 h-12 bg-card text-muted-foreground font-black uppercase tracking-widest text-[10px] hover:bg-muted"
             onClick={() => onOpenChange(false)}
           >
             Close Manifest

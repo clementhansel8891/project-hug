@@ -14,7 +14,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
   const networkLatency = data?.networkLatency ?? 45;
 
   return (
-    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-card hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
+    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-muted hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-info/10 rounded-full blur-[130px] -mr-[15%] -mt-[15%] pointer-events-none" />
 
       <div className="flex items-center justify-between mb-10 relative z-10">
@@ -56,7 +56,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-8 pt-4">
-          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-card hover:border-success/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
+          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-muted hover:border-success/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-success/5 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <Wifi className="absolute top-8 right-8 w-6 h-6 text-muted-foreground group-hover/metric:text-success transition-colors" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 italic">
@@ -84,7 +84,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
             </div>
           </div>
 
-          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-card hover:border-primary/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
+          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-muted hover:border-primary/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <Server className="absolute top-8 right-8 w-6 h-6 text-muted-foreground group-hover/metric:text-primary transition-colors" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 italic">

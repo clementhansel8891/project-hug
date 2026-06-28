@@ -320,7 +320,7 @@ export default function InventoryStockHub() {
   const mainContent = (
     <div className="p-6 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden group">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Items Type</CardTitle>
             <Layers className="h-4 w-4 text-primary opacity-50" />
@@ -331,7 +331,7 @@ export default function InventoryStockHub() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden group">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Items On-Hand</CardTitle>
             <Package className="h-4 w-4 text-primary opacity-50" />
@@ -342,7 +342,7 @@ export default function InventoryStockHub() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Low Stock</CardTitle>
             <AlertTriangle className="h-4 w-4 text-warning opacity-50" />
@@ -353,7 +353,7 @@ export default function InventoryStockHub() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Out of Stock</CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive opacity-50" />
@@ -364,7 +364,7 @@ export default function InventoryStockHub() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Item Capital Value</CardTitle>
             <Archive className="h-4 w-4 text-primary opacity-50" />
@@ -377,7 +377,7 @@ export default function InventoryStockHub() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Inventory Value</CardTitle>
             <BarChart3 className="h-4 w-4 text-success opacity-50" />
@@ -391,7 +391,7 @@ export default function InventoryStockHub() {
         </Card>
       </div>
 
-      <Card className="border-none shadow-2xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[3rem] overflow-hidden">
+      <Card className="border-none shadow-2xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[3rem] overflow-hidden">
         <div className="p-8 border-b">
           <InventoryFilterHub 
             search={search}
@@ -512,7 +512,7 @@ export default function InventoryStockHub() {
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-56 rounded-2xl border-none shadow-2xl p-2 bg-white dark:bg-muted">
+                          <DropdownMenuContent align="end" className="w-56 rounded-2xl border-none shadow-2xl p-2 bg-card dark:bg-muted">
                             <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-4 py-3">Operations</DropdownMenuLabel>
                             <DropdownMenuItem className="rounded-xl px-4 py-3 text-xs font-bold cursor-pointer"><TrendingUp className="h-4 w-4 mr-3" /> Quick Adjustment</DropdownMenuItem>
                             <DropdownMenuItem className="rounded-xl px-4 py-3 text-xs font-bold cursor-pointer"><ArrowRightLeft className="h-4 w-4 mr-3" /> Execute Transfer</DropdownMenuItem>

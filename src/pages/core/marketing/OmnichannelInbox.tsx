@@ -255,7 +255,7 @@ export default function OmnichannelInbox() {
                      <Plus className="h-6 w-6 group-hover:rotate-90 transition-transform duration-500" />
                    </Button>
                  </DialogTrigger>
-                 <DialogContent className="sm:max-w-md rounded-[3rem] border-none bg-white dark:bg-muted p-0 overflow-hidden shadow-2xl">
+                 <DialogContent className="sm:max-w-md rounded-[3rem] border-none bg-card dark:bg-muted p-0 overflow-hidden shadow-2xl">
                     <div className="h-2 bg-primary" />
                     <div className="p-10 space-y-8">
                        <DialogHeader>
@@ -279,7 +279,7 @@ export default function OmnichannelInbox() {
                                {(Array.isArray(contacts) ? contacts : []).map(contact => (
                                  <button 
                                    key={contact.id}
-                                   className="w-full p-4 flex items-center gap-4 hover:bg-white dark:hover:bg-muted rounded-2xl text-left transition-all group"
+                                   className="w-full p-4 flex items-center gap-4 hover:bg-muted dark:hover:bg-muted rounded-2xl text-left transition-all group"
                                    onClick={() => {
                                      const fakeConv: Conversation = {
                                        id: `temp-${contact.id}`,
@@ -363,7 +363,7 @@ export default function OmnichannelInbox() {
                        className={cn(
                          "w-full p-5 flex items-start gap-5 text-left transition-all duration-300 rounded-[2rem] group relative overflow-hidden",
                          selectedConv?.id === conv.id 
-                           ? "bg-white dark:bg-muted shadow-2xl shadow-indigo-500/10 translate-x-2 border-l-4 border-l-indigo-600" 
+                           ? "bg-card dark:bg-muted shadow-2xl shadow-indigo-500/10 translate-x-2 border-l-4 border-l-indigo-600" 
                            : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1"
                        )}
                      >
@@ -560,7 +560,7 @@ export default function OmnichannelInbox() {
                     <div className="absolute inset-0 bg-primary rounded-[2rem] blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity" />
                     <textarea 
                       placeholder={`Authorize response via ${selectedConv.channel} stream...`} 
-                      className="w-full bg-white dark:bg-muted border-none rounded-[2rem] p-5 pr-16 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm font-medium resize-none h-16 min-h-[64px] max-h-40 relative z-10 italic"
+                      className="w-full bg-card dark:bg-muted border-none rounded-[2rem] p-5 pr-16 shadow-inner focus:ring-4 focus:ring-indigo-500/10 transition-all text-sm font-medium resize-none h-16 min-h-[64px] max-h-40 relative z-10 italic"
                       value={inputText}
                       onChange={e => setInputText(e.target.value)}
                       onKeyDown={e => {
@@ -593,7 +593,7 @@ export default function OmnichannelInbox() {
             <div className="flex-1 flex flex-col items-center justify-center p-20 animate-in zoom-in duration-1000 grayscale opacity-30 space-y-12">
               <div className="relative">
                  <div className="absolute inset-0 bg-primary blur-[100px] rounded-full scale-[3] animate-pulse" />
-                 <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border">
+                 <div className="h-48 w-48 rounded-[4rem] bg-card dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border">
                     <MessageSquare className="h-24 w-24 text-primary drop-shadow-2xl" />
                  </div>
               </div>
@@ -628,9 +628,9 @@ export default function OmnichannelInbox() {
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-8">Strategic Principal Node</p>
               
               <div className="flex justify-center gap-4">
-                <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-white dark:bg-muted shadow-lg hover:scale-110 hover:bg-primary hover:text-white transition-all"><Phone className="h-5 w-5" /></Button>
-                <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-white dark:bg-muted shadow-lg hover:scale-110 hover:bg-primary hover:text-white transition-all"><Mail className="h-5 w-5" /></Button>
-                <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-white dark:bg-muted shadow-lg hover:scale-110 hover:bg-warning hover:text-white transition-all"><Star className="h-5 w-5" /></Button>
+                <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-card dark:bg-muted shadow-lg hover:scale-110 hover:bg-primary hover:text-white transition-all"><Phone className="h-5 w-5" /></Button>
+                <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-card dark:bg-muted shadow-lg hover:scale-110 hover:bg-primary hover:text-white transition-all"><Mail className="h-5 w-5" /></Button>
+                <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-card dark:bg-muted shadow-lg hover:scale-110 hover:bg-warning hover:text-white transition-all"><Star className="h-5 w-5" /></Button>
               </div>
             </div>
             

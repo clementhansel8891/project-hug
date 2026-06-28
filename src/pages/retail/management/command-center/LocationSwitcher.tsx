@@ -19,7 +19,7 @@ export const LocationSwitcher: React.FC<LocationSwitcherProps> = ({
         onClick={() => onLocationChange(undefined)}
         className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-all duration-300 whitespace-nowrap ${
           !currentLocationId
-            ? "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-foreground border border-border"
+            ? "bg-card shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-foreground border border-border"
             : "text-muted-foreground hover:text-muted-foreground border border-transparent"
         }`}
       >
@@ -32,7 +32,7 @@ export const LocationSwitcher: React.FC<LocationSwitcherProps> = ({
           onClick={() => onLocationChange(store.id)}
           className={`px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-all duration-300 whitespace-nowrap ${
             currentLocationId === store.id
-              ? "bg-white shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-foreground border border-border"
+              ? "bg-card shadow-[0_4px_10px_rgba(0,0,0,0.05)] text-foreground border border-border"
               : "text-muted-foreground hover:text-muted-foreground border border-transparent"
           }`}
         >

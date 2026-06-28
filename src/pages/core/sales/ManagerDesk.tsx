@@ -174,7 +174,7 @@ export default function ManagerDesk() {
           { label: "SLA Breaches", value: metrics.slaBreaches, icon: AlertCircle, color: "rose" },
           { label: "Pending Approvals", value: metrics.approvalsPending, icon: FileCheck, color: "emerald" },
         ].map((stat, i) => (
-          <Card key={i} className="rounded-3xl border-none shadow-lg bg-white dark:bg-muted p-6 flex flex-col items-center justify-center text-center space-y-2 hover:shadow-xl transition-all hover:-translate-y-1">
+          <Card key={i} className="rounded-3xl border-none shadow-lg bg-card dark:bg-muted p-6 flex flex-col items-center justify-center text-center space-y-2 hover:shadow-xl transition-all hover:-translate-y-1">
              <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center mb-1", `bg-${stat.color}-500/10`)}>
                 <stat.icon className={cn("h-5 w-5", `text-${stat.color}-500`)} />
              </div>
@@ -216,7 +216,7 @@ export default function ManagerDesk() {
                   </thead>
                   <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {(Array.isArray(filteredOpportunities) ? filteredOpportunities : []).map((item) => (
-                      <tr key={item.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
+                      <tr key={item.id} className="group hover:bg-muted dark:hover:bg-muted transition-all cursor-default">
                         <td className="px-10 py-8">
                            <div className="flex items-center gap-4">
                               <div className="h-10 w-10 rounded-xl bg-muted dark:bg-muted flex items-center justify-center font-black text-xs group-hover:bg-primary group-hover:text-white transition-colors">
@@ -287,7 +287,7 @@ export default function ManagerDesk() {
                          </div>
                        ) : (
                          (Array.isArray(alerts) ? alerts : []).map((alert) => (
-                           <div key={alert.id} className="p-5 rounded-3xl bg-white dark:bg-muted border border-border dark:border-border space-y-3 group hover:shadow-lg transition-all">
+                           <div key={alert.id} className="p-5 rounded-3xl bg-card dark:bg-muted border border-border dark:border-border space-y-3 group hover:shadow-lg transition-all">
                               <div className="flex justify-between items-start">
                                  <Badge className={cn(
                                    "rounded-full font-black text-[8px] px-2 py-0.5 border-none shadow-sm uppercase tracking-widest",
@@ -339,7 +339,7 @@ export default function ManagerDesk() {
                        <span>94%</span>
                     </div>
                     <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                       <div className="h-full bg-white rounded-full" style={{ width: "94%" }} />
+                       <div className="h-full bg-card rounded-full" style={{ width: "94%" }} />
                     </div>
                  </div>
                  <div className="space-y-2">
@@ -352,7 +352,7 @@ export default function ManagerDesk() {
                     </div>
                  </div>
               </div>
-              <Button className="w-full h-14 rounded-2xl bg-white text-primary hover:bg-primary font-black text-xs uppercase tracking-widest shadow-xl">INITIATE COACHING PROTOCOL</Button>
+              <Button className="w-full h-14 rounded-2xl bg-card text-primary hover:bg-primary font-black text-xs uppercase tracking-widest shadow-xl">INITIATE COACHING PROTOCOL</Button>
            </Card>
         </div>
       </div>

@@ -23,7 +23,7 @@ interface PerformanceChartProps {
 
 export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data }) => {
   return (
-    <Card className="lg:col-span-2 rounded-[2rem] shadow-2xl border-none overflow-hidden bg-white">
+    <Card className="lg:col-span-2 rounded-[2rem] shadow-2xl border-none overflow-hidden bg-card">
       <div className="p-8 border-b flex items-center justify-between">
         <div>
           <h3 className="text-xl font-black italic uppercase tracking-tighter">
@@ -37,7 +37,7 @@ export const PerformanceChart: React.FC<PerformanceChartProps> = ({ data }) => {
           <Button disabled title="Not available yet"
             variant="ghost"
             size="sm"
-            className="h-8 px-4 rounded-lg bg-white shadow-sm font-black italic text-[10px] uppercase"
+            className="h-8 px-4 rounded-lg bg-card shadow-sm font-black italic text-[10px] uppercase"
           >
             Minute
           </Button>

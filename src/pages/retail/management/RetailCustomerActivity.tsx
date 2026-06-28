@@ -102,7 +102,7 @@ export function RetailCustomerActivity({
             </div>
             <Button 
               variant="outline" 
-              className="h-16 w-16 p-0 rounded-2xl border-border bg-secondary/40 hover:bg-white/10 shadow-2xl"
+              className="h-16 w-16 p-0 rounded-2xl border-border bg-secondary/40 hover:bg-muted/10 shadow-2xl"
               onClick={() => onExpansionRequest?.("Identity Registry Filter Matrix")}
             >
               <Filter className="w-5 h-5 text-muted-foreground" />
@@ -121,7 +121,7 @@ export function RetailCustomerActivity({
             {(Array.isArray(filteredCustomers) ? filteredCustomers : []).map((customer) => (
               <div
                 key={customer.id}
-                className="group flex items-center justify-between p-6 hover:bg-card transition-all duration-500 cursor-pointer relative overflow-hidden"
+                className="group flex items-center justify-between p-6 hover:bg-muted transition-all duration-500 cursor-pointer relative overflow-hidden"
                 onClick={() => handleOpenDetail(customer)}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -180,13 +180,13 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl h-[85vh] p-0 overflow-hidden border border-border rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] bg-background">
+      <DialogContent className="max-w-6xl h-[85vh] p-0 border border-border rounded-2xl shadow-[0_0_100px_rgba(0,0,0,0.5)] bg-background">
         <DialogHeader className="sr-only">
           <DialogTitle>Customer Details - {customer.name}</DialogTitle>
         </DialogHeader>
-        <div className="flex h-full">
+        <div className="flex h-full overflow-hidden">
           {/* Sidebar Info */}
-          <div className="w-[350px] bg-card border-r border-border p-6 space-y-12 overflow-y-auto custom-scrollbar">
+          <div className="w-[350px] shrink-0 bg-card border-r border-border p-6 space-y-12 overflow-y-auto">
             <div className="space-y-6 text-center">
               <div className="w-32 h-32 rounded-2xl bg-primary mx-auto flex items-center justify-center text-3xl font-black italic shadow-[0_20px_50px_rgba(79,70,229,0.4)] text-foreground">
                 {customer.name[0]}
@@ -221,7 +221,7 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
                 <div className="space-y-3">
                   <Button 
                     variant="outline"
-                    className="w-full h-12 rounded-xl bg-secondary/40 border-border text-[9px] font-black uppercase tracking-widest text-foreground hover:bg-white/10 gap-3"
+                    className="w-full h-12 rounded-xl bg-secondary/40 border-border text-[9px] font-black uppercase tracking-widest text-foreground hover:bg-muted/10 gap-3"
                     onClick={() => onExpansionRequest?.(`GDPR Data Export: ${customer.name}`)}
                   >
                     <Download className="w-3.5 h-3.5" /> Export Data PII
@@ -244,7 +244,7 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
 
             <Button 
               onClick={() => onExpansionRequest?.(`Identity Modification: ${customer.name}`)}
-              className="w-full bg-secondary/40 hover:bg-white/10 border border-border rounded-2xl h-16 text-[11px] font-black uppercase tracking-[0.3em] italic text-foreground shadow-2xl transition-all hover:scale-105 active:scale-95"
+              className="w-full bg-secondary/40 hover:bg-muted/10 border border-border rounded-2xl h-16 text-[11px] font-black uppercase tracking-[0.3em] italic text-foreground shadow-2xl transition-all hover:scale-105 active:scale-95"
             >
               Edit Identity Registry
             </Button>
@@ -346,7 +346,7 @@ function OrderHistoryList({ customerId }: { customerId: string }) {
           </div>
         ) : (
           (Array.isArray(orders) ? orders : []).map((order) => (
-            <div key={order.id} className="p-8 rounded-2xl bg-card border border-border hover:border-primary hover:bg-card transition-all duration-500 space-y-6 group/order shadow-xl">
+            <div key={order.id} className="p-8 rounded-2xl bg-card border border-border hover:border-primary hover:bg-muted transition-all duration-500 space-y-6 group/order shadow-xl">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] italic">Order Context</p>
@@ -380,7 +380,7 @@ function CustomerCartView({ cart }: any) {
           </div>
         ) : (
           (Array.isArray(items) ? items : []).map((item: any) => (
-            <div key={item.id} className="flex items-center justify-between p-8 bg-card border border-border rounded-2xl hover:bg-card hover:border-primary transition-all duration-500 group/cart shadow-xl">
+            <div key={item.id} className="flex items-center justify-between p-8 bg-card border border-border rounded-2xl hover:bg-muted hover:border-primary transition-all duration-500 group/cart shadow-xl">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 rounded-2xl bg-secondary/40 border border-border flex items-center justify-center shadow-2xl group-hover/cart:scale-110 transition-transform">
                   <ShoppingCart className="w-7 h-7 text-primary" />
@@ -411,7 +411,7 @@ function CustomerWishlistView({ wishlist, onExpansionRequest }: any) {
           </div>
         ) : (
           (Array.isArray(items) ? items : []).map((item: any) => (
-            <div key={item.id} className="p-6 bg-card border border-border rounded-[2rem] flex flex-col items-center text-center space-y-6 hover:bg-card hover:border-destructive/20 transition-all duration-500 group/wish shadow-xl">
+            <div key={item.id} className="p-6 bg-card border border-border rounded-[2rem] flex flex-col items-center text-center space-y-6 hover:bg-muted hover:border-destructive/20 transition-all duration-500 group/wish shadow-xl">
               <div className="w-24 h-24 rounded-[2rem] bg-destructive/10 border border-destructive/20 flex items-center justify-center shadow-3xl group-hover/wish:scale-110 group-hover/wish:rotate-6 transition-all duration-500">
                 <Heart className="w-10 h-10 text-destructive fill-rose-400/10" />
               </div>

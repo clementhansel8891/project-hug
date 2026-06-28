@@ -135,7 +135,7 @@ export default function InventoryDashboard() {
         ].map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <div key={i} className="group relative p-6 rounded-[2rem] bg-white dark:bg-muted border border-muted dark:border-muted shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+            <div key={i} className="group relative p-6 rounded-[2rem] bg-card dark:bg-muted border border-muted dark:border-muted shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
               <div className="relative z-10 space-y-4">
                 <div className={cn(
                   "h-10 w-10 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:rotate-12",
@@ -176,7 +176,7 @@ export default function InventoryDashboard() {
               </div>
             ) : (
               (Array.isArray(openAlerts) ? openAlerts : []).map((alert) => (
-                <div key={alert.id} className="group flex items-center justify-between p-6 rounded-3xl bg-white dark:bg-muted border border-muted dark:border-muted hover:border-destructive/30 hover:shadow-xl transition-all duration-500">
+                <div key={alert.id} className="group flex items-center justify-between p-6 rounded-3xl bg-card dark:bg-muted border border-muted dark:border-muted hover:border-destructive/30 hover:shadow-xl transition-all duration-500">
                   <div className="flex items-center gap-6">
                     <div className={cn(
                       "h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500",
@@ -259,7 +259,7 @@ export default function InventoryDashboard() {
           )}
 
           {/* Inventory Item Summary — replaces stub element (Requirement 7.6) */}
-          <div className="p-6 rounded-3xl bg-white dark:bg-muted border border-muted dark:border-muted space-y-4">
+          <div className="p-6 rounded-3xl bg-card dark:bg-muted border border-muted dark:border-muted space-y-4">
             <div className="flex items-center gap-3">
               <Package className="h-5 w-5 text-primary" />
               <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Top Items</span>

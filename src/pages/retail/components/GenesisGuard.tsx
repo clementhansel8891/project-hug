@@ -57,7 +57,7 @@ export const GenesisGuard: React.FC<{ children: React.ReactNode }> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="border-2 border-border hover:border-primary transition-all group overflow-hidden bg-white rounded-[2rem] shadow-xl">
+          <Card className="border-2 border-border hover:border-primary transition-all group overflow-hidden bg-card rounded-[2rem] shadow-xl">
             <CardHeader className="p-8">
               <div className="w-16 h-16 bg-primary/5 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                 <Store className="w-8 h-8" />
@@ -93,7 +93,7 @@ export const GenesisGuard: React.FC<{ children: React.ReactNode }> = ({
             </CardContent>
           </Card>
 
-          <Card className="border-2 border-border hover:border-cyan-500 transition-all group overflow-hidden bg-white rounded-[2rem] shadow-xl">
+          <Card className="border-2 border-border hover:border-cyan-500 transition-all group overflow-hidden bg-card rounded-[2rem] shadow-xl">
             <CardHeader className="p-8">
               <div className="w-16 h-16 bg-cyan-50 rounded-2xl flex items-center justify-center text-cyan-600 group-hover:scale-110 transition-transform">
                 <Globe className="w-8 h-8" />

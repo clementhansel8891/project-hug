@@ -156,7 +156,7 @@ export default function ChatHub() {
   const mainContent = (
     <div className="flex h-[calc(100vh-140px)] overflow-hidden bg-muted dark:bg-muted rounded-[2.5rem] border border-border/50 dark:border-border/50 m-6">
       {/* Sidebar - Channels */}
-      <div className="w-80 border-r border-border/50 dark:border-border/50 flex flex-col bg-white dark:bg-muted backdrop-blur-xl">
+      <div className="w-80 border-r border-border/50 dark:border-border/50 flex flex-col bg-card dark:bg-muted backdrop-blur-xl">
         <div className="p-6 space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -215,7 +215,7 @@ export default function ChatHub() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-muted backdrop-blur-sm relative">
+      <div className="flex-1 flex flex-col bg-card dark:bg-muted backdrop-blur-sm relative">
         {!activeChannel ? (
           <div className="flex-1 flex flex-col items-center justify-center opacity-20">
             <MessageSquare className="h-24 w-24 mb-6 stroke-[1]" />

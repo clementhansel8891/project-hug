@@ -192,14 +192,14 @@ export default function LeadDesk() {
                   <Button 
                     variant="ghost" size="sm" 
                     onClick={() => setStatusFilter(null)}
-                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", !statusFilter ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", !statusFilter ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   >
                     ALL RECORDS
                   </Button>
                   <Button 
                     variant="ghost" size="sm" 
                     onClick={() => setStatusFilter("QUALIFIED")}
-                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "QUALIFIED" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "QUALIFIED" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   >
                     QUALIFIED
                   </Button>
@@ -236,7 +236,7 @@ export default function LeadDesk() {
                   >
                     <td className="px-10 py-8">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                        <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
                           {lead.companyName.charAt(0)}
                         </div>
                         <div>
@@ -287,7 +287,7 @@ export default function LeadDesk() {
                        <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-white transition-all shadow-sm">
+                              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted transition-all shadow-sm">
                                 <MoreVertical className="h-5 w-5 text-muted-foreground" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -337,7 +337,7 @@ export default function LeadDesk() {
 
       {/* Lead Detail Modal */}
       <Dialog open={!!selectedLead} onOpenChange={() => setSelectedLead(null)}>
-        <DialogContent className="max-w-4xl rounded-[3rem] p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-muted">
+        <DialogContent className="max-w-4xl rounded-[3rem] p-0 overflow-hidden border-none shadow-2xl bg-card dark:bg-muted">
           <div className="grid md:grid-cols-[1.5fr_2.5fr]">
             <div className="bg-primary p-12 text-white relative overflow-hidden flex flex-col justify-between">
                <div className="absolute top-0 right-0 h-64 w-64 -mr-20 -mt-20 bg-white/10 rounded-full blur-3xl" />

@@ -143,7 +143,7 @@ export default function MarketingAlerts() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -208,7 +208,7 @@ export default function MarketingAlerts() {
             <CardDescription className="text-base font-medium italic italic opacity-60">Prioritized tactical signals for campaign nodes, handoff SLAs, and token integrity.</CardDescription>
           </div>
           <div className="flex bg-muted dark:bg-muted p-2 rounded-[2rem] shadow-inner border-none h-auto">
-             <Button variant="ghost" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest bg-white dark:bg-muted shadow-xl text-primary h-12 border-none transition-all">LIVE FEED</Button>
+             <Button variant="ghost" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest bg-card dark:bg-muted shadow-xl text-primary h-12 border-none transition-all">LIVE FEED</Button>
              <Button variant="ghost" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12 border-none transition-all">ARCHIVED LOGS</Button>
           </div>
         </CardHeader>
@@ -244,7 +244,7 @@ export default function MarketingAlerts() {
                     <td className="px-12 py-10">
                        <Badge className={cn(
                           "rounded-full font-black text-[9px] px-4 py-1.5 border-none shadow-lg uppercase tracking-widest transition-all",
-                          item.severity === "HIGH" ? "bg-destructive text-white shadow-rose-500/20" : "bg-white dark:bg-muted text-muted-foreground shadow-sm"
+                          item.severity === "HIGH" ? "bg-destructive text-white shadow-rose-500/20" : "bg-card dark:bg-muted text-muted-foreground shadow-sm"
                        )}>
                           {item.severity} PRIORITY
                        </Badge>
@@ -274,7 +274,7 @@ export default function MarketingAlerts() {
                           </div>
                        ) : (
                           <Button
-                            className="rounded-2xl h-12 px-8 bg-muted dark:bg-white text-white dark:text-muted-foreground font-black text-[10px] uppercase tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95 group/btn"
+                            className="rounded-2xl h-12 px-8 bg-muted dark:bg-card text-white dark:text-muted-foreground font-black text-[10px] uppercase tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95 group/btn"
                             onClick={() => handleAcknowledge(item.id)}
                           >
                             ACKNOWLEDGE <ChevronRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
@@ -312,7 +312,7 @@ export default function MarketingAlerts() {
                "System protocols indicate <strong>100% compliance</strong> across all campaign nodes. Tactical alerts authorize <strong>immediate intervention</strong> only when SLA deltas exceed +/- 5% threshold."
             </p>
          </div>
-         <Button className="h-20 px-12 rounded-[2.5rem] bg-white text-muted-foreground hover:bg-muted shadow-2xl font-black text-sm uppercase tracking-widest gap-4 group transition-all hover:scale-105 active:scale-95 whitespace-nowrap relative z-10">
+         <Button className="h-20 px-12 rounded-[2.5rem] bg-card text-muted-foreground hover:bg-muted shadow-2xl font-black text-sm uppercase tracking-widest gap-4 group transition-all hover:scale-105 active:scale-95 whitespace-nowrap relative z-10">
             AUDIT PROTOCOLS <ChevronRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-500" />
          </Button>
       </Card>

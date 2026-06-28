@@ -24,7 +24,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ data }) => {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
       {/* Revenue Trend Area */}
-      <div className="xl:col-span-3 bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-card hover:-translate-y-1 transition-all duration-700 relative overflow-hidden group">
+      <div className="xl:col-span-3 bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-muted hover:-translate-y-1 transition-all duration-700 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] -mr-[15%] -mt-[15%] group-hover:bg-primary/20 transition-all duration-1000" />
 
         <div className="flex items-center justify-between mb-12 relative z-10">
@@ -119,7 +119,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ data }) => {
       {/* Side Insights */}
       <div className="space-y-10 flex flex-col">
         {/* Payment Mix Widget */}
-        <div className="bg-card backdrop-blur-3xl p-8 rounded-[2rem] border border-border shadow-2xl flex-1 flex flex-col hover:bg-card hover:-translate-y-1 transition-all duration-700 group">
+        <div className="bg-card backdrop-blur-3xl p-8 rounded-[2rem] border border-border shadow-2xl flex-1 flex flex-col hover:bg-muted hover:-translate-y-1 transition-all duration-700 group">
           <div className="flex items-center justify-between mb-8">
             <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">
               Payment Typology
@@ -216,7 +216,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({ data }) => {
             </div>
             <div className="w-full bg-secondary/50 h-3 rounded-full overflow-hidden p-0.5 border border-border shadow-inner">
               <div
-                className="bg-white h-full rounded-full shadow-[0_0_15px_rgba(255,255,255,0.6)] transition-all duration-2000 ease-out"
+                className="bg-card h-full rounded-full shadow-[0_0_15px_rgba(255,255,255,0.6)] transition-all duration-2000 ease-out"
                 style={{
                   width: `${Math.min(100, (data.refundRatio / 5) * 100)}%`,
                 }}

@@ -111,7 +111,7 @@ export default function ProcurementInsights() {
               placeholder="Query Intelligence..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-white dark:bg-muted border-muted dark:border-muted w-64 rounded-xl focus:ring-warning/20"
+              className="pl-10 bg-card dark:bg-muted border-muted dark:border-muted w-64 rounded-xl focus:ring-warning/20"
             />
           </div>
           <Button 
@@ -129,7 +129,7 @@ export default function ProcurementInsights() {
         {Object.entries(integrationMetrics).map(([key, data]) => {
           const Icon = data.icon;
           return (
-            <div key={key} className="group relative p-6 rounded-[2rem] bg-white dark:bg-muted border border-muted dark:border-muted shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+            <div key={key} className="group relative p-6 rounded-[2rem] bg-card dark:bg-muted border border-muted dark:border-muted shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
               <div className={cn(
                 "absolute top-6 right-6 h-12 w-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-12",
                 data.color === 'rose' ? "bg-destructive text-destructive" :
@@ -198,7 +198,7 @@ export default function ProcurementInsights() {
               />
             ) : (
               (Array.isArray(insights) ? insights : []).map((insight) => (
-                <div key={insight.id} className="group flex items-center justify-between p-6 rounded-3xl bg-white dark:bg-muted border border-muted dark:border-muted hover:border-warning/30 hover:shadow-xl transition-all duration-500">
+                <div key={insight.id} className="group flex items-center justify-between p-6 rounded-3xl bg-card dark:bg-muted border border-muted dark:border-muted hover:border-warning/30 hover:shadow-xl transition-all duration-500">
                   <div className="flex items-center gap-6">
                     <div className="h-12 w-12 rounded-2xl bg-muted dark:bg-muted flex items-center justify-center group-hover:bg-warning group-hover:text-white transition-all duration-500 shadow-inner">
                       <Zap className="h-5 w-5" />
@@ -256,7 +256,7 @@ export default function ProcurementInsights() {
                    ))}
                 </div>
 
-                <Button className="w-full bg-white/10 hover:bg-white/20 border-border text-[9px] font-black uppercase tracking-widest py-6 rounded-2xl">
+                <Button className="w-full bg-white/10 hover:bg-muted/20 border-border text-[9px] font-black uppercase tracking-widest py-6 rounded-2xl">
                    View Handoff Ledger
                 </Button>
              </div>

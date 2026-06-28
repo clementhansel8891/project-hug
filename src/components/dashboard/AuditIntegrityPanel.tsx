@@ -33,7 +33,7 @@ export const AuditIntegrityPanel: React.FC<AuditIntegrityPanelProps> = ({ data, 
           size="sm" 
           disabled={loading}
           onClick={onVerify}
-          className="h-10 rounded-xl bg-muted border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all"
+          className="h-10 rounded-xl bg-muted border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted/10 hover:text-foreground transition-all"
         >
           <RefreshCw className={cn("mr-2 h-3.5 w-3.5", loading && "animate-spin")} />
           Re-Verify

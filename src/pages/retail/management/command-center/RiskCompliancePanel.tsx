@@ -17,7 +17,7 @@ export const RiskCompliancePanel: React.FC<RiskCompliancePanelProps> = ({
   data,
 }) => {
   return (
-    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-card hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
+    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-muted hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-destructive/10 rounded-full blur-[130px] -mr-[15%] -mt-[15%] pointer-events-none" />
 
       <div className="flex items-center justify-between mb-10 relative z-10">
@@ -50,7 +50,7 @@ export const RiskCompliancePanel: React.FC<RiskCompliancePanelProps> = ({
             {(data.suspiciousTransactions || []).map((tx, idx) => (
               <div
                 key={idx}
-                className="group/alert flex items-start gap-6 p-6 rounded-2xl bg-card border border-border hover:border-warning/30 hover:bg-card hover:shadow-2xl transition-all duration-500 cursor-default shadow-xl"
+                className="group/alert flex items-start gap-6 p-6 rounded-2xl bg-card border border-border hover:border-warning/30 hover:bg-muted hover:shadow-2xl transition-all duration-500 cursor-default shadow-xl"
               >
                 <div className="w-16 h-16 rounded-2xl bg-secondary/50 flex items-center justify-center group-hover/alert:scale-110 group-hover/alert:text-warning transition-all border border-border shadow-inner">
                   <AlertTriangle className="w-7 h-7 opacity-30 group-hover/alert:opacity-100 transition-opacity" />
@@ -88,7 +88,7 @@ export const RiskCompliancePanel: React.FC<RiskCompliancePanelProps> = ({
 
         {/* Oversight Metrics */}
         <div className="grid grid-cols-2 gap-8 pt-4">
-          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-card hover:border-warning/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
+          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-muted hover:border-warning/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-warning rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <div className="flex items-center gap-4 mb-6">
               <div className="p-3 bg-secondary/40 rounded-2xl border border-border group-hover/metric:bg-warning group-hover/metric:text-foreground transition-all duration-500 shadow-inner">
@@ -108,7 +108,7 @@ export const RiskCompliancePanel: React.FC<RiskCompliancePanelProps> = ({
             </div>
           </div>
 
-          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-card hover:border-success/30 hover:shadow-3xl transition-all duration-500 shadow-xl flex flex-col items-center text-center relative overflow-hidden">
+          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-muted hover:border-success/30 hover:shadow-3xl transition-all duration-500 shadow-xl flex flex-col items-center text-center relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-success/5 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <div className="flex items-center justify-center gap-4 mb-6 relative z-10">
               <Banknote className="w-5 h-5 text-muted-foreground group-hover/metric:text-success transition-colors" />

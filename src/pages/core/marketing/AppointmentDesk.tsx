@@ -181,14 +181,14 @@ export default function AppointmentDesk() {
             <div className="flex bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner mr-2 h-auto">
                <Button 
                   variant="ghost" 
-                  className={cn("h-11 rounded-xl px-8 font-black text-[10px] uppercase tracking-widest transition-all italic", view === "calendar" ? "bg-white dark:bg-muted shadow-xl text-primary" : "text-muted-foreground")}
+                  className={cn("h-11 rounded-xl px-8 font-black text-[10px] uppercase tracking-widest transition-all italic", view === "calendar" ? "bg-card dark:bg-muted shadow-xl text-primary" : "text-muted-foreground")}
                   onClick={() => setView("calendar")}
                >
                   CALENDAR
                </Button>
                <Button 
                   variant="ghost" 
-                  className={cn("h-11 rounded-xl px-8 font-black text-[10px] uppercase tracking-widest transition-all italic", view === "list" ? "bg-white dark:bg-muted shadow-xl text-primary" : "text-muted-foreground")}
+                  className={cn("h-11 rounded-xl px-8 font-black text-[10px] uppercase tracking-widest transition-all italic", view === "list" ? "bg-card dark:bg-muted shadow-xl text-primary" : "text-muted-foreground")}
                   onClick={() => setView("list")}
                >
                   LIST VIEW
@@ -196,7 +196,7 @@ export default function AppointmentDesk() {
             </div>
             <Button
               variant="secondary"
-              className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+              className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
               onClick={() => loadAppointments(true)}
               disabled={refreshing}
             >
@@ -213,7 +213,7 @@ export default function AppointmentDesk() {
                 AUTHORIZE APPOINTMENT
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[550px] border-none bg-white dark:bg-muted p-0 overflow-hidden shadow-2xl rounded-[3rem]">
+            <DialogContent className="sm:max-w-[550px] border-none bg-card dark:bg-muted p-0 overflow-hidden shadow-2xl rounded-[3rem]">
                <div className="h-2 bg-primary shadow-[0_0_15px_rgba(79,70,229,0.5)]" />
                <div className="p-12 space-y-10">
                   <DialogHeader>
@@ -288,14 +288,14 @@ export default function AppointmentDesk() {
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground italic">Global Engagement Matrix</p>
                    </div>
                    <div className="flex gap-4">
-                     <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"><ChevronLeft className="h-6 w-6" /></Button>
-                     <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"><ChevronRight className="h-6 w-6" /></Button>
-                     <Button className="h-14 rounded-2xl px-10 bg-muted text-white dark:bg-white dark:text-muted-foreground font-black text-[10px] uppercase tracking-widest border-none shadow-2xl hover:scale-105 transition-all">TODAY</Button>
+                     <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"><ChevronLeft className="h-6 w-6" /></Button>
+                     <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"><ChevronRight className="h-6 w-6" /></Button>
+                     <Button className="h-14 rounded-2xl px-10 bg-muted text-white dark:bg-card dark:text-muted-foreground font-black text-[10px] uppercase tracking-widest border-none shadow-2xl hover:scale-105 transition-all">TODAY</Button>
                    </div>
                 </div>
               </CardHeader>
               <div className="flex-1 flex flex-col items-center justify-center text-center p-32 grayscale opacity-20 space-y-8">
-                 <div className="h-24 w-24 bg-white dark:bg-muted rounded-[3rem] flex items-center justify-center shadow-2xl border border-border dark:border-border group-hover/calendar:rotate-12 transition-all duration-700">
+                 <div className="h-24 w-24 bg-card dark:bg-muted rounded-[3rem] flex items-center justify-center shadow-2xl border border-border dark:border-border group-hover/calendar:rotate-12 transition-all duration-700">
                     <CalendarDays className="h-12 w-12 text-muted-foreground" />
                  </div>
                  <div className="space-y-2">
@@ -362,7 +362,7 @@ export default function AppointmentDesk() {
                              )}>
                                {apt.status}
                              </Badge>
-                             <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-white dark:hover:bg-muted shadow-sm transition-all text-muted-foreground"><MoreHorizontal className="h-6 w-6" /></Button>
+                             <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-muted dark:hover:bg-muted shadow-sm transition-all text-muted-foreground"><MoreHorizontal className="h-6 w-6" /></Button>
                           </div>
                       </div>
                     ))}
@@ -391,7 +391,7 @@ export default function AppointmentDesk() {
              <CardContent className="p-10 pt-6 space-y-8">
                 {todayApts.length === 0 ? (
                   <div className="text-center py-16 space-y-6 grayscale opacity-20 flex flex-col items-center">
-                    <div className="h-20 w-20 bg-white dark:bg-muted rounded-[2rem] flex items-center justify-center shadow-2xl border border-border dark:border-border">
+                    <div className="h-20 w-20 bg-card dark:bg-muted rounded-[2rem] flex items-center justify-center shadow-2xl border border-border dark:border-border">
                        <ActivitySquare className="h-10 w-10 text-muted-foreground animate-pulse" />
                     </div>
                     <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Clear Horizon</p>
@@ -448,7 +448,7 @@ export default function AppointmentDesk() {
                     </div>
                  </div>
                  <div className="h-3 w-full bg-muted rounded-full overflow-hidden shadow-inner p-0.5">
-                    <div className="h-full bg-white rounded-full transition-all duration-[2000ms] shadow-[0_0_20px_rgba(255,255,255,0.5)]" style={{ width: '75%' }} />
+                    <div className="h-full bg-card rounded-full transition-all duration-[2000ms] shadow-[0_0_20px_rgba(255,255,255,0.5)]" style={{ width: '75%' }} />
                  </div>
               </div>
            </Card>

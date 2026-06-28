@@ -223,7 +223,7 @@ export default function ConnectedAccountsDesk() {
         <div className="flex items-center gap-4">
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -232,7 +232,7 @@ export default function ConnectedAccountsDesk() {
           <Link to="/core/marketing/audit-logs">
             <Button
               variant="secondary"
-              className="h-14 px-6 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-105 transition-all font-black text-[10px] uppercase tracking-widest gap-2"
+              className="h-14 px-6 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-105 transition-all font-black text-[10px] uppercase tracking-widest gap-2"
             >
               <Shield className="h-5 w-5 text-primary" />
               Governance Trail
@@ -284,7 +284,7 @@ export default function ConnectedAccountsDesk() {
                 <div className={cn(
                   "h-16 w-16 rounded-[1.5rem] flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 duration-500",
                   item.provider === 'META' ? "bg-primary text-white" : 
-                  item.provider === 'GOOGLE' ? "bg-white text-muted-foreground dark:bg-muted dark:text-white" :
+                  item.provider === 'GOOGLE' ? "bg-card text-muted-foreground dark:bg-muted dark:text-white" :
                   item.provider === 'TIKTOK' ? "bg-black text-white" :
                   item.provider === 'YOUTUBE' ? "bg-destructive text-white" :
                   item.provider === 'INSTAGRAM' ? "bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white" :
@@ -387,7 +387,7 @@ export default function ConnectedAccountsDesk() {
         
         {/* Placeholder for expansion */}
         <button 
-          className="rounded-[3rem] border-4 border-dashed border-border dark:border-border flex flex-col items-center justify-center gap-6 h-[450px] group hover:border-primary transition-all hover:bg-card dark:hover:bg-muted"
+          className="rounded-[3rem] border-4 border-dashed border-border dark:border-border flex flex-col items-center justify-center gap-6 h-[450px] group hover:border-primary transition-all hover:bg-muted dark:hover:bg-muted"
           onClick={() => setConnectOpen(true)}
         >
            <div className="h-20 w-20 rounded-full bg-muted dark:bg-muted flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all shadow-xl">

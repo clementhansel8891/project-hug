@@ -31,7 +31,7 @@ export const RetailOperationalShell: React.FC<{ children: React.ReactNode }> = (
           <Button 
             variant="secondary" 
             size="sm" 
-            className="h-10 px-4 rounded-xl font-black italic tracking-widest uppercase gap-2 shadow-lg border border-border bg-secondary/40 hover:bg-white/10 text-white group backdrop-blur-xl"
+            className="h-10 px-4 rounded-xl font-black italic tracking-widest uppercase gap-2 shadow-lg border border-border bg-secondary/40 hover:bg-muted/10 text-white group backdrop-blur-xl"
             onClick={() => setIsLauncherOpen(true)}
           >
             <Menu className="w-4 h-4 text-primary group-hover:rotate-90 transition-transform" />
@@ -41,7 +41,7 @@ export const RetailOperationalShell: React.FC<{ children: React.ReactNode }> = (
           <Button 
             variant="secondary" 
             size="icon" 
-            className="h-10 w-10 rounded-xl shadow-lg border border-border bg-secondary/40 hover:bg-white/10 text-white flex items-center justify-center transition-all backdrop-blur-xl"
+            className="h-10 w-10 rounded-xl shadow-lg border border-border bg-secondary/40 hover:bg-muted/10 text-white flex items-center justify-center transition-all backdrop-blur-xl"
             onClick={() => window.location.href = "/"}
             title="Return to Core Home"
           >
@@ -51,7 +51,7 @@ export const RetailOperationalShell: React.FC<{ children: React.ReactNode }> = (
           <Button 
             variant="secondary" 
             size="icon" 
-            className="h-10 w-10 rounded-xl shadow-lg border border-border bg-secondary/40 hover:bg-white/10 text-white flex items-center justify-center transition-all backdrop-blur-xl"
+            className="h-10 w-10 rounded-xl shadow-lg border border-border bg-secondary/40 hover:bg-muted/10 text-white flex items-center justify-center transition-all backdrop-blur-xl"
             onClick={toggleFullscreen}
             title="Toggle Fullscreen"
           >

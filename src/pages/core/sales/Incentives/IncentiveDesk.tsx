@@ -201,7 +201,7 @@ export default function IncentiveDesk() {
 
       {/* Yield Metrics Grid */}
       <div className="grid gap-8 md:grid-cols-3">
-         <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted p-8 space-y-4 group hover:shadow-indigo-500/10 transition-all">
+         <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted p-8 space-y-4 group hover:shadow-indigo-500/10 transition-all">
             <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center group-hover:scale-110 transition-transform">
                <Settings2 className="h-7 w-7 text-primary" />
             </div>
@@ -211,7 +211,7 @@ export default function IncentiveDesk() {
                <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1 italic">Strategically Mapped</p>
             </div>
          </Card>
-         <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted p-8 space-y-4 group hover:shadow-emerald-500/10 transition-all">
+         <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted p-8 space-y-4 group hover:shadow-emerald-500/10 transition-all">
             <div className="h-14 w-14 rounded-2xl bg-success flex items-center justify-center group-hover:scale-110 transition-transform">
                <TrendingUp className="h-7 w-7 text-success" />
             </div>
@@ -306,11 +306,11 @@ export default function IncentiveDesk() {
           <CardHeader className="p-10 pb-0">
              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
                 <TabsList className="bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner border-none">
-                  <TabsTrigger value="plans" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">
+                  <TabsTrigger value="plans" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">
                     <Settings2 className="h-4 w-4 mr-2" />
                     Incentive Plans
                   </TabsTrigger>
-                  <TabsTrigger value="attributions" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">
+                  <TabsTrigger value="attributions" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">
                     <Activity className="h-4 w-4 mr-2" />
                     Live Attributions
                   </TabsTrigger>
@@ -348,10 +348,10 @@ export default function IncentiveDesk() {
                 </thead>
                 <tbody className="divide-y divide-border dark:divide-slate-800/10">
                   {(Array.isArray(plans) ? plans : []).map((plan) => (
-                    <tr key={plan.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
+                    <tr key={plan.id} className="group hover:bg-muted dark:hover:bg-muted transition-all cursor-default">
                       <td className="px-10 py-8">
                         <div className="flex items-center gap-5">
-                           <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl group-hover:bg-primary group-hover:text-white transition-colors border border-border dark:border-border">
+                           <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl group-hover:bg-primary group-hover:text-white transition-colors border border-border dark:border-border">
                               <Layers className="h-6 w-6" />
                            </div>
                            <div>
@@ -414,7 +414,7 @@ export default function IncentiveDesk() {
                 </thead>
                 <tbody className="divide-y divide-border dark:divide-slate-800/10">
                   {(Array.isArray(attributions) ? attributions : []).map((attr) => (
-                    <tr key={attr.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
+                    <tr key={attr.id} className="group hover:bg-muted dark:hover:bg-muted transition-all cursor-default">
                       <td className="px-10 py-8">
                         <div className="flex items-center gap-4">
                            <div className="h-10 w-10 rounded-xl bg-muted dark:bg-muted flex items-center justify-center font-black text-xs group-hover:bg-primary group-hover:text-white transition-colors">
@@ -463,7 +463,7 @@ export default function IncentiveDesk() {
 
       {/* Slide-out Sheets */}
       <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
-        <SheetContent side="right" className="sm:max-w-md border-none bg-white dark:bg-muted p-0 shadow-2xl">
+        <SheetContent side="right" className="sm:max-w-md border-none bg-card dark:bg-muted p-0 shadow-2xl">
           <div className="h-2 bg-primary" />
           <div className="p-10 space-y-8">
              <SheetHeader>
@@ -484,7 +484,7 @@ export default function IncentiveDesk() {
                    ) : (
                      (Array.isArray(auditLogs) ? auditLogs : []).map((log) => (
                        <div key={log.id} className="relative pl-8 pb-8 border-l-2 border-border dark:border-border last:pb-0">
-                         <div className="absolute -left-[9px] top-0 h-4 w-4 bg-white dark:bg-muted border-4 border-primary rounded-full shadow-lg shadow-indigo-500/30" />
+                         <div className="absolute -left-[9px] top-0 h-4 w-4 bg-card dark:bg-muted border-4 border-primary rounded-full shadow-lg shadow-indigo-500/30" />
                          <Card className="rounded-[1.5rem] border-none bg-muted dark:bg-muted p-5 space-y-3">
                             <div className="flex items-center justify-between">
                                <Badge className="rounded-full bg-primary text-white font-black text-[8px] uppercase tracking-widest">{log.action}</Badge>
@@ -513,7 +513,7 @@ export default function IncentiveDesk() {
       </Sheet>
 
       <Sheet open={isRecalcOpen} onOpenChange={setIsRecalcOpen}>
-        <SheetContent side="right" className="sm:max-w-md border-none bg-white dark:bg-muted p-0 shadow-2xl">
+        <SheetContent side="right" className="sm:max-w-md border-none bg-card dark:bg-muted p-0 shadow-2xl">
           <div className="h-2 bg-warning" />
           <div className="p-10 space-y-10">
              <SheetHeader>

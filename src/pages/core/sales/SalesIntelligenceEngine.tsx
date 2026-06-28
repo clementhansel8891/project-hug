@@ -103,7 +103,7 @@ export default function SalesIntelligenceEngine() {
           secondaryActions={
             <Button 
               variant="outline" 
-              className="rounded-[1.2rem] px-6 h-12 font-black text-xs uppercase tracking-widest border-border bg-muted0 backdrop-blur-sm hover:bg-white transition-all"
+              className="rounded-[1.2rem] px-6 h-12 font-black text-xs uppercase tracking-widest border-border bg-muted0 backdrop-blur-sm hover:bg-muted transition-all"
               onClick={() => refresh(true)}
               disabled={refreshing}
             >

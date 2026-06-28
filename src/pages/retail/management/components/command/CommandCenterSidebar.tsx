@@ -98,7 +98,7 @@ export const CommandCenterSidebar = ({
             {recentOrders.slice(0, 5).map((order: any) => (
               <div
                 key={order.id}
-                className="p-6 hover:bg-card transition-all duration-500 group/item cursor-pointer relative overflow-hidden"
+                className="p-6 hover:bg-muted transition-all duration-500 group/item cursor-pointer relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 <div className="flex justify-between items-start mb-2 relative z-10">
@@ -119,7 +119,7 @@ export const CommandCenterSidebar = ({
           <div className="p-8 bg-card border-t border-border">
             <button 
               onClick={() => onExpansionRequest("Real-time Global Ledger")}
-              className="w-full h-14 rounded-2xl bg-secondary/40 border border-border text-muted-foreground font-black italic text-[10px] uppercase tracking-[0.3em] hover:bg-white/10 hover:text-foreground transition-all flex items-center justify-center gap-3 italic"
+              className="w-full h-14 rounded-2xl bg-secondary/40 border border-border text-muted-foreground font-black italic text-[10px] uppercase tracking-[0.3em] hover:bg-muted/10 hover:text-foreground transition-all flex items-center justify-center gap-3 italic"
             >
                View Full Ledger <ArrowRight className="w-4 h-4" />
             </button>

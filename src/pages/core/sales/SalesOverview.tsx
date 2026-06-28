@@ -158,7 +158,7 @@ export default function SalesOverview() {
 
       <div className="grid gap-10 lg:grid-cols-3">
         {/* Revenue Projection Model */}
-        <Card className="lg:col-span-2 rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+        <Card className="lg:col-span-2 rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
           <CardHeader className="p-10 pb-4">
             <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
               <TrendingUp className="h-6 w-6 text-primary" />
@@ -224,7 +224,7 @@ export default function SalesOverview() {
         </Card>
 
         {/* Top Performance Board */}
-        <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+        <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
           <CardHeader className="p-10 pb-4">
             <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
               <Medal className="h-6 w-6 text-warning" />
@@ -351,7 +351,7 @@ export default function SalesOverview() {
 
 function KPIItem({ title, value, trend, trendUp, description, icon: Icon, color }: any) {
   return (
-    <Card className="group relative overflow-hidden rounded-[2.5rem] border-none bg-white dark:bg-muted p-8 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1">
+    <Card className="group relative overflow-hidden rounded-[2.5rem] border-none bg-card dark:bg-muted p-8 shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1">
       <div className="flex items-center justify-between relative z-10">
         <div className="space-y-2">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">{title}</p>

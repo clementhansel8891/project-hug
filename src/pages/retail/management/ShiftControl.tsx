@@ -588,7 +588,7 @@ const ShiftControl = () => {
                         toast({ title: "Optimization Complete", description: "14 shifts drafted based on predicted 17:00 peak traffic." });
                       }, 2000);
                     }}
-                    className="w-full bg-white text-primary hover:bg-white/90 h-16 font-black italic uppercase tracking-[0.2em] rounded-2xl text-[11px] shadow-2xl transition-all"
+                    className="w-full bg-card text-primary hover:bg-muted/90 h-16 font-black italic uppercase tracking-[0.2em] rounded-2xl text-[11px] shadow-2xl transition-all"
                   >
                     Auto-Generate Next Week
                   </Button>

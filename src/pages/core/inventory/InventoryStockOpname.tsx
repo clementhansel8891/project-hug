@@ -537,7 +537,7 @@ export default function InventoryStockOpname() {
                       {history.map((entry, idx) => (
                         <div key={idx} className="p-6 bg-muted dark:bg-muted rounded-3xl border border-muted/50 dark:border-muted/50 flex items-center justify-between group hover:bg-primary/[0.02] transition-all">
                           <div className="flex gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-white dark:bg-muted shadow-sm flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-2xl bg-card dark:bg-muted shadow-sm flex items-center justify-center">
                               <Box className="w-6 h-6 text-muted-foreground" />
                             </div>
                             <div>

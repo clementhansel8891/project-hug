@@ -256,7 +256,7 @@ export default function CoreSettings() {
                 <div className="space-y-3">
                   <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Business Name</Label>
                   <Input 
-                    className="h-12 rounded-xl border-border bg-muted focus:bg-white transition-all font-bold"
+                    className="h-12 rounded-xl border-border bg-muted focus:bg-card transition-all font-bold"
                     value={profile?.name || ''} 
                     onChange={(e) => setProfile(p => p ? { ...p, name: e.target.value } : null)}
                   />
@@ -303,7 +303,7 @@ export default function CoreSettings() {
               <div className="space-y-6 pt-4">
                  <div className="p-6 rounded-[2rem] bg-primary dark:bg-primary border border-primary dark:border-primary">
                     <div className="flex items-center gap-4 mb-4">
-                       <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center shadow-lg">
+                       <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center shadow-lg">
                           <Building2 className="h-6 w-6 text-primary" />
                        </div>
                        <div>
@@ -348,7 +348,7 @@ export default function CoreSettings() {
                 (Array.isArray(childCompanies) ? childCompanies : []).map((child: any) => (
                   <Card 
                     key={child.id} 
-                    className="rounded-[2.5rem] border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer group bg-white dark:bg-muted"
+                    className="rounded-[2.5rem] border-none shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer group bg-card dark:bg-muted"
                     onClick={() => openChildDetail(child)}
                   >
                     <CardContent className="p-8 space-y-6">
@@ -392,7 +392,7 @@ export default function CoreSettings() {
               >
                 <div className="grid gap-6 md:grid-cols-2 pt-4">
                    {(Array.isArray(group.items) ? group.items : []).map((item) => (
-                     <div key={item.id} className="p-8 rounded-[2.5rem] border border-border dark:border-border bg-white dark:bg-muted hover:shadow-2xl transition-all duration-500 group flex flex-col justify-between h-full">
+                     <div key={item.id} className="p-8 rounded-[2.5rem] border border-border dark:border-border bg-card dark:bg-muted hover:shadow-2xl transition-all duration-500 group flex flex-col justify-between h-full">
                         <div className="space-y-6">
                           <div className="flex justify-between items-start">
                             <div className="h-14 w-14 rounded-2xl bg-muted dark:bg-muted flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
@@ -542,7 +542,7 @@ export default function CoreSettings() {
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Node Identity (Name)</Label>
               <Input
                 placeholder="Enterprise Satellite Name"
-                className="h-12 rounded-xl border-border bg-muted focus:bg-white transition-all font-bold"
+                className="h-12 rounded-xl border-border bg-muted focus:bg-card transition-all font-bold"
                 value={newChild.name}
                 onChange={(e) => setNewChild({ ...newChild, name: e.target.value })}
               />
@@ -551,7 +551,7 @@ export default function CoreSettings() {
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">HQ Physical Address</Label>
               <Textarea
                 placeholder="Enter full physical address for this node"
-                className="rounded-xl border-border bg-muted focus:bg-white transition-all font-bold min-h-[80px]"
+                className="rounded-xl border-border bg-muted focus:bg-card transition-all font-bold min-h-[80px]"
                 value={newChild.address || ""}
                 onChange={(e) => setNewChild({ ...newChild, address: e.target.value })}
               />
@@ -569,7 +569,7 @@ export default function CoreSettings() {
                     type="number"
                     step="any"
                     placeholder="0.0000"
-                    className="h-10 rounded-xl border-none bg-white shadow-inner font-bold"
+                    className="h-10 rounded-xl border-none bg-card shadow-inner font-bold"
                     value={newChild.latitude ?? ""}
                     onChange={(e) =>
                       setNewChild({ ...newChild, latitude: parseFloat(e.target.value) })
@@ -582,7 +582,7 @@ export default function CoreSettings() {
                     type="number"
                     step="any"
                     placeholder="0.0000"
-                    className="h-10 rounded-xl border-none bg-white shadow-inner font-bold"
+                    className="h-10 rounded-xl border-none bg-card shadow-inner font-bold"
                     value={newChild.longitude ?? ""}
                     onChange={(e) =>
                       setNewChild({ ...newChild, longitude: parseFloat(e.target.value) })
@@ -653,7 +653,7 @@ export default function CoreSettings() {
         </DialogContent>
       </Dialog>
       <Dialog open={isChildDetailOpen} onOpenChange={setIsChildDetailOpen}>
-        <DialogContent className="sm:max-w-2xl rounded-[4rem] border-none shadow-2xl p-14 bg-white dark:bg-muted">
+        <DialogContent className="sm:max-w-2xl rounded-[4rem] border-none shadow-2xl p-14 bg-card dark:bg-muted">
           {selectedChild && (
             <div className="space-y-10">
                <div className="flex justify-between items-start">

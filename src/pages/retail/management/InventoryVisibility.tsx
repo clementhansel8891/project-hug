@@ -1389,7 +1389,7 @@ const InventoryVisibility = () => {
               <Button
                 type="submit"
                 disabled={bufferMutation.isPending}
-                className="h-12 flex-1 rounded-xl font-black italic text-xs uppercase tracking-widest bg-white text-muted-foreground hover:bg-muted"
+                className="h-12 flex-1 rounded-xl font-black italic text-xs uppercase tracking-widest bg-card text-muted-foreground hover:bg-muted"
               >
                 {bufferMutation.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />

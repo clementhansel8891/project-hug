@@ -51,7 +51,7 @@ export const StoreInfrastructureModule: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Hardware Topologies */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <HardDrive className="w-4 h-4 text-muted-foreground" /> Computing Arrays
           </h3>
@@ -116,7 +116,7 @@ export const StoreInfrastructureModule: React.FC = () => {
         </div>
 
         {/* Resilience & Continuity */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <WifiOff className="w-4 h-4 text-muted-foreground" /> Continuity &
             Resilience

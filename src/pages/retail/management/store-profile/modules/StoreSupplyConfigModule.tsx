@@ -58,7 +58,7 @@ export const StoreSupplyConfigModule: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Inbound Supply */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <Truck className="w-4 h-4 text-muted-foreground" /> Inbound Logistics
           </h3>
@@ -138,7 +138,7 @@ export const StoreSupplyConfigModule: React.FC = () => {
         </div>
 
         {/* Outbound & Fulfillment */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <ArrowRightLeft className="w-4 h-4 text-muted-foreground" /> Outbound
             Routing

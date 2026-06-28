@@ -348,7 +348,7 @@ export const ChannelProfilePanel: React.FC<Props> = ({
       </div>
 
       {/* ── Tabs ── */}
-      <div className="bg-white border-b shrink-0">
+      <div className="bg-card border-b shrink-0">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="bg-transparent h-auto p-0 px-4 gap-6 rounded-none justify-start">
             {(Array.isArray(tabs) ? tabs : []).map((tab) => (
@@ -510,7 +510,7 @@ export const ChannelProfilePanel: React.FC<Props> = ({
                            "p-4 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group",
                            linkedBranchIds.includes(branch.id) 
                               ? "bg-primary/5 border-primary" 
-                              : "bg-white border-border hover:border-border"
+                              : "bg-card border-border hover:border-border"
                         )}
                         onClick={() => {
                            setLinkedBranchIds(prev => 

@@ -22,7 +22,7 @@ export const ShiftStatusCard: React.FC<ShiftStatusCardProps> = ({
         "lg:col-span-2 rounded-2xl border-4 transition-all shadow-2xl relative overflow-hidden group min-h-[220px] flex items-center p-6",
         activeShift
           ? "bg-secondary border-primary text-foreground"
-          : "bg-white border-destructive/20 text-foreground",
+          : "bg-card border-destructive/20 text-foreground",
       )}
     >
       {activeShift && (
@@ -70,7 +70,7 @@ export const ShiftStatusCard: React.FC<ShiftStatusCardProps> = ({
           className={cn(
             "h-14 px-10 rounded-2xl font-black italic uppercase tracking-widest text-xs shadow-xl transition-all",
             activeShift
-              ? "bg-white text-foreground hover:bg-secondary/10"
+              ? "bg-card text-foreground hover:bg-secondary/10"
               : "bg-destructive text-foreground hover:bg-destructive",
           )}
         >

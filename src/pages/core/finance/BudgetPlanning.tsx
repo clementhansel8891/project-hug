@@ -219,7 +219,7 @@ export default function BudgetPlanning() {
             <WorkspacePanel title="AI Budget Insights" description="Automated patterns and risk detect.">
               <div className="space-y-4">
                 <div className="p-4 rounded-2xl bg-primary border border-primary flex gap-4">
-                  <div className="p-3 bg-white rounded-xl h-fit border border-primary">
+                  <div className="p-3 bg-card rounded-xl h-fit border border-primary">
                     <BrainCircuit className="w-6 h-6 text-primary" />
                   </div>
                   <div>
@@ -230,7 +230,7 @@ export default function BudgetPlanning() {
                   </div>
                 </div>
                 <div className="p-4 rounded-2xl bg-success border border-success flex gap-4">
-                  <div className="p-3 bg-white rounded-xl h-fit border border-success">
+                  <div className="p-3 bg-card rounded-xl h-fit border border-success">
                     <Zap className="w-6 h-6 text-success" />
                   </div>
                   <div>
@@ -317,7 +317,7 @@ function BudgetStatCard({ label, value, trend, icon: Icon, color }: any) {
   }[color as string] || "text-muted-foreground bg-muted border-border";
 
   return (
-    <div className="bg-white p-5 rounded-3xl border border-border shadow-sm hover:shadow-md transition-all">
+    <div className="bg-card p-5 rounded-3xl border border-border shadow-sm hover:shadow-md transition-all">
       <div className={`p-2.5 rounded-2xl w-fit mb-3 border ${colors}`}>
         <Icon className="w-5 h-5" />
       </div>
@@ -384,7 +384,7 @@ function BudgetTableRow({ item, total, spent, status }: any) {
 function FiscalEventBox({ date, label, type }: any) {
   return (
     <div className="flex items-center gap-4 p-3 rounded-2xl hover:bg-muted transition-colors cursor-pointer group">
-      <div className="flex flex-col items-center justify-center h-12 w-12 bg-white rounded-xl border border-border shadow-sm group-hover:border-primary transition-colors">
+      <div className="flex flex-col items-center justify-center h-12 w-12 bg-card rounded-xl border border-border shadow-sm group-hover:border-primary transition-colors">
         <p className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground">{date.split(" ")[0]}</p>
         <p className="text-sm font-black text-muted-foreground">{date.split(" ")[1]}</p>
       </div>

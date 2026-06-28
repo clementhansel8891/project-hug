@@ -109,7 +109,7 @@ export default function LogisticsControlCenter() {
           secondaryActions={
             <Button 
               variant="outline" 
-              className="rounded-[1.2rem] px-6 h-12 font-black text-xs uppercase tracking-widest border-border bg-muted0 backdrop-blur-sm hover:bg-white transition-all"
+              className="rounded-[1.2rem] px-6 h-12 font-black text-xs uppercase tracking-widest border-border bg-muted0 backdrop-blur-sm hover:bg-muted transition-all"
               onClick={() => refresh(true)}
               disabled={refreshing}
             >
@@ -278,7 +278,7 @@ export default function LogisticsControlCenter() {
                       <p className="text-sm font-medium italic opacity-70 leading-relaxed italic">
                         "Route optimization engine is currently operating at <strong>98% efficiency</strong>. Global latency is within 200ms threshold."
                       </p>
-                      <Button className="w-full h-16 bg-white text-primary hover:bg-muted border-none rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95">
+                      <Button className="w-full h-16 bg-card text-primary hover:bg-muted border-none rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl transition-all hover:scale-105 active:scale-95">
                          VIEW GLOBAL HEATMAP
                       </Button>
                    </div>

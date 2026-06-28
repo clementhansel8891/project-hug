@@ -227,7 +227,7 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
                       >
                         <SelectTrigger
                           id="report-branch"
-                          className="h-16 rounded-xl font-black italic border-border bg-white shadow-sm px-6 hover:bg-secondary/5 transition-all"
+                          className="h-16 rounded-xl font-black italic border-border bg-card shadow-sm px-6 hover:bg-secondary/5 transition-all"
                           aria-describedby={errors.branchId ? "report-branch-error" : undefined}
                           aria-invalid={!!errors.branchId}
                         >
@@ -266,7 +266,7 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
                         {...register("dateFrom")}
                         aria-describedby={errors.dateFrom ? "report-datefrom-error" : undefined}
                         aria-invalid={!!errors.dateFrom}
-                        className="h-16 rounded-xl border-border bg-white shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
+                        className="h-16 rounded-xl border-border bg-card shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
                       />
                       {errors.dateFrom && (
                         <p id="report-datefrom-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
@@ -280,7 +280,7 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
                         {...register("dateTo")}
                         aria-describedby={errors.dateTo ? "report-dateto-error" : undefined}
                         aria-invalid={!!errors.dateTo}
-                        className="h-16 rounded-xl border-border bg-white shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
+                        className="h-16 rounded-xl border-border bg-card shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
                       />
                       {errors.dateTo && (
                         <p id="report-dateto-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
@@ -313,7 +313,7 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
                         "flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer transition-all border-2 text-center space-y-4",
                         watch(toggle.key)
                           ? "bg-primary/5 border-primary shadow-xl shadow-indigo-100/50"
-                          : "bg-white border-border text-muted-foreground hover:border-border",
+                          : "bg-card border-border text-muted-foreground hover:border-border",
                       )}
                     >
                       <toggle.icon

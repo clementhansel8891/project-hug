@@ -341,7 +341,7 @@ export const AnomalyCompletionDialog: React.FC<AnomalyCompletionDialogProps> = (
               variant="outline"
               disabled={isPending}
               onClick={() => { reset(); onClose(); }}
-              className="h-14 px-8 rounded-2xl font-black italic bg-white border-2 border-border hover:bg-secondary/5 transition-all"
+              className="h-14 px-8 rounded-2xl font-black italic bg-card border-2 border-border hover:bg-secondary/5 transition-all"
             >
               Cancel
             </Button>

@@ -49,7 +49,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
         }`}
       >
         <div
-          className={`p-3.5 rounded-xl mb-3 transition-all duration-300 ${!activeCategoryId ? "bg-white/10" : "bg-secondary/20 group-hover:bg-white shadow-sm"}`}
+          className={`p-3.5 rounded-xl mb-3 transition-all duration-300 ${!activeCategoryId ? "bg-white/10" : "bg-secondary/20 group-hover:bg-muted shadow-sm"}`}
         >
           <LayoutGrid className="w-7 h-7" />
         </div>

@@ -39,7 +39,7 @@ export const MarketplaceGallery = ({ onSelect }: MarketplaceGalleryProps) => {
           <Card
             key={mp.id}
             onClick={() => onSelect?.(mp.name, "MARKETPLACE", mp.id)}
-            className="rounded-2xl bg-white border-none shadow-xl hover:shadow-2xl hover:scale-[1.02] cursor-pointer transition-all group overflow-hidden"
+            className="rounded-2xl bg-card border-none shadow-xl hover:shadow-2xl hover:scale-[1.02] cursor-pointer transition-all group overflow-hidden"
           >
             <CardContent className="p-6 flex flex-col items-center justify-center text-center">
               <div
@@ -65,7 +65,7 @@ export const MarketplaceGallery = ({ onSelect }: MarketplaceGalleryProps) => {
           </Card>
         ))}
 
-        <Card className="rounded-2xl border-2 border-dashed border-border bg-secondary/5 flex flex-col justify-center items-center p-6 text-center space-y-4 hover:bg-white transition-all group">
+        <Card className="rounded-2xl border-2 border-dashed border-border bg-secondary/5 flex flex-col justify-center items-center p-6 text-center space-y-4 hover:bg-muted transition-all group">
           <div className="w-16 h-16 rounded-3xl border-2 border-dashed border-border flex items-center justify-center group-hover:scale-110 transition-transform">
             <ShoppingBag className="w-8 h-8 text-muted-foreground/60" />
           </div>

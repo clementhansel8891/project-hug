@@ -223,7 +223,7 @@ export default function LeadCaptureDesk() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -403,7 +403,7 @@ export default function LeadCaptureDesk() {
                     "Intelligence scroring is active. <strong>87% of incoming nodes</strong> from Meta Ads are being qualified for Enterprise Q4 protocols."
                  </p>
                  <Button 
-                   className="w-full h-16 bg-white text-primary hover:bg-muted border-none rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl gap-3 group/btn"
+                   className="w-full h-16 bg-card text-primary hover:bg-muted border-none rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl gap-3 group/btn"
                    onClick={() => setCaptureOpen(true)}
                  >
                     <Plus className="h-5 w-5 group-hover/btn:rotate-90 transition-transform duration-500" />
@@ -412,7 +412,7 @@ export default function LeadCaptureDesk() {
               </div>
            </Card>
 
-           <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+           <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
               <CardHeader className="p-8 pb-4">
                  <div className="flex items-center justify-between mb-4">
                     <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">Source Attribution Matrix</CardTitle>
@@ -441,7 +441,7 @@ export default function LeadCaptureDesk() {
 
            <Card className="rounded-[2.5rem] border-none shadow-2xl bg-primary dark:bg-primary p-8 border border-primary">
               <div className="flex items-start gap-4">
-                 <div className="h-10 w-10 rounded-xl bg-white dark:bg-muted flex items-center justify-center shadow-lg shrink-0">
+                 <div className="h-10 w-10 rounded-xl bg-card dark:bg-muted flex items-center justify-center shadow-lg shrink-0">
                     <Activity className="h-5 w-5 text-primary animate-pulse" />
                  </div>
                  <div className="space-y-2">

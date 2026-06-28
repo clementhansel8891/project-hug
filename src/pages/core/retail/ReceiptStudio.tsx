@@ -65,7 +65,7 @@ export default function ReceiptStudio() {
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em]">Thermal Architecture & Hardware Profiling</p>
           </div>
           <div className="flex gap-3">
-             <Button variant="outline" className="h-12 px-6 rounded-xl font-black uppercase italic tracking-widest text-[10px] bg-muted border-border text-white hover:bg-white/10 gap-2">
+             <Button variant="outline" className="h-12 px-6 rounded-xl font-black uppercase italic tracking-widest text-[10px] bg-muted border-border text-white hover:bg-muted/10 gap-2">
                 <Eye className="w-4 h-4" /> Hardware Ping
              </Button>
              <Button className="h-12 px-8 rounded-xl font-black uppercase italic tracking-widest text-[10px] bg-primary hover:bg-primary gap-2 shadow-lg shadow-indigo-600/20">
@@ -108,7 +108,7 @@ export default function ReceiptStudio() {
 
           {/* Center: Live Thermal Preview */}
           <div className="flex flex-col items-center justify-center overflow-hidden">
-             <div className="bg-white p-8 shadow-2xl flex flex-col transition-all duration-300 relative group" style={{ width: paperWidth === '80mm' ? '380px' : '300px', minHeight: '600px' }}>
+             <div className="bg-card p-8 shadow-2xl flex flex-col transition-all duration-300 relative group" style={{ width: paperWidth === '80mm' ? '380px' : '300px', minHeight: '600px' }}>
                 <div className="absolute -top-1 left-0 w-full h-1 bg-muted flex gap-1 overflow-hidden opacity-50">
                    {Array.from({ length: 40 }).map((_, i) => <div key={i} className="w-4 h-1 bg-muted shrink-0" />)}
                 </div>

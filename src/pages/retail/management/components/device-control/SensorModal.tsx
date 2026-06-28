@@ -116,7 +116,7 @@ const SensorModal = ({ sensor, onClose }: SensorModalProps) => {
         if (!v) handleClose();
       }}
     >
-      <DialogContent className="max-w-md rounded-3xl border-none shadow-2xl bg-white">
+      <DialogContent className="max-w-md rounded-3xl border-none shadow-2xl bg-card">
         {sensor && (
           <>
             <DialogHeader>

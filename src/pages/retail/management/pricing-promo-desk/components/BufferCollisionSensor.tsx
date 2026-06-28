@@ -27,7 +27,7 @@ export const BufferCollisionSensor: React.FC<BufferCollisionSensorProps> = ({
     <Card
       className={cn(
         "p-6 md:p-8 rounded-2xl shadow-xl overflow-hidden relative border-none",
-        isCollision ? "bg-destructive" : "bg-white",
+        isCollision ? "bg-destructive" : "bg-card",
       )}
     >
       {isCollision && (

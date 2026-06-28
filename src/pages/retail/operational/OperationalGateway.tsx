@@ -91,7 +91,7 @@ const RetailOperationalGateway = () => {
                  {stores.map(store => (
                     <GlassCard 
                        key={store.id}
-                       className="bg-card/50 border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-500 cursor-pointer rounded-[3rem] group overflow-hidden shadow-2xl hover:-translate-y-2 active:scale-95"
+                       className="bg-card/50 border-border hover:border-primary/50 hover:bg-muted/80 transition-all duration-500 cursor-pointer rounded-[3rem] group overflow-hidden shadow-2xl hover:-translate-y-2 active:scale-95"
                        onClick={() => setStore(store.id)}
                     >
                        <CardContent className="p-12 flex items-center gap-10">

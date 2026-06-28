@@ -122,7 +122,7 @@ export default function RetailInventory() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <WorkspacePanel title="Open Inbound Shipments" description="Pending stock arrivals from main warehouse">
-            <div className="divide-y border rounded-lg overflow-hidden bg-white">
+            <div className="divide-y border rounded-lg overflow-hidden bg-card">
               {[
                 { id: "ship-901", from: "Central Whse", items: 24, status: "in-transit" },
                 { id: "ship-904", from: "Regional Hub", items: 12, status: "pending" },

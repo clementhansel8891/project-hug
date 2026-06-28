@@ -220,8 +220,8 @@ const InfrastructureControl = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button disabled title="Not available yet" variant="ghost" size="icon" className="text-muted-foreground hover:bg-white/10 hover:text-foreground"><RefreshCw className="w-4 h-4" /></Button>
-                      <Button disabled title="Not available yet" variant="ghost" size="icon" className="text-muted-foreground hover:bg-white/10 hover:text-foreground"><MoreVertical className="w-4 h-4" /></Button>
+                      <Button disabled title="Not available yet" variant="ghost" size="icon" className="text-muted-foreground hover:bg-muted/10 hover:text-foreground"><RefreshCw className="w-4 h-4" /></Button>
+                      <Button disabled title="Not available yet" variant="ghost" size="icon" className="text-muted-foreground hover:bg-muted/10 hover:text-foreground"><MoreVertical className="w-4 h-4" /></Button>
                     </div>
                   </div>
                   <CardContent className="p-6">

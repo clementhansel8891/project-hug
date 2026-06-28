@@ -252,7 +252,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
               type="button"
               variant="outline"
               disabled={isPending}
-              className="flex-1 h-12 rounded-xl font-bold uppercase tracking-wider text-xs border-border hover:bg-white/10 text-muted-foreground hover:text-foreground"
+              className="flex-1 h-12 rounded-xl font-bold uppercase tracking-wider text-xs border-border hover:bg-muted/10 text-muted-foreground hover:text-foreground"
               onClick={handleClose}
             >
               Cancel

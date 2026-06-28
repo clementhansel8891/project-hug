@@ -93,7 +93,7 @@ export function CreateItemDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[600px] rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted p-0 overflow-hidden">
         <form onSubmit={handleSubmit}>
           <div className="bg-muted p-8 text-white">
             <div className="flex items-center gap-3 text-primary font-black text-[10px] uppercase tracking-[0.3em] mb-2">

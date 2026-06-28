@@ -90,7 +90,7 @@ export function CreatePaymentDialog({
           </div>
 
           {/* Right form */}
-          <div className="p-10 bg-white">
+          <div className="p-10 bg-card">
             <div className="space-y-6">
               <div>
                 <label className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-2.5 block">Payment Amount (IDR)</label>

@@ -152,7 +152,7 @@ export default function SalesDashboard() {
           { label: "Open Leads", value: metrics.openLeads, sub: "UNQUALIFIED DEMAND", icon: Users, color: "blue" },
           { label: "SLA Pressure", value: metrics.slaDueToday, sub: "DUE WITHIN 24H", icon: Clock, color: "rose" },
         ].map((stat, i) => (
-          <Card key={i} className="group relative overflow-hidden rounded-[2.5rem] border-none bg-white dark:bg-muted shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+          <Card key={i} className="group relative overflow-hidden rounded-[2.5rem] border-none bg-card dark:bg-muted shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
             <div className={cn("absolute top-0 right-0 h-32 w-32 -mr-8 -mt-8 rounded-full blur-3xl opacity-10", `bg-${stat.color}-500`)} />
             <CardContent className="p-8">
               <div className="flex justify-between items-start mb-6">
@@ -185,7 +185,7 @@ export default function SalesDashboard() {
                   </CardTitle>
                   <CardDescription className="text-sm font-medium">SLA-aware lead pool requiring immediate executive engagement.</CardDescription>
                 </div>
-                <Button variant="outline" className="rounded-2xl h-12 font-black text-xs gap-2 border-border hover:bg-white" onClick={async () => {
+                <Button variant="outline" className="rounded-2xl h-12 font-black text-xs gap-2 border-border hover:bg-muted" onClick={async () => {
                    await salesService.runSlaSweep(session.tenant_id, session);
                    refresh(true);
                 }}>
@@ -207,7 +207,7 @@ export default function SalesDashboard() {
                   </thead>
                   <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {filteredLeads.slice(0, 6).map((item) => (
-                      <tr key={item.id} className="group hover:bg-card dark:hover:bg-muted transition-colors">
+                      <tr key={item.id} className="group hover:bg-muted dark:hover:bg-muted transition-colors">
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-4">
                             <div className="h-10 w-10 rounded-xl bg-muted dark:bg-muted flex items-center justify-center font-black text-xs shadow-sm">
@@ -286,9 +286,9 @@ export default function SalesDashboard() {
             </CardHeader>
             <CardContent className="px-10 pb-10 space-y-6">
               {(Array.isArray(nextActions) ? nextActions : []).map((item) => (
-                <div key={item.id} className="relative p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-border space-y-4 hover:bg-white/20 transition-all cursor-pointer">
+                <div key={item.id} className="relative p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-border space-y-4 hover:bg-muted/20 transition-all cursor-pointer">
                   <div className="flex justify-between items-start">
-                    <Badge className="bg-white text-primary border-none font-black text-[9px] px-2 py-0.5 rounded-full">{item.priority}</Badge>
+                    <Badge className="bg-card text-primary border-none font-black text-[9px] px-2 py-0.5 rounded-full">{item.priority}</Badge>
                     <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                        <CheckCircle2 className="h-4 w-4" />
                     </div>
@@ -298,7 +298,7 @@ export default function SalesDashboard() {
                     <p className="text-[11px] font-medium text-white/60 leading-relaxed italic line-clamp-2">"{item.detail}"</p>
                   </div>
                   <Button 
-                    className="w-full bg-white text-primary hover:bg-primary font-black rounded-xl h-11 text-xs"
+                    className="w-full bg-card text-primary hover:bg-primary font-black rounded-xl h-11 text-xs"
                     onClick={() => navigate("/core/sales/intelligence")}
                   >
                     EXECUTE RECOMMENDATION

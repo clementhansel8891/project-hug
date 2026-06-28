@@ -32,7 +32,7 @@ const FeedItem: React.FC<FeedItemProps> = ({
   priority,
   isVerified = true,
 }) => (
-  <div className="flex items-start gap-5 p-6 rounded-[2rem] bg-card backdrop-blur-3xl border border-border hover:border-primary hover:bg-card transition-all duration-500 group cursor-pointer shadow-lg relative overflow-hidden">
+  <div className="flex items-start gap-5 p-6 rounded-[2rem] bg-card backdrop-blur-3xl border border-border hover:border-primary hover:bg-muted transition-all duration-500 group cursor-pointer shadow-lg relative overflow-hidden">
     <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/40 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
     <div
       className={cn(
@@ -175,7 +175,7 @@ export const GlobalActivityFeed = ({
                 "flex items-center gap-3 px-6 h-14 border rounded-2xl shadow-xl transition-all",
                 verifyResult 
                   ? verifyResult.valid ? "bg-success/10 border-success/20 text-success" : "bg-destructive/10 border-destructive/20 text-destructive"
-                  : "bg-secondary/40 border-border text-muted-foreground hover:bg-white/10 hover:text-foreground"
+                  : "bg-secondary/40 border-border text-muted-foreground hover:bg-muted/10 hover:text-foreground"
               )}
             >
               {verifying ? (

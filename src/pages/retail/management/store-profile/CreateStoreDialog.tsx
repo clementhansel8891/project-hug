@@ -351,7 +351,7 @@ export const CreateStoreDialog: React.FC<CreateStoreDialogProps> = ({
                       step="any"
                       name="latitude"
                       placeholder="0.0000"
-                      className="flex h-10 w-full rounded-lg border border-border bg-white px-2 font-bold text-xs"
+                      className="flex h-10 w-full rounded-lg border border-border bg-card px-2 font-bold text-xs"
                     />
                   </div>
                   <div className="space-y-1">
@@ -361,7 +361,7 @@ export const CreateStoreDialog: React.FC<CreateStoreDialogProps> = ({
                       step="any"
                       name="longitude"
                       placeholder="0.0000"
-                      className="flex h-10 w-full rounded-lg border border-border bg-white px-2 font-bold text-xs"
+                      className="flex h-10 w-full rounded-lg border border-border bg-card px-2 font-bold text-xs"
                     />
                   </div>
                 </div>

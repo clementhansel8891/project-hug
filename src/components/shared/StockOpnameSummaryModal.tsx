@@ -206,14 +206,14 @@ export const StockOpnameSummaryModal = ({
                   variant="outline"
                   onClick={handleExportPDF}
                   disabled={commitMutation.isPending}
-                  className="h-12 rounded-xl bg-muted border-border hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
+                  className="h-12 rounded-xl bg-muted border-border hover:bg-muted/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
                   <FileText className="w-3 h-3" /> PDF
                 </Button>
                 <Button
                   variant="outline"
                   onClick={handleExportCSV}
                   disabled={commitMutation.isPending}
-                  className="h-12 rounded-xl bg-muted border-border hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
+                  className="h-12 rounded-xl bg-muted border-border hover:bg-muted/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
                   <FileSpreadsheet className="w-3 h-3" /> CSV
                 </Button>
               </div>
@@ -254,7 +254,7 @@ export const StockOpnameSummaryModal = ({
                       <TableRow key={idx} className="border-border dark:border-border hover:bg-muted dark:hover:bg-muted transition-all group">
                         <TableCell className="py-6">
                           <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-2xl bg-white dark:bg-muted shadow-sm overflow-hidden flex items-center justify-center border border-border dark:border-border">
+                            <div className="w-16 h-16 rounded-2xl bg-card dark:bg-muted shadow-sm overflow-hidden flex items-center justify-center border border-border dark:border-border">
                               {item.id && itemImages[item.id] ? (
                                 <img src={itemImages[item.id]} alt={item.name} className="w-full h-full object-cover" />
                               ) : (

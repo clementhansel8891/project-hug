@@ -134,14 +134,14 @@ const EcommerceConnector = () => {
       label: "Suspended",
       value: stats.suspended,
       icon: PauseCircle,
-      color: "bg-white text-muted-foreground border border-border",
+      color: "bg-card text-muted-foreground border border-border",
     },
   ];
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* -- Header -- */}
-      <div className="px-8 py-5 border-b bg-white shrink-0 flex items-center justify-between gap-6">
+      <div className="px-8 py-5 border-b bg-card shrink-0 flex items-center justify-between gap-6">
         <PageHeader
           title="Commerce Channels"
           subtitle={`${stats.active} active � ${stats.total} total channels connected`}
@@ -234,7 +234,7 @@ const EcommerceConnector = () => {
                     key={ch.id}
                     onClick={() => setSelectedChannel(ch)}
                     className={cn(
-                      "w-full text-left rounded-2xl border-2 p-4 transition-all bg-white",
+                      "w-full text-left rounded-2xl border-2 p-4 transition-all bg-card",
                       isSelected
                         ? "border-border shadow-lg ring-1 ring-slate-900/10"
                         : accent,
@@ -285,7 +285,7 @@ const EcommerceConnector = () => {
             {channels.length > 0 && (
               <button
                 onClick={() => setCreateOpen(true)}
-                className="w-full rounded-2xl border-2 border-dashed border-border hover:border-border bg-transparent hover:bg-white transition-all p-4 flex items-center gap-3 group"
+                className="w-full rounded-2xl border-2 border-dashed border-border hover:border-border bg-transparent hover:bg-muted transition-all p-4 flex items-center gap-3 group"
               >
                 <div className="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Plus className="w-4 h-4 text-muted-foreground" />
@@ -299,11 +299,11 @@ const EcommerceConnector = () => {
         </div>
 
         {/* -- RIGHT: Channel Profile Panel -- */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-white relative">
+        <div className="flex-1 flex flex-col overflow-hidden bg-card relative">
           {selectedChannel && (
             <button
               onClick={() => setSelectedChannel(null)}
-              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur border border-border flex items-center justify-center hover:bg-secondary/10 transition-colors shadow-sm"
+              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-card/80 backdrop-blur border border-border flex items-center justify-center hover:bg-secondary/10 transition-colors shadow-sm"
             >
               <X className="w-4 h-4 text-muted-foreground" />
             </button>

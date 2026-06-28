@@ -167,7 +167,7 @@ export default function SalesOrderDesk() {
                 CONVERT OPPORTUNITY
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[650px] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-muted">
+            <DialogContent className="sm:max-w-[650px] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-card dark:bg-muted">
               <div className="h-2 bg-gradient-to-r from-emerald-500 via-indigo-500 to-emerald-500" />
               <div className="p-10 space-y-8">
                 <DialogHeader>
@@ -191,11 +191,11 @@ export default function SalesOrderDesk() {
                         {(Array.isArray(opps) ? opps : []).map((opp) => (
                           <div 
                             key={opp.id} 
-                            className="group flex items-center justify-between p-6 rounded-3xl bg-muted dark:bg-muted border border-border dark:border-border hover:border-success/50 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-sm hover:shadow-xl"
+                            className="group flex items-center justify-between p-6 rounded-3xl bg-muted dark:bg-muted border border-border dark:border-border hover:border-success/50 hover:bg-muted dark:hover:bg-muted transition-all cursor-pointer shadow-sm hover:shadow-xl"
                             onClick={() => handleCreateFromOpp(opp.id)}
                           >
                             <div className="flex items-center gap-5">
-                               <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center border border-border dark:border-border font-black text-sm group-hover:bg-success group-hover:text-white transition-colors">
+                               <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center border border-border dark:border-border font-black text-sm group-hover:bg-success group-hover:text-white transition-colors">
                                   {opp.accountName.charAt(0)}
                                </div>
                                <div>
@@ -233,7 +233,7 @@ export default function SalesOrderDesk() {
             </div>
             <div className="flex gap-4">
                <div className="flex bg-muted dark:bg-muted p-1.5 rounded-[1.5rem] shadow-inner">
-                  <Button variant="ghost" size="sm" className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest bg-white dark:bg-muted shadow-md text-success">ACTIVE QUEUE</Button>
+                  <Button variant="ghost" size="sm" className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest bg-card dark:bg-muted shadow-md text-success">ACTIVE QUEUE</Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate("/core/logistics")} className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors">SHIPPED</Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate("/core/finance/operations")} className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors">DELINQUENT</Button>
                </div>
@@ -258,7 +258,7 @@ export default function SalesOrderDesk() {
                   <tr key={order.id} className="group hover:bg-success dark:hover:bg-success transition-all cursor-default">
                     <td className="px-10 py-8">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-success group-hover:text-white border border-border dark:border-border">
+                        <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-success group-hover:text-white border border-border dark:border-border">
                           <Package className="h-6 w-6" />
                         </div>
                         <div>
@@ -296,7 +296,7 @@ export default function SalesOrderDesk() {
                     <td className="px-10 py-8 text-right">
                        <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-white transition-all shadow-sm">
+                             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted transition-all shadow-sm">
                                 <MoreVertical className="h-5 w-5 text-muted-foreground" />
                              </Button>
                           </DropdownMenuTrigger>

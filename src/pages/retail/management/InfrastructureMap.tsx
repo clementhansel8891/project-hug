@@ -89,10 +89,10 @@ export default function InfrastructureMap() {
 
           {/* Map Controls */}
           <div className="absolute bottom-10 right-10 flex flex-col gap-3">
-            <Button size="icon" className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md border border-border hover:bg-white/20">
+            <Button size="icon" className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md border border-border hover:bg-muted/20">
               <Maximize2 className="h-5 w-5 text-foreground" />
             </Button>
-            <Button size="icon" className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md border border-border hover:bg-white/20">
+            <Button size="icon" className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md border border-border hover:bg-muted/20">
               <Navigation className="h-5 w-5 text-foreground" />
             </Button>
           </div>

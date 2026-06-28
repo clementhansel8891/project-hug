@@ -205,7 +205,7 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
               <Button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="h-14 px-8 rounded-xl bg-white text-muted-foreground font-black italic uppercase tracking-widest text-[10px] hover:bg-muted shadow-2xl transition-all hover:scale-105"
+                className="h-14 px-8 rounded-xl bg-card text-muted-foreground font-black italic uppercase tracking-widest text-[10px] hover:bg-muted shadow-2xl transition-all hover:scale-105"
               >
                 {createMutation.isPending ? (
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -322,7 +322,7 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
         <DialogFooter className="p-10 bg-muted border-t border-border">
           <Button
             variant="outline"
-            className="rounded-xl font-black italic text-[10px] uppercase tracking-widest h-12 px-8 border-border bg-muted text-white hover:bg-white/10"
+            className="rounded-xl font-black italic text-[10px] uppercase tracking-widest h-12 px-8 border-border bg-muted text-white hover:bg-muted/10"
             onClick={onClose}
             disabled={isPending}
           >

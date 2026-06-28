@@ -168,7 +168,7 @@ export default function PipelineBoard() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -217,7 +217,7 @@ export default function PipelineBoard() {
                       (Array.isArray(filteredOpps) ? filteredOpps : []).map((item) => (
                         <Card 
                           key={item.id} 
-                          className="group/card relative overflow-hidden rounded-[2rem] border-none shadow-xl bg-white dark:bg-muted hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-default"
+                          className="group/card relative overflow-hidden rounded-[2rem] border-none shadow-xl bg-card dark:bg-muted hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-default"
                         >
                            <div className={cn("absolute top-0 left-0 h-full w-2 shadow-[2px_0_10px_rgba(0,0,0,0.05)]", STAGE_COLORS[stage])} />
                            <CardContent className="p-7 space-y-6">
@@ -292,7 +292,7 @@ export default function PipelineBoard() {
                                    value={item.stage}
                                    onValueChange={(value: OpportunityStage) => moveStage(item.id, value)}
                                  >
-                                   <SelectTrigger className="h-12 rounded-2xl border-none bg-muted dark:bg-muted hover:bg-muted transition-all text-[10px] font-black uppercase tracking-widest shadow-inner group-hover/card:bg-white dark:group-hover/card:bg-muted">
+                                   <SelectTrigger className="h-12 rounded-2xl border-none bg-muted dark:bg-muted hover:bg-muted transition-all text-[10px] font-black uppercase tracking-widest shadow-inner group-hover/card:bg-card dark:group-hover/card:bg-muted">
                                      <SelectValue placeholder="Transition Stage" />
                                    </SelectTrigger>
                                    <SelectContent className="rounded-2xl border-none shadow-2xl p-2 w-64">
@@ -329,7 +329,7 @@ export default function PipelineBoard() {
                <h4 className="text-4xl font-black tracking-tighter italic">{formatCurrency(aggregateValue)}</h4>
             </div>
          </Card>
-         <Card className="rounded-[2.5rem] border-none shadow-2xl bg-white dark:bg-muted p-8 flex items-center gap-8 pointer-events-auto hover:scale-105 transition-transform duration-500 cursor-default">
+         <Card className="rounded-[2.5rem] border-none shadow-2xl bg-card dark:bg-muted p-8 flex items-center gap-8 pointer-events-auto hover:scale-105 transition-transform duration-500 cursor-default">
             <div className="h-16 w-16 rounded-[1.5rem] bg-success flex items-center justify-center shadow-inner">
                <Rocket className="h-8 w-8 text-success" />
             </div>

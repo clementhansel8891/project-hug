@@ -213,7 +213,7 @@ export const ManageConnectorDialog = ({
           </div>
         </div>
 
-        <div className="p-6 space-y-12 flex-1 overflow-y-auto bg-white">
+        <div className="p-6 space-y-12 flex-1 overflow-y-auto bg-card">
           {step === "SUCCESS" && generatedCreds ? (
             <div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className="bg-success border-2 border-success rounded-[2rem] p-8 flex items-center gap-6">
@@ -362,7 +362,7 @@ export const ManageConnectorDialog = ({
                           <SelectTrigger className="h-16 rounded-2xl bg-secondary/5 border-none font-black italic uppercase text-[10px] tracking-widest text-foreground shadow-inner">
                             <SelectValue placeholder="Sync Pulse" />
                           </SelectTrigger>
-                          <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
+                          <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-card">
                             <SelectItem
                               value="5min"
                               className="rounded-xl font-black italic uppercase text-[10px] py-4"

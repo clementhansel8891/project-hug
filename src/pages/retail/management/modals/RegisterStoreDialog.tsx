@@ -255,7 +255,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                   id="reg-store-name"
                   type="text"
                   {...register("name")}
-                  className="flex h-12 w-full rounded-xl border border-border bg-white px-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex h-12 w-full rounded-xl border border-border bg-card px-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="e.g. Jakarta South Plaza"
                   autoFocus
                   aria-describedby={errors.name ? "reg-store-name-error" : undefined}
@@ -275,7 +275,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                   id="reg-store-code"
                   type="text"
                   {...register("code")}
-                  className="flex h-12 w-full rounded-xl border border-border bg-white px-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex h-12 w-full rounded-xl border border-border bg-card px-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="e.g. JK-002"
                   aria-describedby={errors.code ? "reg-store-code-error" : undefined}
                   aria-invalid={!!errors.code}
@@ -293,7 +293,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                 <select
                   id="reg-store-type"
                   {...register("type")}
-                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-white"
+                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-card"
                 >
                   <option value="flagship">Flagship</option>
                   <option value="express">Express</option>
@@ -312,7 +312,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                     id="reg-store-phone"
                     type="tel"
                     {...register("phone")}
-                    className="flex h-12 w-full rounded-xl border border-border bg-white pl-10 pr-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex h-12 w-full rounded-xl border border-border bg-card pl-10 pr-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="+62 21..."
                   />
                 </div>
@@ -327,7 +327,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                     id="reg-store-email"
                     type="email"
                     {...register("email")}
-                    className="flex h-12 w-full rounded-xl border border-border bg-white pl-10 pr-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex h-12 w-full rounded-xl border border-border bg-card pl-10 pr-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="branch@company.com"
                     aria-describedby={errors.email ? "reg-store-email-error" : undefined}
                     aria-invalid={!!errors.email}
@@ -350,7 +350,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                 <select
                   id="reg-store-location"
                   {...register("locationId")}
-                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-white"
+                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-card"
                   aria-describedby={errors.locationId ? "reg-store-location-error" : undefined}
                   aria-invalid={!!errors.locationId}
                 >
@@ -396,7 +396,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                   id="reg-store-address"
                   {...register("address")}
                   disabled={useOfficeAddress}
-                  className="flex min-h-[80px] w-full rounded-xl border border-border bg-white px-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                  className="flex min-h-[80px] w-full rounded-xl border border-border bg-card px-3 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                   placeholder="Street, City, Building..."
                 />
               </div>
@@ -418,7 +418,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                       step="any"
                       {...register("latitude")}
                       placeholder="0.0000"
-                      className="flex h-10 w-full rounded-lg border border-border bg-white px-2 font-bold text-xs"
+                      className="flex h-10 w-full rounded-lg border border-border bg-card px-2 font-bold text-xs"
                     />
                   </div>
                   <div className="space-y-1">
@@ -429,7 +429,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                       step="any"
                       {...register("longitude")}
                       placeholder="0.0000"
-                      className="flex h-10 w-full rounded-lg border border-border bg-white px-2 font-bold text-xs"
+                      className="flex h-10 w-full rounded-lg border border-border bg-card px-2 font-bold text-xs"
                     />
                   </div>
                 </div>
@@ -455,7 +455,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                 <select
                   id="reg-store-country"
                   {...register("country")}
-                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-white"
+                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-card"
                 >
                   <option value="">Inherit from Head Office</option>
                   {(Array.isArray(COUNTRIES) ? COUNTRIES : []).map((c) => (
@@ -487,7 +487,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                 <select
                   id="reg-store-manager"
                   {...register("managerId")}
-                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-white"
+                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-card"
                 >
                   <option value="">(None assigned)</option>
                   {(Array.isArray(managers) ? managers : []).map((m) => (
@@ -505,7 +505,7 @@ export const RegisterStoreDialog: React.FC<RegisterStoreDialogProps> = ({
                 <select
                   id="reg-store-pool"
                   {...register("inventoryPoolId")}
-                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-white"
+                  className="w-full h-12 rounded-xl border border-border px-3 font-bold italic text-sm bg-card"
                 >
                   <option value="">Private (Self-managed)</option>
                   {(Array.isArray(pools) ? pools : []).map((p) => (

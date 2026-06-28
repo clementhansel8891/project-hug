@@ -128,7 +128,7 @@ export default function MarketingAnalytics() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -190,8 +190,8 @@ export default function MarketingAnalytics() {
                     <CardDescription className="text-base font-medium italic italic opacity-60">Cross-referencing campaign clusters with multi-touch attribution yield ledger.</CardDescription>
                  </div>
                  <TabsList className="bg-muted dark:bg-muted p-2 rounded-[2rem] shadow-inner border-none h-auto">
-                    <TabsTrigger value="campaigns" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-xl h-12 border-none transition-all">Campaign Performance</TabsTrigger>
-                    <TabsTrigger value="attribution" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-xl h-12 border-none transition-all">Attribution Ledger</TabsTrigger>
+                    <TabsTrigger value="campaigns" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-xl h-12 border-none transition-all">Campaign Performance</TabsTrigger>
+                    <TabsTrigger value="attribution" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-xl h-12 border-none transition-all">Attribution Ledger</TabsTrigger>
                  </TabsList>
               </div>
            </CardHeader>
@@ -325,7 +325,7 @@ export default function MarketingAnalytics() {
       </Card>
       
       {/* Strategy Optimization Footer */}
-      <Card className="rounded-[4rem] border-none shadow-2xl bg-white dark:bg-muted p-12 flex flex-col lg:flex-row items-center gap-12 group overflow-hidden relative">
+      <Card className="rounded-[4rem] border-none shadow-2xl bg-card dark:bg-muted p-12 flex flex-col lg:flex-row items-center gap-12 group overflow-hidden relative">
          <div className="absolute inset-0 bg-primary dark:bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
          <div className="h-32 w-32 bg-primary rounded-[3rem] flex items-center justify-center shadow-[0_30px_60px_-15px_rgba(79,70,229,0.4)] group-hover:rotate-12 transition-all duration-700 shrink-0 relative z-10">
             <Cpu className="h-16 w-16 text-white drop-shadow-2xl" />

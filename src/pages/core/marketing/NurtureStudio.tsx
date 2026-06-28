@@ -149,7 +149,7 @@ export default function NurtureStudio() {
         <div className="flex items-center gap-4">
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -187,7 +187,7 @@ export default function NurtureStudio() {
                         className={cn(
                           "w-full flex items-center gap-5 p-5 rounded-[2rem] text-left transition-all duration-300 group relative overflow-hidden",
                           selectedWorkflow?.id === wf.id 
-                            ? "bg-white dark:bg-muted shadow-2xl shadow-indigo-500/10 translate-x-2 border-l-4 border-l-indigo-600" 
+                            ? "bg-card dark:bg-muted shadow-2xl shadow-indigo-500/10 translate-x-2 border-l-4 border-l-indigo-600" 
                             : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1"
                         )}
                       >
@@ -283,7 +283,7 @@ export default function NurtureStudio() {
                             </Button>
                          ) : (
                             <Button 
-                              className="h-14 px-8 rounded-2xl bg-white text-primary hover:bg-muted shadow-xl font-black text-[10px] uppercase tracking-widest gap-2"
+                              className="h-14 px-8 rounded-2xl bg-card text-primary hover:bg-muted shadow-xl font-black text-[10px] uppercase tracking-widest gap-2"
                               onClick={() => handleUpdateStatus(selectedWorkflow.id, "ACTIVE")}
                             >
                                <Play className="h-4 w-4" /> AUTHORIZE
@@ -354,7 +354,7 @@ export default function NurtureStudio() {
                          <div className="flex flex-col items-center">
                             <Button 
                               variant="outline" 
-                              className="h-20 w-20 rounded-[2rem] border-4 border-dashed border-border dark:border-border bg-transparent flex flex-col gap-4 hover:bg-white dark:hover:bg-muted hover:border-primary hover:text-primary transition-all group shadow-inner"
+                              className="h-20 w-20 rounded-[2rem] border-4 border-dashed border-border dark:border-border bg-transparent flex flex-col gap-4 hover:bg-muted dark:hover:bg-muted hover:border-primary hover:text-primary transition-all group shadow-inner"
                               onClick={() => navigate("/core/marketing/automation")}
                             >
                                <Plus className="h-8 w-8 group-hover:rotate-90 transition-transform duration-500" />
@@ -383,7 +383,7 @@ export default function NurtureStudio() {
              <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-border dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-30 space-y-12 animate-in zoom-in duration-1000">
                 <div className="relative">
                    <div className="absolute inset-0 bg-primary blur-[100px] rounded-full scale-[3] animate-pulse" />
-                   <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border">
+                   <div className="h-48 w-48 rounded-[4rem] bg-card dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border">
                       <Workflow className="h-24 w-24 text-primary drop-shadow-2xl" />
                    </div>
                 </div>

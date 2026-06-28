@@ -1577,7 +1577,7 @@ export default function Explorer() {
                                 <tr key={i} className="border-b last:border-0 hover:bg-muted/30">
                                   <td className="p-3">
                                     {item.image ? (
-                                      <img src={item.image} className="h-10 w-10 rounded-md object-cover border bg-white" />
+                                      <img src={item.image} className="h-10 w-10 rounded-md object-cover border bg-card" />
                                     ) : (
                                       <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center border">
                                         <HardDrive className="h-4 w-4 text-muted-foreground" />

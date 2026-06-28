@@ -137,7 +137,7 @@ export const GlobalFleetDashboard: React.FC = () => {
                       className={`w-10 h-10 rounded-lg border flex items-center justify-center shadow-sm transition-colors ${
                         virtual
                           ? "bg-success/10 border-success/20 group-hover:border-success/60"
-                          : "bg-white border-border group-hover:border-primary"
+                          : "bg-card border-border group-hover:border-primary"
                       }`}
                     >
                       <TypeIcon

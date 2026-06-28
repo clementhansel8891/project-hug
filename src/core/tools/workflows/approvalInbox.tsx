@@ -132,14 +132,14 @@ export function ApprovalInbox({ tenantId, session }: ApprovalInboxProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-muted p-6 rounded-[2rem] shadow-xl shadow-slate-200/20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card dark:bg-muted p-6 rounded-[2rem] shadow-xl shadow-slate-200/20">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search approvals matrix..."
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            className="pl-11 h-12 rounded-xl border-border bg-muted focus:bg-white transition-all font-medium"
+            className="pl-11 h-12 rounded-xl border-border bg-muted focus:bg-card transition-all font-medium"
           />
         </div>
         <div className="flex items-center gap-3">
@@ -170,7 +170,7 @@ export function ApprovalInbox({ tenantId, session }: ApprovalInboxProps) {
             <TabsTrigger 
               key={t.id} 
               value={t.id}
-              className="rounded-xl px-6 font-black text-xs uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:shadow-lg dark:data-[state=active]:bg-muted"
+              className="rounded-xl px-6 font-black text-xs uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:shadow-lg dark:data-[state=active]:bg-muted"
             >
               {t.label} ({statusCounts[t.id as any] || 0})
             </TabsTrigger>
@@ -213,7 +213,7 @@ export function ApprovalInbox({ tenantId, session }: ApprovalInboxProps) {
                   {(Array.isArray(filtered) ? filtered : []).map((flow) => (
                     <tr 
                       key={flow.id} 
-                      className="bg-white dark:bg-muted shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+                      className="bg-card dark:bg-muted shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
                     >
                       <td className="px-6 py-6 first:rounded-l-[2rem]">
                         <p className="font-black text-muted-foreground dark:text-white uppercase tracking-tight">{flow.entityType}</p>

@@ -60,14 +60,14 @@ export const RetailGlobalAdminBar = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 px-2 hover:bg-white/10 text-[9px] font-black italic"
+                className="h-6 px-2 hover:bg-muted/10 text-[9px] font-black italic"
               >
                 [ Switch ]
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="start"
-              className="w-56 bg-white border-2 border-border shadow-2xl rounded-xl"
+              className="w-56 bg-card border-2 border-border shadow-2xl rounded-xl"
             >
               <DropdownMenuLabel className="text-[10px] uppercase font-black italic tracking-widest text-muted-foreground">
                 Physical Stores

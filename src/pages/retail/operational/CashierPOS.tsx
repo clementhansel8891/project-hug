@@ -806,7 +806,7 @@ const CashierPOS = () => {
           </div>
 
           <div className="p-8 bg-secondary/50 flex flex-col items-center">
-             <div className="w-full bg-white p-6 shadow-2xl space-y-4 font-mono text-[10px] text-black leading-tight uppercase relative mb-8">
+             <div className="w-full bg-card p-6 shadow-2xl space-y-4 font-mono text-[10px] text-black leading-tight uppercase relative mb-8">
                 <div className="text-center space-y-1 py-2">
                    <p className="text-xs font-bold tracking-tighter">{lastTransaction?.storeName}</p>
                    <p className="text-[8px]">{lastTransaction?.storeAddress}</p>

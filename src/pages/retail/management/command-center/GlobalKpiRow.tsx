@@ -147,7 +147,7 @@ export const GlobalKpiRow: React.FC<GlobalKpiRowProps> = ({ kpis }) => {
       {(Array.isArray(items) ? items : []).map((item, idx) => (
         <div
           key={idx}
-          className={`relative bg-card backdrop-blur-3xl p-4 rounded-xl border border-border shadow-xl transition-all duration-500 ${item.border} hover:bg-card hover:-translate-y-0.5 cursor-default group flex flex-col justify-between min-h-[130px] overflow-hidden`}
+          className={`relative bg-card backdrop-blur-3xl p-4 rounded-xl border border-border shadow-xl transition-all duration-500 ${item.border} hover:bg-muted hover:-translate-y-0.5 cursor-default group flex flex-col justify-between min-h-[130px] overflow-hidden`}
         >
           {/* Subtle Background Glow */}
           <div

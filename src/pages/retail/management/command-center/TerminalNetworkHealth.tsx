@@ -46,7 +46,7 @@ export const TerminalNetworkHealth: React.FC<TerminalNetworkHealthProps> = ({
           )}
           <button
             onClick={() => navigate("/m/retail/management/devices")}
-            className="aspect-square rounded-xl bg-secondary/40 border border-border flex items-center justify-center text-foreground/40 cursor-pointer hover:bg-white/10 hover:text-foreground transition-all"
+            className="aspect-square rounded-xl bg-secondary/40 border border-border flex items-center justify-center text-foreground/40 cursor-pointer hover:bg-muted/10 hover:text-foreground transition-all"
           >
             <Plus className="w-4 h-4" />
           </button>

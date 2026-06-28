@@ -191,7 +191,7 @@ export default function TimelineDesk() {
                 LOG INTERACTION
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-muted">
+            <DialogContent className="sm:max-w-[600px] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-card dark:bg-muted">
               <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500" />
               <div className="p-10 space-y-8">
                 <DialogHeader>
@@ -296,7 +296,7 @@ export default function TimelineDesk() {
                   return (
                     <div key={item.id} className="relative pl-0 md:pl-20 animate-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${i * 100}ms` }}>
                        <div className="absolute left-6 top-6 h-4 w-4 rounded-full border-4 border-white dark:border-border bg-primary shadow-[0_0_15px_rgba(79,70,229,0.5)] z-10 hidden md:block" />
-                       <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-muted overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
+                       <Card className="rounded-[2.5rem] border-none shadow-xl bg-card dark:bg-muted overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
                           <CardContent className="p-8">
                              <div className="flex flex-col md:flex-row justify-between items-start gap-6">
                                 <div className="flex items-start gap-6">
@@ -391,14 +391,14 @@ export default function TimelineDesk() {
                     onClick={() => setChannelFilter(null)}
                     className={cn(
                       "w-full flex items-center justify-between p-4 rounded-2xl transition-all group shadow-sm",
-                      !channelFilter ? "bg-primary text-white" : "bg-white dark:bg-muted hover:bg-muted dark:hover:bg-muted"
+                      !channelFilter ? "bg-primary text-white" : "bg-card dark:bg-muted hover:bg-muted dark:hover:bg-muted"
                     )}
                   >
                      <div className="flex items-center gap-3">
-                        <div className={cn("h-2 w-2 rounded-full", !channelFilter ? "bg-white" : "bg-muted")} />
+                        <div className={cn("h-2 w-2 rounded-full", !channelFilter ? "bg-card" : "bg-muted")} />
                         <span className="text-[10px] font-black uppercase tracking-widest">ALL ACTIVITIES</span>
                      </div>
-                     <Badge variant="secondary" className={cn("rounded-full text-[8px] font-black", !channelFilter ? "bg-white text-primary" : "")}>{timeline.length}</Badge>
+                     <Badge variant="secondary" className={cn("rounded-full text-[8px] font-black", !channelFilter ? "bg-card text-primary" : "")}>{timeline.length}</Badge>
                   </button>
                   {Object.keys(CHANNELS).map(c => (
                     <button 
@@ -406,14 +406,14 @@ export default function TimelineDesk() {
                       onClick={() => setChannelFilter(c)}
                       className={cn(
                         "w-full flex items-center justify-between p-4 rounded-2xl transition-all group shadow-sm",
-                        channelFilter === c ? "bg-primary text-white" : "bg-white dark:bg-muted hover:bg-muted dark:hover:bg-muted"
+                        channelFilter === c ? "bg-primary text-white" : "bg-card dark:bg-muted hover:bg-muted dark:hover:bg-muted"
                       )}
                     >
                        <div className="flex items-center gap-3">
-                          <div className={cn("h-2 w-2 rounded-full", channelFilter === c ? "bg-white" : "bg-muted")} />
+                          <div className={cn("h-2 w-2 rounded-full", channelFilter === c ? "bg-card" : "bg-muted")} />
                            <span className="text-[10px] font-black uppercase tracking-widest">{c}</span>
                        </div>
-                       <Badge variant="secondary" className={cn("rounded-full text-[8px] font-black", channelFilter === c ? "bg-white text-primary" : "")}>{(Array.isArray(timeline) ? timeline : []).filter(t => t.channel === c).length}</Badge>
+                       <Badge variant="secondary" className={cn("rounded-full text-[8px] font-black", channelFilter === c ? "bg-card text-primary" : "")}>{(Array.isArray(timeline) ? timeline : []).filter(t => t.channel === c).length}</Badge>
                     </button>
                   ))}
                </div>

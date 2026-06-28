@@ -169,7 +169,7 @@ export default function InventoryTransferDesk() {
   const mainContent = (
     <div className="p-6 space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">In Transit</CardTitle>
             <Truck className="h-4 w-4 text-primary opacity-50" />
@@ -182,7 +182,7 @@ export default function InventoryTransferDesk() {
           </CardContent>
         </Card>
         
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Pending Approval</CardTitle>
             <AlertCircle className="h-4 w-4 text-warning opacity-50" />
@@ -195,7 +195,7 @@ export default function InventoryTransferDesk() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[2.5rem] overflow-hidden">
+        <Card className="border-none shadow-xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[2.5rem] overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Completed (MTD)</CardTitle>
             <History className="h-4 w-4 text-success opacity-50" />
@@ -209,7 +209,7 @@ export default function InventoryTransferDesk() {
         </Card>
       </div>
 
-      <Card className="border-none shadow-2xl shadow-muted/50 dark:shadow-none bg-white dark:bg-muted rounded-[3rem] overflow-hidden">
+      <Card className="border-none shadow-2xl shadow-muted/50 dark:shadow-none bg-card dark:bg-muted rounded-[3rem] overflow-hidden">
         <div className="p-8 border-b flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="relative flex-1 w-full max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -317,7 +317,7 @@ export default function InventoryTransferDesk() {
                               )}
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-56 rounded-2xl border-muted dark:border-muted bg-white dark:bg-muted p-2 shadow-2xl">
+                          <DropdownMenuContent align="end" className="w-56 rounded-2xl border-muted dark:border-muted bg-card dark:bg-muted p-2 shadow-2xl">
                             <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest opacity-40 px-4 py-3">Protocol Actions</DropdownMenuLabel>
                             
                             {t.status === 'REQUESTED' && (

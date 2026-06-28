@@ -148,7 +148,7 @@ export default function Customer360Desk() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => loadContacts(true)}
             disabled={refreshing}
           >
@@ -186,7 +186,7 @@ export default function Customer360Desk() {
                       className={cn(
                         "w-full flex items-center gap-6 p-6 rounded-[2.5rem] text-left transition-all duration-500 group relative overflow-hidden",
                         selectedContact?.id === customer.id 
-                          ? "bg-white dark:bg-muted shadow-2xl shadow-indigo-500/20 translate-x-3 scale-[1.02] border border-primary" 
+                          ? "bg-card dark:bg-muted shadow-2xl shadow-indigo-500/20 translate-x-3 scale-[1.02] border border-primary" 
                           : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-2"
                       )}
                     >
@@ -269,9 +269,9 @@ export default function Customer360Desk() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MessageSquare className="h-7 w-7" /></Button>
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><Calendar className="h-7 w-7" /></Button>
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MoreHorizontal className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-muted hover:text-muted-foreground hover:scale-110 transition-all text-white"><MessageSquare className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-muted hover:text-muted-foreground hover:scale-110 transition-all text-white"><Calendar className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-muted hover:text-muted-foreground hover:scale-110 transition-all text-white"><MoreHorizontal className="h-7 w-7" /></Button>
                   </div>
                 </div>
                 
@@ -304,9 +304,9 @@ export default function Customer360Desk() {
               <Tabs defaultValue="timeline" className="w-full flex-1 flex flex-col min-h-0">
                 <CardHeader className="p-0 shrink-0">
                    <TabsList className="glass-card p-2 rounded-[2rem] shadow-inner border border-border w-fit h-auto">
-                      <TabsTrigger value="timeline" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">Strategic Timeline</TabsTrigger>
-                      <TabsTrigger value="insights" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">ROI Intelligence</TabsTrigger>
-                      <TabsTrigger value="history" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">Conversion Trail</TabsTrigger>
+                      <TabsTrigger value="timeline" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">Strategic Timeline</TabsTrigger>
+                      <TabsTrigger value="insights" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">ROI Intelligence</TabsTrigger>
+                      <TabsTrigger value="history" className="rounded-[1.5rem] px-10 py-3 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-2xl h-12 border-none transition-all italic">Conversion Trail</TabsTrigger>
                    </TabsList>
                 </CardHeader>
                 
@@ -327,7 +327,7 @@ export default function Customer360Desk() {
                          <div className="p-12 space-y-12">
                            {(!profile.timeline || profile.timeline.length === 0) ? (
                              <div className="text-center py-32 grayscale opacity-20 space-y-8 flex flex-col items-center">
-                               <div className="h-24 w-24 bg-white dark:bg-muted rounded-[3rem] flex items-center justify-center shadow-2xl border border-border dark:border-border">
+                               <div className="h-24 w-24 bg-card dark:bg-muted rounded-[3rem] flex items-center justify-center shadow-2xl border border-border dark:border-border">
                                   <Layers className="h-12 w-12 text-muted-foreground" />
                                </div>
                                <div className="space-y-2">
@@ -351,7 +351,7 @@ export default function Customer360Desk() {
                                        {item.type === 'PURCHASE' && <ShoppingBag className="h-5 w-5" />}
                                        {item.type === 'LEAD_CAPTURE' && <Zap className="h-5 w-5" />}
                                      </div>
-                                     <div className="p-8 rounded-[2.5rem] bg-white dark:bg-muted shadow-xl border border-border group-hover/item:shadow-2xl group-hover/item:translate-x-3 transition-all duration-500 relative overflow-hidden">
+                                     <div className="p-8 rounded-[2.5rem] bg-card dark:bg-muted shadow-xl border border-border group-hover/item:shadow-2xl group-hover/item:translate-x-3 transition-all duration-500 relative overflow-hidden">
                                         <div className="absolute top-0 right-0 h-32 w-32 bg-primary rounded-full blur-3xl -mr-16 -mt-16 group-hover/item:scale-150 transition-transform duration-1000" />
                                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10 mb-6">
                                           <div className="space-y-1">
@@ -382,7 +382,7 @@ export default function Customer360Desk() {
 
                    <TabsContent value="insights" className="h-full m-0 outline-none">
                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 h-full">
-                        <Card className="rounded-[4rem] border-none shadow-2xl bg-white dark:bg-muted p-12 space-y-10 group hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.2)] transition-all duration-700 relative overflow-hidden">
+                        <Card className="rounded-[4rem] border-none shadow-2xl bg-card dark:bg-muted p-12 space-y-10 group hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.2)] transition-all duration-700 relative overflow-hidden">
                            <div className="absolute top-0 right-0 h-48 w-48 bg-primary rounded-full blur-[80px] -mr-24 -mt-24 group-hover:scale-150 transition-transform duration-1000" />
                            <div className="flex items-center justify-between relative z-10">
                               <div className="h-20 w-20 rounded-[2rem] bg-primary flex items-center justify-center group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-inner">
@@ -445,7 +445,7 @@ export default function Customer360Desk() {
             <div className="h-full flex flex-col items-center justify-center rounded-[5rem] border-2 border-dashed border-border dark:border-border/20 bg-muted dark:bg-muted grayscale opacity-20 space-y-10 animate-in fade-in duration-1000 relative overflow-hidden">
                <div className="absolute inset-0 bg-primary blur-[120px] rounded-full scale-150 animate-pulse" />
                <div className="relative z-10">
-                  <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_60px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border group">
+                  <div className="h-48 w-48 rounded-[4rem] bg-card dark:bg-muted flex items-center justify-center shadow-[0_60px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border group">
                      <User className="h-24 w-24 text-primary group-hover:scale-110 transition-transform duration-700" />
                   </div>
                </div>

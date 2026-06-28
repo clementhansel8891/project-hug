@@ -23,7 +23,7 @@ export function NavWidget({
     <button
       onClick={() => navigate(href)}
       className={cn(
-        "group relative w-full text-left overflow-hidden rounded-3xl border border-border bg-white",
+        "group relative w-full text-left overflow-hidden rounded-3xl border border-border bg-card",
         "p-7 shadow-sm transition-all duration-300",
         "hover:-translate-y-1.5 hover:shadow-xl hover:shadow-slate-200/60 hover:border-border",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",

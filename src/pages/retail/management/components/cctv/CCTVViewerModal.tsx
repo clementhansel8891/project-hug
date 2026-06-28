@@ -458,7 +458,7 @@ const VideoArea: React.FC<{
       <div
         className={`absolute top-4 left-4 flex items-center gap-1.5 rounded-full px-3 py-1.5 ${isLive ? "bg-success" : "bg-primary"}`}
       >
-        <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+        <div className="w-1.5 h-1.5 rounded-full bg-card animate-pulse" />
         <span className="text-[9px] font-black text-foreground uppercase">
           {isLive ? "Live" : "Playback"}
         </span>
@@ -500,7 +500,7 @@ const VideoArea: React.FC<{
                 <SkipBack className="w-4 h-4" />
               </button>
               <div className="flex-1 bg-white/20 rounded-full h-1">
-                <div className="bg-white rounded-full h-1 w-1/3" />
+                <div className="bg-card rounded-full h-1 w-1/3" />
               </div>
               <button className="text-foreground/70 hover:text-foreground">
                 <SkipForward className="w-4 h-4" />
@@ -609,7 +609,7 @@ const CCTVViewerModal: React.FC<Props> = ({
         if (!v) onClose();
       }}
     >
-      <DialogContent className="max-w-4xl w-full rounded-3xl border-none shadow-2xl bg-white p-0 overflow-hidden max-h-[92vh] flex flex-col">
+      <DialogContent className="max-w-4xl w-full rounded-3xl border-none shadow-2xl bg-card p-0 overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
         <DialogHeader className="px-6 pt-5 pb-4 border-b border-border shrink-0">
           <div className="flex items-center gap-4">
@@ -757,7 +757,7 @@ const CCTVViewerModal: React.FC<Props> = ({
                           (d, i) => (
                             <button
                               key={i}
-                              className="w-9 h-9 rounded-xl bg-white border border-border text-sm font-bold hover:bg-secondary hover:text-foreground transition-all flex items-center justify-center"
+                              className="w-9 h-9 rounded-xl bg-card border border-border text-sm font-bold hover:bg-secondary hover:text-foreground transition-all flex items-center justify-center"
                             >
                               {d}
                             </button>
@@ -863,7 +863,7 @@ const CCTVViewerModal: React.FC<Props> = ({
                       {timelineEvents.map((ev, i) => (
                         <button
                           key={i}
-                          className="w-full text-left bg-secondary/5 hover:bg-white border border-transparent hover:border-border hover:shadow-sm rounded-2xl px-4 py-3 transition-all group"
+                          className="w-full text-left bg-secondary/5 hover:bg-muted border border-transparent hover:border-border hover:shadow-sm rounded-2xl px-4 py-3 transition-all group"
                         >
                           <div className="flex items-center gap-3">
                             <div

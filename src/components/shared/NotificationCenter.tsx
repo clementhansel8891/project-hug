@@ -35,7 +35,7 @@ export function NotificationCenter() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-96 p-0 border-none shadow-3xl bg-white dark:bg-muted rounded-3xl overflow-hidden" align="end">
+      <PopoverContent className="w-96 p-0 border-none shadow-3xl bg-card dark:bg-muted rounded-3xl overflow-hidden" align="end">
         <div className="bg-muted p-6 text-white border-b border-border">
           <div className="flex justify-between items-center mb-1">
             <h3 className="font-black text-xs uppercase tracking-[0.2em] opacity-60">Intelligence Hub</h3>
@@ -46,7 +46,7 @@ export function NotificationCenter() {
           <p className="text-xl font-black tracking-tighter uppercase italic">Global Alerts</p>
         </div>
 
-        <div className="bg-white dark:bg-muted border-b dark:border-border flex px-6 py-3 justify-between items-center">
+        <div className="bg-card dark:bg-muted border-b dark:border-border flex px-6 py-3 justify-between items-center">
             <div className="flex gap-4">
                 <div className="flex flex-col items-center">
                     <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Mail</span>

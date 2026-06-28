@@ -57,7 +57,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
   showExtended = false,
 }) => {
   return (
-    <div className="rounded-[1.5rem] border border-border bg-white p-6 shadow-sm hover:shadow-md transition-all space-y-4">
+    <div className="rounded-[1.5rem] border border-border bg-card p-6 shadow-sm hover:shadow-md transition-all space-y-4">
       {/* Row header */}
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-black italic uppercase tracking-widest text-primary">
@@ -103,7 +103,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
             placeholder="e.g. Arabica Coffee 250g"
             value={line.name}
             onChange={(e) => onChange(line.tempId, { name: e.target.value })}
-            className="h-11 rounded-xl font-bold bg-muted border-border text-sm focus:bg-white transition-all shadow-inner"
+            className="h-11 rounded-xl font-bold bg-muted border-border text-sm focus:bg-card transition-all shadow-inner"
           />
         </div>
 
@@ -154,7 +154,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
                   price: parseFloat(e.target.value) || 0,
                 })
               }
-              className="h-11 rounded-xl font-bold bg-muted border-border text-sm focus:bg-white transition-all shadow-inner"
+              className="h-11 rounded-xl font-bold bg-muted border-border text-sm focus:bg-card transition-all shadow-inner"
             />
           </div>
 
@@ -172,7 +172,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
                     qty: Math.max(1, parseInt(e.target.value) || 1),
                   })
                 }
-                className="h-11 rounded-xl font-bold bg-muted border-border text-sm text-center text-primary focus:bg-white transition-all shadow-inner"
+                className="h-11 rounded-xl font-bold bg-muted border-border text-sm text-center text-primary focus:bg-card transition-all shadow-inner"
               />
             </div>
           )}
@@ -188,7 +188,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
                 onChange={(e) =>
                   onChange(line.tempId, { unit: e.target.value })
                 }
-                className="h-11 rounded-xl font-bold bg-muted border-border text-sm focus:bg-white transition-all shadow-inner"
+                className="h-11 rounded-xl font-bold bg-muted border-border text-sm focus:bg-card transition-all shadow-inner"
               />
             </div>
           )}
@@ -225,7 +225,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
                 className={cn(
                   "h-11 rounded-xl font-mono font-bold border-border text-xs pr-10",
                   line.categoryId
-                    ? "bg-muted focus:bg-white"
+                    ? "bg-muted focus:bg-card"
                     : "bg-muted text-muted-foreground cursor-not-allowed",
                 )}
               />
@@ -265,7 +265,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
               onChange={(e) =>
                 onChange(line.tempId, { barcode: e.target.value })
               }
-              className="h-11 rounded-xl font-mono font-bold bg-muted border-border text-xs focus:bg-white transition-all shadow-inner"
+              className="h-11 rounded-xl font-mono font-bold bg-muted border-border text-xs focus:bg-card transition-all shadow-inner"
             />
           </div>
         </div>
@@ -283,7 +283,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
                   onChange(line.tempId, { description: e.target.value })
                 }
                 placeholder="Item details, specifications, etc..."
-                className="w-full min-h-[80px] rounded-xl font-bold bg-muted border border-border p-4 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner resize-none"
+                className="w-full min-h-[80px] rounded-xl font-bold bg-muted border border-border p-4 text-sm focus:bg-card focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner resize-none"
               />
             </div>
 
@@ -393,7 +393,7 @@ export const NewItemFormRow: React.FC<NewItemFormRowProps> = ({
             ))}
 
             {/* Upload Placeholder */}
-            <label className="w-24 h-24 rounded-2xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center cursor-pointer hover:bg-white hover:border-primary transition-all text-muted-foreground hover:text-primary group">
+            <label className="w-24 h-24 rounded-2xl border-2 border-dashed border-border bg-muted flex flex-col items-center justify-center cursor-pointer hover:bg-muted hover:border-primary transition-all text-muted-foreground hover:text-primary group">
               <Upload className="w-6 h-6 mb-1 group-hover:scale-110 transition-transform" />
               <span className="text-[9px] font-black uppercase tracking-tighter">Add Photo</span>
               <input 

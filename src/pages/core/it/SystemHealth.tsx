@@ -255,7 +255,7 @@ export default function SystemHealth() {
                         System health logs are immutable and synced with Audit Hub.
                      </p>
                   </div>
-                  <Button className="w-full rounded-2xl bg-white text-primary font-black text-[10px] uppercase tracking-widest py-6 hover:bg-background transition-colors">
+                  <Button className="w-full rounded-2xl bg-card text-primary font-black text-[10px] uppercase tracking-widest py-6 hover:bg-background transition-colors">
                      Download Compliance Report
                   </Button>
                </div>

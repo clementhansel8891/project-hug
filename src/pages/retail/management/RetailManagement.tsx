@@ -176,7 +176,7 @@ export default function RetailManagement() {
               trigger={
                 <Button
                   variant="ghost"
-                  className="w-full h-16 rounded-2xl bg-card border border-border text-foreground hover:bg-card font-black italic uppercase text-[12px] tracking-[0.3em] gap-4 transition-all"
+                  className="w-full h-16 rounded-2xl bg-card border border-border text-foreground hover:bg-muted font-black italic uppercase text-[12px] tracking-[0.3em] gap-4 transition-all"
                   data-testid="onboarding-register-ecommerce"
                 >
                   <Globe className="w-5 h-5" /> Register E-Commerce

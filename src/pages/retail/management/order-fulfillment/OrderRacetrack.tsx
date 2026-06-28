@@ -212,7 +212,7 @@ export const OrderRacetrack: React.FC<OrderRacetrackProps> = ({
           <div className="relative w-64 flex-shrink-0 ml-4">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              className="pl-12 h-11 bg-white border-border rounded-xl text-xs font-bold italic placeholder:text-muted-foreground/60"
+              className="pl-12 h-11 bg-card border-border rounded-xl text-xs font-bold italic placeholder:text-muted-foreground/60"
               placeholder="Search Order, Customer, or AWB..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -222,7 +222,7 @@ export const OrderRacetrack: React.FC<OrderRacetrackProps> = ({
 
         <TabsContent value={activeQueue} className="m-0">
           {filteredOrders.length === 0 ? (
-            <Card className="rounded-2xl shadow-2xl border-none bg-white overflow-hidden">
+            <Card className="rounded-2xl shadow-2xl border-none bg-card overflow-hidden">
               <div className="flex flex-col items-center justify-center py-20 gap-4">
                 <Package className="w-12 h-12 text-muted-foreground" />
                 <p className="text-xs font-black italic uppercase tracking-widest text-muted-foreground/60">
@@ -231,7 +231,7 @@ export const OrderRacetrack: React.FC<OrderRacetrackProps> = ({
               </div>
             </Card>
           ) : (
-            <Card className="rounded-2xl shadow-2xl border-none bg-white overflow-hidden">
+            <Card className="rounded-2xl shadow-2xl border-none bg-card overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -387,7 +387,7 @@ export const OrderRacetrack: React.FC<OrderRacetrackProps> = ({
                               >
                                 {/* Carrier selector from config */}
                                 <select
-                                  className="h-8 text-xs border border-border rounded-md bg-white font-bold italic px-2 cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-900"
+                                  className="h-8 text-xs border border-border rounded-md bg-card font-bold italic px-2 cursor-pointer focus:outline-none focus:ring-1 focus:ring-slate-900"
                                   value={tempInput.carrier}
                                   onChange={(e) =>
                                     setTempAwbInputs((prev) => ({

@@ -110,7 +110,7 @@ function SortableStep({ step, index, onRemove, onEdit }: { step: FunnelStep; ind
 
   return (
     <div ref={setNodeRef} style={style} className={cn("relative group pb-10", isDragging && "opacity-50")}>
-        <div className="absolute -left-6 top-8 h-12 w-12 bg-white dark:bg-muted border-4 border-primary rounded-2xl flex items-center justify-center font-black text-xs shadow-2xl z-20 group-hover:scale-110 transition-transform italic">
+        <div className="absolute -left-6 top-8 h-12 w-12 bg-card dark:bg-muted border-4 border-primary rounded-2xl flex items-center justify-center font-black text-xs shadow-2xl z-20 group-hover:scale-110 transition-transform italic">
            {index + 1}
         </div>
         <Card className={cn(
@@ -152,7 +152,7 @@ function SortableStep({ step, index, onRemove, onEdit }: { step: FunnelStep; ind
                        </div>
                     </div>
                     <div className="flex gap-3">
-                       <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-white dark:bg-muted border-none shadow-md hover:scale-110 transition-all" onClick={() => onEdit(step)}><Settings className="h-5 w-5" /></Button>
+                       <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-card dark:bg-muted border-none shadow-md hover:scale-110 transition-all" onClick={() => onEdit(step)}><Settings className="h-5 w-5" /></Button>
                        <Button variant="secondary" size="icon" className="h-12 w-12 rounded-2xl bg-destructive dark:bg-destructive text-destructive border-none shadow-md hover:scale-110 transition-all" onClick={() => onRemove(step.id)}><Trash2 className="h-5 w-5" /></Button>
                     </div>
                  </div>
@@ -332,11 +332,11 @@ export default function FunnelBuilderDesk() {
           <div className="flex items-center bg-muted0 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="ghost" className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest gap-3 transition-all hover:bg-white dark:hover:bg-muted">
+                <Button variant="ghost" className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest gap-3 transition-all hover:bg-muted dark:hover:bg-muted">
                   <Layers className="h-5 w-5 text-primary" /> ARCHIVE TEMPLATES
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-4xl rounded-[3rem] border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-muted">
+              <DialogContent className="max-w-4xl rounded-[3rem] border-none shadow-2xl p-0 overflow-hidden bg-card dark:bg-muted">
                  <div className="h-2 bg-primary" />
                  <div className="p-12 space-y-10">
                     <DialogHeader>
@@ -387,7 +387,7 @@ export default function FunnelBuilderDesk() {
                     className={cn(
                       "w-full flex items-center gap-4 p-5 rounded-[1.5rem] text-left transition-all duration-300 group relative overflow-hidden",
                       selectedFunnel?.id === f.id 
-                        ? "bg-white dark:bg-muted shadow-xl shadow-indigo-500/10 translate-x-2" 
+                        ? "bg-card dark:bg-muted shadow-xl shadow-indigo-500/10 translate-x-2" 
                         : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1"
                     )}
                   >
@@ -443,7 +443,7 @@ export default function FunnelBuilderDesk() {
                         </div>
                         <div className="flex items-center gap-4">
                            <Button 
-                             className="bg-white text-primary hover:bg-muted font-black rounded-2xl h-14 px-8 shadow-2xl text-[10px] uppercase tracking-widest gap-3"
+                             className="bg-card text-primary hover:bg-muted font-black rounded-2xl h-14 px-8 shadow-2xl text-[10px] uppercase tracking-widest gap-3"
                              onClick={handleSave}
                              disabled={refreshing}
                            >
@@ -478,7 +478,7 @@ export default function FunnelBuilderDesk() {
                                   <div className="pt-4 flex justify-center">
                                     <DropdownMenu>
                                        <DropdownMenuTrigger asChild>
-                                         <Button variant="outline" className="w-full h-40 rounded-[3rem] border-4 border-dashed border-border dark:border-border bg-transparent flex flex-col gap-4 hover:bg-white dark:hover:bg-muted hover:border-primary hover:text-primary transition-all group shadow-inner">
+                                         <Button variant="outline" className="w-full h-40 rounded-[3rem] border-4 border-dashed border-border dark:border-border bg-transparent flex flex-col gap-4 hover:bg-muted dark:hover:bg-muted hover:border-primary hover:text-primary transition-all group shadow-inner">
                                             <div className="h-16 w-16 rounded-full bg-muted dark:bg-muted flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all shadow-md">
                                               <Plus className="h-8 w-8 group-hover:rotate-90 transition-transform duration-500" />
                                             </div>
@@ -506,7 +506,7 @@ export default function FunnelBuilderDesk() {
               <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-border dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-30 space-y-10 animate-in zoom-in duration-1000">
                  <div className="relative">
                     <div className="absolute inset-0 bg-primary blur-3xl rounded-full scale-150 animate-pulse" />
-                    <div className="relative h-40 w-40 bg-white dark:bg-muted rounded-[2.5rem] flex items-center justify-center shadow-2xl border border-border">
+                    <div className="relative h-40 w-40 bg-card dark:bg-muted rounded-[2.5rem] flex items-center justify-center shadow-2xl border border-border">
                        <Layers className="h-20 w-20 text-primary" />
                     </div>
                  </div>

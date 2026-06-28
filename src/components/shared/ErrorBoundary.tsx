@@ -40,7 +40,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="h-24 w-24 bg-destructive rounded-[2.5rem] flex items-center justify-center animate-pulse">
                 <ShieldAlert className="h-12 w-12 text-destructive" />
               </div>
-              <div className="absolute -top-2 -right-2 h-8 w-8 bg-white dark:bg-muted rounded-full flex items-center justify-center shadow-lg border border-border dark:border-border">
+              <div className="absolute -top-2 -right-2 h-8 w-8 bg-card dark:bg-muted rounded-full flex items-center justify-center shadow-lg border border-border dark:border-border">
                 <AlertTriangle className="h-4 w-4 text-warning" />
               </div>
             </div>

@@ -84,7 +84,7 @@ export default function MarketingAuditLog() {
     return (
       <div className="flex h-screen items-center justify-center bg-muted dark:bg-muted">
         <div className="flex flex-col items-center gap-6">
-          <div className="h-20 w-20 bg-muted dark:bg-white rounded-[2.5rem] animate-pulse flex items-center justify-center shadow-2xl shadow-indigo-500/20">
+          <div className="h-20 w-20 bg-muted dark:bg-card rounded-[2.5rem] animate-pulse flex items-center justify-center shadow-2xl shadow-indigo-500/20">
             <ShieldCheck className="h-10 w-10 text-white dark:text-muted-foreground" />
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Verifying Governance Ledger...</p>
@@ -99,7 +99,7 @@ export default function MarketingAuditLog() {
       <div className="flex flex-col lg:flex-row justify-between items-end gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <Badge className="bg-muted dark:bg-white text-white dark:text-muted-foreground border-none font-black px-3 py-1 rounded-full uppercase tracking-widest text-[10px]">Governance Black Box</Badge>
+            <Badge className="bg-muted dark:bg-card text-white dark:text-muted-foreground border-none font-black px-3 py-1 rounded-full uppercase tracking-widest text-[10px]">Governance Black Box</Badge>
             <div className="flex items-center gap-1.5 text-primary font-bold text-xs uppercase tracking-widest">
                <ActivitySquare className="h-4 w-4 animate-pulse" />
                Immutable Trail Active
@@ -121,7 +121,7 @@ export default function MarketingAuditLog() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -178,7 +178,7 @@ export default function MarketingAuditLog() {
             <CardDescription className="text-base font-medium italic italic opacity-60">Immutable lifecycle events for campaign nodes, scoring logic, and lead handoff protocols.</CardDescription>
           </div>
           <div className="flex bg-muted dark:bg-muted p-2 rounded-[2rem] shadow-inner border-none h-auto">
-             <Button variant="ghost" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest bg-white dark:bg-muted shadow-xl text-primary h-12 border-none transition-all">GLOBAL TRAIL</Button>
+             <Button variant="ghost" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest bg-card dark:bg-muted shadow-xl text-primary h-12 border-none transition-all">GLOBAL TRAIL</Button>
              <Button variant="ghost" className="rounded-[1.5rem] px-8 py-3 font-black text-[10px] uppercase tracking-widest text-muted-foreground h-12 border-none transition-all">CRITICAL EVENTS</Button>
           </div>
         </CardHeader>
@@ -204,7 +204,7 @@ export default function MarketingAuditLog() {
                        </div>
                     </td>
                     <td className="px-12 py-10">
-                       <Badge className="rounded-full font-black text-[9px] px-4 py-1.5 border-none shadow-xl uppercase tracking-widest bg-white dark:bg-muted text-primary italic">
+                       <Badge className="rounded-full font-black text-[9px] px-4 py-1.5 border-none shadow-xl uppercase tracking-widest bg-card dark:bg-muted text-primary italic">
                           {item.action}
                        </Badge>
                     </td>
@@ -266,7 +266,7 @@ export default function MarketingAuditLog() {
                "Operational trail authorizes a <strong>100% immutable history</strong> of all marketing orchestration. Neural logic ensures all actor nodes are verified against <strong>enterprise-grade governance standards</strong>."
             </p>
          </div>
-         <Button className="h-20 px-12 rounded-[2.5rem] bg-white text-muted-foreground hover:bg-muted shadow-2xl font-black text-sm uppercase tracking-widest gap-4 group transition-all hover:scale-105 active:scale-95 whitespace-nowrap relative z-10">
+         <Button className="h-20 px-12 rounded-[2.5rem] bg-card text-muted-foreground hover:bg-muted shadow-2xl font-black text-sm uppercase tracking-widest gap-4 group transition-all hover:scale-105 active:scale-95 whitespace-nowrap relative z-10">
             EXPORT EVIDENCE <ChevronRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-500" />
          </Button>
       </Card>

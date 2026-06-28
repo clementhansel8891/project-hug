@@ -180,7 +180,7 @@ export default function ModuleHub() {
                 key={tab.value}
                 value={tab.value}
                 onClick={() => setActiveTab(tab.value)}
-                className="justify-start rounded-2xl px-5 py-4 text-sm font-bold transition-all data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:text-primary border-none group"
+                className="justify-start rounded-2xl px-5 py-4 text-sm font-bold transition-all data-[state=active]:bg-card data-[state=active]:shadow-lg data-[state=active]:text-primary border-none group"
               >
                 <tab.icon className="mr-3 h-5 w-5 opacity-60 group-data-[state=active]:opacity-100 transition-opacity" />
                 {tab.label}
@@ -216,7 +216,7 @@ export default function ModuleHub() {
                       "p-8 rounded-[2.5rem] border transition-all duration-500 group flex flex-col justify-between h-full",
                       module.isCore 
                         ? "bg-muted border-border grayscale-[0.5] hover:grayscale-0" 
-                        : "bg-white border-border hover:shadow-2xl hover:-translate-y-1"
+                        : "bg-card border-border hover:shadow-2xl hover:-translate-y-1"
                     )}
                   >
                     <div className="space-y-6">

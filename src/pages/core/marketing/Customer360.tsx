@@ -73,13 +73,13 @@ export default function Customer360() {
               </div>
               <div className="flex gap-4">
                 <Button variant="outline" className="h-14 px-8 rounded-2xl bg-white/10 border-none shadow-xl hover:scale-110 transition-all text-white font-black text-[10px] uppercase tracking-widest">EDIT IDENTITY</Button>
-                <Button className="h-14 px-8 rounded-2xl bg-white text-primary shadow-xl hover:scale-110 transition-all font-black text-[10px] uppercase tracking-widest">DEPLOY TASK</Button>
+                <Button className="h-14 px-8 rounded-2xl bg-card text-primary shadow-xl hover:scale-110 transition-all font-black text-[10px] uppercase tracking-widest">DEPLOY TASK</Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="w-full lg:w-96 rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+        <Card className="w-full lg:w-96 rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
           <CardHeader className="p-8 pb-4">
             <div className="flex items-center justify-between">
                <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">Behavioral Intelligence</CardTitle>
@@ -163,7 +163,7 @@ export default function Customer360() {
 
         {/* Right: Segmentation & CRM Intelligence */}
         <div className="col-span-12 lg:col-span-4 space-y-10">
-          <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+          <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
             <CardHeader className="p-8 pb-4">
                <div className="flex items-center justify-between mb-2">
                   <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">Segmentation Matrix</CardTitle>
@@ -180,7 +180,7 @@ export default function Customer360() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+          <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
             <CardHeader className="p-8 pb-4">
                <div className="flex items-center justify-between mb-2">
                   <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">Entity Meta-Data</CardTitle>

@@ -125,7 +125,7 @@ export const FleetRevenueMatrix: React.FC<FleetRevenueMatrixProps> = ({
                         toast({ title: "Export Failed", description: "Could not serialize fleet revenue data.", variant: "destructive" });
                       }
                     }}
-                    className="px-4 py-2 bg-secondary/40 border border-border rounded-xl text-[9px] font-black italic uppercase text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all tracking-widest"
+                    className="px-4 py-2 bg-secondary/40 border border-border rounded-xl text-[9px] font-black italic uppercase text-muted-foreground hover:text-foreground hover:bg-muted/10 transition-all tracking-widest"
                   >
                     Export CSV
                   </button>

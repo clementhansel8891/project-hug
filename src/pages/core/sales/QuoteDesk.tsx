@@ -192,7 +192,7 @@ export default function QuoteDesk() {
                 GENERATE PROPOSAL
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-white dark:bg-muted">
+            <DialogContent className="sm:max-w-[600px] rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden bg-card dark:bg-muted">
               <div className="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-500" />
               <div className="p-10 space-y-8">
                 <DialogHeader>
@@ -271,9 +271,9 @@ export default function QuoteDesk() {
             </div>
             <div className="flex gap-4">
                <div className="flex bg-muted dark:bg-muted p-1.5 rounded-[1.5rem] shadow-inner">
-                  <Button variant="ghost" size="sm" onClick={() => setStatusFilter("ALL")} className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "ALL" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground hover:text-muted-foreground")}>ALL VERSIONS</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setStatusFilter("PENDING_APPROVAL")} className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "PENDING_APPROVAL" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground hover:text-muted-foreground")}>PENDING APPROVAL</Button>
-                  <Button variant="ghost" size="sm" onClick={() => setStatusFilter("APPROVED")} className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "APPROVED" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground hover:text-muted-foreground")}>APPROVED</Button>
+                  <Button variant="ghost" size="sm" onClick={() => setStatusFilter("ALL")} className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "ALL" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground hover:text-muted-foreground")}>ALL VERSIONS</Button>
+                  <Button variant="ghost" size="sm" onClick={() => setStatusFilter("PENDING_APPROVAL")} className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "PENDING_APPROVAL" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground hover:text-muted-foreground")}>PENDING APPROVAL</Button>
+                  <Button variant="ghost" size="sm" onClick={() => setStatusFilter("APPROVED")} className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "APPROVED" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground hover:text-muted-foreground")}>APPROVED</Button>
                </div>
             </div>
           </div>
@@ -295,7 +295,7 @@ export default function QuoteDesk() {
                   <tr key={item.id} className="group hover:bg-primary dark:hover:bg-primary transition-all cursor-default">
                     <td className="px-10 py-8">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                        <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
                           <Layers className="h-6 w-6" />
                         </div>
                         <div>
@@ -330,7 +330,7 @@ export default function QuoteDesk() {
                        <div className="flex justify-end gap-2">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-white transition-all shadow-sm">
+                              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted transition-all shadow-sm">
                                 <MoreVertical className="h-5 w-5 text-muted-foreground" />
                               </Button>
                             </DropdownMenuTrigger>

@@ -36,7 +36,7 @@ export const ScannerSearchHeader: React.FC<ScannerSearchHeaderProps> = ({
       <div className="relative flex-1 group h-full">
         <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors z-10" />
         <Input
-          className="pl-14 h-12 bg-card backdrop-blur-md border border-border rounded-xl text-xs font-bold italic placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-indigo-500/30 shadow-inner group-hover:bg-card transition-all relative z-0"
+          className="pl-14 h-12 bg-card backdrop-blur-md border border-border rounded-xl text-xs font-bold italic placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-indigo-500/30 shadow-inner group-hover:bg-muted transition-all relative z-0"
           placeholder="SEARCH SECTOR INVENTORY..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}

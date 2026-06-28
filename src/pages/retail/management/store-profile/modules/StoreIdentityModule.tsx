@@ -50,7 +50,7 @@ export const StoreIdentityModule: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Core Identity */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <Building2 className="w-4 h-4 text-muted-foreground" /> Core Identity
           </h3>
@@ -153,7 +153,7 @@ export const StoreIdentityModule: React.FC = () => {
         </div>
 
         {/* Regional Parameters */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <MapPin className="w-4 h-4 text-muted-foreground" /> Regional Parameters
           </h3>

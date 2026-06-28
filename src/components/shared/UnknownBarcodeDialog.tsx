@@ -89,7 +89,7 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
         {/* Animated Background Header */}
         <div className="relative h-32 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-[-10%] left-[-10%] w-40 h-40 bg-white rounded-full blur-3xl animate-pulse" />
+            <div className="absolute top-[-10%] left-[-10%] w-40 h-40 bg-card rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-[-20%] right-[-10%] w-60 h-60 bg-warning rounded-full blur-3xl" />
           </div>
           <div className="relative z-10 flex flex-col items-center text-white">
@@ -113,7 +113,7 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
               <div className="grid grid-cols-1 gap-4">
                 <button
                   onClick={() => setStep("create")}
-                  className="group relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 border-border bg-white hover:border-primary hover:shadow-xl hover:shadow-indigo-50 transition-all text-left"
+                  className="group relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 border-border bg-card hover:border-primary hover:shadow-xl hover:shadow-indigo-50 transition-all text-left"
                 >
                   <div className="bg-primary p-3 rounded-xl group-hover:bg-primary group-hover:text-white transition-colors">
                     <PackagePlus className="w-6 h-6" />
@@ -130,7 +130,7 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
                     onReportAnomaly(barcode);
                     handleClose();
                   }}
-                  className="group relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 border-border bg-white hover:border-warning hover:shadow-xl hover:shadow-amber-50 transition-all text-left"
+                  className="group relative flex items-center gap-4 p-5 rounded-[1.5rem] border-2 border-border bg-card hover:border-warning hover:shadow-xl hover:shadow-amber-50 transition-all text-left"
                 >
                   <div className="bg-warning p-3 rounded-xl group-hover:bg-warning group-hover:text-white transition-colors">
                     <AlertTriangle className="w-6 h-6" />
@@ -166,7 +166,7 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
                   <select
                     id="item-category"
                     {...form.register("categoryId")}
-                    className="w-full h-12 rounded-xl border border-border bg-white px-3 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    className="w-full h-12 rounded-xl border border-border bg-card px-3 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
                     aria-describedby={errors.categoryId ? "item-category-error" : undefined}
                   >
                     <option value="">Select Category...</option>

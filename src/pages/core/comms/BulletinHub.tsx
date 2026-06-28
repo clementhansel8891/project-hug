@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { WorkspacePanel } from "@/core/ui/WorkspacePanel";
 import { useSession } from "@/core/security/session";
 import { apiRequest } from "@/core/api/apiClient";
@@ -439,7 +439,7 @@ export default function BulletinHub() {
                       <div className="flex gap-4">
                         <Textarea
                           placeholder="Your professional perspective..."
-                          className="min-h-[100px] text-xs font-bold bg-white dark:bg-muted resize-none rounded-2xl border-none shadow-inner"
+                          className="min-h-[100px] text-xs font-bold bg-card dark:bg-muted resize-none rounded-2xl border-none shadow-inner"
                           value={newComment}
                           onChange={(e) => setNewComment(e.target.value)}
                         />
@@ -586,7 +586,7 @@ export default function BulletinHub() {
         >
           <DialogContent className="sm:max-w-3xl border-none shadow-3xl bg-muted dark:bg-muted p-0 overflow-hidden rounded-[3rem]">
             {selectedPost && (
-              <div className="flex flex-col h-[80vh] bg-white dark:bg-muted">
+              <div className="flex flex-col h-[80vh] bg-card dark:bg-muted">
                 <div className="p-10 border-b flex justify-between items-start bg-muted dark:bg-muted sticky top-0 z-10">
                   <div className="space-y-4">
                     <Badge className="bg-primary/10 text-primary border-none font-black tracking-widest text-[10px] uppercase">

@@ -65,7 +65,7 @@ export const StoreGovernanceModule: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Entitlements & Licensing */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm relative overflow-hidden">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm relative overflow-hidden">
           <div className="absolute -top-4 -right-4 w-24 h-24 bg-destructive rounded-full blur-3xl opacity-50 pointer-events-none" />
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3 relative z-10">
             <Fingerprint className="w-4 h-4 text-muted-foreground" /> Digital
@@ -161,7 +161,7 @@ export const StoreGovernanceModule: React.FC = () => {
         </div>
 
         {/* Security & Audit Parameters */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm relative overflow-hidden">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm relative overflow-hidden">
           <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-secondary/10 rounded-full blur-3xl opacity-50 pointer-events-none" />
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3 relative z-10">
             <Lock className="w-4 h-4 text-muted-foreground" /> Security & Compliance

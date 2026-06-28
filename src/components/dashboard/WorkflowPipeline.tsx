@@ -43,7 +43,7 @@ export const WorkflowPipeline: React.FC<WorkflowPipelineProps> = ({ data = [] })
         </div>
         <button 
           onClick={() => navigate('/core/workflow')}
-          className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all"
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/10 transition-all"
           title="Go to Workflow Inbox"
         >
           <ArrowRight className="h-4 w-4" />

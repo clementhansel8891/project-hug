@@ -174,7 +174,7 @@ export const EditShiftModal: React.FC<EditShiftModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
-      <DialogContent className="max-w-md bg-white rounded-2xl p-8 border border-border shadow-2xl" aria-describedby="edit-shift-description">
+      <DialogContent className="max-w-md bg-card rounded-2xl p-8 border border-border shadow-2xl" aria-describedby="edit-shift-description">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-xl font-black italic tracking-tighter flex items-center gap-3 text-foreground">
             <div className="p-2.5 rounded-2xl bg-primary/5 text-primary">
@@ -224,7 +224,7 @@ export const EditShiftModal: React.FC<EditShiftModalProps> = ({
                     >
                       <SelectValue placeholder="Select Employee..." />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border-border rounded-xl">
+                    <SelectContent className="bg-card border-border rounded-xl">
                       {(Array.isArray(availableStaff) ? availableStaff : []).map((emp) => (
                         <SelectItem
                           key={emp.id}

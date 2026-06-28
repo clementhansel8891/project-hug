@@ -95,7 +95,7 @@ const DiscoveryModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
-      <DialogContent className="max-w-xl rounded-3xl border-none shadow-2xl bg-white max-h-[80vh] overflow-hidden flex flex-col font-sans">
+      <DialogContent className="max-w-xl rounded-3xl border-none shadow-2xl bg-card max-h-[80vh] overflow-hidden flex flex-col font-sans">
         <DialogHeader>
           <DialogTitle className="text-base font-black italic tracking-tighter flex items-center gap-2">
             <Wifi className={`w-4 h-4 ${loading ? "animate-pulse" : ""}`} />
@@ -125,9 +125,9 @@ const DiscoveryModal = ({
             (Array.isArray(results) ? results : []).map((r, i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 p-4 rounded-2xl border border-border bg-secondary/5 hover:bg-white hover:shadow-md transition-all group"
+                className="flex items-center gap-4 p-4 rounded-2xl border border-border bg-secondary/5 hover:bg-muted hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-card flex items-center justify-center shadow-sm">
                   <DeviceIcon type={r.type} cls="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">

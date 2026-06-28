@@ -521,7 +521,7 @@ function ActiveJobsList({
               >
                 <div className="flex items-start justify-between relative z-10" onClick={() => onSelectJob(job.id)}>
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 rounded-xl bg-white shadow-sm group-hover:scale-110 transition-transform duration-300">
+                    <div className="p-2 rounded-xl bg-card shadow-sm group-hover:scale-110 transition-transform duration-300">
                       {isActive ? (
                         <Loader2 className="w-4 h-4 text-primary animate-spin" />
                       ) : job.status === 'COMPLETED' ? (

@@ -214,7 +214,7 @@ export default function CCTVConnectorModal({
       <DialogContent className="max-w-md p-0 overflow-hidden border-border rounded-[28px]">
         <DialogHeader className="p-6 bg-secondary/5 border-b border-border">
           <DialogTitle className="text-xl font-black italic tracking-tighter text-muted-foreground flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white shadow-sm border border-border flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-card shadow-sm border border-border flex items-center justify-center">
               <Camera className="w-5 h-5 text-primary" />
             </div>
             Connect CCTV

@@ -58,7 +58,7 @@ export const StoreChannelBindingModule: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Marketplace Connectors */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <ShoppingCart className="w-4 h-4 text-muted-foreground" /> Omnichannel
             Connectors
@@ -106,7 +106,7 @@ export const StoreChannelBindingModule: React.FC = () => {
         </div>
 
         {/* Sync & Routing */}
-        <div className="space-y-6 bg-white p-6 rounded-2xl border border-border shadow-sm">
+        <div className="space-y-6 bg-card p-6 rounded-2xl border border-border shadow-sm">
           <h3 className="text-sm font-black italic text-muted-foreground tracking-wider flex items-center gap-2 border-b border-border pb-3">
             <Repeat2 className="w-4 h-4 text-muted-foreground" /> Order & Sync Routing
           </h3>

@@ -97,7 +97,7 @@ export default function WarehouseManagement() {
                   onClick={() => setViewMode("map")}
                   className={cn(
                     "rounded-lg h-8 px-3 gap-2 text-[10px] font-black uppercase tracking-widest transition-all",
-                    viewMode === "map" ? "bg-white dark:bg-muted shadow-sm text-primary" : "text-muted-foreground"
+                    viewMode === "map" ? "bg-card dark:bg-muted shadow-sm text-primary" : "text-muted-foreground"
                   )}
                 >
                   <LayoutGrid className="h-3 w-3" /> Map
@@ -108,7 +108,7 @@ export default function WarehouseManagement() {
                   onClick={() => setViewMode("list")}
                   className={cn(
                     "rounded-lg h-8 px-3 gap-2 text-[10px] font-black uppercase tracking-widest transition-all",
-                    viewMode === "list" ? "bg-white dark:bg-muted shadow-sm text-primary" : "text-muted-foreground"
+                    viewMode === "list" ? "bg-card dark:bg-muted shadow-sm text-primary" : "text-muted-foreground"
                   )}
                 >
                   <List className="h-3 w-3" /> List
@@ -124,7 +124,7 @@ export default function WarehouseManagement() {
       <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
         <div className="space-y-6">
            {/* Search & Stats */}
-           <div className="flex items-center justify-between p-6 bg-white dark:bg-muted border border-muted dark:border-muted rounded-[2rem] shadow-sm">
+           <div className="flex items-center justify-between p-6 bg-card dark:bg-muted border border-muted dark:border-muted rounded-[2rem] shadow-sm">
               <div className="relative flex-1 max-w-md">
                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                  <UIInput 
@@ -174,7 +174,7 @@ export default function WarehouseManagement() {
                           "group flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 cursor-pointer",
                           selectedBin?.id === bin.id 
                             ? "border-primary bg-primary shadow-lg shadow-primary/5 ring-1 ring-primary" 
-                            : "border-muted dark:border-muted hover:border-primary bg-white dark:bg-muted"
+                            : "border-muted dark:border-muted hover:border-primary bg-card dark:bg-muted"
                         )}
                       >
                         <div className="flex items-center gap-4">
@@ -233,13 +233,13 @@ export default function WarehouseManagement() {
                                         "aspect-square rounded-xl border flex flex-col items-center justify-center gap-1 transition-all duration-300 relative overflow-hidden group",
                                         selectedBin?.id === bin.id 
                                           ? "bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-105 z-10" 
-                                          : "bg-white dark:bg-muted border-muted dark:border-muted hover:border-primary"
+                                          : "bg-card dark:bg-muted border-muted dark:border-muted hover:border-primary"
                                       )}
                                     >
                                        {/* Occupancy Indicator */}
                                        <div className={cn(
                                          "absolute top-2 right-2 h-1.5 w-1.5 rounded-full",
-                                         selectedBin?.id === bin.id ? "bg-white animate-pulse" : "bg-success"
+                                         selectedBin?.id === bin.id ? "bg-card animate-pulse" : "bg-success"
                                        )} />
                                        
                                        <span className={cn(
@@ -299,7 +299,7 @@ export default function WarehouseManagement() {
                  {/* Content Table */}
                  <div className="space-y-3">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground px-1">Active Stock Assignments</p>
-                    <div className="rounded-[1.5rem] border border-muted dark:border-muted overflow-hidden bg-white dark:bg-muted">
+                    <div className="rounded-[1.5rem] border border-muted dark:border-muted overflow-hidden bg-card dark:bg-muted">
                        {binStock.length === 0 ? (
                          <div className="p-10 text-center italic text-[10px] text-muted-foreground uppercase tracking-widest">
                            Bin is clinically empty.
@@ -328,7 +328,7 @@ export default function WarehouseManagement() {
                     <Button variant="outline" className="rounded-xl border-muted dark:border-muted text-[9px] font-black uppercase tracking-widest py-6 h-auto">
                        Print Bin Label
                     </Button>
-                    <Button className="rounded-xl bg-muted dark:bg-white text-white dark:text-muted-foreground text-[9px] font-black uppercase tracking-widest py-6 h-auto">
+                    <Button className="rounded-xl bg-muted dark:bg-card text-white dark:text-muted-foreground text-[9px] font-black uppercase tracking-widest py-6 h-auto">
                        Stock Move
                     </Button>
                  </div>

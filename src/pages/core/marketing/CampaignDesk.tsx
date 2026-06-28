@@ -228,7 +228,7 @@ export default function CampaignDesk() {
 
       {/* Strategic Metrics Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-         <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-muted p-8 space-y-4 group hover:shadow-indigo-500/10 transition-all">
+         <Card className="rounded-[2.5rem] border-none shadow-xl bg-card dark:bg-muted p-8 space-y-4 group hover:shadow-indigo-500/10 transition-all">
             <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center group-hover:scale-110 transition-transform">
                <Activity className="h-7 w-7 text-primary" />
             </div>
@@ -238,7 +238,7 @@ export default function CampaignDesk() {
                <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1 italic">Cluster Execution Live</p>
             </div>
          </Card>
-         <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-muted p-8 space-y-4 group hover:shadow-emerald-500/10 transition-all">
+         <Card className="rounded-[2.5rem] border-none shadow-xl bg-card dark:bg-muted p-8 space-y-4 group hover:shadow-emerald-500/10 transition-all">
             <div className="h-14 w-14 rounded-2xl bg-success flex items-center justify-center group-hover:scale-110 transition-transform">
                <TrendingUp className="h-7 w-7 text-success" />
             </div>
@@ -248,7 +248,7 @@ export default function CampaignDesk() {
                <p className="text-[10px] font-bold text-muted-foreground uppercase mt-1 italic">Blended ROI Efficiency</p>
             </div>
          </Card>
-         <Card className="rounded-[2.5rem] border-none shadow-xl bg-white dark:bg-muted p-8 space-y-4 group hover:shadow-amber-500/10 transition-all">
+         <Card className="rounded-[2.5rem] border-none shadow-xl bg-card dark:bg-muted p-8 space-y-4 group hover:shadow-amber-500/10 transition-all">
             <div className="h-14 w-14 rounded-2xl bg-warning flex items-center justify-center group-hover:scale-110 transition-transform">
                <DollarSign className="h-7 w-7 text-warning" />
             </div>
@@ -276,16 +276,16 @@ export default function CampaignDesk() {
           <CardHeader className="p-10 pb-0">
              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
                 <TabsList className="bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner border-none">
-                  <TabsTrigger value="all" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">Global Cluster</TabsTrigger>
-                  <TabsTrigger value="active" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">Execution Live</TabsTrigger>
-                  <TabsTrigger value="draft" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">Strategic Drafts</TabsTrigger>
+                  <TabsTrigger value="all" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">Global Cluster</TabsTrigger>
+                  <TabsTrigger value="active" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">Execution Live</TabsTrigger>
+                  <TabsTrigger value="draft" className="rounded-xl px-6 font-black text-[10px] uppercase tracking-widest data-[state=active]:bg-card data-[state=active]:text-primary data-[state=active]:shadow-lg h-10 border-none transition-all">Strategic Drafts</TabsTrigger>
                 </TabsList>
 
                 <div className="flex items-center gap-3 bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner">
                    <Button 
                       variant="ghost" 
                       size="icon" 
-                      className={cn("h-10 w-10 rounded-xl transition-all", view === "grid" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                      className={cn("h-10 w-10 rounded-xl transition-all", view === "grid" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                       onClick={() => setView("grid")}
                    >
                       <LayoutGrid className="h-5 w-5" />
@@ -293,7 +293,7 @@ export default function CampaignDesk() {
                    <Button 
                       variant="ghost" 
                       size="icon" 
-                      className={cn("h-10 w-10 rounded-xl transition-all", view === "list" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                      className={cn("h-10 w-10 rounded-xl transition-all", view === "list" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                       onClick={() => setView("list")}
                    >
                       <ListIcon className="h-5 w-5" />
@@ -306,7 +306,7 @@ export default function CampaignDesk() {
             {view === "grid" ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-10 pt-0">
                 {(Array.isArray(filtered) ? filtered : []).map((campaign) => (
-                  <Card key={campaign.id} className="group rounded-[2.5rem] border-none bg-white dark:bg-muted shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden cursor-default relative">
+                  <Card key={campaign.id} className="group rounded-[2.5rem] border-none bg-card dark:bg-muted shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden cursor-default relative">
                     <div className={cn("absolute top-0 right-0 h-24 w-24 rounded-full blur-3xl -mr-12 -mt-12 transition-all duration-700 opacity-20", campaign.status === 'ACTIVE' ? "bg-success" : "bg-muted")} />
                     <CardHeader className="p-8 pb-4">
                       <div className="flex justify-between items-start mb-4">
@@ -384,7 +384,7 @@ export default function CampaignDesk() {
                   </thead>
                   <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {(Array.isArray(filtered) ? filtered : []).map((campaign) => (
-                      <tr key={campaign.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
+                      <tr key={campaign.id} className="group hover:bg-muted dark:hover:bg-muted transition-all cursor-default">
                         <td className="px-6 py-8">
                            <div className="flex items-center gap-4">
                               <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
@@ -440,7 +440,7 @@ export default function CampaignDesk() {
 
       {/* Detail Overlay */}
       <Dialog open={!!selectedCampaign} onOpenChange={() => setSelectedCampaign(null)}>
-        <DialogContent className="max-w-6xl border-none bg-white dark:bg-muted p-0 overflow-hidden shadow-2xl rounded-[3rem]">
+        <DialogContent className="max-w-6xl border-none bg-card dark:bg-muted p-0 overflow-hidden shadow-2xl rounded-[3rem]">
            {selectedCampaign && (
              <div className="grid grid-cols-12 min-h-[600px]">
                 <div className="col-span-4 bg-muted dark:bg-muted p-10 flex flex-col justify-between border-r border-border dark:border-border">
@@ -485,7 +485,7 @@ export default function CampaignDesk() {
                       </div>
                    </div>
                    
-                   <div className="bg-white dark:bg-muted p-8 rounded-[2rem] border border-border dark:border-border shadow-xl space-y-4">
+                   <div className="bg-card dark:bg-muted p-8 rounded-[2rem] border border-border dark:border-border shadow-xl space-y-4">
                       <div className="flex justify-between items-end">
                          <div>
                             <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Yield Multiple</p>
@@ -499,7 +499,7 @@ export default function CampaignDesk() {
                    </div>
                 </div>
                 
-                <div className="col-span-8 flex flex-col bg-white dark:bg-muted">
+                <div className="col-span-8 flex flex-col bg-card dark:bg-muted">
                    <div className="p-10 border-b border-border dark:border-border flex items-center justify-between bg-muted0 dark:bg-muted backdrop-blur-md relative z-10">
                       <div className="flex gap-12">
                          <div className="space-y-1">
@@ -566,7 +566,7 @@ export default function CampaignDesk() {
                             <div className="space-y-4">
                                {[1, 2, 3].map(i => (
                                  <div key={i} className="flex gap-6 items-start p-6 rounded-[1.5rem] hover:bg-muted dark:hover:bg-muted transition-all group">
-                                    <div className="h-10 w-10 rounded-xl bg-white dark:bg-muted flex items-center justify-center shrink-0 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
+                                    <div className="h-10 w-10 rounded-xl bg-card dark:bg-muted flex items-center justify-center shrink-0 shadow-sm group-hover:bg-primary group-hover:text-white transition-all">
                                        <Zap className="h-5 w-5" />
                                     </div>
                                     <div className="flex-1 space-y-1">

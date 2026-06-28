@@ -189,7 +189,7 @@ export const CashflowIntelligenceTab: React.FC<CashflowIntelligenceTabProps> = (
                   <Hash className="h-3 w-3 text-muted-foreground" />
                   <span className="text-[10px] font-bold text-muted-foreground uppercase">Hardened Precision Anchor</span>
               </div>
-              <code className="text-[10px] bg-white p-2 rounded border font-mono break-all leading-relaxed">
+              <code className="text-[10px] bg-card p-2 rounded border font-mono break-all leading-relaxed">
                   SNAPSHOT_HASH: {cashflow.snapshotHash || 'CRYPTO_UNVERIFIED'} | CID: {correlationId.slice(-8)}
               </code>
               <div className="flex gap-2 mt-2">

@@ -171,7 +171,7 @@ const PricingPromoDesk = () => {
             variant="outline"
             onClick={() => setIsAuditModalOpen(true)}
             disabled={!focusedPromoId}
-            className="h-10 rounded-xl px-4 font-black italic border-border text-[10px] uppercase tracking-widest gap-2 bg-card hover:bg-white/10 text-muted-foreground backdrop-blur-sm"
+            className="h-10 rounded-xl px-4 font-black italic border-border text-[10px] uppercase tracking-widest gap-2 bg-card hover:bg-muted/10 text-muted-foreground backdrop-blur-sm"
           >
             <FileText className="w-3.5 h-3.5 text-primary" /> IMMUTABLE LEDGER
           </Button>

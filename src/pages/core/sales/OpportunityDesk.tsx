@@ -223,21 +223,21 @@ export default function OpportunityDesk() {
                   <Button 
                     variant="ghost" size="sm" 
                     onClick={() => setStatusFilter(null)}
-                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", !statusFilter ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", !statusFilter ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   >
                     ACTIVE DEALS
                   </Button>
                   <Button 
                     variant="ghost" size="sm" 
                     onClick={() => setStatusFilter("WON")}
-                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "WON" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "WON" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   >
                     WON
                   </Button>
                   <Button 
                     variant="ghost" size="sm" 
                     onClick={() => setStatusFilter("AT_RISK")}
-                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "AT_RISK" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                    className={cn("h-10 rounded-xl px-4 font-black text-[10px] tracking-widest transition-all", statusFilter === "AT_RISK" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   >
                     AT RISK
                   </Button>
@@ -268,7 +268,7 @@ export default function OpportunityDesk() {
                   >
                     <td className="px-10 py-8">
                       <div className="flex items-center gap-5">
-                        <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
+                        <div className="h-12 w-12 rounded-2xl bg-card dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl transition-all group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
                           <Layers className="h-6 w-6" />
                         </div>
                         <div>
@@ -338,7 +338,7 @@ export default function OpportunityDesk() {
                        <div className="flex justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-white transition-all shadow-sm">
+                              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-muted transition-all shadow-sm">
                                 <MoreVertical className="h-5 w-5 text-muted-foreground" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -374,7 +374,7 @@ export default function OpportunityDesk() {
 
       {/* Opportunity Detail Modal */}
       <Dialog open={!!selectedOpp} onOpenChange={() => setSelectedOpp(null)}>
-        <DialogContent className="max-w-4xl rounded-[3rem] p-0 overflow-hidden border-none shadow-2xl bg-white dark:bg-muted">
+        <DialogContent className="max-w-4xl rounded-[3rem] p-0 overflow-hidden border-none shadow-2xl bg-card dark:bg-muted">
           <div className="grid md:grid-cols-[1.5fr_2.5fr]">
             <div className="bg-primary p-12 text-white relative overflow-hidden flex flex-col justify-between">
                <div className="absolute top-0 right-0 h-64 w-64 -mr-20 -mt-20 bg-white/10 rounded-full blur-3xl" />
@@ -397,7 +397,7 @@ export default function OpportunityDesk() {
                      </div>
                      <p className="text-lg font-black">{selectedOpp?.stage.replace('_', ' ')}</p>
                      <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                        <div className="h-full bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ width: `${selectedOpp?.probability}%` }} />
+                        <div className="h-full bg-card rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]" style={{ width: `${selectedOpp?.probability}%` }} />
                      </div>
                   </div>
                </div>
@@ -458,7 +458,7 @@ export default function OpportunityDesk() {
                    >
                      <FileText className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" /> INITIALIZE QUOTE GEN
                    </Button>
-                  <Button variant="outline" className="h-16 w-16 rounded-[1.5rem] border-border hover:bg-white" onClick={() => setSelectedOpp(null)}>
+                  <Button variant="outline" className="h-16 w-16 rounded-[1.5rem] border-border hover:bg-muted" onClick={() => setSelectedOpp(null)}>
                      <ChevronRight className="h-5 w-5" />
                   </Button>
                </div>

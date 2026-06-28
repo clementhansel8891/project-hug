@@ -283,7 +283,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
              </Button>
              <Button 
                 variant="outline"
-                className="h-16 px-8 rounded-[1.8rem] font-black italic tracking-[0.15em] uppercase text-[10px] border-border bg-muted hover:bg-white/10 text-white gap-3 shadow-xl transition-all"
+                className="h-16 px-8 rounded-[1.8rem] font-black italic tracking-[0.15em] uppercase text-[10px] border-border bg-muted hover:bg-muted/10 text-white gap-3 shadow-xl transition-all"
                 onClick={() => setIsLoanOpen(true)}
              >
                 <currencyData.icon className="w-4 h-4 text-primary" /> Loan Request
@@ -426,7 +426,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                     </div>
                     <Button 
                         variant="outline" 
-                        className="w-full bg-white text-muted-foreground border-white hover:bg-muted font-black italic uppercase tracking-widest text-[10px] rounded-2xl h-14 mt-4 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] transition-all hover:scale-[1.02]"
+                        className="w-full bg-card text-muted-foreground border-white hover:bg-muted font-black italic uppercase tracking-widest text-[10px] rounded-2xl h-14 mt-4 shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] transition-all hover:scale-[1.02]"
                         onClick={() => setIsComplianceOpen(true)}
                      >
                         View Audit Passport
@@ -717,7 +717,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
 
       {/* Clock In Logic - Verification Sheet */}
       <Dialog open={isClockingIn} onOpenChange={setIsClockingIn}>
-        <DialogContent className="max-w-md bg-white border-border p-0 overflow-hidden">
+        <DialogContent className="max-w-md bg-card border-border p-0 overflow-hidden">
           <DialogHeader className="p-8 bg-muted text-white">
             <div className="flex items-center gap-3 mb-2">
                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
@@ -787,7 +787,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
 
       {/* Loan Request Logic - Financial Sheet */}
       <Dialog open={isLoanOpen} onOpenChange={setIsLoanOpen}>
-        <DialogContent className="max-w-md bg-white border-border p-0 overflow-hidden">
+        <DialogContent className="max-w-md bg-card border-border p-0 overflow-hidden">
           <DialogHeader className="p-8 bg-muted text-white">
             <div className="flex items-center gap-3 mb-2">
                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">

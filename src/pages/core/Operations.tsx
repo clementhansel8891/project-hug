@@ -326,7 +326,7 @@ export default function CoreOperations() {
             </div>
           ) : (
           (Array.isArray(moduleActivity) ? moduleActivity : []).map((module) => (
-            <div key={module.id} className="rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm hover:shadow-md transition-shadow">
+            <div key={module.id} className="rounded-2xl border p-5 bg-card dark:bg-muted shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
                   <p className="text-xs font-black uppercase tracking-widest text-foreground">

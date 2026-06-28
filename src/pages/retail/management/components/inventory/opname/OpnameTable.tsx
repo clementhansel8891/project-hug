@@ -28,7 +28,7 @@ export const OpnameTable: React.FC<OpnameTableProps> = ({
   statusBadge,
 }) => {
   return (
-    <div className="rounded-2xl border-none shadow-xl overflow-hidden bg-white">
+    <div className="rounded-2xl border-none shadow-xl overflow-hidden bg-card">
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

@@ -98,7 +98,7 @@ export const InventoryFilterHub: React.FC<InventoryFilterHubProps> = ({
           onClick={() => setIsExpanded(!isExpanded)}
           className={`h-14 px-6 rounded-2xl gap-3 font-black italic text-xs uppercase tracking-widest transition-all whitespace-nowrap ${
             isExpanded
-              ? "bg-white text-muted-foreground"
+              ? "bg-card text-muted-foreground"
               : "bg-muted backdrop-blur-md border-border text-muted-foreground hover:bg-muted"
           }`}
         >

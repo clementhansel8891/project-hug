@@ -541,7 +541,7 @@ const ViewControls = ({
               ),
             )
           }
-          className="h-9 w-9 rounded-xl text-foreground hover:bg-white/10"
+          className="h-9 w-9 rounded-xl text-foreground hover:bg-muted/10"
         >
           <ChevronLeft className="w-5 h-5" />
         </Button>
@@ -550,7 +550,7 @@ const ViewControls = ({
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
-              className="h-9 px-4 font-black italic uppercase text-xs tracking-widest gap-2 text-foreground hover:bg-white/10"
+              className="h-9 px-4 font-black italic uppercase text-xs tracking-widest gap-2 text-foreground hover:bg-muted/10"
             >
               <CalendarIcon className="w-4 h-4 text-primary" />
               {viewMode === "daily"
@@ -585,7 +585,7 @@ const ViewControls = ({
               ),
             )
           }
-          className="h-9 w-9 rounded-xl text-foreground hover:bg-white/10"
+          className="h-9 w-9 rounded-xl text-foreground hover:bg-muted/10"
         >
           <ChevronRight className="w-5 h-5" />
         </Button>

@@ -119,7 +119,7 @@ export const AIInsightEngine = ({
              <button 
               onClick={analyzeNexus}
               disabled={loading}
-              className="w-12 h-12 flex items-center justify-center bg-secondary/40 border border-border rounded-xl hover:bg-white/10 transition-all"
+              className="w-12 h-12 flex items-center justify-center bg-secondary/40 border border-border rounded-xl hover:bg-muted/10 transition-all"
             >
               <RefreshCw className={cn("w-4 h-4 text-muted-foreground", loading && "animate-spin")} />
             </button>
@@ -170,7 +170,7 @@ export const AIInsightEngine = ({
               </div>
               <button 
                 onClick={() => navigate("/m/retail/management/nexus-command")}
-                className="h-14 px-10 rounded-[1.25rem] bg-white text-destructive font-black italic text-[11px] uppercase tracking-[0.2em] hover:bg-secondary/5 transition-all shadow-xl active:scale-95"
+                className="h-14 px-10 rounded-[1.25rem] bg-card text-destructive font-black italic text-[11px] uppercase tracking-[0.2em] hover:bg-secondary/5 transition-all shadow-xl active:scale-95"
               >
                 Deploy Assets
               </button>
@@ -195,7 +195,7 @@ export const AIInsightEngine = ({
               </div>
               <button 
                 onClick={() => navigate("/m/retail/management/nexus-command")}
-                className="h-14 px-10 rounded-[1.25rem] bg-white text-primary font-black italic text-[11px] uppercase tracking-[0.2em] hover:bg-secondary/5 transition-all shadow-xl active:scale-95"
+                className="h-14 px-10 rounded-[1.25rem] bg-card text-primary font-black italic text-[11px] uppercase tracking-[0.2em] hover:bg-secondary/5 transition-all shadow-xl active:scale-95"
               >
                 Nexus Control
               </button>
@@ -222,7 +222,7 @@ export const AIInsightEngine = ({
               <div
                 key={i}
                 onClick={() => onExpansionRequest?.(`Recommendation Execution: ${rec}`)}
-                className="flex items-start gap-6 p-6 rounded-[2rem] bg-card border border-border hover:border-primary hover:bg-card transition-all duration-500 group/rec cursor-pointer"
+                className="flex items-start gap-6 p-6 rounded-[2rem] bg-card border border-border hover:border-primary hover:bg-muted transition-all duration-500 group/rec cursor-pointer"
               >
                 <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center shrink-0 shadow-inner group-hover/rec:bg-primary transition-colors">
                   <ArrowUpRight className="w-5 h-5 text-primary group-hover/rec:text-foreground group-hover/rec:rotate-45 transition-all duration-500" />

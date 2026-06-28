@@ -187,7 +187,7 @@ export default function NexusCommand() {
                  <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full w-[88%] bg-primary rounded-full" />
                  </div>
-                 <Button className="w-full h-14 rounded-2xl bg-white text-primary hover:bg-primary/5 font-black uppercase tracking-widest text-xs mt-6">
+                 <Button className="w-full h-14 rounded-2xl bg-card text-primary hover:bg-primary/5 font-black uppercase tracking-widest text-xs mt-6">
                     AUTHORIZE FORCE SCALING
                  </Button>
               </div>

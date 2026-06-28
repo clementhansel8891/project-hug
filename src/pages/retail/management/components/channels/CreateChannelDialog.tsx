@@ -315,9 +315,9 @@ export const CreateChannelDialog: React.FC<Props> = ({
                 className={cn(
                   "flex-1 py-3 text-center text-[9px] font-black uppercase tracking-[0.2em] transition-colors border-b-2",
                   step === s
-                    ? "bg-white text-foreground border-border"
+                    ? "bg-card text-foreground border-border"
                     : step > s
-                      ? "bg-white text-success border-success"
+                      ? "bg-card text-success border-success"
                       : "bg-secondary/5 text-muted-foreground border-transparent",
                 )}
               >
@@ -360,7 +360,7 @@ export const CreateChannelDialog: React.FC<Props> = ({
                       "w-full text-left flex items-start gap-4 p-5 rounded-2xl border-2 transition-all",
                       selectedType === t.id
                         ? "border-border bg-secondary/5 shadow-sm"
-                        : "border-border hover:border-border bg-white hover:bg-secondary/5",
+                        : "border-border hover:border-border bg-card hover:bg-secondary/5",
                     )}
                   >
                     <div

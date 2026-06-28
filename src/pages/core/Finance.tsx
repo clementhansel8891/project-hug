@@ -156,7 +156,7 @@ export default function CoreFinance() {
           {(Array.isArray(financialSummary) ? financialSummary : []).map((item) => (
             <div
               key={item.id}
-              className="rounded-2xl border bg-white dark:bg-muted p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="rounded-2xl border bg-card dark:bg-muted p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between text-muted-foreground mb-4">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.label}</span>
@@ -201,7 +201,7 @@ export default function CoreFinance() {
               </div>
             </div>
 
-            <div className="rounded-2xl border p-6 bg-white dark:bg-muted shadow-sm">
+            <div className="rounded-2xl border p-6 bg-card dark:bg-muted shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground mb-4">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Orders Today</span>
                 <ShoppingBag className="h-4 w-4" />
@@ -214,7 +214,7 @@ export default function CoreFinance() {
               </p>
             </div>
 
-            <div className="rounded-2xl border p-6 bg-white dark:bg-muted shadow-sm">
+            <div className="rounded-2xl border p-6 bg-card dark:bg-muted shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground mb-4">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Avg Basket</span>
                 <Receipt className="h-4 w-4" />
@@ -227,7 +227,7 @@ export default function CoreFinance() {
               </p>
             </div>
 
-            <div className="rounded-2xl border p-6 bg-white dark:bg-muted shadow-sm">
+            <div className="rounded-2xl border p-6 bg-card dark:bg-muted shadow-sm">
               <div className="flex items-center justify-between text-muted-foreground mb-4">
                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Top Category</span>
                 <TrendingUp className="h-4 w-4" />
@@ -250,7 +250,7 @@ export default function CoreFinance() {
         >
           <div className="space-y-4 pt-2">
             {(Array.isArray(billingQueue) ? billingQueue : []).map((item) => (
-              <div key={item.id} className="rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm hover:shadow-md transition-shadow">
+              <div key={item.id} className="rounded-2xl border p-5 bg-card dark:bg-muted shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white mb-1">
@@ -284,7 +284,7 @@ export default function CoreFinance() {
         >
           <div className="space-y-4 pt-2">
             {(Array.isArray(taxReports) ? taxReports : []).map((report) => (
-              <div key={report.id} className="rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm">
+              <div key={report.id} className="rounded-2xl border p-5 bg-card dark:bg-muted shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white mb-1">
@@ -326,7 +326,7 @@ export default function CoreFinance() {
       >
         <div className="grid gap-4 md:grid-cols-3 pt-2">
           {(Array.isArray(auditReadiness) ? auditReadiness : []).map((item) => (
-            <div key={item.id} className="rounded-2xl border p-5 bg-white dark:bg-muted shadow-sm border-border">
+            <div key={item.id} className="rounded-2xl border p-5 bg-card dark:bg-muted shadow-sm border-border">
               <div className="flex items-start justify-between gap-3 mb-3">
                 <p className="text-xs font-black uppercase tracking-widest text-muted-foreground dark:text-white">
                   {item.label}

@@ -38,7 +38,7 @@ const NodeRow: React.FC<NodeStatusProps> = ({
   metric,
   health,
 }) => (
-  <div className="flex items-center justify-between p-6 rounded-[2rem] bg-card backdrop-blur-3xl border border-border hover:border-primary hover:bg-card transition-all duration-500 group cursor-pointer shadow-lg">
+  <div className="flex items-center justify-between p-6 rounded-[2rem] bg-card backdrop-blur-3xl border border-border hover:border-primary hover:bg-muted transition-all duration-500 group cursor-pointer shadow-lg">
     <div className="flex items-center gap-6">
       <div
         className={cn(
@@ -200,7 +200,7 @@ export const NodeConnectivityGrid = ({
             <button 
               onClick={fetchInfrastructure}
               disabled={loading}
-              className="w-16 h-16 flex items-center justify-center bg-secondary/40 border border-border rounded-xl hover:bg-white/10 transition-all group/refresh shadow-xl disabled:opacity-50"
+              className="w-16 h-16 flex items-center justify-center bg-secondary/40 border border-border rounded-xl hover:bg-muted/10 transition-all group/refresh shadow-xl disabled:opacity-50"
             >
               <RefreshCw className={cn("w-6 h-6 text-muted-foreground group-hover/refresh:rotate-180 transition-transform duration-700", loading && "animate-spin")} />
             </button>

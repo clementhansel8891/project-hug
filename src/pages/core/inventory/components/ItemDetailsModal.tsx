@@ -219,7 +219,7 @@ export function ItemDetailsModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted p-0 overflow-hidden">
+      <DialogContent className="max-w-4xl rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted p-0 overflow-hidden">
         <div className="bg-muted p-8 text-white">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
@@ -272,7 +272,7 @@ export function ItemDetailsModal({
                   <UIInput 
                     value={editData.name} 
                     onChange={e => setEditData({...editData, name: e.target.value})}
-                    className="h-12 bg-white dark:bg-muted border border-border dark:border-border rounded-xl px-4 font-bold focus:ring-2 focus:ring-indigo-500"
+                    className="h-12 bg-card dark:bg-muted border border-border dark:border-border rounded-xl px-4 font-bold focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div className="space-y-4">
@@ -280,7 +280,7 @@ export function ItemDetailsModal({
                   <UIInput 
                     value={editData.sku} 
                     onChange={e => setEditData({...editData, sku: e.target.value})}
-                    className="h-12 bg-white dark:bg-muted border border-border dark:border-border rounded-xl px-4 font-bold focus:ring-2 focus:ring-indigo-500"
+                    className="h-12 bg-card dark:bg-muted border border-border dark:border-border rounded-xl px-4 font-bold focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
                 <div className="md:col-span-2 space-y-4">
@@ -289,7 +289,7 @@ export function ItemDetailsModal({
                     value={editData.description} 
                     onChange={e => setEditData({...editData, description: e.target.value})}
                     rows={2}
-                    className="w-full bg-white dark:bg-muted border border-border dark:border-border rounded-xl px-4 py-3 font-bold focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
+                    className="w-full bg-card dark:bg-muted border border-border dark:border-border rounded-xl px-4 py-3 font-bold focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
                   />
                 </div>
 
@@ -302,7 +302,7 @@ export function ItemDetailsModal({
                         type="number"
                         value={editData.base_price} 
                         onChange={e => setEditData({...editData, base_price: parseFloat(e.target.value) || 0})}
-                        className="h-10 bg-white dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
+                        className="h-10 bg-card dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
                       />
                     </div>
                     <div className="space-y-2">
@@ -311,7 +311,7 @@ export function ItemDetailsModal({
                         type="number"
                         value={editData.selling_price} 
                         onChange={e => setEditData({...editData, selling_price: parseFloat(e.target.value) || 0})}
-                        className="h-10 bg-white dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
+                        className="h-10 bg-card dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
                       />
                     </div>
                   </div>
@@ -326,7 +326,7 @@ export function ItemDetailsModal({
                         type="number"
                         value={editData.discount_rate} 
                         onChange={e => setEditData({...editData, discount_rate: parseFloat(e.target.value) || 0})}
-                        className="h-10 bg-white dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
+                        className="h-10 bg-card dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
                       />
                     </div>
                     <div className="space-y-2">
@@ -338,7 +338,7 @@ export function ItemDetailsModal({
                           ...editData, 
                           metadata: { ...editData.metadata, min_stock: parseInt(e.target.value) || 0 }
                         })}
-                        className="h-10 bg-white dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
+                        className="h-10 bg-card dark:bg-muted border-border dark:border-border rounded-lg px-3 font-bold"
                       />
                     </div>
                   </div>
@@ -350,10 +350,10 @@ export function ItemDetailsModal({
                     value={editData.status}
                     onValueChange={(val) => setEditData({ ...editData, status: val })}
                   >
-                    <UISelectTrigger className="h-12 rounded-xl bg-white dark:bg-muted border-border dark:border-border font-bold">
+                    <UISelectTrigger className="h-12 rounded-xl bg-card dark:bg-muted border-border dark:border-border font-bold">
                       <UISelectValue placeholder="Status" />
                     </UISelectTrigger>
-                    <UISelectContent className="rounded-xl bg-white dark:bg-muted border-border dark:border-border">
+                    <UISelectContent className="rounded-xl bg-card dark:bg-muted border-border dark:border-border">
                       <UISelectItem value="active">ACTIVE</UISelectItem>
                       <UISelectItem value="REPAIR">REPAIR</UISelectItem>
                       <UISelectItem value="REJECT">REJECT</UISelectItem>
@@ -367,10 +367,10 @@ export function ItemDetailsModal({
                     value={editData.category_id || item.category_id} 
                     onValueChange={val => setEditData({...editData, category_id: val})}
                   >
-                    <UISelectTrigger className="w-full h-12 rounded-xl bg-white dark:bg-muted font-bold border-border dark:border-border">
+                    <UISelectTrigger className="w-full h-12 rounded-xl bg-card dark:bg-muted font-bold border-border dark:border-border">
                       <UISelectValue placeholder="Assign Category" />
                     </UISelectTrigger>
-                    <UISelectContent className="rounded-2xl border-border dark:border-border bg-white dark:bg-muted">
+                    <UISelectContent className="rounded-2xl border-border dark:border-border bg-card dark:bg-muted">
                       {categories.map(cat => (
                         <UISelectItem key={cat.id} value={cat.id} className="font-bold">{cat.name}</UISelectItem>
                       ))}
@@ -572,10 +572,10 @@ export function ItemDetailsModal({
                     value={adjustmentData.location_id} 
                     onValueChange={val => setAdjustmentData({...adjustmentData, location_id: val})}
                   >
-                    <UISelectTrigger className="w-full h-12 rounded-xl bg-white dark:bg-muted font-bold border-border dark:border-border">
+                    <UISelectTrigger className="w-full h-12 rounded-xl bg-card dark:bg-muted font-bold border-border dark:border-border">
                       <UISelectValue placeholder="Select Location" />
                     </UISelectTrigger>
-                    <UISelectContent className="rounded-2xl border-border dark:border-border bg-white dark:bg-muted">
+                    <UISelectContent className="rounded-2xl border-border dark:border-border bg-card dark:bg-muted">
                       {adjustmentLocations.map((loc) => (
                         <UISelectItem key={loc.id} value={loc.id} className="font-bold">
                           {loc.name} (Current: {loc.current})
@@ -599,7 +599,7 @@ export function ItemDetailsModal({
                       type="number"
                       value={adjustmentData.requested_delta}
                       onChange={e => setAdjustmentData({...adjustmentData, requested_delta: parseInt(e.target.value) || 0})}
-                      className="h-12 text-center font-black text-xl bg-white dark:bg-muted rounded-xl border-border dark:border-border"
+                      className="h-12 text-center font-black text-xl bg-card dark:bg-muted rounded-xl border-border dark:border-border"
                     />
                     <Button 
                       variant="outline" 
@@ -618,7 +618,7 @@ export function ItemDetailsModal({
                     value={adjustmentData.reason}
                     onChange={e => setAdjustmentData({...adjustmentData, reason: e.target.value})}
                     placeholder="e.g., Damaged during transit, Manual correction, etc."
-                    className="w-full bg-white dark:bg-muted border border-border dark:border-border rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none resize-none h-24"
+                    className="w-full bg-card dark:bg-muted border border-border dark:border-border rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none resize-none h-24"
                   />
                 </div>
 

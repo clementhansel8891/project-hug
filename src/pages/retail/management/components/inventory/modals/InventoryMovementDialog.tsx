@@ -459,7 +459,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
         </Select>
       </div>
 
-      <div className="rounded-xl border-2 border-border overflow-hidden shadow-sm bg-white flex flex-col min-h-[320px]">
+      <div className="rounded-xl border-2 border-border overflow-hidden shadow-sm bg-card flex flex-col min-h-[320px]">
         <div className="grid grid-cols-12 bg-secondary/5 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground px-4 py-3">
           <div className="col-span-8 italic">Item SKU &amp; Name</div>
           <div className="col-span-2 italic">Stock</div>
@@ -644,7 +644,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
                     "rounded-[1rem] border-2 p-4 text-left transition-all",
                     purchaseMode === m.key
                       ? "border-success bg-success shadow-sm"
-                      : "border-border bg-white hover:border-success hover:bg-success",
+                      : "border-border bg-card hover:border-success hover:bg-success",
                   )}
                 >
                   <div
@@ -727,7 +727,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
               value={destinationStoreId}
               onValueChange={setDestinationStoreId}
             >
-              <SelectTrigger className="h-10 rounded-xl font-bold bg-white border-primary text-xs">
+              <SelectTrigger className="h-10 rounded-xl font-bold bg-card border-primary text-xs">
                 <SelectValue placeholder="Select destination location..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl font-bold italic">
@@ -765,7 +765,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
             </>
           ) : (
             <Select value={supplierId} onValueChange={setSupplierId}>
-              <SelectTrigger className="h-10 rounded-xl font-bold bg-white border-success text-xs">
+              <SelectTrigger className="h-10 rounded-xl font-bold bg-card border-success text-xs">
                 <SelectValue placeholder="Select supplier..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl font-bold italic">
@@ -798,7 +798,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
             </>
           ) : (
             <Select value={sourceStoreId} onValueChange={setSourceStoreId}>
-              <SelectTrigger className="h-10 rounded-xl font-bold bg-white border-success text-xs">
+              <SelectTrigger className="h-10 rounded-xl font-bold bg-card border-success text-xs">
                 <SelectValue placeholder="Select source location..." />
               </SelectTrigger>
               <SelectContent className="rounded-xl font-bold italic">
@@ -857,7 +857,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
             <div className="col-span-8 italic">Item Info</div>
             <div className="col-span-4 text-right italic pr-4">Qty</div>
           </div>
-          <div className="flex-1 divide-y divide-slate-50 overflow-y-auto bg-white">
+          <div className="flex-1 divide-y divide-slate-50 overflow-y-auto bg-card">
             {/* Restock lines */}
             {showRestockLines &&
               (Array.isArray(selectedLines) ? selectedLines : []).map((line) => (
@@ -958,7 +958,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-[1200px] rounded-[2rem] max-h-[95vh] flex flex-col p-0 overflow-hidden">
         {/* Header */}
-        <div className="px-8 py-6 border-b bg-white shrink-0">
+        <div className="px-8 py-6 border-b bg-card shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4 text-left">
               <div

@@ -63,7 +63,7 @@ export function FutureIntegrationDialog({
 
         <DialogFooter className="p-8 bg-muted border-t border-border flex flex-col gap-3 relative z-10">
           <Button 
-            className="w-full rounded-2xl h-14 bg-white text-muted-foreground font-black uppercase tracking-widest text-xs hover:bg-muted transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full rounded-2xl h-14 bg-card text-muted-foreground font-black uppercase tracking-widest text-xs hover:bg-muted transition-all hover:scale-[1.02] active:scale-[0.98]"
             onClick={() => onOpenChange(false)}
           >
             Acknowledge Protocol

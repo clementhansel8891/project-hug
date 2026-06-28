@@ -80,7 +80,7 @@ export function EmptyState({
         "h-20 w-20 rounded-[2rem] flex items-center justify-center mb-6 shadow-xl shadow-slate-200/20 dark:shadow-none",
         variant === "error" ? "bg-destructive dark:bg-destructive" : 
         variant === "restricted" ? "bg-warning dark:bg-warning" :
-        "bg-white dark:bg-muted"
+        "bg-card dark:bg-muted"
       )}>
         <Icon className={cn("h-10 w-10", config.color)} />
       </div>
@@ -97,7 +97,7 @@ export function EmptyState({
         <Button 
           onClick={onRetry}
           variant="outline"
-          className="rounded-xl h-12 px-6 font-black text-xs gap-2 border-border hover:bg-white dark:border-border hover:scale-105 transition-all"
+          className="rounded-xl h-12 px-6 font-black text-xs gap-2 border-border hover:bg-muted dark:border-border hover:scale-105 transition-all"
         >
           <RefreshCw className="h-4 w-4" />
           {actionLabel.toUpperCase()}

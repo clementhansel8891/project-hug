@@ -50,7 +50,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ stats }) => {
       {(Array.isArray(metrics) ? metrics : []).map((m, i) => (
         <Card
           key={i}
-          className="rounded-[2rem] p-6 bg-white border-border shadow-xl group hover:border-primary transition-all cursor-pointer"
+          className="rounded-[2rem] p-6 bg-card border-border shadow-xl group hover:border-primary transition-all cursor-pointer"
         >
           <div className="flex justify-between items-start mb-8">
             <div

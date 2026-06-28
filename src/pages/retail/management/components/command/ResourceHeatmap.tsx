@@ -21,7 +21,7 @@ const HeatmapItem = ({
   online: boolean;
   onExpansionRequest: (feature: string) => void;
 }) => (
-  <div className="p-8 rounded-2xl bg-card backdrop-blur-3xl border border-border shadow-2xl hover:border-primary hover:bg-card transition-all duration-500 group relative overflow-hidden">
+  <div className="p-8 rounded-2xl bg-card backdrop-blur-3xl border border-border shadow-2xl hover:border-primary hover:bg-muted transition-all duration-500 group relative overflow-hidden">
     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[60px] -mr-16 -mt-16 group-hover:bg-primary/10 transition-all duration-1000" />
     <div className="flex items-center justify-between mb-8 relative z-10">
       <div className="flex items-center gap-4">
@@ -155,7 +155,7 @@ export const ResourceHeatmap = ({
           <button 
             onClick={fetchShifts}
             disabled={loading}
-            className="w-14 h-14 flex items-center justify-center bg-secondary/40 border border-border rounded-2xl hover:bg-white/10 transition-all disabled:opacity-50"
+            className="w-14 h-14 flex items-center justify-center bg-secondary/40 border border-border rounded-2xl hover:bg-muted/10 transition-all disabled:opacity-50"
           >
             <RefreshCw className={cn("w-5 h-5 text-muted-foreground", loading && "animate-spin")} />
           </button>

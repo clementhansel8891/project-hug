@@ -172,7 +172,7 @@ export default function MailHub() {
     <TooltipProvider delayDuration={400}>
       <div className="flex flex-col h-full gap-6 p-6 overflow-hidden">
         {/* Top Action Bar */}
-        <div className="flex justify-between items-center bg-white dark:bg-muted p-4 rounded-3xl shadow-sm border border-border">
+        <div className="flex justify-between items-center bg-card dark:bg-muted p-4 rounded-3xl shadow-sm border border-border">
           <div className="flex items-center gap-4 flex-1">
              <div className="relative w-full max-w-md">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -212,7 +212,7 @@ export default function MailHub() {
               <Button 
                 key={item.id} 
                 variant={activeFolder === item.id ? "secondary" : "ghost"}
-                className={`w-full justify-start h-12 rounded-2xl px-5 font-black uppercase tracking-[0.2em] text-[10px] transition-all group ${activeFolder === item.id ? 'bg-primary text-primary' : 'text-muted-foreground hover:bg-white'}`}
+                className={`w-full justify-start h-12 rounded-2xl px-5 font-black uppercase tracking-[0.2em] text-[10px] transition-all group ${activeFolder === item.id ? 'bg-primary text-primary' : 'text-muted-foreground hover:bg-muted'}`}
                 onClick={() => { setActiveFolder(item.id); setSelectedMail(null); }}
               >
                 <item.icon className={`h-4 w-4 mr-4 transition-transform group-hover:scale-110 ${activeFolder === item.id ? 'text-primary' : ''}`} />
@@ -222,7 +222,7 @@ export default function MailHub() {
           </div>
 
           {/* Master-Detail Container */}
-          <div className="flex-1 flex bg-white dark:bg-muted rounded-[2.5rem] border border-border overflow-hidden shadow-2xl relative min-h-0">
+          <div className="flex-1 flex bg-card dark:bg-muted rounded-[2.5rem] border border-border overflow-hidden shadow-2xl relative min-h-0">
             {/* List Column */}
             <div className={`flex flex-col border-r border-border bg-muted transition-all duration-500 ${selectedMail ? 'w-[380px] shrink-0 opacity-100' : 'w-full'}`}>
               <div className="flex-1 overflow-y-auto scrollbar-hide py-2">
@@ -281,7 +281,7 @@ export default function MailHub() {
             </div>
 
             {/* Detail Column */}
-            <div className={`flex-1 flex flex-col bg-white dark:bg-muted transition-all duration-300 relative ${!selectedMail ? 'hidden md:flex' : 'flex'}`}>
+            <div className={`flex-1 flex flex-col bg-card dark:bg-muted transition-all duration-300 relative ${!selectedMail ? 'hidden md:flex' : 'flex'}`}>
                {selectedMail ? (
                  <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-right-4 duration-500 overflow-hidden">
                    <div className="p-6 border-b border-border flex justify-between items-center bg-white/80 dark:bg-muted backdrop-blur-md sticky top-0 z-10">
@@ -353,7 +353,7 @@ export default function MailHub() {
                  </div>
                ) : (
                  <div className="flex-1 flex flex-col items-center justify-center p-20 text-center bg-muted animate-in fade-in zoom-in-95 duration-1000">
-                    <div className="h-24 w-24 rounded-[2.5rem] bg-white dark:bg-muted shadow-xl shadow-slate-200/50 dark:shadow-none flex items-center justify-center mb-8 opacity-40 border border-border">
+                    <div className="h-24 w-24 rounded-[2.5rem] bg-card dark:bg-muted shadow-xl shadow-slate-200/50 dark:shadow-none flex items-center justify-center mb-8 opacity-40 border border-border">
                        <Inbox className="h-10 w-10 text-muted-foreground" />
                     </div>
                     <h2 className="text-xl font-black uppercase tracking-widest text-muted-foreground">Message Intelligence</h2>

@@ -117,7 +117,7 @@ export const PostekPreviewPane: React.FC<PostekPreviewPaneProps> = ({
             Direction 1
           </span>
           <div className="h-[1px] w-12 bg-muted" />
-          <div className="w-2 h-2 rounded-full border border-border bg-white" />
+          <div className="w-2 h-2 rounded-full border border-border bg-card" />
         </div>
 
         <DndContext onDragEnd={handleDragEnd}>
@@ -158,7 +158,7 @@ export const PostekPreviewPane: React.FC<PostekPreviewPaneProps> = ({
                   <React.Fragment key={columnIndex}>
                     {/* Physical Sticker Box */}
                     <div
-                      className="relative bg-white border-2 border-border shadow-md"
+                      className="relative bg-card border-2 border-border shadow-md"
                       style={{
                         width: `${stickerWidth * PREVIEW_SCALE}px`,
                         height: `${paperHeight * PREVIEW_SCALE}px`,

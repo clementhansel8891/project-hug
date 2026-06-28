@@ -197,11 +197,11 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             </Badge>
           </div>
 
-          <div className="p-8 space-y-8 bg-white min-h-[400px]">
+          <div className="p-8 space-y-8 bg-card min-h-[400px]">
             {/* Customer & Logistics Logic Block */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-secondary/5 rounded-[2rem] p-6 flex items-center gap-4 border border-border">
-                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-card shadow-sm flex items-center justify-center">
                   <User className="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -215,7 +215,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               </div>
 
               <div className="bg-secondary/5 rounded-[2rem] p-6 flex items-center gap-4 border border-border">
-                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-card shadow-sm flex items-center justify-center">
                   <MapPin className="w-5 h-5 text-success" />
                 </div>
                 <div>
@@ -250,7 +250,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   return (
                     <div
                       key={idx}
-                      className="flex flex-col p-5 bg-white border border-border rounded-xl hover:border-primary transition-all group"
+                      className="flex flex-col p-5 bg-card border border-border rounded-xl hover:border-primary transition-all group"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">

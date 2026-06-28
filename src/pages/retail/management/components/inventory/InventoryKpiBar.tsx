@@ -43,7 +43,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
       {/* Top Row: Core Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Card 1: Branch SKUs */}
-        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-card dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Branch SKUs</CardTitle>
             <Layers className="h-4 w-4 text-primary opacity-50" />
@@ -55,7 +55,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
         </Card>
 
         {/* Card 2: Branch On Hand */}
-        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-card dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Branch On Hand</CardTitle>
             <Package className="h-4 w-4 text-success opacity-50" />
@@ -67,7 +67,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
         </Card>
 
         {/* Card 3: Out of Stock */}
-        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-card dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-rose-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Out of Stock</CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive opacity-50" />
@@ -79,7 +79,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
         </Card>
 
         {/* Card 4: Low Stock */}
-        <Card className="border border-border dark:border-border shadow-xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 group">
+        <Card className="border border-border dark:border-border shadow-xl bg-card dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/5 transition-all duration-300 group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Low Stock</CardTitle>
             <AlertTriangle className="h-4 w-4 text-warning opacity-50" />
@@ -94,7 +94,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
       {/* Bottom Row: Large Valuations */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Card 5: Branch Valuation (capital) */}
-        <Card className="border border-primary shadow-2xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent relative group">
+        <Card className="border border-primary shadow-2xl bg-card dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 bg-gradient-to-br from-indigo-500/5 via-transparent to-transparent relative group">
           <CardHeader className="flex flex-row items-center justify-between pb-2 pt-6 px-8">
             <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-primary">Branch Valuation (Capital)</CardTitle>
             <BarChart3 className="h-5 w-5 text-primary opacity-60 group-hover:scale-110 transition-transform duration-300" />
@@ -108,7 +108,7 @@ export const InventoryKpiBar: React.FC<Props> = ({ stats, isAggregating }) => {
         </Card>
 
         {/* Card 6: Branch Valuation (selling price) */}
-        <Card className="border border-primary shadow-2xl bg-white dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 bg-gradient-to-br from-primary/5 via-transparent to-transparent relative group">
+        <Card className="border border-primary shadow-2xl bg-card dark:bg-muted backdrop-blur-md rounded-[2rem] overflow-hidden hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 bg-gradient-to-br from-primary/5 via-transparent to-transparent relative group">
           <CardHeader className="flex flex-row items-center justify-between pb-2 pt-6 px-8">
             <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-primary">Branch Valuation (Selling Price)</CardTitle>
             <TrendingUp className="h-5 w-5 text-primary opacity-60 group-hover:scale-110 transition-transform duration-300" />

@@ -544,7 +544,7 @@ const StaffAssignments = () => {
                       }}
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-full border border-border text-foreground font-black italic text-[9px] gap-1 hover:bg-white/10 rounded-xl uppercase tracking-widest"
+                      className="h-8 w-full border border-border text-foreground font-black italic text-[9px] gap-1 hover:bg-muted/10 rounded-xl uppercase tracking-widest"
                     >
                       Send Reminder <ExternalLink className="w-3 h-3" />
                     </Button>
@@ -565,7 +565,7 @@ const StaffAssignments = () => {
                     Synchronized with Global HR directory. All changes reflect
                     in core reports.
                   </p>
-                  <Button onClick={() => window.location.reload()} className="w-full bg-white text-primary hover:bg-secondary/10 font-black italic h-12 rounded-2xl shadow-xl uppercase tracking-widest text-[10px]">
+                  <Button onClick={() => window.location.reload()} className="w-full bg-card text-primary hover:bg-secondary/10 font-black italic h-12 rounded-2xl shadow-xl uppercase tracking-widest text-[10px]">
                     Force Sync
                   </Button>
                 </CardContent>

@@ -29,7 +29,7 @@ export const FiltersBar: React.FC<Props> = ({
   onManageCategories,
 }) => {
   return (
-    <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-border shadow-lg">
+    <div className="flex items-center gap-3 bg-card rounded-xl p-3 border border-border shadow-lg">
       <div className="relative flex-1">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/60" />
         <Input

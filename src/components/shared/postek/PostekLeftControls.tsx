@@ -117,8 +117,8 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
   };
 
   return (
-    <div className="w-1/3 flex flex-col border-r bg-white h-full relative z-10">
-      <DialogHeader className="p-6 border-b shrink-0 bg-white">
+    <div className="w-1/3 flex flex-col border-r bg-card h-full relative z-10">
+      <DialogHeader className="p-6 border-b shrink-0 bg-card">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-warning flex items-center justify-center text-white shrink-0 shadow-orange-500/30">
@@ -161,7 +161,7 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
                 Preset Sizes
               </label>
               <Select value={paperPreset} onValueChange={handlePresetChange}>
-                <SelectTrigger className="h-9 text-xs font-bold bg-white">
+                <SelectTrigger className="h-9 text-xs font-bold bg-card">
                   <SelectValue placeholder="Select paper size" />
                 </SelectTrigger>
                 <SelectContent>
@@ -255,7 +255,7 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
         </div>
 
         {/* Hardware Constraints */}
-        <div className="p-5 border-b bg-white flex flex-col gap-4">
+        <div className="p-5 border-b bg-card flex flex-col gap-4">
           <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">
             Hardware Output Config
           </span>
@@ -322,7 +322,7 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
                 Symbol Type
               </label>
               <Select value={barcodeType} onValueChange={setBarcodeType}>
-                <SelectTrigger className="h-9 text-xs font-bold bg-white">
+                <SelectTrigger className="h-9 text-xs font-bold bg-card">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -359,7 +359,7 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
           <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
             Print Queue
           </span>
-          <Badge variant="outline" className="bg-white font-mono text-[10px]">
+          <Badge variant="outline" className="bg-card font-mono text-[10px]">
             {items.length} SKUs
           </Badge>
         </div>
@@ -367,7 +367,7 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
           {(Array.isArray(items) ? items : []).map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-white"
+              className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-card"
             >
               <div className="flex flex-col min-w-0 pr-4">
                 <span className="font-bold text-sm truncate">{item.name}</span>
@@ -392,7 +392,7 @@ export const PostekLeftControls: React.FC<PostekLeftControlsProps> = ({
         </div>
       </div>
 
-      <div className="p-5 border-t bg-white shrink-0 flex items-center justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.03)] z-20">
+      <div className="p-5 border-t bg-card shrink-0 flex items-center justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.03)] z-20">
         <div className="flex flex-col">
           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
             Total Labels

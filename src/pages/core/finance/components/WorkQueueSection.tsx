@@ -44,12 +44,12 @@ export function WorkQueueSection({
       <WorkspacePanel
         title="Work Queue"
         description="Live finance operations inbox — routed approvals and pending activities"
-        className="rounded-3xl border-border bg-white shadow-sm"
+        className="rounded-3xl border-border bg-card shadow-sm"
       >
         <Tabs value={tab} onValueChange={(v) => onTabChange(v as typeof tab)}>
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 mt-2">
             <TabsList className="h-12 bg-muted p-1 border border-border/80 rounded-2xl w-fit">
-              <TabsTrigger value="approvals" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TabsTrigger value="approvals" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 Approvals
                 {approvals.length > 0 && (
                   <Badge variant="secondary" className="ml-2 bg-primary/10 text-primary text-[10px]">
@@ -57,7 +57,7 @@ export function WorkQueueSection({
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="alerts" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TabsTrigger value="alerts" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 Alerts
                 {alerts.length > 0 && (
                   <Badge variant="destructive" className="ml-2 text-[10px]">
@@ -65,7 +65,7 @@ export function WorkQueueSection({
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="tasks" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TabsTrigger value="tasks" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 Tasks
                 {tasks.length > 0 && (
                   <Badge variant="secondary" className="ml-2 text-[10px]">
@@ -73,7 +73,7 @@ export function WorkQueueSection({
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="payments" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-white data-[state=active]:shadow-sm">
+              <TabsTrigger value="payments" className="rounded-xl px-5 font-bold text-xs data-[state=active]:bg-card data-[state=active]:shadow-sm">
                 Payments
               </TabsTrigger>
             </TabsList>
@@ -126,7 +126,7 @@ export function WorkQueueSection({
               <div className="grid gap-3">
                 {(Array.isArray(alerts) ? alerts : []).map((alert) => (
                   <button key={alert.id}
-                    className="flex w-full cursor-pointer items-center justify-between rounded-2xl border bg-white p-5 shadow-sm transition-all hover:bg-muted hover:shadow-md hover:-translate-y-0.5 text-left"
+                    className="flex w-full cursor-pointer items-center justify-between rounded-2xl border bg-card p-5 shadow-sm transition-all hover:bg-muted hover:shadow-md hover:-translate-y-0.5 text-left"
                     onClick={() => onSelectAlert(alert)}>
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 rounded-2xl bg-destructive flex items-center justify-center border border-destructive">
@@ -158,7 +158,7 @@ export function WorkQueueSection({
               <div className="grid gap-3">
                 {(Array.isArray(tasks) ? tasks : []).map((task) => (
                   <button key={task.id}
-                    className="flex w-full cursor-pointer items-center justify-between rounded-2xl border bg-white p-5 shadow-sm transition-all hover:bg-muted hover:shadow-md hover:-translate-y-0.5 text-left"
+                    className="flex w-full cursor-pointer items-center justify-between rounded-2xl border bg-card p-5 shadow-sm transition-all hover:bg-muted hover:shadow-md hover:-translate-y-0.5 text-left"
                     onClick={() => onSelectWorkflow(task)}>
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center border border-primary">
@@ -185,7 +185,7 @@ export function WorkQueueSection({
               <div className="grid gap-3">
                 {(Array.isArray(payments) ? payments : []).map((p) => (
                   <div key={p.id}
-                    className="flex items-center justify-between rounded-2xl border bg-white p-5 shadow-sm transition-all hover:bg-muted hover:shadow-md cursor-pointer">
+                    className="flex items-center justify-between rounded-2xl border bg-card p-5 shadow-sm transition-all hover:bg-muted hover:shadow-md cursor-pointer">
                     <div className="flex items-center gap-4">
                       <div className="h-12 w-12 rounded-2xl bg-primary/5 flex items-center justify-center border border-primary/10">
                         <Wallet className="h-5 w-5 text-primary" />
@@ -219,7 +219,7 @@ export function WorkQueueSection({
       <WorkspacePanel
         title="Payment Ledger"
         description="Full transactional history filtered by current search scope"
-        className="rounded-3xl border-border bg-white shadow-sm mt-5"
+        className="rounded-3xl border-border bg-card shadow-sm mt-5"
       >
         <DataTableShell total={payments.length} page={1} pageSize={10}>
           <div className="rounded-2xl overflow-hidden border border-border mt-4">
@@ -234,7 +234,7 @@ export function WorkQueueSection({
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-slate-50">
+              <tbody className="bg-card divide-y divide-slate-50">
                 {payments.length > 0 ? (
                   (Array.isArray(payments) ? payments : []).map((p) => (
                     <tr key={p.id} className="hover:bg-muted transition-colors cursor-pointer">

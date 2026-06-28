@@ -160,7 +160,7 @@ export default function ITDashboard() {
 
 function KPICard({ title, value, status, icon: Icon }: any) {
   return (
-    <Card className="bg-white border-muted shadow-sm rounded-2xl overflow-hidden group hover:shadow-md transition-all">
+    <Card className="bg-card border-muted shadow-sm rounded-2xl overflow-hidden group hover:shadow-md transition-all">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest leading-none">
           {title}

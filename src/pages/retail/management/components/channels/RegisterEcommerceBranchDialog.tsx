@@ -176,7 +176,7 @@ export const RegisterEcommerceBranchDialog: React.FC<
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="rounded-2xl border-border/50 bg-white shadow-2xl max-w-lg p-0 overflow-hidden">
+      <DialogContent className="rounded-2xl border-border/50 bg-card shadow-2xl max-w-lg p-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-success via-primary to-chart-5" />
 
         <DialogHeader className="p-8 pb-4">

@@ -165,7 +165,7 @@ export default function MarketingDashboard() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-2xl bg-white dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
+            className="h-14 w-14 rounded-2xl bg-card dark:bg-muted border-none shadow-xl hover:scale-110 transition-all"
             onClick={() => navigate("/core/marketing/automation")}
             disabled={refreshing}
           >
@@ -263,7 +263,7 @@ export default function MarketingDashboard() {
                  <div className="p-12 pt-8">
                     <div className="grid gap-8 md:grid-cols-2">
                       {(Array.isArray(campaigns) ? campaigns : []).map((item) => (
-                        <div key={item.id} className="p-8 rounded-[3rem] bg-white dark:bg-muted border border-border dark:border-border shadow-xl hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.2)] transition-all duration-500 group/card relative overflow-hidden" onClick={() => navigate("/core/marketing/automation")}>
+                        <div key={item.id} className="p-8 rounded-[3rem] bg-card dark:bg-muted border border-border dark:border-border shadow-xl hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.2)] transition-all duration-500 group/card relative overflow-hidden" onClick={() => navigate("/core/marketing/automation")}>
                            <div className="absolute top-0 right-0 h-32 w-32 bg-primary rounded-full blur-3xl -mr-16 -mt-16 group-hover/card:scale-150 transition-transform duration-1000" />
                            <div className="flex justify-between items-start mb-6 relative z-10">
                               <div className="h-14 w-14 rounded-2xl bg-primary text-primary flex items-center justify-center shadow-inner group-hover/card:scale-110 group-hover/card:bg-primary group-hover/card:text-white transition-all duration-500">
@@ -321,7 +321,7 @@ export default function MarketingDashboard() {
               <ScrollArea className="flex-1 bg-black/5 dark:bg-muted">
                  <div className="p-8 space-y-6">
                     {(Array.isArray(filteredAlerts) ? filteredAlerts : []).map((item) => (
-                      <div key={item.id} className="p-8 rounded-[3rem] bg-white dark:bg-muted border border-border dark:border-border space-y-6 group/item hover:shadow-2xl transition-all duration-500 hover:-translate-x-2" onClick={() => navigate("/core/marketing/automation")}>
+                      <div key={item.id} className="p-8 rounded-[3rem] bg-card dark:bg-muted border border-border dark:border-border space-y-6 group/item hover:shadow-2xl transition-all duration-500 hover:-translate-x-2" onClick={() => navigate("/core/marketing/automation")}>
                          <div className="flex justify-between items-start">
                             <Badge className={cn(
                               "rounded-full font-black text-[9px] px-4 py-1.5 border-none shadow-lg uppercase tracking-widest",
@@ -356,7 +356,7 @@ export default function MarketingDashboard() {
                     ))}
                     {filteredAlerts.length === 0 && (
                       <div className="p-24 text-center grayscale opacity-20 space-y-6">
-                         <div className="h-24 w-24 bg-white dark:bg-muted rounded-[3rem] flex items-center justify-center mx-auto shadow-2xl">
+                         <div className="h-24 w-24 bg-card dark:bg-muted rounded-[3rem] flex items-center justify-center mx-auto shadow-2xl">
                             <ShieldCheck className="h-12 w-12 text-muted-foreground" />
                          </div>
                          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Intelligence Matrix Clear</p>
@@ -369,7 +369,7 @@ export default function MarketingDashboard() {
       </div>
       
       {/* AI Strategy Advisor */}
-      <Card className="rounded-[4rem] border-none shadow-2xl bg-white dark:bg-muted p-12 flex flex-col md:flex-row items-center gap-12 group">
+      <Card className="rounded-[4rem] border-none shadow-2xl bg-card dark:bg-muted p-12 flex flex-col md:flex-row items-center gap-12 group">
          <div className="h-32 w-32 bg-primary rounded-[3rem] flex items-center justify-center shadow-[0_30px_60px_-15px_rgba(79,70,229,0.4)] group-hover:rotate-12 transition-all duration-700 shrink-0">
             <Bot className="h-16 w-16 text-white drop-shadow-2xl" />
          </div>

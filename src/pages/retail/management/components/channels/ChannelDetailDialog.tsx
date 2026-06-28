@@ -256,7 +256,7 @@ export const ChannelDetailDialog = ({
                     })
                   }
                   disabled={!canEdit || !!rotationLoading}
-                  className="w-full h-12 justify-start rounded-xl px-4 gap-3 font-black italic uppercase text-[9px] tracking-widest text-muted-foreground hover:bg-white hover:text-primary transition-all border border-transparent hover:border-border"
+                  className="w-full h-12 justify-start rounded-xl px-4 gap-3 font-black italic uppercase text-[9px] tracking-widest text-muted-foreground hover:bg-muted hover:text-primary transition-all border border-transparent hover:border-border"
                 >
                   <RefreshCw
                     className={`w-3.5 h-3.5 ${rotationLoading === selectedChannel.id ? "animate-spin" : ""}`}
@@ -267,7 +267,7 @@ export const ChannelDetailDialog = ({
                   variant="ghost"
                   onClick={() => handleRevokeChannel(selectedChannel.id)}
                   disabled={!canEdit || !!revocationLoading}
-                  className="w-full h-12 justify-start rounded-xl px-4 gap-3 font-black italic uppercase text-[9px] tracking-widest text-muted-foreground hover:bg-white hover:text-destructive transition-all border border-transparent hover:border-border"
+                  className="w-full h-12 justify-start rounded-xl px-4 gap-3 font-black italic uppercase text-[9px] tracking-widest text-muted-foreground hover:bg-muted hover:text-destructive transition-all border border-transparent hover:border-border"
                 >
                   <ShieldOff className="w-3.5 h-3.5" />
                   Revoke Access
@@ -308,7 +308,7 @@ export const ChannelDetailDialog = ({
           </div>
 
           {/* Main Content Areas */}
-          <div className="flex-1 overflow-y-auto p-6 pb-24 relative bg-white">
+          <div className="flex-1 overflow-y-auto p-6 pb-24 relative bg-card">
             <Tabs defaultValue="vault" className="space-y-12">
               <div className="px-1">
                 <TabsList className="bg-secondary/10 rounded-2xl p-1 h-14 w-full">
@@ -422,7 +422,7 @@ export const ChannelDetailDialog = ({
                     ].map((rule) => (
                       <div
                         key={rule.id}
-                        className="p-8 rounded-[2rem] bg-secondary/5 border border-border flex items-center justify-between group hover:bg-white transition-all"
+                        className="p-8 rounded-[2rem] bg-secondary/5 border border-border flex items-center justify-between group hover:bg-muted transition-all"
                       >
                         <div>
                           <div className="text-sm font-black italic text-foreground uppercase italic tracking-tighter">
@@ -484,7 +484,7 @@ export const ChannelDetailDialog = ({
                           <SelectTrigger className="h-16 rounded-2xl bg-secondary/5 border-none font-black italic uppercase text-[10px] tracking-widest text-foreground shadow-inner">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
+                          <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-card">
                             <SelectItem
                               value="5min"
                               className="rounded-xl font-black italic uppercase text-[10px] py-4"

@@ -258,7 +258,7 @@ export default function CreativeLibrary() {
          <div className="flex items-center gap-4 w-full lg:w-auto">
             <DropdownMenu>
                <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" className="h-14 px-8 rounded-2xl gap-3 font-black text-[10px] uppercase tracking-widest bg-white dark:bg-muted border-none shadow-sm transition-all hover:shadow-md">
+                  <Button variant="secondary" className="h-14 px-8 rounded-2xl gap-3 font-black text-[10px] uppercase tracking-widest bg-card dark:bg-muted border-none shadow-sm transition-all hover:shadow-md">
                      <Filter className="h-5 w-5 text-primary" /> 
                      REFINE SEARCH
                      <ChevronDown className="h-4 w-4 opacity-50" />
@@ -279,7 +279,7 @@ export default function CreativeLibrary() {
                <Button 
                   variant="ghost" 
                   size="icon" 
-                  className={cn("h-11 w-11 rounded-xl transition-all", view === "grid" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                  className={cn("h-11 w-11 rounded-xl transition-all", view === "grid" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   onClick={() => setView("grid")}
                >
                   <Layers className="h-5 w-5" />
@@ -287,7 +287,7 @@ export default function CreativeLibrary() {
                <Button 
                   variant="ghost" 
                   size="icon" 
-                  className={cn("h-11 w-11 rounded-xl transition-all", view === "list" ? "bg-white dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
+                  className={cn("h-11 w-11 rounded-xl transition-all", view === "list" ? "bg-card dark:bg-muted shadow-md text-primary" : "text-muted-foreground")}
                   onClick={() => setView("list")}
                >
                   <MoreHorizontal className="h-5 w-5" />
@@ -324,7 +324,7 @@ export default function CreativeLibrary() {
           view === "grid" ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" : "grid-cols-1"
         )}>
           {(Array.isArray(filteredAssets) ? filteredAssets : []).map((asset) => (
-            <Card key={asset.id} className="group relative overflow-hidden rounded-[2.5rem] border-none bg-white dark:bg-muted shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 cursor-default">
+            <Card key={asset.id} className="group relative overflow-hidden rounded-[2.5rem] border-none bg-card dark:bg-muted shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 cursor-default">
               <CardContent className="p-0">
                 <div className="aspect-[4/3] relative bg-muted dark:bg-muted flex items-center justify-center overflow-hidden group/thumb">
                   {asset.type === "IMAGE" ? (
@@ -349,14 +349,14 @@ export default function CreativeLibrary() {
                   <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px] flex items-center justify-center gap-4">
                     <Button 
                       size="icon" 
-                      className="h-14 w-14 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all bg-white text-primary"
+                      className="h-14 w-14 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all bg-card text-primary"
                       onClick={() => handleDownload(asset.url, asset.name)}
                     >
                       <Download className="h-6 w-6" />
                     </Button>
                     <Button 
                       size="icon" 
-                      className="h-14 w-14 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all bg-white text-primary" 
+                      className="h-14 w-14 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all bg-card text-primary" 
                       onClick={() => window.open(asset.url, '_blank')}
                     >
                       <ExternalLink className="h-6 w-6" />

@@ -114,7 +114,7 @@ export const OperationalLauncherOverlay: React.FC<{
         <Button
           variant="ghost"
           size="icon"
-          className="text-white hover:bg-white/10 w-16 h-16 rounded-2xl"
+          className="text-white hover:bg-muted/10 w-16 h-16 rounded-2xl"
           onClick={onClose}
         >
           <X className="w-8 h-8" />

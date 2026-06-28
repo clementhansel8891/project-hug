@@ -241,7 +241,7 @@ function CalendarEventRow({ date, title, detail, status }: any) {
 
 function EvidenceCard({ title, count, size, date }: any) {
   return (
-    <div className="p-4 rounded-2xl border border-border bg-muted hover:bg-card hover:shadow-lg hover:border-primary transition-all group">
+    <div className="p-4 rounded-2xl border border-border bg-muted hover:bg-muted hover:shadow-lg hover:border-primary transition-all group">
       <div className="flex items-center justify-between mb-3">
         <FileText className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
         <Button disabled title="Not available yet" variant="ghost" size="icon" className="h-6 w-6 rounded-lg">

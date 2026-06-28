@@ -34,7 +34,7 @@ export default function ComplianceCommand() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="h-12 px-6 rounded-2xl bg-muted border-border text-white hover:bg-white/10 font-black italic uppercase text-[11px] tracking-widest gap-3 transition-all">
+          <Button variant="outline" className="h-12 px-6 rounded-2xl bg-muted border-border text-white hover:bg-muted/10 font-black italic uppercase text-[11px] tracking-widest gap-3 transition-all">
             <Download className="w-4 h-4 text-success" /> Export Report
           </Button>
           <Button className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary text-white font-black italic uppercase text-[11px] tracking-widest gap-3 shadow-xl shadow-indigo-600/20 transition-all">
@@ -97,7 +97,7 @@ export default function ComplianceCommand() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden border group cursor-pointer hover:bg-card transition-all">
+          <Card className="bg-card border-border backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden border group cursor-pointer hover:bg-muted transition-all">
             <CardContent className="p-10 text-center space-y-6">
               <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl mx-auto group-hover:scale-110 transition-transform">
                 <History className="w-8 h-8" />
@@ -134,7 +134,7 @@ export default function ComplianceCommand() {
                 className="w-80 h-12 bg-secondary border-border rounded-xl text-white placeholder:text-muted-foreground italic font-bold"
                 placeholder="Search logs..."
               />
-              <Button className="h-12 bg-muted border border-border text-white rounded-xl px-6 font-black italic uppercase text-[10px] tracking-widest hover:bg-white/10">
+              <Button className="h-12 bg-muted border border-border text-white rounded-xl px-6 font-black italic uppercase text-[10px] tracking-widest hover:bg-muted/10">
                 Filter
               </Button>
             </div>

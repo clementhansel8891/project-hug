@@ -152,7 +152,7 @@ export default function ForecastDesk() {
 
       {/* Analytical Charts */}
       <div className="grid gap-8 lg:grid-cols-2">
-        <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+        <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
           <CardHeader className="p-10 pb-2">
             <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
               <TrendingUp className="h-6 w-6 text-primary" />
@@ -205,7 +205,7 @@ export default function ForecastDesk() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[3rem] border-none shadow-2xl bg-white dark:bg-muted overflow-hidden group">
+        <Card className="rounded-[3rem] border-none shadow-2xl bg-card dark:bg-muted overflow-hidden group">
           <CardHeader className="p-10 pb-2">
             <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
               <BarChart3 className="h-6 w-6 text-success" />
@@ -259,7 +259,7 @@ export default function ForecastDesk() {
           { label: "Cycle", value: `${forecast.avgDealCycleDays}d`, color: "amber", icon: Clock },
           { label: "Rep Load", value: analytics?.topReps?.length || 0, color: "slate", icon: Users },
         ].map((kpi, i) => (
-          <Card key={i} className="rounded-3xl border-none shadow-lg bg-white dark:bg-muted p-6 flex flex-col items-center justify-center text-center space-y-2 hover:shadow-xl transition-all hover:-translate-y-1">
+          <Card key={i} className="rounded-3xl border-none shadow-lg bg-card dark:bg-muted p-6 flex flex-col items-center justify-center text-center space-y-2 hover:shadow-xl transition-all hover:-translate-y-1">
              <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center mb-1", `bg-${kpi.color}-500/10`)}>
                 <kpi.icon className={cn("h-5 w-5", `text-${kpi.color}-500`)} />
              </div>
@@ -300,7 +300,7 @@ export default function ForecastDesk() {
               </thead>
               <tbody className="divide-y divide-border dark:divide-slate-800/10">
                 {(Array.isArray(filtered) ? filtered : []).map((item) => (
-                  <tr key={item.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
+                  <tr key={item.id} className="group hover:bg-muted dark:hover:bg-muted transition-all cursor-default">
                     <td className="px-10 py-8">
                        <div className="flex items-center gap-4">
                           <div className="h-10 w-10 rounded-xl bg-muted dark:bg-muted flex items-center justify-center font-black text-xs group-hover:bg-primary group-hover:text-white transition-colors">

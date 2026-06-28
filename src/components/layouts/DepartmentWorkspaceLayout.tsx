@@ -148,7 +148,7 @@ export default function DepartmentWorkspaceLayout({
                           className={cn(
                             "group flex items-center gap-4 rounded-2xl px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative overflow-hidden",
                             isActive
-                              ? cn("bg-white dark:bg-muted shadow-md translate-x-2 border-l-4", textC, shadowC, borderLC)
+                              ? cn("bg-card dark:bg-muted shadow-md translate-x-2 border-l-4", textC, shadowC, borderLC)
                               : cn("text-muted-foreground hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1", hoverTextC),
                           )}
                         >
@@ -265,7 +265,7 @@ export default function DepartmentWorkspaceLayout({
                             className={cn(
                                 "group flex items-center gap-4 rounded-2xl px-4 py-4 text-[10px] font-black uppercase tracking-widest transition-all duration-500 relative overflow-hidden",
                                 isActive
-                                  ? cn("bg-white dark:bg-muted shadow-2xl translate-x-4 border-l-4", textC, shadowC, borderLC)
+                                  ? cn("bg-card dark:bg-muted shadow-2xl translate-x-4 border-l-4", textC, shadowC, borderLC)
                                   : cn("text-muted-foreground hover:bg-muted0 dark:hover:bg-muted hover:translate-x-2", hoverTextC),
                               )
                             }

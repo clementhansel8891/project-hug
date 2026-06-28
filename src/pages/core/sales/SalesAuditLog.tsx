@@ -73,7 +73,7 @@ export default function SalesAuditLog() {
     return (
       <div className="flex h-screen items-center justify-center bg-muted dark:bg-muted">
         <div className="flex flex-col items-center gap-6">
-          <div className="h-20 w-20 bg-muted dark:bg-white rounded-[2.5rem] animate-pulse flex items-center justify-center shadow-2xl">
+          <div className="h-20 w-20 bg-muted dark:bg-card rounded-[2.5rem] animate-pulse flex items-center justify-center shadow-2xl">
             <ShieldCheck className="h-10 w-10 text-white dark:text-muted-foreground" />
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">Verifying Immutable Ledger...</p>
@@ -88,7 +88,7 @@ export default function SalesAuditLog() {
       <div className="flex flex-col lg:flex-row justify-between items-end gap-6">
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <Badge className="bg-muted dark:bg-white text-white dark:text-muted-foreground border-none font-black px-3 py-1 rounded-full uppercase tracking-widest text-[10px]">Compliance Black Box</Badge>
+            <Badge className="bg-muted dark:bg-card text-white dark:text-muted-foreground border-none font-black px-3 py-1 rounded-full uppercase tracking-widest text-[10px]">Compliance Black Box</Badge>
             <div className="flex items-center gap-1.5 text-primary font-bold text-xs uppercase tracking-widest">
                <Activity className="h-4 w-4 animate-pulse" />
                Real-time Audit Stream Active
@@ -110,7 +110,7 @@ export default function SalesAuditLog() {
           </div>
           <Button
             variant="secondary"
-            className="h-14 w-14 rounded-[1.5rem] bg-muted dark:bg-white text-white dark:text-muted-foreground hover:bg-muted dark:hover:bg-muted transition-all shadow-xl"
+            className="h-14 w-14 rounded-[1.5rem] bg-muted dark:bg-card text-white dark:text-muted-foreground hover:bg-muted dark:hover:bg-muted transition-all shadow-xl"
             onClick={() => refresh(true)}
             disabled={refreshing}
           >
@@ -139,7 +139,7 @@ export default function SalesAuditLog() {
                <h4 className="text-2xl font-black text-success">{events.length}</h4>
             </div>
          </GlassCard>
-         <Card className="rounded-[2.5rem] border-none shadow-xl bg-muted dark:bg-white p-8 flex items-center gap-6 group hover:shadow-slate-500/20 transition-all">
+         <Card className="rounded-[2.5rem] border-none shadow-xl bg-muted dark:bg-card p-8 flex items-center gap-6 group hover:shadow-slate-500/20 transition-all">
             <div className="h-14 w-14 rounded-2xl bg-white/10 dark:bg-muted backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
                <ShieldCheck className="h-7 w-7 text-white dark:text-muted-foreground" />
             </div>
@@ -163,7 +163,7 @@ export default function SalesAuditLog() {
             </div>
             <div className="flex gap-4">
                <div className="flex bg-muted dark:bg-muted p-1.5 rounded-[1.5rem] shadow-inner">
-                  <Button variant="ghost" size="sm" className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest bg-white dark:bg-muted shadow-md text-foreground">ALL OPERATIONS</Button>
+                  <Button variant="ghost" size="sm" className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest bg-card dark:bg-muted shadow-md text-foreground">ALL OPERATIONS</Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate("/core/compliance")} className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors">FINANCIAL</Button>
                   <Button variant="ghost" size="sm" onClick={() => navigate("/core/compliance")} className="h-10 rounded-xl px-4 font-black text-[10px] tracking-widest text-muted-foreground hover:text-muted-foreground transition-colors">SECURITY</Button>
                </div>
@@ -192,7 +192,7 @@ export default function SalesAuditLog() {
                        </div>
                     </td>
                     <td className="px-10 py-8">
-                       <Badge variant="outline" className="rounded-full font-black text-[9px] px-3 py-1 border-border dark:border-border uppercase tracking-[0.1em] text-foreground bg-white dark:bg-muted shadow-sm">{item.action}</Badge>
+                       <Badge variant="outline" className="rounded-full font-black text-[9px] px-3 py-1 border-border dark:border-border uppercase tracking-[0.1em] text-foreground bg-card dark:bg-muted shadow-sm">{item.action}</Badge>
                     </td>
                     <td className="px-10 py-8">
                        <div className="flex items-center gap-3">

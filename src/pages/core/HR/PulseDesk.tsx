@@ -69,7 +69,7 @@ export default function PulseDesk() {
               placeholder="Query Culture Data..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-white dark:bg-muted border-border dark:border-border w-64 rounded-xl focus:ring-rose-500/20"
+              className="pl-10 bg-card dark:bg-muted border-border dark:border-border w-64 rounded-xl focus:ring-rose-500/20"
             />
           </div>
           <Button 
@@ -86,7 +86,7 @@ export default function PulseDesk() {
         {(Array.isArray(stats) ? stats : []).map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <div key={i} className="group relative p-8 rounded-[2.5rem] bg-white dark:bg-muted border border-border dark:border-border shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+            <div key={i} className="group relative p-8 rounded-[2.5rem] bg-card dark:bg-muted border border-border dark:border-border shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden">
               <div className="absolute top-0 right-0 h-32 w-32 bg-muted dark:bg-muted rounded-full -mr-16 -mt-16 transition-transform duration-700 group-hover:scale-150" />
               <div className="relative z-10 space-y-6">
                 <div className={cn(
@@ -128,7 +128,7 @@ export default function PulseDesk() {
 
           <div className="grid gap-6 sm:grid-cols-2">
             {(Array.isArray(workforceHealth) ? workforceHealth : []).map((item, i) => (
-              <div key={i} className="group p-8 rounded-[2rem] bg-white dark:bg-muted border border-border dark:border-border hover:shadow-xl transition-all duration-500">
+              <div key={i} className="group p-8 rounded-[2rem] bg-card dark:bg-muted border border-border dark:border-border hover:shadow-xl transition-all duration-500">
                 <div className="flex items-center justify-between mb-6">
                   <div className="space-y-1">
                     <p className="text-sm font-black text-foreground uppercase tracking-tight italic">{item.label}</p>

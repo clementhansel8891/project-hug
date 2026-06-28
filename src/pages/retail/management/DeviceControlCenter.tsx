@@ -487,7 +487,7 @@ const DeviceControlCenter = () => {
               <div className="flex flex-col gap-4 col-span-1 min-h-[160px]">
                 <button
                   onClick={() => setShowReg(true)}
-                  className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-card hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
+                  className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-muted hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
                 >
                   <PlusCircle className="w-6 h-6 text-muted-foreground/60 group-hover:text-muted-foreground transition-all" />
                   <div className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground group-hover:text-muted-foreground">
@@ -496,7 +496,7 @@ const DeviceControlCenter = () => {
                 </button>
                 <button
                   onClick={handleScan}
-                  className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-card hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
+                  className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-muted hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
                 >
                   <RefreshCw className="w-6 h-6 text-muted-foreground/60 group-hover:text-primary transition-all" />
                   <div className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground group-hover:text-primary">
@@ -531,7 +531,7 @@ const DeviceControlCenter = () => {
                           <Camera className="w-8 h-8 text-muted-foreground opacity-20" />
                           {cam.status === "recording" && (
                             <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-destructive rounded-full px-2.5 py-1">
-                              <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-card animate-pulse" />
                               <span className="text-[8px] font-black text-foreground uppercase">
                                 REC
                               </span>
@@ -539,7 +539,7 @@ const DeviceControlCenter = () => {
                           )}
                           {cam.status === "live" && (
                             <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-success rounded-full px-2.5 py-1">
-                              <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-card animate-pulse" />
                               <span className="text-[8px] font-black text-foreground uppercase">
                                 Live
                               </span>
@@ -603,7 +603,7 @@ const DeviceControlCenter = () => {
               ))}
               <button
                 onClick={() => setShowCctvReg(true)}
-                className="rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-card hover:shadow-lg transition-all flex flex-col items-center justify-center py-10 gap-3 group min-h-[200px] text-foreground"
+                className="rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-muted hover:shadow-lg transition-all flex flex-col items-center justify-center py-10 gap-3 group min-h-[200px] text-foreground"
               >
                 <PlusCircle className="w-9 h-9 text-muted-foreground/60 group-hover:text-muted-foreground group-hover:scale-110 transition-all" />
                 <div className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground group-hover:text-muted-foreground">
@@ -722,7 +722,7 @@ const DeviceControlCenter = () => {
                 <div className="flex flex-col gap-4 col-span-1 min-h-[160px]">
                   <button
                     onClick={() => setShowReg(true)}
-                    className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-card hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
+                    className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-muted hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
                   >
                     <PlusCircle className="w-6 h-6 text-muted-foreground/60 group-hover:text-muted-foreground transition-all" />
                     <div className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground group-hover:text-muted-foreground">
@@ -731,7 +731,7 @@ const DeviceControlCenter = () => {
                   </button>
                   <button
                     onClick={handleScan}
-                    className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-card hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
+                    className="flex-1 rounded-3xl border-2 border-dashed border-border bg-card hover:border-primary/30 hover:bg-muted hover:shadow-lg transition-all flex flex-col items-center justify-center py-4 gap-2 group text-foreground"
                   >
                     <RefreshCw className="w-6 h-6 text-muted-foreground/60 group-hover:text-primary transition-all" />
                     <div className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground group-hover:text-primary">

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export const LogisticsRadar = () => {
   return (
-    <Card className="rounded-2xl bg-white border-border shadow-xl p-8 space-y-8">
+    <Card className="rounded-2xl bg-card border-border shadow-xl p-8 space-y-8">
       <div className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground">
         Logistics Radar
       </div>
@@ -35,7 +35,7 @@ export const LogisticsRadar = () => {
         ))}
       </div>
       <div className="p-4 rounded-2xl bg-primary/5 border border-primary flex items-center gap-4">
-        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-primary shadow-sm">
+        <div className="w-10 h-10 rounded-xl bg-card flex items-center justify-center text-primary shadow-sm">
           <Printer className="w-5 h-5" />
         </div>
         <div>

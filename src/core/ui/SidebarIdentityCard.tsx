@@ -66,7 +66,7 @@ export const SidebarIdentityCard: React.FC = () => {
         </div>
 
         {/* Global Access Badge */}
-        <Badge className="w-full justify-center bg-white/10 hover:bg-white/20 border-border text-[9px] font-black py-1.5 rounded-xl text-white uppercase tracking-[0.2em] shadow-inner transition-colors">
+        <Badge className="w-full justify-center bg-white/10 hover:bg-muted/20 border-border text-[9px] font-black py-1.5 rounded-xl text-white uppercase tracking-[0.2em] shadow-inner transition-colors">
           Security Level A-1
         </Badge>
       </div>
