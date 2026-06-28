@@ -158,7 +158,7 @@ export default function MarketingDashboard() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input 
               placeholder="Search intelligence matrix..." 
-              className="pl-12 h-14 bg-white/50 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm"
+              className="pl-12 h-14 bg-muted0 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -225,14 +225,14 @@ export default function MarketingDashboard() {
              </div>
              <div className="flex gap-16">
                 <div className="text-center space-y-2">
-                   <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-border group-hover:bg-primary transition-colors">
+                   <div className="h-20 w-20 bg-muted rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-border group-hover:bg-primary transition-colors">
                       <Users className="h-10 w-10 text-white" />
                    </div>
                    <h4 className="text-4xl font-black italic">{formatNumber(metrics.moduleContributions.retail.walkInCustomers)}</h4>
                    <p className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/80 italic">Store Walk-ins</p>
                 </div>
                 <div className="text-center space-y-2">
-                   <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-border group-hover:bg-success transition-colors">
+                   <div className="h-20 w-20 bg-muted rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-border group-hover:bg-success transition-colors">
                       <ActivitySquare className="h-10 w-10 text-white" />
                    </div>
                    <h4 className="text-4xl font-black italic">{formatNumber(metrics.moduleContributions.retail.loyaltyActive)}</h4>
@@ -318,7 +318,7 @@ export default function MarketingDashboard() {
                 </div>
                 <CardDescription className="text-xs font-medium italic mt-2">Real-time ingestion spikes, campaign health, and handoff SLAs.</CardDescription>
               </CardHeader>
-              <ScrollArea className="flex-1 bg-black/5 dark:bg-white/5">
+              <ScrollArea className="flex-1 bg-black/5 dark:bg-muted">
                  <div className="p-8 space-y-6">
                     {(Array.isArray(filteredAlerts) ? filteredAlerts : []).map((item) => (
                       <div key={item.id} className="p-8 rounded-[3rem] bg-white dark:bg-muted border border-border dark:border-border space-y-6 group/item hover:shadow-2xl transition-all duration-500 hover:-translate-x-2" onClick={() => navigate("/core/marketing/automation")}>

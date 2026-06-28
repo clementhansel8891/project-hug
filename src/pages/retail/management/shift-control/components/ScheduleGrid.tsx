@@ -601,7 +601,7 @@ const ViewControls = ({
               "h-10 px-6 rounded-xl font-black italic uppercase text-[10px] tracking-widest transition-all",
               viewMode === mode
                 ? "bg-white/10 text-primary shadow-md scale-105"
-                : "text-muted-foreground hover:text-foreground hover:bg-white/5",
+                : "text-muted-foreground hover:text-foreground hover:bg-muted",
             )}
           >
             {mode === "daily" && <LayoutGrid className="w-3.5 h-3.5 mr-2" />}

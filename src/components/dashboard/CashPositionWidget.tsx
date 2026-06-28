@@ -65,12 +65,12 @@ export const CashPositionWidget: React.FC<CashPositionWidgetProps> = ({ data: pr
           {chartData.map((item, i) => (
             <div key={i} className="flex items-center justify-between group/item">
               <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-border text-muted-foreground group-hover/item:text-foreground group-hover/item:border-border transition-all">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border text-muted-foreground group-hover/item:text-foreground group-hover/item:border-border transition-all">
                   <item.icon className="h-5 w-5" />
                 </div>
                 <div>
                    <p className="text-xs font-black text-muted-foreground group-hover/item:text-foreground transition-colors uppercase tracking-widest">{item.name}</p>
-                   <div className="mt-1 h-1 w-24 bg-white/5 rounded-full overflow-hidden">
+                   <div className="mt-1 h-1 w-24 bg-muted rounded-full overflow-hidden">
                       <div className="h-full transition-all duration-1000" style={{ width: `${(item.value / total) * 100}%`, backgroundColor: item.color }} />
                    </div>
                 </div>

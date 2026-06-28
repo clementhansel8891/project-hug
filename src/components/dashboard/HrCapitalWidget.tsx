@@ -18,7 +18,7 @@ export const HrCapitalWidget: React.FC<HrCapitalWidgetProps> = ({ distribution }
           <h4 className="text-xl font-black italic uppercase tracking-tighter text-foreground">Workforce Capital</h4>
           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Distribution and performance metrics</p>
         </div>
-        <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center border border-border group-hover:bg-primary group-hover:border-primary transition-all">
+        <div className="h-12 w-12 rounded-2xl bg-muted flex items-center justify-center border border-border group-hover:bg-primary group-hover:border-primary transition-all">
           <Users className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
         </div>
       </div>

@@ -157,7 +157,7 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !isPending) { createForm.reset(); onClose(); } }}>
       <DialogContent className="rounded-[3rem] border-border bg-muted backdrop-blur-3xl shadow-2xl sm:max-w-[700px] p-0 overflow-hidden max-h-[85vh]">
-        <DialogHeader className="p-10 bg-white/5 border-b border-border">
+        <DialogHeader className="p-10 bg-muted border-b border-border">
           <div className="flex items-center justify-between">
             <div>
               <DialogTitle className="flex items-center gap-5 text-3xl font-black tracking-tighter text-white uppercase italic leading-none">
@@ -173,7 +173,7 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
             <Button
               variant="ghost"
               size="icon"
-              className="h-12 w-12 rounded-2xl hover:bg-white/5 text-muted-foreground hover:text-white"
+              className="h-12 w-12 rounded-2xl hover:bg-muted text-muted-foreground hover:text-white"
               onClick={onClose}
               disabled={isPending}
             >
@@ -184,7 +184,7 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
 
         <div className="p-10 space-y-8 overflow-y-auto custom-scrollbar">
           {/* Create Form */}
-          <form onSubmit={handleCreate} className="p-8 bg-white/5 rounded-[2rem] border border-border space-y-6">
+          <form onSubmit={handleCreate} className="p-8 bg-muted rounded-[2rem] border border-border space-y-6">
             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Initialize New Node</p>
             <div className="flex gap-4 items-end">
               <div className="flex-1 space-y-3">
@@ -221,7 +221,7 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
           <div className="rounded-[2rem] border border-border bg-muted overflow-hidden shadow-2xl">
             <Table>
               <TableHeader>
-                <TableRow className="border-b border-border hover:bg-transparent bg-white/5">
+                <TableRow className="border-b border-border hover:bg-transparent bg-muted">
                   <TableHead className="p-6 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Node Label</TableHead>
                   <TableHead className="p-6 w-[150px] text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Operation</TableHead>
                 </TableRow>
@@ -241,12 +241,12 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                   </TableRow>
                 ) : (
                   categories.map((cat: Category, i: number) => (
-                    <TableRow key={cat.id} className={cn("group hover:bg-white/5 transition-all duration-300 border-white/5", i === categories.length - 1 && "border-0")}>
+                    <TableRow key={cat.id} className={cn("group hover:bg-muted transition-all duration-300 border-white/5", i === categories.length - 1 && "border-0")}>
                       <TableCell className="p-6">
                         {editingId === cat.id ? (
                           <Input
                             {...editForm.register("name")}
-                            className="h-12 rounded-lg bg-white/5 border-border text-white font-black italic tracking-widest"
+                            className="h-12 rounded-lg bg-muted border-border text-white font-black italic tracking-widest"
                             autoFocus
                             onKeyDown={(e) => e.key === "Enter" && handleUpdate()}
                             disabled={updateMutation.isPending}
@@ -319,10 +319,10 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
           </div>
         </div>
 
-        <DialogFooter className="p-10 bg-white/5 border-t border-border">
+        <DialogFooter className="p-10 bg-muted border-t border-border">
           <Button
             variant="outline"
-            className="rounded-xl font-black italic text-[10px] uppercase tracking-widest h-12 px-8 border-border bg-white/5 text-white hover:bg-white/10"
+            className="rounded-xl font-black italic text-[10px] uppercase tracking-widest h-12 px-8 border-border bg-muted text-white hover:bg-white/10"
             onClick={onClose}
             disabled={isPending}
           >

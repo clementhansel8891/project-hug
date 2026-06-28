@@ -142,7 +142,7 @@ export const RetailManagementShell: React.FC<{ children: React.ReactNode }> = ()
       headerActions={
         <div className="flex items-center gap-4 mr-4">
           <RetailContextSwitcher />
-          <div className="h-6 w-px bg-muted dark:bg-white/10" />
+          <div className="h-6 w-px bg-muted dark:bg-muted" />
           <RetailModeSwitchControl />
         </div>
       }

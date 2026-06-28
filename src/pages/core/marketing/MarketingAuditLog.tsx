@@ -114,7 +114,7 @@ export default function MarketingAuditLog() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input 
               placeholder="Search operation trail..." 
-              className="pl-12 h-14 bg-white/50 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all"
+              className="pl-12 h-14 bg-muted0 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -228,7 +228,7 @@ export default function MarketingAuditLog() {
                        </div>
                     </td>
                     <td className="px-12 py-10">
-                       <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/50 dark:bg-muted border border-border dark:border-border group-hover:border-primary transition-all max-w-sm">
+                       <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted0 dark:bg-muted border border-border dark:border-border group-hover:border-primary transition-all max-w-sm">
                           <Terminal className="h-4 w-4 text-muted-foreground shrink-0" />
                           <p className="text-[11px] font-medium text-muted-foreground dark:text-muted-foreground leading-relaxed italic truncate">
                              "{item.detail}"

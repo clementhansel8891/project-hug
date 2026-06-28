@@ -58,7 +58,7 @@ export function CreatePaymentDialog({
                 Initiate outgoing transfers to external beneficiaries, suppliers, or reimbursements.
               </p>
               <div className="mt-8 space-y-3">
-                <div className="bg-white/5 border border-border p-4 rounded-2xl">
+                <div className="bg-muted border border-border p-4 rounded-2xl">
                   <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5">Source Account</p>
                   <p className="font-bold text-white text-sm">
                     {source ? moneySources.find((s) => s.id === source)?.name : "Main Treasury"}
@@ -69,7 +69,7 @@ export function CreatePaymentDialog({
                     <Send className="w-4 h-4 text-muted-foreground" />
                   </div>
                 </div>
-                <div className="bg-white/5 border border-border p-4 rounded-2xl">
+                <div className="bg-muted border border-border p-4 rounded-2xl">
                   <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5">Authorization</p>
                   <p className="font-bold text-white text-sm flex items-center gap-2">
                     {isHighLevel

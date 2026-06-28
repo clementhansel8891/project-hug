@@ -225,7 +225,7 @@ export default function ChatHub() {
         ) : (
           <>
             {/* Chat Header */}
-            <div className="p-6 border-b border-border/50 dark:border-border/50 flex justify-between items-center bg-white/50 dark:bg-muted backdrop-blur-md sticky top-0 z-10">
+            <div className="p-6 border-b border-border/50 dark:border-border/50 flex justify-between items-center bg-muted0 dark:bg-muted backdrop-blur-md sticky top-0 z-10">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
                   {activeChannel.type === "PRIVATE" ? <Lock className="h-5 w-5" /> : <Users className="h-5 w-5" />}
@@ -281,7 +281,7 @@ export default function ChatHub() {
             </ScrollArea>
 
             {/* Input */}
-            <div className="p-8 border-t border-border/50 dark:border-border/50 bg-white/50 dark:bg-muted backdrop-blur-md">
+            <div className="p-8 border-t border-border/50 dark:border-border/50 bg-muted0 dark:bg-muted backdrop-blur-md">
               <div className="max-w-4xl mx-auto flex gap-4">
                 <div className="relative flex-1 group">
                   <Input

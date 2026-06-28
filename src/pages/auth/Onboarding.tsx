@@ -134,7 +134,7 @@ export default function Onboarding() {
       </div>
 
       <div className="mt-12 sm:mx-auto sm:w-full sm:max-w-xl z-10 px-4">
-        <GlassCard variant="morphism" className="rounded-[2.5rem] shadow-2xl border border-border dark:border-white/5 overflow-hidden p-1 transition-all duration-500">
+        <GlassCard variant="morphism" className="rounded-[2.5rem] shadow-2xl border border-border overflow-hidden p-1 transition-all duration-500">
           <div className="bg-background/40 backdrop-blur-md rounded-[2.1rem] py-10 px-6 sm:px-12">
           {/* Progress Indicator */}
           <div className="mb-10">

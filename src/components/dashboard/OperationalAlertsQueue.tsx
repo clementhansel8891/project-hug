@@ -26,7 +26,7 @@ export const OperationalAlertsQueue: React.FC<OperationalAlertsQueueProps> = ({ 
       case 'CRITICAL': return { icon: AlertCircle, color: 'text-destructive-foreground', glow: 'shadow-rose-500/20', bg: 'bg-destructive', border: 'border-destructive/20' };
       case 'HIGH': return { icon: AlertTriangle, color: 'text-warning-foreground', glow: 'shadow-amber-500/20', bg: 'bg-warning', border: 'border-warning/20' };
       case 'MEDIUM': return { icon: Info, color: 'text-primary-foreground', glow: 'shadow-blue-500/20', bg: 'bg-primary', border: 'border-primary' };
-      default: return { icon: Info, color: 'text-muted-foreground', glow: 'shadow-slate-500/10', bg: 'bg-white/5', border: 'border-border' };
+      default: return { icon: Info, color: 'text-muted-foreground', glow: 'shadow-slate-500/10', bg: 'bg-muted', border: 'border-border' };
     }
   };
 
@@ -42,7 +42,7 @@ export const OperationalAlertsQueue: React.FC<OperationalAlertsQueueProps> = ({ 
             <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Critical issues requiring intervention</p>
           </div>
         </div>
-        <div className="flex h-8 w-16 items-center justify-center rounded-lg bg-white/5 border border-border">
+        <div className="flex h-8 w-16 items-center justify-center rounded-lg bg-muted border border-border">
            <span className="text-[10px] font-black text-foreground">{data.length}</span>
            <span className="text-[8px] font-bold text-muted-foreground ml-1 uppercase tracking-tighter">Live</span>
         </div>

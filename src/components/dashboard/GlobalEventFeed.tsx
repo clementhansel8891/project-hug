@@ -49,7 +49,7 @@ export const GlobalEventFeed: React.FC<GlobalEventFeedProps> = ({ activities = [
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Real-time multi-tenant activity stream</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-border">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted border border-border">
            <div className="h-2 w-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
            <span className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em]">Live Stream Active</span>
         </div>
@@ -61,7 +61,7 @@ export const GlobalEventFeed: React.FC<GlobalEventFeedProps> = ({ activities = [
             <div 
               key={i} 
               onClick={() => handleItemClick(activity.module)}
-              className="group/item flex items-start gap-5 rounded-3xl border border-border bg-white/2 p-6 transition-all hover:bg-white/5 hover:border-border cursor-pointer relative overflow-hidden"
+              className="group/item flex items-start gap-5 rounded-3xl border border-border bg-white/2 p-6 transition-all hover:bg-muted hover:border-border cursor-pointer relative overflow-hidden"
             >
               <div className={cn(
                 "mt-2 h-2.5 w-2.5 rounded-full shrink-0 shadow-lg", 
@@ -92,7 +92,7 @@ export const GlobalEventFeed: React.FC<GlobalEventFeedProps> = ({ activities = [
             </div>
           )) : (
             <div className="col-span-2 flex h-[350px] flex-col items-center justify-center text-center opacity-30">
-              <div className="rounded-3xl bg-white/5 p-6 border border-border">
+              <div className="rounded-3xl bg-muted p-6 border border-border">
                 <ActivityIcon className="h-10 w-10 text-muted-foreground" />
               </div>
               <p className="mt-6 text-sm font-black uppercase tracking-[0.3em] text-muted-foreground italic">Static Environment</p>

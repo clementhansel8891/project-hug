@@ -73,7 +73,7 @@ export default function WhiteLabelSettings() {
             </TabsList>
 
             <TabsContent value="branding" className="space-y-6">
-              <Card className="border-border/60 dark:border-border/60 shadow-sm overflow-hidden bg-white/50 dark:bg-muted backdrop-blur-sm">
+              <Card className="border-border/60 dark:border-border/60 shadow-sm overflow-hidden bg-muted0 dark:bg-muted backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Layout className="h-5 w-5 text-primary" />
@@ -127,7 +127,7 @@ export default function WhiteLabelSettings() {
                 </CardContent>
               </Card>
 
-              <Card className="border-border/60 dark:border-border/60 shadow-sm bg-white/50 dark:bg-muted backdrop-blur-sm">
+              <Card className="border-border/60 dark:border-border/60 shadow-sm bg-muted0 dark:bg-muted backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Type className="h-5 w-5 text-primary" />
@@ -149,7 +149,7 @@ export default function WhiteLabelSettings() {
             </TabsContent>
 
             <TabsContent value="domain" className="space-y-6">
-              <Card className="border-border/60 dark:border-border/60 shadow-sm bg-white/50 dark:bg-muted backdrop-blur-sm">
+              <Card className="border-border/60 dark:border-border/60 shadow-sm bg-muted0 dark:bg-muted backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Globe className="h-5 w-5 text-primary" />
@@ -211,7 +211,7 @@ export default function WhiteLabelSettings() {
             </TabsContent>
 
             <TabsContent value="advanced" className="space-y-6">
-               <Card className="border-border/60 dark:border-border/60 shadow-sm bg-white/50 dark:bg-muted backdrop-blur-sm">
+               <Card className="border-border/60 dark:border-border/60 shadow-sm bg-muted0 dark:bg-muted backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-lg">Advanced Settings</CardTitle>
                 </CardHeader>

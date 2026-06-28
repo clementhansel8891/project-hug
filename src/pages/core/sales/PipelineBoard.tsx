@@ -161,7 +161,7 @@ export default function PipelineBoard() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input 
               placeholder="Filter opportunities..." 
-              className="pl-12 h-14 bg-white/50 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm"
+              className="pl-12 h-14 bg-muted0 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -195,7 +195,7 @@ export default function PipelineBoard() {
               
               return (
                 <div key={stage} className="flex flex-col w-[350px] shrink-0 group">
-                  <div className="flex items-center justify-between p-5 mb-6 rounded-[2rem] bg-white/40 dark:bg-muted backdrop-blur-xl border border-border dark:border-border/20 shadow-xl group-hover:shadow-2xl transition-all duration-500">
+                  <div className="flex items-center justify-between p-5 mb-6 rounded-[2rem] bg-card dark:bg-muted backdrop-blur-xl border border-border dark:border-border/20 shadow-xl group-hover:shadow-2xl transition-all duration-500">
                      <div className="flex items-center gap-4">
                         <div className={cn("h-4 w-4 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]", STAGE_COLORS[stage])} />
                         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground">{stage.replace('_', ' ')}</p>

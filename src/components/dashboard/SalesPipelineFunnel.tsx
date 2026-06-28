@@ -33,7 +33,7 @@ export const SalesPipelineFunnel: React.FC<SalesPipelineFunnelProps> = ({ data: 
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Conversion from lead to closed-won</p>
           </div>
         </div>
-        <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center border border-border group-hover:bg-primary transition-all">
+        <div className="h-12 w-12 rounded-2xl bg-muted flex items-center justify-center border border-border group-hover:bg-primary transition-all">
           <Target className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
         </div>
       </div>
@@ -52,7 +52,7 @@ export const SalesPipelineFunnel: React.FC<SalesPipelineFunnelProps> = ({ data: 
               <span className="text-xs font-black text-foreground">{s.value}</span>
             </div>
             {i < stages.length - 1 && (
-              <div className="h-2 w-0.5 bg-white/5 group-hover/stage:bg-white/20 transition-colors" />
+              <div className="h-2 w-0.5 bg-muted group-hover/stage:bg-white/20 transition-colors" />
             )}
           </div>
         ))}

@@ -239,7 +239,7 @@ export default function StrategyControlDesk() {
              <h4 className="text-2xl font-black italic uppercase tracking-tight">Governance Intelligence Protocol</h4>
              <p className="text-sm font-medium opacity-60 italic italic">All strategic authorizations are logged in the secure vault. Executive override is active for 24h post-authorization.</p>
           </div>
-          <Button variant="ghost" className="h-14 px-8 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] gap-3">
+          <Button variant="ghost" className="h-14 px-8 rounded-2xl bg-muted hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] gap-3">
              VIEW AUDIT LOG <ChevronRight className="h-4 w-4" />
           </Button>
         </div>

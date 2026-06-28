@@ -177,7 +177,7 @@ export default function AppointmentDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-muted0 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <div className="flex bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner mr-2 h-auto">
                <Button 
                   variant="ghost" 
@@ -318,7 +318,7 @@ export default function AppointmentDesk() {
                     <Badge className="rounded-full font-black text-[10px] px-4 py-1.5 bg-primary text-white shadow-lg shadow-indigo-600/20 uppercase tracking-widest">{appointments.length} EVENTS</Badge>
                  </div>
               </CardHeader>
-              <ScrollArea className="flex-1 bg-black/5 dark:bg-white/5">
+              <ScrollArea className="flex-1 bg-black/5 dark:bg-muted">
                 {appointments.length === 0 ? (
                   <EmptyState
                     title="Stack empty"
@@ -399,7 +399,7 @@ export default function AppointmentDesk() {
                 ) : (
                   <div className="space-y-6">
                     {todayApts.slice(0, 3).map(apt => (
-                      <div key={apt.id} className="flex gap-6 p-6 rounded-[2.5rem] bg-white/50 dark:bg-muted hover:bg-primary transition-all group/item cursor-default relative overflow-hidden border border-border">
+                      <div key={apt.id} className="flex gap-6 p-6 rounded-[2.5rem] bg-muted0 dark:bg-muted hover:bg-primary transition-all group/item cursor-default relative overflow-hidden border border-border">
                          <div className="absolute top-0 right-0 h-24 w-24 bg-primary rounded-full -mr-12 -mt-12 group-hover/item:scale-150 transition-transform duration-[1500ms]" />
                          <div className="h-16 w-16 shrink-0 rounded-2xl bg-primary text-white flex flex-col items-center justify-center shadow-2xl relative z-10 group-hover/item:scale-110 transition-transform">
                             <span className="text-[10px] uppercase font-black leading-none opacity-60">
@@ -447,7 +447,7 @@ export default function AppointmentDesk() {
                        <p className="text-5xl font-black tracking-tighter text-success italic">{(Array.isArray(appointments) ? appointments : []).filter(a => a.status === 'COMPLETED').length}</p>
                     </div>
                  </div>
-                 <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden shadow-inner p-0.5">
+                 <div className="h-3 w-full bg-muted rounded-full overflow-hidden shadow-inner p-0.5">
                     <div className="h-full bg-white rounded-full transition-all duration-[2000ms] shadow-[0_0_20px_rgba(255,255,255,0.5)]" style={{ width: '75%' }} />
                  </div>
               </div>

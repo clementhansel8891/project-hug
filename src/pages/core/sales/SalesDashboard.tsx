@@ -123,7 +123,7 @@ export default function SalesDashboard() {
           <p className="text-muted-foreground font-medium max-w-2xl text-lg leading-relaxed italic">"The art of war is of vital importance to the State. In sales, it is the art of the deal." — Neural Strategist.</p>
         </div>
         
-        <div className="flex items-center gap-4 bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
+        <div className="flex items-center gap-4 bg-muted0 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -207,7 +207,7 @@ export default function SalesDashboard() {
                   </thead>
                   <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {filteredLeads.slice(0, 6).map((item) => (
-                      <tr key={item.id} className="group hover:bg-white/40 dark:hover:bg-muted transition-colors">
+                      <tr key={item.id} className="group hover:bg-card dark:hover:bg-muted transition-colors">
                         <td className="px-8 py-6">
                           <div className="flex items-center gap-4">
                             <div className="h-10 w-10 rounded-xl bg-muted dark:bg-muted flex items-center justify-center font-black text-xs shadow-sm">

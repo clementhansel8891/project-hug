@@ -24,7 +24,7 @@ export const SystemHealthDonut: React.FC<SystemHealthDonutProps> = ({ data }) =>
           <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground">Core Integrity</h4>
           <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Service uptime & health</p>
         </div>
-        <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center border border-border group-hover:bg-success group-hover:border-success/20 transition-all">
+        <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border border-border group-hover:bg-success group-hover:border-success/20 transition-all">
           <Server className="h-5 w-5 text-muted-foreground group-hover:text-success transition-colors" />
         </div>
       </div>

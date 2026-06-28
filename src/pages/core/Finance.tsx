@@ -359,7 +359,7 @@ export default function CoreFinance() {
         <div className="flex gap-2">
           <Button 
             variant="outline" 
-            className="rounded-xl h-10 px-6 font-black text-[10px] uppercase tracking-widest border-border text-white hover:bg-white/5"
+            className="rounded-xl h-10 px-6 font-black text-[10px] uppercase tracking-widest border-border text-white hover:bg-muted"
             onClick={() => toast({ title: "Export", description: "Preparing consolidated financial export..." })}
           >
             Export report

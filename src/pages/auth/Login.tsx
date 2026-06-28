@@ -60,7 +60,7 @@ export default function Login() {
 
       <GlassCard
         variant="morphism"
-        className="max-w-md w-full rounded-3xl shadow-2xl border border-border dark:border-white/5 overflow-hidden relative z-10 p-1"
+        className="max-w-md w-full rounded-3xl shadow-2xl border border-border overflow-hidden relative z-10 p-1"
       >
         <div className="bg-background/40 backdrop-blur-md rounded-[1.4rem] p-8 sm:p-10">
           <div className="flex flex-col items-center mb-10 text-center">

@@ -230,7 +230,7 @@ const InfrastructureControl = () => {
                         <div key={node.id} className="bg-card border border-border rounded-2xl p-5 hover:border-primary transition-all group">
                           <div className="flex justify-between items-start mb-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-xl bg-white/5 text-foreground flex items-center justify-center">
+                              <div className="w-10 h-10 rounded-xl bg-muted text-foreground flex items-center justify-center">
                                 <Cpu className="w-5 h-5" />
                               </div>
                               <div>
@@ -308,7 +308,7 @@ const InfrastructureControl = () => {
                 <Card key={req.id} className="border border-border bg-card rounded-3xl overflow-hidden hover:border-primary transition-all shadow-2xl backdrop-blur-3xl">
                   <CardContent className="p-5">
                     <div className="flex justify-between items-start mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 text-primary flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-muted text-primary flex items-center justify-center">
                         <Zap className="w-5 h-5" />
                       </div>
                       <Badge className={`text-[9px] font-black tracking-widest uppercase text-foreground ${
@@ -337,7 +337,7 @@ const InfrastructureControl = () => {
               ))}
               {requests.length === 0 && (
                 <div className="col-span-full border-2 border-dashed border-border rounded-3xl p-6 flex flex-col items-center justify-center text-center">
-                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
                     <Network className="w-6 h-6 text-muted-foreground/60" />
                   </div>
                   <div className="text-sm font-black italic text-muted-foreground uppercase tracking-widest">No Active Provisioning Requests</div>
@@ -355,7 +355,7 @@ const InfrastructureControl = () => {
              </div>
 
              <div className="border-2 border-dashed border-border rounded-2xl p-8 flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
                   <BarChart3 className="w-6 h-6 text-muted-foreground/60" />
                 </div>
                 <div className="text-sm font-black italic text-muted-foreground uppercase tracking-widest">No infrastructure events</div>

@@ -387,7 +387,7 @@ export default function ConnectedAccountsDesk() {
         
         {/* Placeholder for expansion */}
         <button 
-          className="rounded-[3rem] border-4 border-dashed border-border dark:border-border flex flex-col items-center justify-center gap-6 h-[450px] group hover:border-primary transition-all hover:bg-white/40 dark:hover:bg-muted"
+          className="rounded-[3rem] border-4 border-dashed border-border dark:border-border flex flex-col items-center justify-center gap-6 h-[450px] group hover:border-primary transition-all hover:bg-card dark:hover:bg-muted"
           onClick={() => setConnectOpen(true)}
         >
            <div className="h-20 w-20 rounded-full bg-muted dark:bg-muted flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all shadow-xl">

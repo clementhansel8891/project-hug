@@ -53,7 +53,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl p-0 rounded-[3rem] border-border bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden">
-        <DialogHeader className="p-10 bg-white/5 border-b border-border">
+        <DialogHeader className="p-10 bg-muted border-b border-border">
           <div className="flex items-center justify-between">
             <div>
               <DialogTitle className="flex items-center gap-5 text-3xl font-black tracking-tighter text-white uppercase italic leading-none">
@@ -66,7 +66,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
                 <span className="w-2 h-2 rounded-full bg-success animate-pulse" /> ANALYTICS_ENGINE_ACTIVE
               </p>
             </div>
-            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-white/5 text-muted-foreground hover:text-white" onClick={() => onOpenChange(false)}>
+            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-muted text-muted-foreground hover:text-white" onClick={() => onOpenChange(false)}>
               <X className="h-6 w-6" />
             </Button>
           </div>
@@ -74,7 +74,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
 
         <div className="p-10 space-y-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-none bg-white/5 rounded-[2rem] overflow-hidden group">
+            <Card className="border-none bg-muted rounded-[2rem] overflow-hidden group">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Inventory Turnover</CardTitle>
                 <TrendingUp className="h-4 w-4 text-success" />
@@ -85,7 +85,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
               </CardContent>
             </Card>
 
-            <Card className="border-none bg-white/5 rounded-[2rem] overflow-hidden">
+            <Card className="border-none bg-muted rounded-[2rem] overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Stock Accuracy</CardTitle>
                 <Package className="h-4 w-4 text-primary" />
@@ -96,7 +96,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
               </CardContent>
             </Card>
 
-            <Card className="border-none bg-white/5 rounded-[2rem] overflow-hidden">
+            <Card className="border-none bg-muted rounded-[2rem] overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Shrinkage Rate</CardTitle>
                 <TrendingDown className="h-4 w-4 text-destructive" />

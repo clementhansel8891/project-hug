@@ -42,15 +42,15 @@ export function FutureIntegrationDialog({
           </p>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-border hover:border-border transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted border border-border hover:border-border transition-colors">
               <Globe className="h-5 w-5 text-primary" />
               <div className="text-xs font-bold text-muted-foreground">Global API Webhooks</div>
             </div>
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-border hover:border-border transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted border border-border hover:border-border transition-colors">
               <Zap className="h-5 w-5 text-warning" />
               <div className="text-xs font-bold text-muted-foreground">Instant Rate Calculation</div>
             </div>
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-border hover:border-border transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-muted border border-border hover:border-border transition-colors">
               <Shield className="h-5 w-5 text-success" />
               <div className="text-xs font-bold text-muted-foreground">Secure Transit Insurance</div>
             </div>
@@ -61,7 +61,7 @@ export function FutureIntegrationDialog({
           </div>
         </div>
 
-        <DialogFooter className="p-8 bg-white/5 border-t border-border flex flex-col gap-3 relative z-10">
+        <DialogFooter className="p-8 bg-muted border-t border-border flex flex-col gap-3 relative z-10">
           <Button 
             className="w-full rounded-2xl h-14 bg-white text-muted-foreground font-black uppercase tracking-widest text-xs hover:bg-muted transition-all hover:scale-[1.02] active:scale-[0.98]"
             onClick={() => onOpenChange(false)}

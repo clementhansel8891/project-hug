@@ -85,7 +85,7 @@ export function JVSettlementDialog({ open, onOpenChange, profileId, onSuccess }:
                 type="date"
                 value={form.period_start}
                 onChange={e => setForm({ ...form, period_start: e.target.value })}
-                className="bg-white/50"
+                className="bg-muted0"
               />
             </div>
             <div className="grid gap-2">
@@ -94,7 +94,7 @@ export function JVSettlementDialog({ open, onOpenChange, profileId, onSuccess }:
                 type="date"
                 value={form.period_end}
                 onChange={e => setForm({ ...form, period_end: e.target.value })}
-                className="bg-white/50"
+                className="bg-muted0"
               />
             </div>
           </div>

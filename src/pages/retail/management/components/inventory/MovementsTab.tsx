@@ -109,7 +109,7 @@ export const MovementsTab: React.FC<Props> = ({
               {(Array.isArray(auditLog) ? auditLog : []).map((log, i) => (
                 <tr
                   key={i}
-                  className="border-b border-white/[0.02] last:border-none hover:bg-white/5 transition-colors"
+                  className="border-b border-white/[0.02] last:border-none hover:bg-muted transition-colors"
                 >
                   <td className="px-7 py-4 font-mono text-[10px] text-muted-foreground">
                     {log.ts}

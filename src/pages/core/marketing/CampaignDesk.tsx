@@ -197,7 +197,7 @@ export default function CampaignDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-muted0 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -384,7 +384,7 @@ export default function CampaignDesk() {
                   </thead>
                   <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {(Array.isArray(filtered) ? filtered : []).map((campaign) => (
-                      <tr key={campaign.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
+                      <tr key={campaign.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
                         <td className="px-6 py-8">
                            <div className="flex items-center gap-4">
                               <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
@@ -500,7 +500,7 @@ export default function CampaignDesk() {
                 </div>
                 
                 <div className="col-span-8 flex flex-col bg-white dark:bg-muted">
-                   <div className="p-10 border-b border-border dark:border-border flex items-center justify-between bg-white/50 dark:bg-muted backdrop-blur-md relative z-10">
+                   <div className="p-10 border-b border-border dark:border-border flex items-center justify-between bg-muted0 dark:bg-muted backdrop-blur-md relative z-10">
                       <div className="flex gap-12">
                          <div className="space-y-1">
                             <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Global Budget</p>

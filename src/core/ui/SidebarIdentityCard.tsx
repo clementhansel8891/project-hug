@@ -13,7 +13,7 @@ export const SidebarIdentityCard: React.FC = () => {
   return (
     <div className="p-6 rounded-3xl bg-primary text-white shadow-2xl shadow-indigo-900/20 relative overflow-hidden group mb-6">
       {/* Dynamic Background Pattern */}
-      <div className="absolute top-0 right-0 h-32 w-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+      <div className="absolute top-0 right-0 h-32 w-32 bg-muted rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-1000" />
       <div className="absolute bottom-0 left-0 h-24 w-24 bg-primary rounded-full -ml-12 -mb-12 blur-xl" />
 
       <div className="relative z-10 space-y-5">

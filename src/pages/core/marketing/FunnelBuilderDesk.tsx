@@ -329,7 +329,7 @@ export default function FunnelBuilderDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-muted0 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest gap-3 transition-all hover:bg-white dark:hover:bg-muted">
@@ -388,7 +388,7 @@ export default function FunnelBuilderDesk() {
                       "w-full flex items-center gap-4 p-5 rounded-[1.5rem] text-left transition-all duration-300 group relative overflow-hidden",
                       selectedFunnel?.id === f.id 
                         ? "bg-white dark:bg-muted shadow-xl shadow-indigo-500/10 translate-x-2" 
-                        : "hover:bg-white/50 dark:hover:bg-muted hover:translate-x-1"
+                        : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1"
                     )}
                   >
                     {selectedFunnel?.id === f.id && (
@@ -538,11 +538,11 @@ export default function FunnelBuilderDesk() {
               </CardHeader>
               <CardContent className="p-8 space-y-10">
                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-white/50 dark:bg-muted shadow-sm border border-border group hover:shadow-md transition-all">
+                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-muted0 dark:bg-muted shadow-sm border border-border group hover:shadow-md transition-all">
                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic leading-none block mb-1">Global Traffic</span>
                        <p className="text-2xl font-black tracking-tighter group-hover:text-primary transition-colors">12.4k</p>
                     </div>
-                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-white/50 dark:bg-muted shadow-sm border border-border group hover:shadow-md transition-all">
+                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-muted0 dark:bg-muted shadow-sm border border-border group hover:shadow-md transition-all">
                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic leading-none block mb-1">Conversions</span>
                        <p className="text-2xl font-black tracking-tighter text-primary">842</p>
                     </div>

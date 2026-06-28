@@ -105,7 +105,7 @@ export const PostekPreviewPane: React.FC<PostekPreviewPaneProps> = ({
         <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
           Postek Engine Preview Layout (Physical Mode)
         </span>
-        <Badge variant="outline" className="bg-white/50 text-[10px] font-bold">
+        <Badge variant="outline" className="bg-muted0 text-[10px] font-bold">
           1 mm = {PREVIEW_SCALE} px
         </Badge>
       </div>

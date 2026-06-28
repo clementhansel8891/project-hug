@@ -219,7 +219,7 @@ export default function Customer360() {
           </Card>
 
           <Card className="rounded-[3rem] border-none shadow-2xl bg-muted text-white p-10 relative overflow-hidden group">
-             <div className="absolute top-0 right-0 h-40 w-40 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-1000" />
+             <div className="absolute top-0 right-0 h-40 w-40 bg-muted rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-1000" />
              <div className="relative z-10 space-y-8">
                 <div className="flex items-center gap-4">
                    <div className="h-14 w-14 bg-primary rounded-2xl flex items-center justify-center shadow-2xl group-hover:rotate-12 transition-transform">

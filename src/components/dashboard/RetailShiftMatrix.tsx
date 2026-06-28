@@ -36,7 +36,7 @@ export const RetailShiftMatrix: React.FC<RetailShiftMatrixProps> = ({ data = [] 
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live status of cashiers and reconciliation</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-border">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-muted border border-border">
            <span className="text-[10px] font-black text-foreground">{data.length}</span>
            <span className="text-[8px] font-bold text-muted-foreground ml-1 uppercase tracking-tighter">Active Shifts</span>
         </div>
@@ -44,7 +44,7 @@ export const RetailShiftMatrix: React.FC<RetailShiftMatrixProps> = ({ data = [] 
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {data.map((shift, i) => (
-          <div key={i} className="group/shift relative flex flex-col gap-6 rounded-3xl border border-border bg-white/2 p-6 transition-all hover:bg-white/5 hover:border-border">
+          <div key={i} className="group/shift relative flex flex-col gap-6 rounded-3xl border border-border bg-white/2 p-6 transition-all hover:bg-muted hover:border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground group-hover/shift:text-primary transition-colors">
                 <Store className="h-3.5 w-3.5" />

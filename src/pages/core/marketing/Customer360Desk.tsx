@@ -141,7 +141,7 @@ export default function Customer360Desk() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input 
               placeholder="Search entity cluster..." 
-              className="pl-12 h-14 bg-white/50 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all"
+              className="pl-12 h-14 bg-muted0 dark:bg-muted backdrop-blur-xl border-none shadow-inner rounded-2xl min-w-[300px] font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -170,7 +170,7 @@ export default function Customer360Desk() {
                   <Badge className="rounded-full font-black text-[9px] px-4 py-1.5 bg-primary text-white shadow-lg shadow-indigo-600/20 uppercase tracking-widest">{filteredContacts.length} NODES</Badge>
                </div>
             </CardHeader>
-            <ScrollArea className="flex-1 bg-black/5 dark:bg-white/5">
+            <ScrollArea className="flex-1 bg-black/5 dark:bg-muted">
               {filteredContacts.length === 0 ? (
                 <EmptyState
                   title="Cluster empty"
@@ -187,7 +187,7 @@ export default function Customer360Desk() {
                         "w-full flex items-center gap-6 p-6 rounded-[2.5rem] text-left transition-all duration-500 group relative overflow-hidden",
                         selectedContact?.id === customer.id 
                           ? "bg-white dark:bg-muted shadow-2xl shadow-indigo-500/20 translate-x-3 scale-[1.02] border border-primary" 
-                          : "hover:bg-white/50 dark:hover:bg-muted hover:translate-x-2"
+                          : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-2"
                       )}
                     >
                       {selectedContact?.id === customer.id && (
@@ -269,9 +269,9 @@ export default function Customer360Desk() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MessageSquare className="h-7 w-7" /></Button>
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><Calendar className="h-7 w-7" /></Button>
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MoreHorizontal className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MessageSquare className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><Calendar className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-muted border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MoreHorizontal className="h-7 w-7" /></Button>
                   </div>
                 </div>
                 
@@ -323,7 +323,7 @@ export default function Customer360Desk() {
                           </div>
                           <Badge className="bg-primary text-primary font-black text-[10px] px-4 py-1.5 rounded-full border-none uppercase tracking-widest shadow-inner">LIVE TELEMETRY</Badge>
                        </CardHeader>
-                       <ScrollArea className="flex-1 bg-black/5 dark:bg-white/5">
+                       <ScrollArea className="flex-1 bg-black/5 dark:bg-muted">
                          <div className="p-12 space-y-12">
                            {(!profile.timeline || profile.timeline.length === 0) ? (
                              <div className="text-center py-32 grayscale opacity-20 space-y-8 flex flex-col items-center">
@@ -419,7 +419,7 @@ export default function Customer360Desk() {
                         </Card>
 
                         <Card className="rounded-[4rem] border-none shadow-2xl bg-muted text-white p-12 relative overflow-hidden group hover:shadow-slate-500/20 transition-all duration-700 flex flex-col justify-between">
-                           <div className="absolute top-0 right-0 h-64 w-64 bg-white/5 rounded-full blur-[100px] -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-1000" />
+                           <div className="absolute top-0 right-0 h-64 w-64 bg-muted rounded-full blur-[100px] -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-1000" />
                            <div className="relative z-10 space-y-8">
                               <div className="h-20 w-20 rounded-[2rem] bg-white/10 backdrop-blur-xl flex items-center justify-center shadow-2xl border border-border group-hover:rotate-12 transition-all duration-500">
                                  <Target className="h-10 w-10 text-white" />
@@ -442,7 +442,7 @@ export default function Customer360Desk() {
               </Tabs>
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center rounded-[5rem] border-2 border-dashed border-border dark:border-border/20 bg-white/5 dark:bg-muted grayscale opacity-20 space-y-10 animate-in fade-in duration-1000 relative overflow-hidden">
+            <div className="h-full flex flex-col items-center justify-center rounded-[5rem] border-2 border-dashed border-border dark:border-border/20 bg-muted dark:bg-muted grayscale opacity-20 space-y-10 animate-in fade-in duration-1000 relative overflow-hidden">
                <div className="absolute inset-0 bg-primary blur-[120px] rounded-full scale-150 animate-pulse" />
                <div className="relative z-10">
                   <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_60px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border group">

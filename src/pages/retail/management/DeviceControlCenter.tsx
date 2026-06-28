@@ -399,7 +399,7 @@ const DeviceControlCenter = () => {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black italic uppercase tracking-widest transition-all ${tab === t.id ? "bg-white/10 text-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-white/5"}`}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[11px] font-black italic uppercase tracking-widest transition-all ${tab === t.id ? "bg-white/10 text-foreground shadow-md" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}
             >
               {t.icon}
               {t.label}

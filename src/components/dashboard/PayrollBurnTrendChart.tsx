@@ -32,7 +32,7 @@ export const PayrollBurnTrendChart: React.FC<PayrollBurnTrendChartProps> = ({ da
           <h4 className="text-lg font-black italic uppercase tracking-tighter text-foreground">Payroll Burn Trend</h4>
           <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Monthly expenditure trajectory</p>
         </div>
-        <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center border border-border group-hover:bg-destructive transition-all">
+        <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border border-border group-hover:bg-destructive transition-all">
           <CreditCard className="h-5 w-5 text-muted-foreground group-hover:text-destructive transition-colors" />
         </div>
       </div>

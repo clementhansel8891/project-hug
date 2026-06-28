@@ -55,7 +55,7 @@ export const BranchLeaderboard: React.FC<BranchLeaderboardProps> = ({ data }) =>
                         </div>
                         <p className="text-xl font-black text-foreground">Rp {(data.revenue / 1000).toFixed(1)}k</p>
                         <div className="mt-2 flex items-center gap-1.5">
-                           <div className="h-1 w-12 bg-white/5 rounded-full overflow-hidden">
+                           <div className="h-1 w-12 bg-muted rounded-full overflow-hidden">
                               <div className="h-full bg-primary" style={{ width: `${data.percentOfTotal}%` }} />
                            </div>
                            <p className="text-[9px] font-bold text-muted-foreground">{data.percentOfTotal.toFixed(1)}% market share</p>

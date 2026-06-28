@@ -234,9 +234,9 @@ export default function OmnichannelInbox() {
 
   return (
     <div className="p-4 h-[calc(100vh-120px)] animate-in fade-in duration-700">
-      <div className="h-full flex gap-0 overflow-hidden bg-white/40 dark:bg-muted backdrop-blur-3xl border border-border rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.25)] relative">
+      <div className="h-full flex gap-0 overflow-hidden bg-card dark:bg-muted backdrop-blur-3xl border border-border rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.25)] relative">
         {/* Sidebar: Strategic Registry */}
-        <div className="w-96 border-r border-border flex flex-col bg-white/40 dark:bg-muted backdrop-blur-xl shrink-0">
+        <div className="w-96 border-r border-border flex flex-col bg-card dark:bg-muted backdrop-blur-xl shrink-0">
           <div className="p-8 border-b border-border space-y-8">
             <div className="flex items-center justify-between">
                <div className="space-y-1">
@@ -318,7 +318,7 @@ export default function OmnichannelInbox() {
                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                <Input 
                 placeholder="Search encrypted history..." 
-                className="pl-12 h-14 bg-white/50 dark:bg-muted border-none shadow-inner rounded-2xl text-sm font-medium" 
+                className="pl-12 h-14 bg-muted0 dark:bg-muted border-none shadow-inner rounded-2xl text-sm font-medium" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                />
@@ -337,7 +337,7 @@ export default function OmnichannelInbox() {
                   variant={filter === cat.id ? "default" : "secondary"} 
                   className={cn(
                     "cursor-pointer text-[9px] font-black px-4 py-1.5 rounded-full transition-all whitespace-nowrap uppercase tracking-widest border-none shadow-sm",
-                    filter === cat.id ? "bg-primary text-white shadow-indigo-500/20 scale-105" : "bg-white/50 dark:bg-muted text-muted-foreground hover:bg-muted"
+                    filter === cat.id ? "bg-primary text-white shadow-indigo-500/20 scale-105" : "bg-muted0 dark:bg-muted text-muted-foreground hover:bg-muted"
                   )}
                   onClick={() => setFilter(cat.id as any)}
                  >
@@ -364,7 +364,7 @@ export default function OmnichannelInbox() {
                          "w-full p-5 flex items-start gap-5 text-left transition-all duration-300 rounded-[2rem] group relative overflow-hidden",
                          selectedConv?.id === conv.id 
                            ? "bg-white dark:bg-muted shadow-2xl shadow-indigo-500/10 translate-x-2 border-l-4 border-l-indigo-600" 
-                           : "hover:bg-white/50 dark:hover:bg-muted hover:translate-x-1"
+                           : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1"
                        )}
                      >
                         <Avatar className={cn(
@@ -411,7 +411,7 @@ export default function OmnichannelInbox() {
         </div>
 
         {/* Main Area: Encrypted Chat Stream */}
-        <div className="flex-1 flex flex-col min-w-0 bg-white/40 dark:bg-muted backdrop-blur-3xl relative">
+        <div className="flex-1 flex flex-col min-w-0 bg-card dark:bg-muted backdrop-blur-3xl relative">
           {/* Decorative Elements */}
           <div className="absolute top-0 right-0 h-96 w-96 bg-primary rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none" />
           <div className="absolute bottom-0 left-0 h-96 w-96 bg-success rounded-full blur-3xl -ml-48 -mb-48 pointer-events-none" />
@@ -419,7 +419,7 @@ export default function OmnichannelInbox() {
           {selectedConv ? (
             <>
               {/* Chat Header */}
-              <div className="p-8 border-b border-border flex items-center justify-between shrink-0 bg-white/60 dark:bg-muted backdrop-blur-2xl z-10">
+              <div className="p-8 border-b border-border flex items-center justify-between shrink-0 bg-card dark:bg-muted backdrop-blur-2xl z-10">
                 <div className="flex items-center gap-6">
                   <Avatar className="h-16 w-16 rounded-2xl ring-4 ring-indigo-500/10 shadow-2xl group-hover:scale-110 transition-transform duration-500">
                     <AvatarFallback className="bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-primary font-black text-xl italic">
@@ -443,7 +443,7 @@ export default function OmnichannelInbox() {
                     variant={autoRefresh ? "default" : "outline"}
                     className={cn(
                       "h-12 px-6 rounded-2xl transition-all shadow-sm font-black text-[10px] uppercase tracking-widest gap-2",
-                      autoRefresh ? "bg-success hover:bg-success" : "bg-white/50 dark:bg-muted"
+                      autoRefresh ? "bg-success hover:bg-success" : "bg-muted0 dark:bg-muted"
                     )}
                     onClick={() => setAutoRefresh(!autoRefresh)}
                   >
@@ -462,7 +462,7 @@ export default function OmnichannelInbox() {
                   
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/50 dark:bg-muted shadow-md hover:scale-110 transition-all border border-border"><MoreVertical className="h-5 w-5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-muted0 dark:bg-muted shadow-md hover:scale-110 transition-all border border-border"><MoreVertical className="h-5 w-5" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 shadow-2xl border-none">
                       <DropdownMenuLabel className="font-black text-[10px] uppercase tracking-widest opacity-50 px-3 py-2">Stream Protocol</DropdownMenuLabel>
@@ -549,11 +549,11 @@ export default function OmnichannelInbox() {
               </ScrollArea>
 
               {/* Message Input Cluster */}
-              <div className="p-8 border-t border-border shrink-0 bg-white/60 dark:bg-muted backdrop-blur-2xl z-10">
+              <div className="p-8 border-t border-border shrink-0 bg-card dark:bg-muted backdrop-blur-2xl z-10">
                 <div className="max-w-5xl mx-auto flex items-end gap-6">
                   <div className="flex gap-2 pb-2">
-                     <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/50 dark:bg-muted shadow-md hover:scale-110 transition-all text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
-                     <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/50 dark:bg-muted shadow-md hover:scale-110 transition-all text-muted-foreground"><Smile className="h-5 w-5" /></Button>
+                     <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-muted0 dark:bg-muted shadow-md hover:scale-110 transition-all text-muted-foreground"><Paperclip className="h-5 w-5" /></Button>
+                     <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-muted0 dark:bg-muted shadow-md hover:scale-110 transition-all text-muted-foreground"><Smile className="h-5 w-5" /></Button>
                   </div>
                   
                   <div className="flex-1 relative group/input">
@@ -614,8 +614,8 @@ export default function OmnichannelInbox() {
 
         {/* Right Sidebar: Intelligence Matrix */}
         {selectedConv && (
-          <div className="w-96 border-l border-border bg-white/40 dark:bg-muted backdrop-blur-xl flex flex-col shrink-0 overflow-y-auto animate-in slide-in-from-right duration-700">
-            <div className="p-10 text-center bg-white/60 dark:bg-muted backdrop-blur-2xl border-b border-border">
+          <div className="w-96 border-l border-border bg-card dark:bg-muted backdrop-blur-xl flex flex-col shrink-0 overflow-y-auto animate-in slide-in-from-right duration-700">
+            <div className="p-10 text-center bg-card dark:bg-muted backdrop-blur-2xl border-b border-border">
               <div className="relative mx-auto w-32 h-32 mb-8">
                 <div className="absolute inset-0 bg-primary rounded-full animate-ping blur-xl" />
                 <Avatar className="h-32 w-32 border-8 border-white dark:border-border shadow-[0_40px_80px_-15px_rgba(0,0,0,0.3)] relative group-hover:scale-105 transition-transform duration-500">
@@ -641,7 +641,7 @@ export default function OmnichannelInbox() {
                   <BrainCircuit className="h-4 w-4 text-primary" />
                 </div>
                 
-                <div className="bg-white/60 dark:bg-muted backdrop-blur-md rounded-[2.5rem] p-8 shadow-2xl border border-border space-y-8">
+                <div className="bg-card dark:bg-muted backdrop-blur-md rounded-[2.5rem] p-8 shadow-2xl border border-border space-y-8">
                   <div className="space-y-3">
                     <div className="flex justify-between items-end">
                       <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">Growth Index</span>
@@ -661,7 +661,7 @@ export default function OmnichannelInbox() {
 
               <div className="space-y-6">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic leading-none">Environment</p>
-                <div className="space-y-6 bg-white/40 dark:bg-muted p-8 rounded-[2.5rem] border border-border shadow-sm backdrop-blur-md">
+                <div className="space-y-6 bg-card dark:bg-muted p-8 rounded-[2.5rem] border border-border shadow-sm backdrop-blur-md">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest flex items-center gap-3"><Globe className="h-4 w-4 text-primary" /> REGION</span>
                     <span className="text-xs font-black uppercase italic">CALIFORNIA, US</span>

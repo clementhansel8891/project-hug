@@ -101,7 +101,7 @@ export function InvitePartnerDialog({ open, onOpenChange, profiles }: InvitePart
               id="email" 
               placeholder="admin@partner-tenant.com" 
               {...form.register("email")}
-              className="bg-white/50"
+              className="bg-muted0"
               disabled={mutation.isPending}
             />
             {form.formState.errors.email && (
@@ -116,7 +116,7 @@ export function InvitePartnerDialog({ open, onOpenChange, profiles }: InvitePart
               onValueChange={v => form.setValue("jv_profile_id", v)}
               disabled={mutation.isPending}
             >
-              <SelectTrigger className="bg-white/50">
+              <SelectTrigger className="bg-muted0">
                 <SelectValue placeholder="Select a profile" />
               </SelectTrigger>
               <SelectContent>
@@ -137,7 +137,7 @@ export function InvitePartnerDialog({ open, onOpenChange, profiles }: InvitePart
                 <Percent className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input 
                   type="number" 
-                  className="pl-9 bg-white/50"
+                  className="pl-9 bg-muted0"
                   {...form.register("revenue_share", { valueAsNumber: true })}
                   disabled={mutation.isPending}
                 />
@@ -152,7 +152,7 @@ export function InvitePartnerDialog({ open, onOpenChange, profiles }: InvitePart
                 <Percent className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input 
                   type="number" 
-                  className="pl-9 bg-white/50"
+                  className="pl-9 bg-muted0"
                   {...form.register("profit_share", { valueAsNumber: true })}
                   disabled={mutation.isPending}
                 />
@@ -170,7 +170,7 @@ export function InvitePartnerDialog({ open, onOpenChange, profiles }: InvitePart
               onValueChange={v => form.setValue("role", v as "NON_OPERATOR" | "OPERATOR")}
               disabled={mutation.isPending}
             >
-              <SelectTrigger className="bg-white/50">
+              <SelectTrigger className="bg-muted0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

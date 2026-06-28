@@ -188,7 +188,7 @@ export default function NurtureStudio() {
                           "w-full flex items-center gap-5 p-5 rounded-[2rem] text-left transition-all duration-300 group relative overflow-hidden",
                           selectedWorkflow?.id === wf.id 
                             ? "bg-white dark:bg-muted shadow-2xl shadow-indigo-500/10 translate-x-2 border-l-4 border-l-indigo-600" 
-                            : "hover:bg-white/50 dark:hover:bg-muted hover:translate-x-1"
+                            : "hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1"
                         )}
                       >
                          <div className={cn(
@@ -226,7 +226,7 @@ export default function NurtureStudio() {
            </Card>
 
            <Card className="rounded-[3rem] border-none shadow-2xl bg-primary text-white p-10 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 h-40 w-40 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-1000" />
+              <div className="absolute top-0 right-0 h-40 w-40 bg-muted rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-1000" />
               <div className="relative z-10 space-y-6">
                  <div className="flex items-center gap-4">
                     <div className="h-12 w-12 bg-primary rounded-2xl flex items-center justify-center shadow-2xl group-hover:rotate-12 transition-transform">

@@ -295,7 +295,7 @@ export const ItemCreationTab: React.FC<Props> = ({
           <Button
             onClick={addRow}
             variant="outline"
-            className="rounded-2xl h-12 px-6 font-black italic text-xs uppercase tracking-widest gap-2 bg-card border-white/15 hover:bg-white/10 text-foreground shadow-sm backdrop-blur-sm"
+            className="rounded-2xl h-12 px-6 font-black italic text-xs uppercase tracking-widest gap-2 bg-card border-border hover:bg-white/10 text-foreground shadow-sm backdrop-blur-sm"
           >
             <Plus className="w-4 h-4" /> Add Another Item
           </Button>
@@ -357,7 +357,7 @@ export const ItemCreationTab: React.FC<Props> = ({
                 <Button
                   variant="outline"
                   onClick={handleDownloadTemplate}
-                  className="rounded-2xl h-11 px-6 font-bold text-xs tracking-tight gap-2 border-white/15 bg-card text-foreground hover:bg-white/10"
+                  className="rounded-2xl h-11 px-6 font-bold text-xs tracking-tight gap-2 border-border bg-card text-foreground hover:bg-white/10"
                 >
                   <Download className="w-4 h-4" /> Template
                 </Button>

@@ -20,7 +20,7 @@ export const InventoryHealthWidget: React.FC<InventoryHealthWidgetProps> = ({ da
     <div className="flex flex-col h-full rounded-2xl border border-border bg-card p-8 shadow-2xl transition-all duration-500 hover:shadow-indigo-500/10 group overflow-hidden relative">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-muted-foreground border border-border group-hover:text-foreground transition-colors">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground border border-border group-hover:text-foreground transition-colors">
             <Boxes className="h-5 w-5" />
           </div>
           <div>
@@ -28,7 +28,7 @@ export const InventoryHealthWidget: React.FC<InventoryHealthWidgetProps> = ({ da
             <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Stock levels & velocity</p>
           </div>
         </div>
-        <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center border border-border">
+        <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border border-border">
            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
         </div>
       </div>
@@ -36,7 +36,7 @@ export const InventoryHealthWidget: React.FC<InventoryHealthWidgetProps> = ({ da
       <div className="space-y-4">
         {metrics.map((m, i) => (
           <div key={i} className={cn(
-            "flex items-center justify-between rounded-2xl border p-4 transition-all hover:bg-white/5",
+            "flex items-center justify-between rounded-2xl border p-4 transition-all hover:bg-muted",
             m.bg, m.border
           )}>
             <div className="flex items-center gap-4">
@@ -52,7 +52,7 @@ export const InventoryHealthWidget: React.FC<InventoryHealthWidgetProps> = ({ da
       
       <button 
         onClick={() => navigate('/core/inventory/stock')}
-        className="mt-6 w-full py-4 rounded-2xl border border-border bg-white/5 text-[9px] font-black uppercase tracking-[0.25em] text-muted-foreground hover:bg-primary hover:text-foreground hover:border-primary transition-all active:scale-[0.98]"
+        className="mt-6 w-full py-4 rounded-2xl border border-border bg-muted text-[9px] font-black uppercase tracking-[0.25em] text-muted-foreground hover:bg-primary hover:text-foreground hover:border-primary transition-all active:scale-[0.98]"
       >
         ANALYSIS CONSOLE
       </button>

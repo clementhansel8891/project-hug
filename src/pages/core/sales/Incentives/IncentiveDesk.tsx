@@ -179,7 +179,7 @@ export default function IncentiveDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-muted0 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <Button
               variant="secondary"
               className="h-14 w-14 rounded-[1.5rem] bg-primary text-white hover:bg-primary transition-all shadow-xl shadow-indigo-500/20"
@@ -348,7 +348,7 @@ export default function IncentiveDesk() {
                 </thead>
                 <tbody className="divide-y divide-border dark:divide-slate-800/10">
                   {(Array.isArray(plans) ? plans : []).map((plan) => (
-                    <tr key={plan.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
+                    <tr key={plan.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
                       <td className="px-10 py-8">
                         <div className="flex items-center gap-5">
                            <div className="h-12 w-12 rounded-2xl bg-white dark:bg-muted flex items-center justify-center font-black text-sm shadow-xl group-hover:bg-primary group-hover:text-white transition-colors border border-border dark:border-border">
@@ -414,7 +414,7 @@ export default function IncentiveDesk() {
                 </thead>
                 <tbody className="divide-y divide-border dark:divide-slate-800/10">
                   {(Array.isArray(attributions) ? attributions : []).map((attr) => (
-                    <tr key={attr.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
+                    <tr key={attr.id} className="group hover:bg-card dark:hover:bg-muted transition-all cursor-default">
                       <td className="px-10 py-8">
                         <div className="flex items-center gap-4">
                            <div className="h-10 w-10 rounded-xl bg-muted dark:bg-muted flex items-center justify-center font-black text-xs group-hover:bg-primary group-hover:text-white transition-colors">

@@ -230,7 +230,7 @@ export default function ProcurementInsights() {
           </div>
 
           <div className="p-8 rounded-[2.5rem] bg-primary text-white relative overflow-hidden group shadow-2xl shadow-primary/20">
-             <div className="absolute top-0 right-0 h-40 w-40 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-150 transition-transform duration-1000" />
+             <div className="absolute top-0 right-0 h-40 w-40 bg-muted rounded-full -mr-20 -mt-20 blur-3xl group-hover:scale-150 transition-transform duration-1000" />
              <div className="relative z-10 space-y-6">
                 <div className="space-y-2">
                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Integration Health</p>

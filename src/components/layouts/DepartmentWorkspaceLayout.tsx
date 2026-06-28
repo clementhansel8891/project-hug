@@ -115,9 +115,9 @@ export default function DepartmentWorkspaceLayout({
           mobileNavOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="h-full flex flex-col bg-white/90 dark:bg-muted backdrop-blur-2xl border-r border-border/50 dark:border-white/5 relative overflow-hidden">
+        <div className="h-full flex flex-col bg-white/90 dark:bg-muted backdrop-blur-2xl border-r border-border/50 relative overflow-hidden">
           <div className={cn("absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b pointer-events-none opacity-20", fromC5)} />
-          <div className="flex items-center justify-between p-4 border-b border-border/50 dark:border-white/5 relative z-10">
+          <div className="flex items-center justify-between p-4 border-b border-border/50 relative z-10">
             <span className="text-sm font-black uppercase tracking-widest text-muted-foreground">{title}</span>
             <Button
               variant="ghost"
@@ -148,8 +148,8 @@ export default function DepartmentWorkspaceLayout({
                           className={cn(
                             "group flex items-center gap-4 rounded-2xl px-4 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative overflow-hidden",
                             isActive
-                              ? cn("bg-white dark:bg-white/10 shadow-md translate-x-2 border-l-4", textC, shadowC, borderLC)
-                              : cn("text-muted-foreground hover:bg-white/50 dark:hover:bg-white/5 hover:translate-x-1", hoverTextC),
+                              ? cn("bg-white dark:bg-muted shadow-md translate-x-2 border-l-4", textC, shadowC, borderLC)
+                              : cn("text-muted-foreground hover:bg-muted0 dark:hover:bg-muted hover:translate-x-1", hoverTextC),
                           )}
                         >
                           <Icon className="h-5 w-5" />
@@ -234,7 +234,7 @@ export default function DepartmentWorkspaceLayout({
                      <span className={cn("h-1.5 w-1.5 rounded-full animate-pulse", bgC)} />
                      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Telemetry Active</span>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-10 w-10 md:h-14 md:w-14 rounded-2xl hover:bg-muted dark:hover:bg-white/5 transition-all">
+                  <Button variant="ghost" size="icon" className="h-10 w-10 md:h-14 md:w-14 rounded-2xl hover:bg-muted dark:hover:bg-muted transition-all">
                      <Settings className="h-5 w-5 md:h-6 md:w-6 text-muted-foreground" />
                   </Button>
                </div>
@@ -265,8 +265,8 @@ export default function DepartmentWorkspaceLayout({
                             className={cn(
                                 "group flex items-center gap-4 rounded-2xl px-4 py-4 text-[10px] font-black uppercase tracking-widest transition-all duration-500 relative overflow-hidden",
                                 isActive
-                                  ? cn("bg-white dark:bg-white/10 shadow-2xl translate-x-4 border-l-4", textC, shadowC, borderLC)
-                                  : cn("text-muted-foreground hover:bg-white/50 dark:hover:bg-white/5 hover:translate-x-2", hoverTextC),
+                                  ? cn("bg-white dark:bg-muted shadow-2xl translate-x-4 border-l-4", textC, shadowC, borderLC)
+                                  : cn("text-muted-foreground hover:bg-muted0 dark:hover:bg-muted hover:translate-x-2", hoverTextC),
                               )
                             }
                           >

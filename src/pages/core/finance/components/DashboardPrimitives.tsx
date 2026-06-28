@@ -43,7 +43,7 @@ export function NavWidget({
         <div className="flex items-start justify-between">
           <div
             className={cn(
-              "flex h-14 w-14 items-center justify-center rounded-2xl border border-white/60 shadow-sm",
+              "flex h-14 w-14 items-center justify-center rounded-2xl border border-border shadow-sm",
               iconBg,
             )}
           >

@@ -294,7 +294,7 @@ const PricingPromoDesk = () => {
                             "w-12 h-12 rounded-2xl border flex items-center justify-center shrink-0 transition-transform",
                             focusedPromoId === promo.id
                               ? "bg-primary border-primary/50 text-primary-foreground scale-105 shadow-lg"
-                              : "bg-card border-white/15 text-primary shadow-sm",
+                              : "bg-card border-border text-primary shadow-sm",
                           )}
                         >
                           <Tag className="w-5 h-5" />

@@ -33,7 +33,7 @@ export const ProcurementPipelineWidget: React.FC<ProcurementPipelineWidgetProps>
       </div>
 
       <div className="relative mt-4 mb-8 z-10">
-        <div className="absolute left-0 top-8 h-1 w-full bg-white/5 rounded-full" />
+        <div className="absolute left-0 top-8 h-1 w-full bg-muted rounded-full" />
         <div className="relative flex justify-between">
           {stages.map((s, i) => (
             <div key={i} className="flex flex-col items-center gap-4 group/stage">

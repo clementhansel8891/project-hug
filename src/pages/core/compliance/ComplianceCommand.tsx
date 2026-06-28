@@ -34,7 +34,7 @@ export default function ComplianceCommand() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="h-12 px-6 rounded-2xl bg-white/5 border-border text-white hover:bg-white/10 font-black italic uppercase text-[11px] tracking-widest gap-3 transition-all">
+          <Button variant="outline" className="h-12 px-6 rounded-2xl bg-muted border-border text-white hover:bg-white/10 font-black italic uppercase text-[11px] tracking-widest gap-3 transition-all">
             <Download className="w-4 h-4 text-success" /> Export Report
           </Button>
           <Button className="h-12 px-8 rounded-2xl bg-primary hover:bg-primary text-white font-black italic uppercase text-[11px] tracking-widest gap-3 shadow-xl shadow-indigo-600/20 transition-all">
@@ -134,7 +134,7 @@ export default function ComplianceCommand() {
                 className="w-80 h-12 bg-secondary border-border rounded-xl text-white placeholder:text-muted-foreground italic font-bold"
                 placeholder="Search logs..."
               />
-              <Button className="h-12 bg-white/5 border border-border text-white rounded-xl px-6 font-black italic uppercase text-[10px] tracking-widest hover:bg-white/10">
+              <Button className="h-12 bg-muted border border-border text-white rounded-xl px-6 font-black italic uppercase text-[10px] tracking-widest hover:bg-white/10">
                 Filter
               </Button>
             </div>

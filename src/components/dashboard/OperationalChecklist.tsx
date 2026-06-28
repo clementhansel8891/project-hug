@@ -33,7 +33,7 @@ export const OperationalChecklist: React.FC = () => {
             <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Mission-critical tasks for oversight</p>
           </div>
         </div>
-        <div className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center border border-border">
+        <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center border border-border">
            <Target className="h-5 w-5 text-primary opacity-50" />
         </div>
       </div>
@@ -43,7 +43,7 @@ export const OperationalChecklist: React.FC = () => {
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Execution Progress</span>
           <span className="text-sm font-black text-foreground">{Math.round(progress)}%</span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5 border border-border">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted border border-border">
           <div 
             className="h-full bg-primary transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(99,102,241,0.5)]" 
             style={{ width: `${progress}%` }} 
@@ -56,7 +56,7 @@ export const OperationalChecklist: React.FC = () => {
           <div 
             key={item.id} 
             className={cn(
-              "group/item flex items-center gap-4 rounded-2xl border border-transparent p-2 transition-all hover:bg-white/5",
+              "group/item flex items-center gap-4 rounded-2xl border border-transparent p-2 transition-all hover:bg-muted",
               item.completed && "opacity-50"
             )}
           >

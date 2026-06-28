@@ -69,7 +69,7 @@ export const LiveModuleActivity: React.FC<LiveModuleActivityProps> = ({ data = [
               </div>
             </div>
 
-            <div className="relative h-1 w-full overflow-hidden rounded-full bg-white/5">
+            <div className="relative h-1 w-full overflow-hidden rounded-full bg-muted">
               <div 
                 className={cn(
                   "h-full transition-all duration-1000 ease-out",

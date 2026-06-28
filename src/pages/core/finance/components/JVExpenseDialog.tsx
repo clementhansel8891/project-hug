@@ -102,7 +102,7 @@ export function JVExpenseDialog({ open, onOpenChange, profileId, onSuccess }: JV
               placeholder="e.g., Monthly office rent for shared branch"
               value={form.description}
               onChange={e => setForm({ ...form, description: e.target.value })}
-              className="bg-white/50 min-h-[80px]"
+              className="bg-muted0 min-h-[80px]"
             />
           </div>
 
@@ -114,7 +114,7 @@ export function JVExpenseDialog({ open, onOpenChange, profileId, onSuccess }: JV
                 placeholder="5000000"
                 value={form.amount}
                 onChange={e => setForm({ ...form, amount: e.target.value })}
-                className="bg-white/50"
+                className="bg-muted0"
               />
             </div>
             <div className="grid gap-2">
@@ -123,7 +123,7 @@ export function JVExpenseDialog({ open, onOpenChange, profileId, onSuccess }: JV
                 type="date"
                 value={form.expense_date}
                 onChange={e => setForm({ ...form, expense_date: e.target.value })}
-                className="bg-white/50"
+                className="bg-muted0"
               />
             </div>
           </div>
@@ -131,7 +131,7 @@ export function JVExpenseDialog({ open, onOpenChange, profileId, onSuccess }: JV
           <div className="grid gap-2">
             <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Split Method</Label>
             <Select value={form.split_method} onValueChange={v => setForm({ ...form, split_method: v })}>
-              <SelectTrigger className="bg-white/50">
+              <SelectTrigger className="bg-muted0">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -152,7 +152,7 @@ export function JVExpenseDialog({ open, onOpenChange, profileId, onSuccess }: JV
               placeholder="https://storage.example.com/receipt.pdf"
               value={form.receipt_url}
               onChange={e => setForm({ ...form, receipt_url: e.target.value })}
-              className="bg-white/50"
+              className="bg-muted0"
             />
           </div>
         </div>
