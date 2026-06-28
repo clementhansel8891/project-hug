@@ -50,6 +50,24 @@ export class RetailGatewayService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
+  /**
+   * For public/headless routes the TenantInterceptor fallback sets company_id =
+   * tenant_id (a valid string but NOT a valid FK in the companies table). This
+   * helper resolves the actual company record for the tenant so FK constraints
+   * are satisfied when creating customer/order records.
+   */
+  private async resolveCompanyCtx(ctx: TenantContext): Promise<TenantContext> {
+    if (ctx.company_id && ctx.company_id !== ctx.tenant_id) return ctx;
+    const company = await this.prisma.companies.findFirst({
+      where: { tenant_id: ctx.tenant_id },
+      select: { id: true },
+    });
+    if (company) {
+      return { ...ctx, company_id: company.id };
+    }
+    return ctx;
+  }
+
   // --- Products ---
 
   async getProducts(
@@ -166,8 +184,11 @@ export class RetailGatewayService {
       clientSecret,
     );
 
+    // Resolve real company_id for FK constraints
+    const resolvedCtx = await this.resolveCompanyCtx(ctx);
+
     const existing = await this.retailService.findCustomerByEmail(
-      ctx,
+      resolvedCtx,
       data.email,
     );
     if (existing) {
@@ -175,7 +196,7 @@ export class RetailGatewayService {
     }
 
     const password_hash = await bcrypt.hash(data.password, 10);
-    const customer = await this.retailService.createCustomer(ctx, {
+    const customer = await this.retailService.createCustomer(resolvedCtx, {
       name: data.name,
       email: data.email,
       phone: data.phone,
@@ -204,8 +225,10 @@ export class RetailGatewayService {
       clientSecret,
     );
 
+    const resolvedCtx = await this.resolveCompanyCtx(ctx);
+
     const customer = await this.retailService.findCustomerByEmail(
-      ctx,
+      resolvedCtx,
       data.email,
     );
     if (!customer || !customer.auth) {
@@ -393,13 +416,14 @@ export class RetailGatewayService {
     payload: RetailPublicOrderRequestDto,
   ) {
     await this.authenticateChannel(ctx, clientId, clientSecret);
+    const resolvedCtx = await this.resolveCompanyCtx(ctx);
     
     // Find a system employee to act as cashier for public orders
     const employees = await this.prisma.employees.findMany({
-      where: { tenant_id: ctx.tenant_id },
+      where: { tenant_id: resolvedCtx.tenant_id },
       take: 1
     });
-    console.log(`[Gateway] Found ${employees.length} employees for tenant ${ctx.tenant_id}`);
+    console.log(`[Gateway] Found ${employees.length} employees for tenant ${resolvedCtx.tenant_id}`);
     const systemEmployee = employees.find((e: any) => e.first_name === 'System') || employees[0];
     const cashier_id = systemEmployee?.id || "";
     console.log(`[Gateway] Using cashier_id: ${cashier_id}`);
@@ -407,11 +431,11 @@ export class RetailGatewayService {
     // Find or create customer
     let customerId = null;
     if (payload.customer?.email) {
-      const customer = await this.retailService.findCustomerByEmail(ctx, payload.customer.email);
+      const customer = await this.retailService.findCustomerByEmail(resolvedCtx, payload.customer.email);
       if (customer) {
         customerId = customer.id;
       } else {
-        const newCust = await this.retailService.createCustomer(ctx, {
+        const newCust = await this.retailService.createCustomer(resolvedCtx, {
           email: payload.customer.email,
           name: payload.customer.name || payload.customer.email
         });
@@ -419,7 +443,7 @@ export class RetailGatewayService {
       }
     }
 
-    const stores = await this.retailService.listStores(ctx);
+    const stores = await this.retailService.listStores(resolvedCtx);
     const store = stores[0];
     if (!store) {
       throw new NotFoundException(
@@ -431,7 +455,7 @@ export class RetailGatewayService {
       payload.items.map(async (item) => {
         // Optimization: Find by SKU directly instead of listing 200 products
         const product = await this.retailService.findProductBySku(
-          ctx,
+          resolvedCtx,
           item.sku,
         );
         if (!product) {
@@ -455,7 +479,7 @@ export class RetailGatewayService {
     const payment_method = this.normalizePaymentMethod(payload.payment_method);
 
     const order = await this.retailService.createOrder(
-      ctx,
+      resolvedCtx,
       store.location_id,
       {
         store_id: store.id,
@@ -469,13 +493,13 @@ export class RetailGatewayService {
     );
 
     // Calculate tax via service
-    const tax_amount = await this.retailService.calculateTax(ctx, order.id);
+    const tax_amount = await this.retailService.calculateTax(resolvedCtx, order.id);
 
     if (payload.payment_status === "PAID") {
       // NOTE: In a production environment, this should be verified against a payment provider webhook.
       // We log this as an 'EXTERNAL_TRUSTED_PAYMENT' for audit visibility.
       await this.retailService.processPayment(
-        ctx,
+        resolvedCtx,
         order.id,
         {
           amount: (order.grand_total as unknown as Prisma.Decimal).add(tax_amount),
