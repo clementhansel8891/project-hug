@@ -108,7 +108,7 @@ export class AuthRoutingController {
           return {
             success: true,
             data: {
-              redirect_to: '/m/retail/management',
+              redirect_to: '/m/retail/workspace',
               message: 'Your shift has ended. You now have access to retail management.',
               shift_status: 'ended',
               shift_end: shiftEnd.toISOString(),
@@ -123,7 +123,7 @@ export class AuthRoutingController {
           return {
             success: true,
             data: {
-              redirect_to: '/m/retail/management',
+              redirect_to: '/m/retail/workspace',
               message: 'Your shift has no location assigned. Please contact support.',
               shift_status: 'not_scheduled',
             },
@@ -173,7 +173,7 @@ export class AuthRoutingController {
             return {
               success: true,
               data: {
-                redirect_to: '/m/retail/operational',
+                redirect_to: '/m/retail/operational/gateway',
                 message,
                 context: {
                   store_id: store.id,
@@ -192,7 +192,7 @@ export class AuthRoutingController {
             return {
               success: true,
               data: {
-                redirect_to: '/m/retail/management',
+                redirect_to: '/m/retail/workspace',
                 message: 'Unable to determine store for your shift. Please contact support.',
                 shift_status: 'not_scheduled',
               },
@@ -204,7 +204,7 @@ export class AuthRoutingController {
           return {
             success: true,
             data: {
-              redirect_to: '/m/retail/management',
+              redirect_to: '/m/retail/workspace',
               message: 'No store found at your shift location. Please contact support.',
               shift_status: 'not_scheduled',
             },
@@ -221,7 +221,7 @@ export class AuthRoutingController {
       return {
         success: true,
         data: {
-          redirect_to: '/m/retail/management',
+          redirect_to: '/m/retail/workspace',
           message: isWeekend 
             ? 'No shift scheduled today. Enjoy your day off!'
             : 'No shift scheduled for today. You have access to retail management.',

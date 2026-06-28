@@ -26,6 +26,9 @@ import {
   PackageCheck as PackingIcon,
   TrendingUp,
   ClipboardCheck,
+  Globe2,
+  BarChart2,
+  UserCheck,
 } from "lucide-react";
 import { useRetail } from "../context/RetailContext";
 import { RetailModeSwitchControl } from "../components/RetailModeSwitchControl";
@@ -51,6 +54,14 @@ const SECTIONS: MenuSection[] = [
       { label: "Stock Request", to: "/m/retail/management/prs?dept=RETAIL", icon: ShoppingCart },
       { label: "Stock Intake", to: "/m/retail/operational/receiving", icon: ArrowDownLeft },
       { label: "Stock Opname", to: "/m/retail/operational/opname", icon: Archive },
+    ],
+  },
+  {
+    title: "E-COMMERCE",
+    items: [
+      { label: "Commerce Channels", to: "/m/retail/management/channels", icon: Globe2 },
+      { label: "E-Commerce Analytics", to: "/m/retail/management/ecommerce-analytics", icon: BarChart2 },
+      { label: "Customer Activity", to: "/m/retail/management/customers", icon: UserCheck },
     ],
   },
   {
