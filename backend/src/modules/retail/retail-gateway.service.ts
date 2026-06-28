@@ -203,9 +203,9 @@ export class RetailGatewayService {
       password_hash,
     });
 
-    const tokens = await this.issueTokens(customer, scope);
+    const tokens = await this.issueTokens(customer, scope, resolvedCtx);
     
-    this.eventEmitter.emit('retail.customer.created', { ctx, customer });
+    this.eventEmitter.emit('retail.customer.created', { ctx: resolvedCtx, customer });
 
     return {
       customer: this.mapToPublicCustomer(customer),
@@ -243,7 +243,7 @@ export class RetailGatewayService {
       throw new UnauthorizedException("Invalid email or password");
     }
 
-    const tokens = await this.issueTokens(customer, scope);
+    const tokens = await this.issueTokens(customer, scope, resolvedCtx);
     return {
       customer: this.mapToPublicCustomer(customer),
       ...tokens,
@@ -653,11 +653,12 @@ export class RetailGatewayService {
     return channel;
   }
 
-  private async issueTokens(customer: any, scope: any) {
+  private async issueTokens(customer: any, scope: any, ctx?: TenantContext) {
+    const tenantId = ctx?.tenant_id || customer.tenantContext?.tenant_id || customer.tenant_id;
     const accessToken = (jwt.sign as any)(
       {
         sub: customer.id,
-        tenant_id: customer.tenant_id,
+        tenant_id: tenantId,
         connectorId: scope.id,
         scope: "retail.public",
       },
@@ -670,9 +671,9 @@ export class RetailGatewayService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_TTL_DAYS);
 
-    await this.retailService.createCustomerSession(customer.tenantContext || { tenant_id: customer.tenant_id }, {
+    await this.retailService.createCustomerSession(ctx || customer.tenantContext || { tenant_id: tenantId }, {
       customer_id: customer.id,
-      tokenHash,
+      token_hash: tokenHash,
       expires_at: expiresAt,
     });
 
