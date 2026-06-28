@@ -1914,7 +1914,7 @@ export class InventoryDbRepository implements IInventoryRepository {
   // --- Category Management ---
   async getProductCategories(ctx: TenantContext): Promise<any[]> {
     return this.prisma.product_categories.findMany({
-      where: MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+      where: { tenant_id: ctx.tenant_id },
       orderBy: { name: "asc" },
     });
   }

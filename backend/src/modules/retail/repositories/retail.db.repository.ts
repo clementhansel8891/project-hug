@@ -83,7 +83,7 @@ export class RetailDbRepository implements IRetailRepository {
 
   async listCategories(ctx: TenantContext): Promise<any[]> {
     return this.prisma.product_categories.findMany({
-      where: MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true, excludeEcommerce: true }),
+      where: { tenant_id: ctx.tenant_id },
       orderBy: { name: "asc" },
     });
   }
