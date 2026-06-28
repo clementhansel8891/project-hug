@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -12,26 +15,26 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeApiClient } from "@/core/services/finance/financeApiClient";
 import { logService } from "@/core/services/finance/logService";
 import { useDepartmentalGovernance } from "@/core/hooks/useDepartmentalGovernance";
 import { formatNumber } from "@/lib/format";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { policySchema, type PolicyFormData } from "@/core/finance/schemas";
 import { CreatePolicyModal } from "@/core/finance/FinanceModalForms";
 
 type PolicyType = "APPROVAL_LIMIT" | "PAYMENT_RULE" | "EXPENSE_POLICY";
 
 export default function PolicyManager() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { canManageFiscal } = useDepartmentalGovernance();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [policyForm, setPolicyForm] = useState({
-    title: "",
-    type: "APPROVAL_LIMIT" as PolicyType,
-    description: "",
-    threshold: 0,
-  });
   const [budgetForm, setBudgetForm] = useState({
     department: "",
     totalBudget: 0,
@@ -41,6 +44,38 @@ export default function PolicyManager() {
   const [selectedPolicy, setSelectedPolicy] = useState<FinancePolicyRow | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // --- React Hook Form: Create Policy ---
+  const policyForm = useForm<PolicyFormData>({
+    resolver: zodResolver(policySchema),
+    defaultValues: {
+      title: "",
+      type: "APPROVAL_LIMIT",
+      description: "",
+      threshold: 0,
+    },
+  });
+
+  const policyMutation = useMutation({
+    mutationFn: (data: PolicyFormData) =>
+      apiRequest("/v1/finance/policies", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "policies"]],
+      onClose: () => setDialogOpen(false),
+      form: policyForm,
+      successTitle: "Policy Created",
+      successDescription: "Finance policy has been enforced.",
+    }),
+    onSuccess: () => {
+      toast({ title: "Policy Created", description: "Finance policy has been enforced." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "policies"] });
+      policyForm.reset();
+      setDialogOpen(false);
+      refreshPolicies();
+    },
+  });
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -72,17 +107,8 @@ export default function PolicyManager() {
     [policies, search],
   );
 
-  const savePolicy = async () => {
-    try {
-      await financeApiClient.createPolicy(session.tenant_id, session, policyForm);
-      logService.log(session.tenant_id, session.user_id, "Created policy", policyForm.title);
-      setStatusMessage(`Policy "${policyForm.title}" created successfully.`);
-      setDialogOpen(false);
-      setPolicyForm({ title: "", type: "APPROVAL_LIMIT", description: "", threshold: 0 });
-      await refreshPolicies();
-    } catch (err) {
-      setErrorMessage("Failed to create policy. Audit constraint violation.");
-    }
+  const savePolicy = (data: PolicyFormData) => {
+    policyMutation.mutate(data);
   };
 
   const togglePolicy = async (id: string) => {
@@ -274,7 +300,7 @@ export default function PolicyManager() {
         </DataTableShell>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !policyMutation.isPending) { policyForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr]">
             {/* Left Info Panel */}
@@ -299,20 +325,27 @@ export default function PolicyManager() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-4">
+              <form onSubmit={policyForm.handleSubmit(savePolicy)} className="space-y-4">
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-1 block">Policy Title</label>
                   <Input
                     placeholder="e.g. Executive Travel Limit"
-                    value={policyForm.title}
-                    onChange={(event) => setPolicyForm({ ...policyForm, title: event.target.value })}
+                    {...policyForm.register("title")}
+                    disabled={policyMutation.isPending}
                   />
+                  {policyForm.formState.errors.title && (
+                    <p className="text-xs text-destructive mt-1">{policyForm.formState.errors.title.message}</p>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-1 block">Policy Type</label>
-                    <Select value={policyForm.type} onValueChange={(value) => setPolicyForm({ ...policyForm, type: value as PolicyType })}>
+                    <Select
+                      value={policyForm.watch("type")}
+                      onValueChange={(value) => policyForm.setValue("type", value)}
+                      disabled={policyMutation.isPending}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -331,15 +364,13 @@ export default function PolicyManager() {
                         className="pl-9"
                         placeholder="0"
                         type="number"
-                        value={policyForm.threshold || ""}
-                        onChange={(event) =>
-                          setPolicyForm({
-                            ...policyForm,
-                            threshold: Number(event.target.value),
-                          })
-                        }
+                        {...policyForm.register("threshold", { valueAsNumber: true })}
+                        disabled={policyMutation.isPending}
                       />
                     </div>
+                    {policyForm.formState.errors.threshold && (
+                      <p className="text-xs text-destructive mt-1">{policyForm.formState.errors.threshold.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -347,18 +378,21 @@ export default function PolicyManager() {
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-1 block">Description</label>
                   <Input
                     placeholder="Provide clear justification and scope..."
-                    value={policyForm.description}
-                    onChange={(event) => setPolicyForm({ ...policyForm, description: event.target.value })}
+                    {...policyForm.register("description")}
+                    disabled={policyMutation.isPending}
                   />
+                  {policyForm.formState.errors.description && (
+                    <p className="text-xs text-destructive mt-1">{policyForm.formState.errors.description.message}</p>
+                  )}
                 </div>
 
                 <div className="border-t pt-4 flex justify-end gap-2 mt-4">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={savePolicy} className="gap-2">
-                    <Shield className="w-4 h-4" /> Enforce Policy
+                  <Button type="button" variant="outline" onClick={() => { policyForm.reset(); setDialogOpen(false); }} disabled={policyMutation.isPending}>Cancel</Button>
+                  <Button type="submit" className="gap-2" disabled={policyMutation.isPending}>
+                    <Shield className="w-4 h-4" /> {policyMutation.isPending ? "Creating..." : "Enforce Policy"}
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </DialogContent>

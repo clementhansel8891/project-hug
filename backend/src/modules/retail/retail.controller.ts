@@ -22,6 +22,7 @@ import { Request } from "express";
 import { RetailService } from "./retail.service";
 import { RetailSeeder } from "./seeders/retail.seeder";
 import { AuditService } from "../../shared/audit/audit.service";
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 import {
   CreateStoreDto,
   UpdateStoreDto,
@@ -67,6 +68,8 @@ export class RetailController {
 
   /** Diagnostic route to verify controller reachability */
   @Get("debug/ping")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @SkipBranchCheck()
   async debugPing() {
     return { success: true, message: "RetailController is reachable", timestamp: new Date().toISOString() };
@@ -82,6 +85,8 @@ export class RetailController {
   }
 
   @Get("inventory/stats")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getInventoryStats(
     @Req() request: RequestWithTenant,
     @Query("category_id") category_id?: string,
@@ -101,6 +106,8 @@ export class RetailController {
   }
 
   @Get("inventory/status")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getInventoryStatus(
     @Req() request: RequestWithTenant,
     @Query("productId") productId: string,
@@ -174,6 +181,8 @@ export class RetailController {
   }
 
   @Get("stores")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listStores(@Req() request: RequestWithTenant) {
     const { tenant_id, location_id, role } = request.tenantContext;
 
@@ -188,6 +197,8 @@ export class RetailController {
   }
 
   @Get("stores/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getStore(
     @Req() request: RequestWithTenant,
     @Param("id") store_id: string,
@@ -199,6 +210,8 @@ export class RetailController {
   }
 
   @Get("categories")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listCategories(@Req() request: RequestWithTenant) {
     const { tenant_id } = request.tenantContext;
     const categories = await this.retailService.listCategories(request.tenantContext);
@@ -254,6 +267,8 @@ export class RetailController {
   // ============================================================
 
   @Get("inventory-pools")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listInventoryPools(@Req() request: RequestWithTenant) {
     const { tenant_id } = request.tenantContext;
     const pools = await this.retailService.listInventoryPools(request.tenantContext);
@@ -275,6 +290,8 @@ export class RetailController {
   }
 
   @Get("inventory-pools/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getInventoryPool(
     @Req() request: RequestWithTenant,
     @Param("id") poolId: string,
@@ -300,6 +317,8 @@ export class RetailController {
   // ============================================================
 
   @Get("ecommerce-stores")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listEcommerceStores(@Req() request: RequestWithTenant) {
     const { tenant_id, location_id } = request.tenantContext;
     const stores = await this.retailService.listEcommerceStores(
@@ -324,6 +343,8 @@ export class RetailController {
   }
 
   @Get("ecommerce-stores/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getEcommerceStore(
     @Req() request: RequestWithTenant,
     @Param("id") store_id: string,
@@ -394,6 +415,8 @@ export class RetailController {
   }
 
   @Get("products/next-sku")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @SkipBranchCheck()
   async getNextSku(
     @Req() request: RequestWithTenant,
@@ -408,6 +431,8 @@ export class RetailController {
   }
 
   @Get("products")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listProducts(
     @Req() request: RequestWithTenant,
     @Query("page") page?: string,
@@ -462,6 +487,8 @@ export class RetailController {
   }
 
   @Get("products/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getProduct(
     @Req() request: RequestWithTenant,
     @Param("id") product_id: string,

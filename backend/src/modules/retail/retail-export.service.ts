@@ -24,7 +24,9 @@ export class RetailExportService {
         total_amount: true,
         created_at: true,
         customer_id: true,
-      }
+      },
+      orderBy: { created_at: 'desc' },
+      take: 10000
     });
 
     // Formatting as CSV
@@ -44,6 +46,7 @@ export class RetailExportService {
         module: "RETAIL",
       },
       orderBy: { created_at: "desc" },
+      take: 10000
     });
 
     const header = "Date,User ID,Action,Resource,Status,Meta\n";

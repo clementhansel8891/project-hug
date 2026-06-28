@@ -487,5 +487,64 @@ export class FinanceService {
     });
     return employee?.id;
   }
+
+  // --- Payslip Templates ---
+  async listPayslipTemplates(ctx: TenantContext) {
+    return (this.prisma as any).payslip_templates.findMany({
+      where: { tenant_id: ctx.tenant_id },
+      orderBy: { created_at: 'desc' },
+      take: 50,
+    });
+  }
+
+  async createPayslipTemplate(ctx: TenantContext, data: any, userId: string) {
+    const { v4: uuidv4 } = await import('uuid');
+    const template = await (this.prisma as any).payslip_templates.create({
+      data: {
+        id: uuidv4(),
+        tenant_id: ctx.tenant_id,
+        name: data.name,
+        description: data.description || null,
+        is_default: data.isDefault ?? false,
+        layout: data.layout || [],
+        branding: data.branding || {},
+        created_by: userId,
+      },
+    });
+
+    await this.auditService.log({
+      tenant_id: ctx.tenant_id,
+      user_id: userId,
+      module: "FINANCE",
+      action: "PAYSLIP_TEMPLATE_CREATED",
+      entity_type: "PAYSLIP_TEMPLATE",
+      entity_id: template.id,
+      metadata: { name: data.name },
+    });
+
+    return template;
+  }
+
+  async updatePayslipTemplate(ctx: TenantContext, id: string, data: any, userId: string) {
+    const template = await (this.prisma as any).payslip_templates.update({
+      where: { id, tenant_id: ctx.tenant_id },
+      data: {
+        name: data.name,
+        description: data.description,
+        is_default: data.isDefault,
+        layout: data.layout,
+        branding: data.branding,
+        updated_at: new Date(),
+      },
+    });
+    return template;
+  }
+
+  async deletePayslipTemplate(ctx: TenantContext, id: string) {
+    await (this.prisma as any).payslip_templates.delete({
+      where: { id, tenant_id: ctx.tenant_id },
+    });
+    return { success: true, deleted: id };
+  }
 }
 

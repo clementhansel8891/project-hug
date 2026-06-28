@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -12,11 +15,15 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeApiClient } from "@/core/services/finance/financeApiClient";
 import type { FinanceReceivableRow } from "@/core/services/finance/financeService";
 import { logService } from "@/core/services/finance/logService";
 import { formatNumber } from "@/lib/format";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { receivableSchema, type ReceivableFormData } from "@/core/finance/schemas";
 import { CreateReceivableModal } from "@/core/finance/FinanceModalForms";
 
 type ReceivableTab = "PENDING" | "APPROVED" | "OVERDUE";
@@ -25,16 +32,55 @@ const TABS: ReceivableTab[] = ["PENDING", "APPROVED", "OVERDUE"];
 
 export default function ReceivableDesk() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<ReceivableTab>("PENDING");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [customer, setCustomer] = useState("");
-  const [amount, setAmount] = useState("0");
-  const [dueDate, setDueDate] = useState("");
   const [receivables, setReceivables] = useState<FinanceReceivableRow[]>([]);
   const [selectedItem, setSelectedItem] = useState<FinanceReceivableRow | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // --- React Hook Form: Create Receivable ---
+  const receivableForm = useForm<ReceivableFormData>({
+    resolver: zodResolver(receivableSchema),
+    defaultValues: { customer: "", amount: 0, dueDate: "", currency: "IDR" },
+  });
+
+  const createReceivableMutation = useMutation({
+    mutationFn: (data: ReceivableFormData) =>
+      apiRequest("/v1/finance/receivables", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "receivables"]],
+      onClose: () => setDialogOpen(false),
+      form: receivableForm,
+      successTitle: "Receivable Created",
+      successDescription: "Accounts receivable entry created and routed.",
+    }),
+    onSuccess: () => {
+      toast({ title: "Receivable Created", description: "Accounts receivable entry created and routed." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "receivables"] });
+      receivableForm.reset();
+      setDialogOpen(false);
+      refreshReceivables();
+    },
+  });
+
+  const markReceivedMutation = useMutation({
+    mutationFn: (id: string) =>
+      apiRequest(`/v1/finance/receivables/${id}/collected`, "PATCH", session, {}),
+    onSuccess: () => {
+      toast({ title: "Collected", description: "Receivable marked as received and settled." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "receivables"] });
+      refreshReceivables();
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error?.message || "Failed to mark as received.", variant: "destructive" });
+    },
+  });
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -75,39 +121,12 @@ export default function ReceivableDesk() {
     return next;
   }, [filtered]);
 
-  const createReceivable = async () => {
-    try {
-      await financeApiClient.createReceivable(session.tenant_id, session, {
-        customer,
-        amount: Number(amount || "0"),
-        dueDate,
-      });
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        "Created receivable",
-        `${customer} - ${amount}`,
-      );
-      setStatusMessage(`Receivable for ${customer} created successfully.`);
-      setDialogOpen(false);
-      setCustomer("");
-      setAmount("0");
-      setDueDate("");
-      refreshReceivables();
-    } catch (err) {
-      setErrorMessage("Failed to create receivable. Please check customer credit limits.");
-    }
+  const createReceivable = (data: ReceivableFormData) => {
+    createReceivableMutation.mutate(data);
   };
 
-  const markReceived = async (id: string) => {
-    try {
-      await financeApiClient.markReceived(session.tenant_id, session, id);
-      logService.log(session.tenant_id, session.user_id, "Marked receivable received", id);
-      setStatusMessage("Receivable marked as received and settled.");
-      refreshReceivables();
-    } catch (err) {
-      setErrorMessage("Failed to update status. Technical error.");
-    }
+  const markReceived = (id: string) => {
+    markReceivedMutation.mutate(id);
   };
 
   const sendReminder = async (id: string) => {
@@ -230,7 +249,7 @@ export default function ReceivableDesk() {
         </Tabs>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !createReceivableMutation.isPending) { receivableForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr]">
             {/* Left Info Panel */}
@@ -270,10 +289,13 @@ export default function ReceivableDesk() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={receivableForm.handleSubmit(createReceivable)} className="space-y-6">
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Customer Name</label>
-                  <Input placeholder="e.g., Global Tech Inc." value={customer} onChange={(event) => setCustomer(event.target.value)} />
+                  <Input placeholder="e.g., Global Tech Inc." {...receivableForm.register("customer")} disabled={createReceivableMutation.isPending} />
+                  {receivableForm.formState.errors.customer && (
+                    <p className="text-xs text-destructive mt-1">{receivableForm.formState.errors.customer.message}</p>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -285,10 +307,13 @@ export default function ReceivableDesk() {
                         className="pl-9"
                         placeholder="0"
                         type="number"
-                        value={amount}
-                        onChange={(event) => setAmount(event.target.value)}
+                        {...receivableForm.register("amount", { valueAsNumber: true })}
+                        disabled={createReceivableMutation.isPending}
                       />
                     </div>
+                    {receivableForm.formState.errors.amount && (
+                      <p className="text-xs text-destructive mt-1">{receivableForm.formState.errors.amount.message}</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Expected Due Date</label>
@@ -297,10 +322,13 @@ export default function ReceivableDesk() {
                       <Input
                         className="pl-9"
                         type="date"
-                        value={dueDate}
-                        onChange={(event) => setDueDate(event.target.value)}
+                        {...receivableForm.register("dueDate")}
+                        disabled={createReceivableMutation.isPending}
                       />
                     </div>
+                    {receivableForm.formState.errors.dueDate && (
+                      <p className="text-xs text-destructive mt-1">{receivableForm.formState.errors.dueDate.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -314,10 +342,12 @@ export default function ReceivableDesk() {
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={createReceivable}>Create and Route</Button>
+                  <Button type="button" variant="outline" onClick={() => { receivableForm.reset(); setDialogOpen(false); }} disabled={createReceivableMutation.isPending}>Cancel</Button>
+                  <Button type="submit" disabled={createReceivableMutation.isPending}>
+                    {createReceivableMutation.isPending ? "Creating..." : "Create and Route"}
+                  </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </DialogContent>

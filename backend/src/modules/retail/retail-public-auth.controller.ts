@@ -14,6 +14,7 @@ import { TenantInterceptor } from "../../gateway/tenant.interceptor";
 import { RetailPublicAuthService } from "./retail-public-auth.service";
 import { ChannelCredentialsGuard } from "./guards/channel-credentials.guard";
 import { CustomerAuthGuard } from "./guards/customer-auth.guard";
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 
 @Controller('retail/public/auth')
 @UseInterceptors(TenantInterceptor)
@@ -132,6 +133,8 @@ export class RetailPublicAuthController {
   }
 
   @Get("me")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @UseGuards(ChannelCredentialsGuard, CustomerAuthGuard)
   async me(@Req() request: Request) {
     const payload = (request as any).customerAuth;

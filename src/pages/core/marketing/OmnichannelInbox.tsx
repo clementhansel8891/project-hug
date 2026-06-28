@@ -62,6 +62,7 @@ import { EmptyState } from "@/components/shared/AsyncState";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { OmnichannelConfigModal } from "./modals/OmnichannelConfigModal";
 
 interface Message {
   id: string;
@@ -100,6 +101,7 @@ export default function OmnichannelInbox() {
   const [contacts, setContacts] = useState<any[]>([]);
   const [loadingContacts, setLoadingContacts] = useState(false);
   const [newConvOpen, setNewConvOpen] = useState(false);
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
 
   const loadConversations = useCallback(async (isManual = false) => {
     try {
@@ -689,6 +691,12 @@ export default function OmnichannelInbox() {
           </div>
         )}
       </div>
+
+      {/* Omnichannel Config Modal */}
+      <OmnichannelConfigModal
+        isOpen={isConfigOpen}
+        onClose={() => setIsConfigOpen(false)}
+      />
     </div>
   );
 }

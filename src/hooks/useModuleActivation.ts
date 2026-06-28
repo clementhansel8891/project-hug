@@ -44,6 +44,9 @@ export function useModuleActivation() {
     const coreModules = ["finance", "hr", "it", "procurement", "inventory", "sales", "marketing", "audit", "staff", "settings", "security"];
     if (coreModules.includes(moduleCode.toLowerCase())) return true;
     
+    // Retail is always active for this deployment (no activation toggle required)
+    if (moduleCode.toLowerCase() === "retail") return true;
+    
     return activeModules.has(moduleCode.toLowerCase());
   };
 

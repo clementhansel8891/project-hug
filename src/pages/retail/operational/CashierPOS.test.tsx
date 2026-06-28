@@ -1,6 +1,7 @@
 import React from "react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 /**
  * Component tests for the flagship Retail POS terminal — Retail Page_Group (task 10.3).
@@ -88,6 +89,15 @@ vi.mock("react-barcode", () => ({
 
 import CashierPOS from "./CashierPOS";
 
+function renderWithProviders(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
+
 const PRODUCTS = [
   { id: "p1", name: "Cola Zero 500ml", sku: "SKU-COLA", price: 15000, stock: 42, categoryName: "Drinks" },
   { id: "p2", name: "Artisan Bread", sku: "SKU-BREAD", price: 28000, stock: 7, categoryName: "Bakery" },
@@ -104,7 +114,7 @@ beforeEach(() => {
 describe("CashierPOS — Real_Data binding + currency", () => {
   // Validates: Requirements 14.3, 14.1, 14.4
   it("renders catalog products sourced from retailService scoped to the tenant", async () => {
-    render(<CashierPOS />);
+    renderWithProviders(<CashierPOS />);
 
     // Populated state: products from the live service appear on the terminal.
     expect(await screen.findByText("Cola Zero 500ml")).toBeInTheDocument();
@@ -117,7 +127,7 @@ describe("CashierPOS — Real_Data binding + currency", () => {
 
   // Validates: Requirements 14.4 (IDR currency via @/lib/format)
   it("formats catalog prices as IDR 'Rp' with id-ID digit grouping", async () => {
-    render(<CashierPOS />);
+    renderWithProviders(<CashierPOS />);
     await screen.findByText("Cola Zero 500ml");
 
     // 15000 → "Rp 15.000" via formatCurrency(value, "IDR", "id-ID").
@@ -136,7 +146,7 @@ describe("CashierPOS — loading indicator", () => {
       }),
     );
 
-    render(<CashierPOS />);
+    renderWithProviders(<CashierPOS />);
 
     // In flight: the terminal presents a defined loading surface (never blank).
     expect(screen.getByText(/syncing pos environment/i)).toBeInTheDocument();
@@ -151,7 +161,7 @@ describe("CashierPOS — loading indicator", () => {
 describe("CashierPOS — POS action feedback", () => {
   // Validates: Requirements 14.2, 3.5 (cash checkout calls live service + success feedback)
   it("finalizes a cash sale through retailService and surfaces a success Feedback_Message", async () => {
-    render(<CashierPOS />);
+    renderWithProviders(<CashierPOS />);
 
     // Add a product to the cart (the whole catalog card is the click target).
     fireEvent.click(await screen.findByText("Cola Zero 500ml"));

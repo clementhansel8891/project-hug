@@ -7,7 +7,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { NotificationCenter } from "@/components/shared/NotificationCenter";
 import { PageErrorBoundary } from "@/components/shared/PageErrorBoundary";
 import { getSettings } from "@/lib/local-storage";
-import { getAllModuleContracts } from "@/core/runtime/moduleRegistry";
 import { OfflineIndicator } from "@/components/shared/OfflineIndicator";
 import { JVWorkspaceSwitcher } from "@/core/ui/JVWorkspaceSwitcher";
 import { useApp } from "@/contexts/AppContext";
@@ -17,7 +16,6 @@ import {
   LayoutDashboard,
   ClipboardList,
   Users,
-  Puzzle,
   BarChart3,
   Link2,
   Settings,
@@ -72,7 +70,6 @@ const baseNavSections: NavSection[] = [
       { path: "/core/finance", icon: Wallet, label: "Finance" },
       { path: "/core/procurement", icon: ShoppingCart, label: "Procurement" },
       { path: "/core/inventory", icon: Package, label: "Inventory" },
-      { path: "/core/warehouse", icon: Warehouse, label: "Warehouse" },
       { path: "/core/hr", icon: Users2, label: "HR" },
       { path: "/core/it", icon: ShieldCheck, label: "IT" },
     ],
@@ -85,10 +82,15 @@ const baseNavSections: NavSection[] = [
     ],
   },
   {
+    title: "Retail & Warehouse",
+    items: [
+      { path: "/retail", icon: ShoppingCart, label: "Retail Operations" },
+      { path: "/core/warehouse", icon: Warehouse, label: "Warehouse" },
+    ],
+  },
+  {
     title: "Backbone",
     items: [
-      { path: "/retail", icon: ShoppingCart, label: "Module Retail" },
-      { path: "/core/license", icon: Puzzle, label: "Module Hub" },
       { path: "/core/reports", icon: BarChart3, label: "Reports" },
       { path: "/core/audit", icon: ShieldCheck, label: "Audit Logs" },
       { path: "/core/logs", icon: FileText, label: "System Logs" },
@@ -126,23 +128,7 @@ export function CoreLayout() {
     }
   }, [isInDepartmentWorkspace, userExplicitCollapse]);
   const { settings } = appState;
-  const activatedIds = settings.activatedModuleIds || [];
-  const allContracts = getAllModuleContracts();
-  const activatedModules = (Array.isArray(allContracts) ? allContracts : []).filter(c => activatedIds.includes(c.id))
-    .map(c => ({
-      path: `/m/${c.id}/${c.getPages(c.getDefaultConfig())[0]?.id || ''}`,
-      icon: c.id === 'retail' ? ShoppingCart : Puzzle,
-      label: c.name
-    }));
-
-  const navSections = [
-    ...baseNavSections.slice(0, 3), // WorkSuite, Management, Commerce
-    ...(activatedModules.length > 0 ? [{
-      title: "Activated Modules",
-      items: activatedModules
-    }] : []),
-    baseNavSections[3] // Backbone
-  ];
+  const navSections = baseNavSections;
 
   const toggleSidebar = () => {
     setUserExplicitCollapse(true);

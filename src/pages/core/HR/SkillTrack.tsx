@@ -12,11 +12,14 @@ import { useSession } from "@/core/security/session";
 import { trainingService } from "@/core/services/hr/trainingService";
 import { staffService } from "@/core/services/hr/staffService";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { AssignTrainingModal, BulkAssignTrainingModal } from "./modals";
 
 export default function SkillTrack() {
   const session = useSession();
   const [version, setVersion] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
   const [actionType, setActionType] = useState<"assign" | "bulk" | "export" | "escalate">("assign");
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
@@ -60,12 +63,7 @@ export default function SkillTrack() {
         subtitle="Training, compliance, and certification readiness."
         primaryAction={
           <Button
-            onClick={() => {
-              setActionType("assign");
-              setSelectedEmployee(staff.items[0]?.id ?? "");
-              setSelectedProgram(programs[0]?.id ?? "");
-              setDialogOpen(true);
-            }}
+            onClick={() => setAssignOpen(true)}
           >
             Assign Training
           </Button>
@@ -77,11 +75,7 @@ export default function SkillTrack() {
         <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"
-            onClick={() => {
-              setActionType("bulk");
-              setSelectedProgram(programs[0]?.id ?? "");
-              setDialogOpen(true);
-            }}
+            onClick={() => setBulkOpen(true)}
           >
             Bulk Assign
           </Button>
@@ -253,6 +247,21 @@ export default function SkillTrack() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <AssignTrainingModal
+        isOpen={assignOpen}
+        onClose={() => setAssignOpen(false)}
+        employees={staff.items.map((e: any) => ({ id: e.id, fullName: e.fullName }))}
+        programs={programs.map((p: any) => ({ id: p.id, name: p.name }))}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
+
+      <BulkAssignTrainingModal
+        isOpen={bulkOpen}
+        onClose={() => setBulkOpen(false)}
+        programs={programs.map((p: any) => ({ id: p.id, name: p.name }))}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
     </div>
   );
 }

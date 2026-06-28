@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,11 +33,20 @@ import {
   AlertCircle
 } from "lucide-react";
 
-import { toast } from "sonner";
 import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/core/api/apiClient";
-import { Progress } from "@/components/ui/progress";
+
+// ─── Zod Schema ────────────────────────────────────────────────────────────────
+
+const importFormSchema = z.object({
+  locationId: z.string().optional(),
+});
+
+type ImportFormValues = z.infer<typeof importFormSchema>;
+
+// ─── Types ─────────────────────────────────────────────────────────────────────
 
 interface ImportDialogProps {
   open: boolean;
@@ -53,13 +66,19 @@ export function ImportDialog({
   type = "DATA",
 }: ImportDialogProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
   const [jobId, setJobId] = useState<string | null>(null);
   const [status, setStatus] = useState<any>(null);
-  const [locationId, setLocationId] = useState<string>("");
   const [locations, setLocations] = useState<{ id: string; name: string }[]>([]);
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
+  const form = useForm<ImportFormValues>({
+    resolver: zodResolver(importFormSchema),
+    defaultValues: { locationId: "" },
+  });
+
+  // Fetch locations for DATA imports
   useEffect(() => {
     if (type === "DATA" && open) {
       apiRequest<any>("/hr/locations", "GET", session)
@@ -71,6 +90,7 @@ export function ImportDialog({
     }
   }, [type, open, session]);
 
+  // Poll import job status
   useEffect(() => {
     let interval: any;
     if (jobId && open) {
@@ -85,10 +105,11 @@ export function ImportDialog({
           if (data.status === "COMPLETED" || data.status === "FAILED") {
             clearInterval(interval);
             if (data.status === "COMPLETED") {
-              toast.success("Import completed successfully");
+              toast({ title: "Import Completed", description: "Data imported successfully." });
+              queryClient.invalidateQueries({ queryKey: ["inventory"] });
               onSuccess(data);
             } else {
-              toast.error("Import failed");
+              toast({ title: "Import Failed", description: "The import process encountered errors.", variant: "destructive" });
             }
           }
         } catch (err) {
@@ -97,7 +118,47 @@ export function ImportDialog({
       }, 2000);
     }
     return () => clearInterval(interval);
-  }, [jobId, open, session]);
+  }, [jobId, open, session, toast, queryClient, onSuccess]);
+
+  // ─── Upload Mutation ─────────────────────────────────────────────────────────
+
+  const uploadMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      return apiRequest<any>(endpoint, "POST", session, formData);
+    },
+    onSuccess: (data) => {
+      if (data.success && data.jobId) {
+        setJobId(data.jobId);
+        toast({ title: "Import Started", description: "Import job started in background." });
+      } else if (data.success) {
+        toast({ title: "Import Completed", description: data.message || "Import completed." });
+        queryClient.invalidateQueries({ queryKey: ["inventory"] });
+        onSuccess(data.data);
+        onOpenChange(false);
+      } else {
+        toast({ title: "Import Failed", description: data.message || "Import initiation failed.", variant: "destructive" });
+      }
+    },
+    onError: (error: any) => {
+      toast({ title: "Upload Failed", description: error.message || "Failed to upload file.", variant: "destructive" });
+    },
+  });
+
+  // ─── Abort Mutation ──────────────────────────────────────────────────────────
+
+  const abortMutation = useMutation({
+    mutationFn: (id: string) => apiRequest<any>(`inventory/import/jobs/${id}`, "DELETE", session),
+    onSuccess: (_data, id) => {
+      toast({ title: "Job Aborted", description: "Import job aborted successfully." });
+      if (id === jobId) {
+        setJobId(null);
+        setStatus(null);
+      }
+    },
+    onError: (error: any) => {
+      toast({ title: "Abort Failed", description: error.message || "Failed to abort job.", variant: "destructive" });
+    },
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -105,75 +166,44 @@ export function ImportDialog({
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = form.handleSubmit((data) => {
     if (!file) return;
-    setLoading(true);
-    setStatus(null);
-    setJobId(null);
 
     const formData = new FormData();
     formData.append("file", file);
-    if (locationId && locationId !== "none") {
-      formData.append("location_id", locationId);
+    if (data.locationId && data.locationId !== "none") {
+      formData.append("location_id", data.locationId);
     }
 
-    try {
-      const data = await apiRequest<any>(endpoint, "POST", session, formData);
-      if (data.success && data.jobId) {
-        setJobId(data.jobId);
-        toast.info("Import job started in background");
-      } else if (data.success) {
-        // Fallback for non-async endpoints
-        toast.success(data.message || "Import completed");
-        onSuccess(data.data);
-        onOpenChange(false);
-      } else {
-        toast.error(data.message || "Import initiation failed");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to upload file");
-    } finally {
-      setLoading(false);
-    }
+    uploadMutation.mutate(formData);
+  });
+
+  const handleAbort = (id: string) => {
+    abortMutation.mutate(id);
   };
-
-  const handleAbort = async (id: string) => {
-    try {
-      await apiRequest<any>(`inventory/import/jobs/${id}`, "DELETE", session);
-      toast.success("Import job aborted");
-      if (id === jobId) {
-        setJobId(null);
-        setStatus(null);
-      }
-    } catch (err) {
-      console.error("Abort error:", err);
-      toast.error("Failed to abort job");
-    }
-  };
-
 
   const isProcessing = status && (status.status === "PENDING" || status.status === "PROCESSING");
   const isCompleted = status && status.status === "COMPLETED";
   const isFailed = status && status.status === "FAILED";
-
-  const progress = status?.total_items > 0 
-    ? Math.round((status.processed_items / status.total_items) * 100) 
-    : isProcessing ? 10 : 0;
-
   const isAborted = status && status.status === "ABORTED";
 
+  const progress = status?.total_items > 0
+    ? Math.round((status.processed_items / status.total_items) * 100)
+    : isProcessing ? 10 : 0;
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onOpenChange={(val) => {
-        // Prevent closing while processing unless user specifically clicks a close button we provide
         if (isProcessing) return;
+        if (!val) {
+          form.reset();
+          setFile(null);
+        }
         onOpenChange(val);
       }}
     >
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-[500px] border-none shadow-2xl rounded-[2rem] overflow-hidden bg-white/95 backdrop-blur-xl"
         onPointerDownOutside={(e) => isProcessing && e.preventDefault()}
         onEscapeKeyDown={(e) => isProcessing && e.preventDefault()}
@@ -183,10 +213,10 @@ export function ImportDialog({
             {title}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            {jobId 
+            {jobId
               ? `Job ID: ${jobId.slice(0, 8)}...`
-              : type === "IMAGES" 
-                ? "Upload a ZIP archive containing product images (SKU_*.jpg)." 
+              : type === "IMAGES"
+                ? "Upload a ZIP archive containing product images (SKU_*.jpg)."
                 : "Upload a CSV or Excel file to bulk import inventory."}
           </DialogDescription>
         </DialogHeader>
@@ -202,7 +232,7 @@ export function ImportDialog({
                       <span className="text-lg font-bold text-primary">{progress}%</span>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <p className="text-lg font-semibold text-muted-foreground">
                       {status.status === "PENDING" ? "Queueing Job..." : "Importing Data..."}
@@ -211,14 +241,14 @@ export function ImportDialog({
                       Processed <span className="text-primary">{status.processed_items}</span> of <span className="text-muted-foreground font-bold">{status.total_items || "?"}</span> records
                     </p>
                   </div>
-                  
+
                   <div className="w-full bg-muted rounded-full h-3 overflow-hidden shadow-inner">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-primary to-blue-500 transition-all duration-500 ease-out"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
-                  
+
                   <p className="text-xs text-muted-foreground italic">
                     This may take a few minutes for very large files. You can minimize this and it will continue in the background.
                   </p>
@@ -266,7 +296,6 @@ export function ImportDialog({
                   </div>
                 </div>
               )}
-
             </div>
 
             {status?.errors && status.errors.length > 0 && (
@@ -291,35 +320,37 @@ export function ImportDialog({
             <DialogFooter className="gap-2 pt-4 border-t">
               {isProcessing ? (
                 <div className="flex gap-2 w-full">
-                  <Button 
+                  <Button
                     variant="outline"
                     className="flex-1 rounded-xl py-6 font-bold text-destructive hover:bg-destructive"
                     onClick={() => handleAbort(jobId)}
+                    disabled={abortMutation.isPending}
                   >
+                    {abortMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                     Abort Sync
                   </Button>
-                  <Button 
+                  <Button
                     className="flex-[2] rounded-xl py-6 font-bold shadow-lg"
                     onClick={() => onOpenChange(false)}
                   >
                     Continue in Background
                   </Button>
                 </div>
-
               ) : (
                 <>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     className="flex-1 rounded-xl py-6"
                     onClick={() => {
                       setJobId(null);
                       setStatus(null);
                       setFile(null);
+                      form.reset();
                     }}
                   >
                     Start New
                   </Button>
-                  <Button 
+                  <Button
                     className="flex-1 rounded-xl py-6 font-bold shadow-lg"
                     onClick={() => onOpenChange(false)}
                   >
@@ -330,12 +361,12 @@ export function ImportDialog({
             </DialogFooter>
           </div>
         ) : (
-          <div className="grid gap-6 py-6">
+          <form onSubmit={handleUpload} className="grid gap-6 py-6">
             <div className="space-y-3">
               <Label className="text-sm font-bold text-muted-foreground ml-1">
                 Payload Source
               </Label>
-              <div 
+              <div
                 className="group border-2 border-dashed border-border rounded-[2rem] p-10 flex flex-col items-center justify-center gap-4 hover:border-primary hover:bg-muted transition-all cursor-pointer relative"
                 onClick={() => document.getElementById('file-upload')?.click()}
               >
@@ -346,7 +377,7 @@ export function ImportDialog({
                     <Upload className="h-10 w-10 text-muted-foreground group-hover:text-primary" />
                   )}
                 </div>
-                
+
                 <div className="text-center">
                   {file ? (
                     <div className="space-y-1">
@@ -364,7 +395,7 @@ export function ImportDialog({
                     </div>
                   )}
                 </div>
-                
+
                 <Input
                   id="file-upload"
                   type="file"
@@ -380,7 +411,10 @@ export function ImportDialog({
                 <Label className="text-sm font-bold text-muted-foreground ml-1">
                   Destination Location (Optional)
                 </Label>
-                <Select value={locationId} onValueChange={setLocationId}>
+                <Select
+                  value={form.watch("locationId") || ""}
+                  onValueChange={(val) => form.setValue("locationId", val)}
+                >
                   <SelectTrigger className="rounded-xl h-12 bg-muted border-border">
                     <SelectValue placeholder="Default to CSV location or Headquarters" />
                   </SelectTrigger>
@@ -400,41 +434,43 @@ export function ImportDialog({
             )}
 
             <DialogFooter className="pt-4 border-t">
-              <Button 
-                variant="ghost" 
-                className="rounded-xl px-8" 
+              <Button
+                type="button"
+                variant="ghost"
+                className="rounded-xl px-8"
                 onClick={() => onOpenChange(false)}
+                disabled={uploadMutation.isPending}
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
+                type="submit"
                 className="rounded-xl px-10 font-bold shadow-lg shadow-primary/20 h-12"
-                onClick={handleUpload} 
-                disabled={loading || !file}
+                disabled={uploadMutation.isPending || !file}
               >
-                {loading ? (
+                {uploadMutation.isPending ? (
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 ) : (
                   <Upload className="mr-2 h-5 w-5" />
                 )}
-                {loading ? "Preparing..." : "Begin Migration"}
+                {uploadMutation.isPending ? "Preparing..." : "Begin Migration"}
               </Button>
             </DialogFooter>
 
             <ActiveJobsList session={session} onSelectJob={(id) => setJobId(id)} onAbort={handleAbort} />
-          </div>
+          </form>
         )}
       </DialogContent>
     </Dialog>
   );
 }
 
-function ActiveJobsList({ 
-  session, 
+function ActiveJobsList({
+  session,
   onSelectJob,
   onAbort
-}: { 
-  session: any, 
+}: {
+  session: any,
   onSelectJob: (id: string) => void,
   onAbort: (id: string) => void
 }) {
@@ -479,8 +515,8 @@ function ActiveJobsList({
             const progress = job.total_items > 0 ? Math.round((job.processed_items / job.total_items) * 100) : 0;
             const isActive = job.status === 'PROCESSING' || job.status === 'PENDING';
             return (
-              <div 
-                key={job.id} 
+              <div
+                key={job.id}
                 className={`group relative bg-muted hover:bg-primary/5 border border-border hover:border-primary/20 rounded-2xl p-4 transition-all duration-300 cursor-pointer overflow-hidden ${isActive ? 'ring-1 ring-primary/20' : ''}`}
               >
                 <div className="flex items-start justify-between relative z-10" onClick={() => onSelectJob(job.id)}>
@@ -501,15 +537,15 @@ function ActiveJobsList({
                         {job.filename}
                       </p>
                       <p className="text-[10px] font-medium text-muted-foreground">
-                        {job.created_at && !isNaN(new Date(job.created_at).getTime()) 
-                          ? new Date(job.created_at).toLocaleTimeString() 
+                        {job.created_at && !isNaN(new Date(job.created_at).getTime())
+                          ? new Date(job.created_at).toLocaleTimeString()
                           : "Pending"} • {job.status}
                       </p>
                     </div>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
                     {isActive && (
-                       <Button
+                      <Button
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6 rounded-full hover:bg-destructive hover:text-white"
@@ -517,9 +553,9 @@ function ActiveJobsList({
                           e.stopPropagation();
                           onAbort(job.id);
                         }}
-                       >
-                         <Trash2 className="w-3 h-3" />
-                       </Button>
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
                     )}
                     <div>
                       <p className="text-xs font-bold text-muted-foreground">{progress}%</p>
@@ -531,7 +567,7 @@ function ActiveJobsList({
                 </div>
                 {isActive && (
                   <div className="mt-3 relative h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-blue-500 transition-all duration-500 ease-out"
                       style={{ width: `${progress}%` }}
                     />
@@ -545,4 +581,3 @@ function ActiveJobsList({
     </div>
   );
 }
-

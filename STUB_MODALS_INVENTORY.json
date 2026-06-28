@@ -1,0 +1,1094 @@
+[
+  {
+    "filePath": "src/pages/retail/operational/CashierPOS.tsx",
+    "lineNumber": 727,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/staff/Shifts.tsx",
+    "lineNumber": 521,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/staff/Shifts.tsx",
+    "lineNumber": 576,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/staff/Shifts.tsx",
+    "lineNumber": 690,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/sales/History.tsx",
+    "lineNumber": 399,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/sales/Sales.tsx",
+    "lineNumber": 410,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/pos/Cashier.tsx",
+    "lineNumber": 392,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/pos/CashPaymentModal.tsx",
+    "lineNumber": 57,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/operational/pos/ElectronicPaymentModal.tsx",
+    "lineNumber": 78,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/InventoryVisibility.tsx",
+    "lineNumber": 1261,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/InventoryVisibility.tsx",
+    "lineNumber": 1352,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/RetailCustomerActivity.tsx",
+    "lineNumber": 181,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/store-profile/CreateStoreDialog.tsx",
+    "lineNumber": 174,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/staff-assignments/components/RoleModificationModal.tsx",
+    "lineNumber": 57,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/staff-assignments/components/StaffDetailsModal.tsx",
+    "lineNumber": 27,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/shift-control/components/EditShiftModal.tsx",
+    "lineNumber": 80,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/shift-control/components/ScheduleGrid.tsx",
+    "lineNumber": 523,
+    "modalType": "Popover",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/shift-control/components/ShiftGovernanceModal.tsx",
+    "lineNumber": 38,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/pricing-promo-desk/components/AuditTrailModal.tsx",
+    "lineNumber": 28,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/pricing-promo-desk/components/CreatePromoModal.tsx",
+    "lineNumber": 62,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/modals/ItemDetailModal.tsx",
+    "lineNumber": 83,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/modals/OrderDetailModal.tsx",
+    "lineNumber": 81,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/modals/RegisterStoreDialog.tsx",
+    "lineNumber": 175,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/modals/TransferTrackingModal.tsx",
+    "lineNumber": 104,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/inventory/Inventory.tsx",
+    "lineNumber": 805,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/inventory/Inventory.tsx",
+    "lineNumber": 954,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/inventory/Inventory.tsx",
+    "lineNumber": 1092,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/inventory/Inventory.tsx",
+    "lineNumber": 1115,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/inventory/Inventory.tsx",
+    "lineNumber": 1196,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/inventory/reporting/ReportFilterDialog.tsx",
+    "lineNumber": 78,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/inventory/modals/AnomalyCompletionDialog.tsx",
+    "lineNumber": 118,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/inventory/modals/InventoryMovementDialog.tsx",
+    "lineNumber": 897,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/inventory/modals/InventoryStockEditDialog.tsx",
+    "lineNumber": 73,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/inventory/modals/ProductDetailEditDialog.tsx",
+    "lineNumber": 105,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/device-control/DeviceModal.tsx",
+    "lineNumber": 33,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/device-control/DiscoveryModal.tsx",
+    "lineNumber": 29,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/device-control/RegisterModal.tsx",
+    "lineNumber": 63,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/device-control/SensorModal.tsx",
+    "lineNumber": 33,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/channels/ChannelDetailDialog.tsx",
+    "lineNumber": 105,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/channels/ChannelProfilePanel.tsx",
+    "lineNumber": 664,
+    "modalType": "AlertDialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/channels/CreateChannelDialog.tsx",
+    "lineNumber": 262,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/channels/ManageConnectorDialog.tsx",
+    "lineNumber": 156,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/channels/RegisterEcommerceBranchDialog.tsx",
+    "lineNumber": 153,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/cctv/CCTVConnectorModal.tsx",
+    "lineNumber": 158,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/retail/management/components/cctv/CCTVViewerModal.tsx",
+    "lineNumber": 601,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/portal/MyPulse.tsx",
+    "lineNumber": 720,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/portal/MyPulse.tsx",
+    "lineNumber": 790,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/portal/MyPulse.tsx",
+    "lineNumber": 885,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/Settings.tsx",
+    "lineNumber": 533,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/Settings.tsx",
+    "lineNumber": 656,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/tools/Explorer.tsx",
+    "lineNumber": 1451,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/LeadDesk.tsx",
+    "lineNumber": 340,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/OpportunityDesk.tsx",
+    "lineNumber": 377,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/QuoteDesk.tsx",
+    "lineNumber": 195,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/SalesOrderDesk.tsx",
+    "lineNumber": 170,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/TimelineDesk.tsx",
+    "lineNumber": 194,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/Incentives/IncentiveDesk.tsx",
+    "lineNumber": 464,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/sales/Incentives/IncentiveDesk.tsx",
+    "lineNumber": 514,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/ContractDesk.tsx",
+    "lineNumber": 241,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/PoReleaseDesk.tsx",
+    "lineNumber": 318,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/PurchaseRequestDesk.tsx",
+    "lineNumber": 498,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/PurchaseRequestDesk.tsx",
+    "lineNumber": 649,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/PurchaseRequestDesk.tsx",
+    "lineNumber": 742,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/SupplierDesk.tsx",
+    "lineNumber": 414,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/SupplierDesk.tsx",
+    "lineNumber": 558,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/SupplierDesk.tsx",
+    "lineNumber": 655,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/SupplierDesk.tsx",
+    "lineNumber": 696,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/SupplierDesk.tsx",
+    "lineNumber": 772,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/procurement/SupplierPortalDesk.tsx",
+    "lineNumber": 169,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/payment/PaymentExecutionHub.tsx",
+    "lineNumber": 291,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/marketing/AppointmentDesk.tsx",
+    "lineNumber": 216,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/marketing/CampaignDesk.tsx",
+    "lineNumber": 443,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/marketing/FunnelBuilderDesk.tsx",
+    "lineNumber": 339,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/marketing/OmnichannelInbox.tsx",
+    "lineNumber": 256,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/logs/LogHub.tsx",
+    "lineNumber": 380,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/it/AccountDesk.tsx",
+    "lineNumber": 241,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/it/DeviceDesk.tsx",
+    "lineNumber": 146,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/it/TopologyMap.tsx",
+    "lineNumber": 313,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/InventoryAdjustments.tsx",
+    "lineNumber": 475,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/InventoryReceiving.tsx",
+    "lineNumber": 276,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/AdjustmentDialog.tsx",
+    "lineNumber": 99,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/BatchIntakeDialog.tsx",
+    "lineNumber": 80,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/BatchTransferDialog.tsx",
+    "lineNumber": 56,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/CreateItemDialog.tsx",
+    "lineNumber": 96,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/CreateTransferDialog.tsx",
+    "lineNumber": 294,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/FutureIntegrationDialog.tsx",
+    "lineNumber": 24,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/ImageManager.tsx",
+    "lineNumber": 86,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/InventoryAnalyticsDialog.tsx",
+    "lineNumber": 55,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/ItemDetailsModal.tsx",
+    "lineNumber": 222,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/JobMonitorDialog.tsx",
+    "lineNumber": 100,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/TransferDialog.tsx",
+    "lineNumber": 89,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/inventory/components/TransferManifestDialog.tsx",
+    "lineNumber": 72,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/FlowGate.tsx",
+    "lineNumber": 260,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/FlowGate.tsx",
+    "lineNumber": 328,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/FlowGate.tsx",
+    "lineNumber": 379,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/GrowthCycle.tsx",
+    "lineNumber": 167,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/GrowthCycle.tsx",
+    "lineNumber": 196,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/LexBoard.tsx",
+    "lineNumber": 211,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/OrgMap.tsx",
+    "lineNumber": 201,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/OrgMap.tsx",
+    "lineNumber": 232,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/OrgMap.tsx",
+    "lineNumber": 287,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/PayCycleStudio.tsx",
+    "lineNumber": 226,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/PeopleCore.tsx",
+    "lineNumber": 732,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/PeopleCore.tsx",
+    "lineNumber": 824,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/PeopleCore.tsx",
+    "lineNumber": 911,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/PeopleCore.tsx",
+    "lineNumber": 953,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/RosterGrid.tsx",
+    "lineNumber": 590,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/RosterGrid.tsx",
+    "lineNumber": 727,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/RosterGrid.tsx",
+    "lineNumber": 827,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/SchedulingStudio.tsx",
+    "lineNumber": 314,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/SkillTrack.tsx",
+    "lineNumber": 174,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/TalentFlow.tsx",
+    "lineNumber": 256,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/TalentFlow.tsx",
+    "lineNumber": 283,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/TalentFlow.tsx",
+    "lineNumber": 319,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/TalentFlow.tsx",
+    "lineNumber": 382,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/VaultSpace.tsx",
+    "lineNumber": 180,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/components/EmployeeDetailModal.tsx",
+    "lineNumber": 42,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/Cases/CaseDesk.tsx",
+    "lineNumber": 140,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/HR/Cases/CaseDetail.tsx",
+    "lineNumber": 102,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 852,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1030,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1057,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1084,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1116,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1177,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1205,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1227,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/Assets.tsx",
+    "lineNumber": 1255,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/AuditVault.tsx",
+    "lineNumber": 171,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/ClosePeriodStudio.tsx",
+    "lineNumber": 221,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/FinanceDocs.tsx",
+    "lineNumber": 148,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/FinanceDocs.tsx",
+    "lineNumber": 238,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/InvoiceCapture.tsx",
+    "lineNumber": 185,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/InvoiceCapture.tsx",
+    "lineNumber": 302,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/LedgerCore.tsx",
+    "lineNumber": 442,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/LedgerCore.tsx",
+    "lineNumber": 603,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/LedgerCore.tsx",
+    "lineNumber": 706,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/LedgerCore.tsx",
+    "lineNumber": 771,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/LedgerCore.tsx",
+    "lineNumber": 807,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/MoneyDesk.tsx",
+    "lineNumber": 558,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/MoneyDesk.tsx",
+    "lineNumber": 724,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/MoneyDesk.tsx",
+    "lineNumber": 792,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/MoneyDesk.tsx",
+    "lineNumber": 825,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PayableDesk.tsx",
+    "lineNumber": 236,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PayableDesk.tsx",
+    "lineNumber": 332,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PayFlow.tsx",
+    "lineNumber": 341,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PayFlow.tsx",
+    "lineNumber": 469,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PayFlow.tsx",
+    "lineNumber": 530,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PolicyManager.tsx",
+    "lineNumber": 278,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/PolicyManager.tsx",
+    "lineNumber": 368,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/ReceivableDesk.tsx",
+    "lineNumber": 234,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/ReceivableDesk.tsx",
+    "lineNumber": 326,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/TreasuryMap.tsx",
+    "lineNumber": 299,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/TreasuryMap.tsx",
+    "lineNumber": 411,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/TreasuryMap.tsx",
+    "lineNumber": 440,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/TreasuryMap.tsx",
+    "lineNumber": 478,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/components/DrillDownModal.tsx",
+    "lineNumber": 68,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/components/FinanceDialogs.tsx",
+    "lineNumber": 46,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/components/FinanceDialogs.tsx",
+    "lineNumber": 182,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/components/FinanceDialogs.tsx",
+    "lineNumber": 230,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/finance/components/InvitePartnerDialog.tsx",
+    "lineNumber": 72,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/comms/BulletinHub.tsx",
+    "lineNumber": 650,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/comms/BulletinHub.tsx",
+    "lineNumber": 772,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/comms/BulletinHub.tsx",
+    "lineNumber": 828,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/comms/MailHub.tsx",
+    "lineNumber": 403,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/audit/AuditHub.tsx",
+    "lineNumber": 268,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/core/adminWorkspace/RequestDesk.tsx",
+    "lineNumber": 153,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/pages/auth/ForgotPasswordModal.tsx",
+    "lineNumber": 106,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/ui/command.tsx",
+    "lineNumber": 29,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/ui/sidebar.tsx",
+    "lineNumber": 156,
+    "modalType": "Sheet",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/CategoryManager.tsx",
+    "lineNumber": 111,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/ExportSettingsDialog.tsx",
+    "lineNumber": 52,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/ImportDialog.tsx",
+    "lineNumber": 176,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/ModuleModal.tsx",
+    "lineNumber": 132,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/NotificationCenter.tsx",
+    "lineNumber": 38,
+    "modalType": "Popover",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/PostekPrintModal.tsx",
+    "lineNumber": 216,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/StockOpnameSummaryModal.tsx",
+    "lineNumber": 153,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/UnknownBarcodeDialog.tsx",
+    "lineNumber": 70,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/UnresolvedBarcodesModal.tsx",
+    "lineNumber": 160,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/UnresolvedBarcodesModal.tsx",
+    "lineNumber": 190,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/shared/WatermarkConfigDialog.tsx",
+    "lineNumber": 31,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  },
+  {
+    "filePath": "src/components/pos-cafe/OrderPad.tsx",
+    "lineNumber": 248,
+    "modalType": "Dialog",
+    "submitClassification": "stub"
+  }
+]

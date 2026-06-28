@@ -1,4 +1,18 @@
+/**
+ * ChannelProfilePanel — Channel profile with sync configuration.
+ *
+ * Wired with React Hook Form + Zod + useMutation + getMutationToastHandlers.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
 import React, { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -37,9 +51,12 @@ import {
   LayoutGrid,
   Zap,
   AlertTriangle,
+  Loader2,
+  Store as Building2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import {
   ecommerceHubService,
   type ChannelRecord,
@@ -51,7 +68,16 @@ import { WebhookSettingsPanel } from "./WebhookSettingsPanel";
 import { WebhookBridgeSettingsPanel } from "./WebhookBridgeSettingsPanel";
 import { ChannelProductWizard } from "./ChannelProductWizard";
 import { retailService } from "@/core/services/retail/retailService";
+import { apiRequest } from "@/core/api/apiClient";
 import { type RetailStore } from "@/core/types/retail/retail";
+
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const channelProfileSchema = z.object({
+  syncFrequency: z.enum(["15min", "30min", "1h", "6h", "24h"], { required_error: "Sync frequency is required" }),
+});
+
+type ChannelProfileFormValues = z.infer<typeof channelProfileSchema>;
 
 const PLATFORM_ICONS: Record<string, React.ElementType> = {
   HEADLESS: Globe,
@@ -85,11 +111,10 @@ export const ChannelProfilePanel: React.FC<Props> = ({
   onClose,
 }) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("overview");
-  const [isSaving, setIsSaving] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
-  const [syncFreq, setSyncFreq] = useState("1h");
   const [rotatedCreds, setRotatedCreds] = useState<{
     clientId: string;
     clientSecret: string;
@@ -98,14 +123,42 @@ export const ChannelProfilePanel: React.FC<Props> = ({
   const [linkedBranchIds, setLinkedBranchIds] = useState<string[]>([]);
   const [isLinking, setIsLinking] = useState(false);
 
+  // ─── React Hook Form + Zod ────────────────────────────────────────────────────
+  const form = useForm<ChannelProfileFormValues>({
+    resolver: zodResolver(channelProfileSchema),
+    defaultValues: {
+      syncFrequency: (channel?.syncFrequency as ChannelProfileFormValues["syncFrequency"]) ?? "1h",
+    },
+  });
+
+  const syncMutation = useMutation({
+    mutationFn: (data: ChannelProfileFormValues) =>
+      apiRequest(`/v1/retail/channels/${channel?.id}`, "PATCH", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "channels"]],
+      onClose: () => {
+        // Don't close panel on save
+        onUpdated();
+      },
+      form,
+      successTitle: "Channel Updated",
+      successDescription: "Sync configuration saved.",
+    }),
+  });
+
+  const isSaving = syncMutation.isPending;
+
   useEffect(() => {
     if (channel) {
-      setSyncFreq(channel.syncFrequency ?? "1h");
+      form.reset({
+        syncFrequency: (channel.syncFrequency as ChannelProfileFormValues["syncFrequency"]) ?? "1h",
+      });
       setActiveTab("overview");
       setRotatedCreds(null);
       
       // Sync linked branches from channel
-      // Since ChannelRecord might only have branchId, we'll handle both
       const ids = (channel as any).branchIds || (channel.branchId ? [channel.branchId] : []);
       setLinkedBranchIds(ids);
     }
@@ -152,20 +205,9 @@ export const ChannelProfilePanel: React.FC<Props> = ({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
-  const handleSaveOverview = async () => {
-    setIsSaving(true);
-    try {
-      await ecommerceHubService.updateChannel(session, channel.id, {
-        syncFrequency: syncFreq,
-      });
-      toast({ title: "Channel updated" });
-      onUpdated();
-    } catch {
-      toast({ title: "Update failed", variant: "destructive" });
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const handleSaveOverview = form.handleSubmit((data) => {
+    syncMutation.mutate(data);
+  });
 
   const handleRotate = async () => {
     setIsRotating(true);
@@ -271,7 +313,7 @@ export const ChannelProfilePanel: React.FC<Props> = ({
   const tabs = [
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "products", label: "Products", icon: ShoppingBag },
-    { id: "branches", label: "Branch Links", icon: Store },
+    { id: "branches", label: "Branch Links", icon: Building2 },
     { id: "settings", label: "Settings", icon: Settings2 },
     { id: "webhooks", label: "Webhooks", icon: Zap },
     { id: "danger", label: "Danger Zone", icon: AlertTriangle },
@@ -394,35 +436,41 @@ export const ChannelProfilePanel: React.FC<Props> = ({
                 <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                   Sync Frequency
                 </Label>
-                <Select value={syncFreq} onValueChange={setSyncFreq}>
-                  <SelectTrigger className="h-11 rounded-xl font-bold">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {[
-                      { value: "15min", label: "Every 15 minutes" },
-                      { value: "30min", label: "Every 30 minutes" },
-                      { value: "1h", label: "Every 1 hour" },
-                      { value: "6h", label: "Every 6 hours" },
-                      { value: "24h", label: "Every 24 hours" },
-                    ].map((f) => (
-                      <SelectItem
-                        key={f.value}
-                        value={f.value}
-                        className="font-bold"
-                      >
-                        {f.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Controller
+                  control={form.control}
+                  name="syncFrequency"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange} disabled={isSaving}>
+                      <SelectTrigger className="h-11 rounded-xl font-bold">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[
+                          { value: "15min", label: "Every 15 minutes" },
+                          { value: "30min", label: "Every 30 minutes" },
+                          { value: "1h", label: "Every 1 hour" },
+                          { value: "6h", label: "Every 6 hours" },
+                          { value: "24h", label: "Every 24 hours" },
+                        ].map((f) => (
+                          <SelectItem
+                            key={f.value}
+                            value={f.value}
+                            className="font-bold"
+                          >
+                            {f.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
                 <Button
                   onClick={handleSaveOverview}
                   disabled={isSaving}
                   className="w-full h-11 rounded-xl font-black italic bg-secondary gap-2"
                 >
                   {isSaving ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <Save className="w-4 h-4" />
                   )}

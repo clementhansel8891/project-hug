@@ -230,7 +230,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (cart.length) dispatch({ type: "SET_CART", payload: cart });
 
     dispatch({ type: "SET_THEME", payload: theme });
-    dispatch({ type: "SET_SETTINGS", payload: settings });
+    
+    // Ensure retail is always in activatedModuleIds
+    const ensuredSettings = {
+      ...settings,
+      activatedModuleIds: settings.activatedModuleIds?.includes('retail')
+        ? settings.activatedModuleIds
+        : [...(settings.activatedModuleIds || []), 'retail'],
+    };
+    dispatch({ type: "SET_SETTINGS", payload: ensuredSettings });
     dispatch({ type: "SET_PENDING_SYNC", payload: pendingSync });
 
     document.documentElement.classList.toggle("dark", theme === "dark");

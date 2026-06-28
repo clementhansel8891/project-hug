@@ -53,6 +53,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DepartmentWorkspaceLayout from "@/components/layouts/DepartmentWorkspaceLayout";
+import { BulletinCreateModal } from "./modals/BulletinCreateModal";
+import { ChannelConfigModal } from "./modals/ChannelConfigModal";
 
 const SECTIONS = [
   {
@@ -107,11 +109,6 @@ export default function BulletinHub() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [newPost, setNewPost] = useState({
-    title: "",
-    body: "",
-    category: "general",
-  });
 
   // Interaction states
   const [commentingOn, setCommentingOn] = useState<string | null>(null);
@@ -119,20 +116,11 @@ export default function BulletinHub() {
   const [isActionLoading, setIsActionLoading] = useState<string | null>(null);
   const [selectedPost, setSelectedPost] = useState<BulletinPost | null>(null);
   const [activeCategory, setActiveCategory] = useState("all");
-  const [creationType, setCreationType] = useState<"TOPIC" | "CONTENT">(
-    "TOPIC",
-  );
   const [categories, setCategories] = useState<BulletinCategory[]>([]);
   const [isCategoryManageOpen, setIsCategoryManageOpen] = useState(false);
-  const [newCategory, setNewCategory] = useState({
-    name: "",
-    code: "",
-    color: "#6366f1",
-  });
   const [channelSearch, setChannelSearch] = useState("");
 
-  const openCreate = (type: "TOPIC" | "CONTENT") => {
-    setCreationType(type);
+  const openCreate = () => {
     setIsCreateOpen(true);
   };
 
@@ -140,9 +128,6 @@ export default function BulletinHub() {
     try {
       const data = await apiRequest<BulletinCategory[]>("/comms/bulletin-categories", "GET", session);
       setCategories(data || []);
-      if (data && data.length > 0 && !newPost.category) {
-        setNewPost((p) => ({ ...p, category: data[0].code }));
-      }
     } catch (error: any) {
       console.error("Failed to fetch categories:", error);
     }
@@ -169,38 +154,6 @@ export default function BulletinHub() {
     fetchPosts();
     fetchCategories();
   }, [fetchPosts, fetchCategories]);
-
-  const handleCreatePost = async () => {
-    if (!newPost.title || !newPost.body) {
-      toast({
-        title: "Incomplete",
-        description: "Title and body are required.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      await apiRequest("/comms/bulletin", "POST", session, newPost);
-      setIsCreateOpen(false);
-      setNewPost({
-        title: "",
-        body: "",
-        category: categories[0]?.code || "general",
-      });
-      toast({
-        title: "Success",
-        description: "Successfully posted to the board.",
-      });
-      await fetchPosts();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to publish.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleReact = async (postId: string, type: "LIKE" | "DISLIKE") => {
     setIsActionLoading(`${postId}-${type}`);
@@ -244,22 +197,6 @@ export default function BulletinHub() {
     }
   };
 
-  const handleCreateCategory = async () => {
-    if (!newCategory.name || !newCategory.code) return;
-    try {
-      await apiRequest("/comms/bulletin-categories", "POST", session, newCategory);
-      setNewCategory({ name: "", code: "", color: "#6366f1" });
-      fetchCategories();
-      toast({ title: "Category Created" });
-    } catch (e: any) {
-      toast({
-        title: "Update Failed",
-        description: e.message || "Could not create category.",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleDeleteCategory = async (id: string) => {
     if (!confirm("Are you sure? This will remove the channel group.")) return;
     try {
@@ -297,14 +234,14 @@ export default function BulletinHub() {
   const headerActions = (
     <div className="flex gap-2">
       <Button
-        onClick={() => openCreate("TOPIC")}
+        onClick={() => openCreate()}
         variant="outline"
         className="rounded-xl bg-card shadow-sm hover:bg-muted font-bold text-[10px] uppercase tracking-widest h-9"
       >
         <Plus className="h-3 w-3 mr-2" /> New Topic
       </Button>
       <Button
-        onClick={() => openCreate("CONTENT")}
+        onClick={() => openCreate()}
         className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm font-bold text-[10px] uppercase tracking-widest h-9"
       >
         <Send className="h-3 w-3 mr-2" /> Post Content
@@ -767,122 +704,20 @@ export default function BulletinHub() {
           </DialogContent>
         </Dialog>
 
-        {/* Create Dialog */}
-        <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogContent className="sm:max-w-2xl border-none shadow-3xl bg-white dark:bg-muted p-0 overflow-hidden rounded-[3rem]">
-            <DialogHeader className="p-10 border-b bg-muted dark:bg-muted">
-              <DialogTitle className="text-3xl font-black tracking-tighter">
-                {creationType === "TOPIC" ? "Initiate Topic" : "Broadcast Content"}
-              </DialogTitle>
-              <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">
-                Public Engagement Protocol
-              </div>
-            </DialogHeader>
-            <div className="p-10 space-y-8">
-               <div className="space-y-2">
-                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Channel</label>
-                 <div className="flex gap-2 flex-wrap">
-                    {(Array.isArray(categories) ? categories : []).map(cat => (
-                      <Badge 
-                        key={cat.id}
-                        variant={newPost.category === cat.code ? "default" : "outline"}
-                        className={`cursor-pointer h-8 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${newPost.category === cat.code ? 'shadow-lg shadow-primary/20' : 'hover:bg-primary/5 hover:border-primary/20'}`}
-                        onClick={() => setNewPost({...newPost, category: cat.code})}
-                      >
-                        {cat.name}
-                      </Badge>
-                    ))}
-                 </div>
-               </div>
-               
-               <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Headline</label>
-                    <Input 
-                      placeholder="Enter a compelling title..." 
-                      className="h-14 border-none bg-muted dark:bg-muted rounded-2xl px-6 text-sm font-black shadow-inner focus-visible:ring-1 focus-visible:ring-primary/20"
-                      value={newPost.title}
-                      onChange={e => setNewPost({...newPost, title: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Context</label>
-                    <Textarea 
-                      placeholder="Share your insights..." 
-                      className="min-h-[200px] border-none bg-muted dark:bg-muted rounded-2xl px-6 py-4 text-sm font-medium shadow-inner focus-visible:ring-1 focus-visible:ring-primary/20 resize-none"
-                      value={newPost.body}
-                      onChange={e => setNewPost({...newPost, body: e.target.value})}
-                    />
-                  </div>
-               </div>
-            </div>
-            <DialogFooter className="p-10 bg-muted dark:bg-muted border-t">
-              <Button variant="ghost" onClick={() => setIsCreateOpen(false)} className="rounded-xl font-black uppercase tracking-widest text-[10px]">Discard</Button>
-              <Button onClick={handleCreatePost} className="rounded-xl px-8 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 font-black uppercase tracking-widest text-[10px]">Publish Entry</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {/* Create Bulletin Modal */}
+        <BulletinCreateModal
+          isOpen={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          categories={categories}
+          onSuccess={() => fetchPosts()}
+        />
 
-        {/* Category Management Dialog */}
-        <Dialog open={isCategoryManageOpen} onOpenChange={setIsCategoryManageOpen}>
-          <DialogContent className="sm:max-w-md border-none shadow-3xl bg-white dark:bg-muted p-0 overflow-hidden rounded-[3rem]">
-            <DialogHeader className="p-10 border-b bg-muted dark:bg-muted">
-              <DialogTitle className="text-2xl font-black tracking-tighter">Channel Governance</DialogTitle>
-              <div className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-1">Configure Discussion Domains</div>
-            </DialogHeader>
-            <div className="p-10 space-y-6">
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Name</label>
-                    <Input 
-                      placeholder="General" 
-                      className="h-11 border-none bg-muted dark:bg-muted rounded-xl px-4 text-xs font-black shadow-inner"
-                      value={newCategory.name}
-                      onChange={e => setNewCategory({...newCategory, name: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Code</label>
-                    <Input 
-                      placeholder="general" 
-                      className="h-11 border-none bg-muted dark:bg-muted rounded-xl px-4 text-xs font-black shadow-inner"
-                      value={newCategory.code}
-                      onChange={e => setNewCategory({...newCategory, code: e.target.value})}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Vibrancy</label>
-                  <Input 
-                    type="color" 
-                    className="h-11 w-full border-none bg-muted dark:bg-muted rounded-xl px-2 shadow-inner"
-                    value={newCategory.color}
-                    onChange={e => setNewCategory({...newCategory, color: e.target.value})}
-                  />
-                </div>
-                <Button onClick={handleCreateCategory} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-black uppercase tracking-widest text-[10px]">Add Channel</Button>
-              </div>
-
-              <div className="pt-6 border-t space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">Active Domains</label>
-                <div className="space-y-2">
-                  {(Array.isArray(categories) ? categories : []).map(cat => (
-                    <div key={cat.id} className="flex justify-between items-center p-3 bg-muted dark:bg-muted rounded-xl border border-border">
-                      <div className="flex items-center gap-3">
-                        <div className="h-3 w-3 rounded-full" style={{backgroundColor: cat.color}} />
-                        <span className="text-[10px] font-black uppercase tracking-widest">{cat.name}</span>
-                      </div>
-                      <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive hover:bg-destructive" onClick={() => handleDeleteCategory(cat.id)}>
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        {/* Channel Config Modal */}
+        <ChannelConfigModal
+          isOpen={isCategoryManageOpen}
+          onClose={() => setIsCategoryManageOpen(false)}
+          onSuccess={() => fetchCategories()}
+        />
       </div>
     </TooltipProvider>
   );

@@ -1,4 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { z } from 'zod';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +31,7 @@ import {
   Receipt,
   User,
   Clock,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/format';
@@ -34,8 +39,21 @@ import { useApp } from '@/contexts/AppContext';
 import { toast } from '@/hooks/use-toast';
 import { retailService } from '@/core/services/retail/retailService';
 import { useSession } from '@/core/security/session';
+import { apiRequest } from '@/core/api/apiClient';
+import { getMutationToastHandlers } from '@/lib/modal-helpers';
 import { RetailProduct } from '@/core/types/retail/retail';
-import { Loader2 } from 'lucide-react';
+
+// ─── Zod Schema for POS checkout ────────────────────────────────────────────────
+
+const posCheckoutSchema = z.object({
+  paymentMethod: z.enum(['cash', 'card', 'qr'], {
+    required_error: 'Payment method is required',
+  }),
+  cashReceived: z.number().optional(),
+  grandTotal: z.number().positive('Total must be greater than 0'),
+});
+
+export type PosCheckoutFormValues = z.infer<typeof posCheckoutSchema>;
 
 interface CartItem {
   product: RetailProduct;
@@ -46,6 +64,7 @@ const retailCategories = ['All', 'Coffee', 'Merchandise', 'Gift Cards', 'Equipme
 
 export default function RetailCashier() {
   const session = useSession();
+  const queryClient = useQueryClient();
   const { state, addToCart, removeFromCart, clearCart } = useApp();
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<RetailProduct[]>([]);
@@ -56,8 +75,54 @@ export default function RetailCashier() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'qr'>('cash');
   const [cashReceived, setCashReceived] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
   const barcodeRef = useRef<HTMLInputElement>(null);
+
+  // ─── React Hook Form for checkout ──────────────────────────────────────────
+  const form = useForm<PosCheckoutFormValues>({
+    resolver: zodResolver(posCheckoutSchema),
+    defaultValues: {
+      paymentMethod: 'cash',
+      cashReceived: undefined,
+      grandTotal: 0,
+    },
+  });
+
+  // ─── useMutation for POS checkout ─────────────────────────────────────────
+  const checkoutMutation = useMutation({
+    mutationFn: (data: PosCheckoutFormValues) => {
+      const payload = {
+        store_id: state.settings.defaultLocationId || 'default-store',
+        terminal_id: 'terminal-pos',
+        items: cartItems.map((item) => ({
+          product_id: item.product.id,
+          name: item.product.name,
+          quantity: item.quantity,
+          unit_price: item.product.price,
+        })),
+        payment_method: data.paymentMethod,
+        payment_received: data.cashReceived || data.grandTotal,
+        grand_total: data.grandTotal,
+        currency: 'IDR',
+      };
+
+      return apiRequest('/v1/retail/checkout', 'POST', session, payload);
+    },
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [['retail', 'pos', 'transactions'], ['retail', 'inventory']],
+      onClose: () => {
+        setIsCheckoutOpen(false);
+        clearCartLocal();
+        barcodeRef.current?.focus();
+      },
+      form,
+      successTitle: 'Transaction Complete',
+      successDescription: `Payment received via ${paymentMethod}`,
+    }),
+  });
+
+  const isProcessing = checkoutMutation.isPending;
 
   // Focus barcode input on mount
   useEffect(() => {
@@ -172,19 +237,17 @@ export default function RetailCashier() {
     setCashReceived('');
   };
 
-  const completeTransaction = async () => {
-    setIsProcessing(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    toast({
-      title: 'Transaction Complete',
-      description: `Payment of ${formatCurrency(total)} received via ${paymentMethod}`,
+  const completeTransaction = () => {
+    // Update form and submit via mutation
+    form.setValue('paymentMethod', paymentMethod);
+    form.setValue('grandTotal', total);
+    form.setValue('cashReceived', cashReceived ? parseFloat(cashReceived) : undefined);
+
+    checkoutMutation.mutate({
+      paymentMethod,
+      grandTotal: total,
+      cashReceived: cashReceived ? parseFloat(cashReceived) : undefined,
     });
-    
-    clearCartLocal();
-    setIsCheckoutOpen(false);
-    setIsProcessing(false);
-    barcodeRef.current?.focus();
   };
 
   const quickCashAmounts = [20, 50, 100, 200];
@@ -388,8 +451,8 @@ export default function RetailCashier() {
       </div>
 
       {/* Checkout Dialog */}
-      <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
-        <DialogContent className="max-w-md">
+      <Dialog open={isCheckoutOpen} onOpenChange={(open) => { if (!open && !isProcessing) setIsCheckoutOpen(false); }}>
+        <DialogContent className="max-w-md" aria-describedby="checkout-dialog-description">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Receipt className="h-5 w-5" />
@@ -397,7 +460,7 @@ export default function RetailCashier() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6">
+          <fieldset disabled={isProcessing} className="space-y-6">
             {/* Order Summary */}
             <div className="p-4 bg-muted rounded-lg space-y-2">
               <div className="flex justify-between text-sm">
@@ -424,6 +487,7 @@ export default function RetailCashier() {
               <p className="font-medium">Payment Method</p>
               <div className="grid grid-cols-3 gap-2">
                 <Button
+                  type="button"
                   variant={paymentMethod === 'cash' ? 'default' : 'outline'}
                   className="flex-col h-20 gap-2"
                   onClick={() => setPaymentMethod('cash')}
@@ -432,6 +496,7 @@ export default function RetailCashier() {
                   <span>Cash</span>
                 </Button>
                 <Button
+                  type="button"
                   variant={paymentMethod === 'card' ? 'default' : 'outline'}
                   className="flex-col h-20 gap-2"
                   onClick={() => setPaymentMethod('card')}
@@ -440,6 +505,7 @@ export default function RetailCashier() {
                   <span>Card</span>
                 </Button>
                 <Button
+                  type="button"
                   variant={paymentMethod === 'qr' ? 'default' : 'outline'}
                   className="flex-col h-20 gap-2"
                   onClick={() => setPaymentMethod('qr')}
@@ -481,10 +547,10 @@ export default function RetailCashier() {
                 )}
               </div>
             )}
-          </div>
+          </fieldset>
 
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setIsCheckoutOpen(false)}>
+            <Button variant="outline" onClick={() => setIsCheckoutOpen(false)} disabled={isProcessing}>
               Cancel
             </Button>
             <Button
@@ -495,7 +561,12 @@ export default function RetailCashier() {
               }
               className="min-w-32"
             >
-              {isProcessing ? 'Processing...' : `Pay ${formatCurrency(total)}`}
+              {isProcessing ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : `Pay ${formatCurrency(total)}`}
             </Button>
           </DialogFooter>
         </DialogContent>

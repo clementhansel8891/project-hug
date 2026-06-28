@@ -88,6 +88,7 @@ export class ChatService {
         },
       },
       orderBy: { updated_at: 'desc' },
+      take: 100
     });
 
     return rooms.map((room: any) => {

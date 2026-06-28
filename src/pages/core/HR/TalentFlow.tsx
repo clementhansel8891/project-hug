@@ -12,6 +12,7 @@ import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
 import { recruitmentService, type CandidateRecord } from "@/core/services/hr/recruitmentService";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { CreateRequisitionModal, ScheduleInterviewModal, AdvanceCandidateModal, RejectCandidateModal } from "./modals";
 
 export default function TalentFlow() {
   const session = useSession();
@@ -20,6 +21,7 @@ export default function TalentFlow() {
   const [actionOpen, setActionOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [rejectOpen, setRejectOpen] = useState(false);
+  const [advanceOpen, setAdvanceOpen] = useState(false);
   const [selectedCandidateId, setSelectedCandidateId] = useState("");
   const [requisitionTitle, setRequisitionTitle] = useState("Operations Lead");
   const [openings, setOpenings] = useState("1");
@@ -252,67 +254,21 @@ export default function TalentFlow() {
         </WorkspacePanel>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Create Requisition</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Input value={requisitionTitle} onChange={(e) => setRequisitionTitle(e.target.value)} />
-            <Input value={openings} onChange={(e) => setOpenings(e.target.value)} />
-            <Button
-              onClick={() => {
-                recruitmentService.createRequisition(session.tenant_id, session, {
-                  title: requisitionTitle,
-                  departmentId: session.department_id,
-                  status: "open",
-                  openings: Number(openings || "1"),
-                });
-                setStatusMessage("Requisition created and sent for approval.");
-                setDialogOpen(false);
-                setVersion((prev) => prev + 1);
-              }}
-            >
-              Submit for Approval
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateRequisitionModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        departments={[{ id: session.department_id, name: session.department_id }]}
+        defaultDepartmentId={session.department_id}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
 
-      <Dialog open={actionOpen} onOpenChange={setActionOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Schedule Interview</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Select value={actionCandidateId} onValueChange={setActionCandidateId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select candidate" />
-              </SelectTrigger>
-              <SelectContent>
-                {(Array.isArray(candidates) ? candidates : []).map((candidate) => (
-                  <SelectItem key={candidate.id} value={candidate.id}>
-                    {candidate.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Interview notes" />
-            <Button
-              onClick={() => {
-                if (actionCandidateId) {
-                  recruitmentService.scheduleInterview(session.tenant_id, session, actionCandidateId, notes);
-                  setStatusMessage("Interview scheduled.");
-                }
-                setNotes("");
-                setActionOpen(false);
-              }}
-            >
-              Confirm
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ScheduleInterviewModal
+        isOpen={actionOpen}
+        onClose={() => setActionOpen(false)}
+        candidates={candidates.map((c) => ({ id: c.id, name: c.name }))}
+        defaultCandidateId={actionCandidateId}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
 
       {/* Candidate Profile Modal */}
       <Dialog open={profileOpen} onOpenChange={setProfileOpen}>
@@ -357,7 +313,7 @@ export default function TalentFlow() {
               </div>
 
               <div className="flex gap-2 border-t pt-4">
-                <Button className="flex-1" onClick={handleAdvance}>
+                <Button className="flex-1" onClick={() => setAdvanceOpen(true)}>
                   Move to Next Stage
                 </Button>
                 {selectedCandidateData.stage === "offer" && (
@@ -377,26 +333,29 @@ export default function TalentFlow() {
         </DialogContent>
       </Dialog>
 
-      {/* Rejection Dialog */}
-      <Dialog open={rejectOpen} onOpenChange={setRejectOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Reject Application</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">Are you sure you want to reject this applicant? This action will close the requisition flow.</p>
-            <Textarea 
-              placeholder="Reason for rejection (required)" 
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-            />
-            <div className="flex gap-2">
-              <Button variant="destructive" className="w-full" onClick={handleReject}>Confirm Rejection</Button>
-              <Button variant="outline" className="w-full" onClick={() => setRejectOpen(false)}>Cancel</Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Rejection Modal */}
+      <RejectCandidateModal
+        isOpen={rejectOpen}
+        onClose={() => setRejectOpen(false)}
+        candidates={candidates.map((c) => ({ id: c.id, name: c.name }))}
+        defaultCandidateId={selectedCandidateId}
+        onSuccess={() => {
+          setProfileOpen(false);
+          setVersion((prev) => prev + 1);
+        }}
+      />
+
+      {/* Advance Modal */}
+      <AdvanceCandidateModal
+        isOpen={advanceOpen}
+        onClose={() => setAdvanceOpen(false)}
+        candidates={candidates.map((c) => ({ id: c.id, name: c.name }))}
+        defaultCandidateId={selectedCandidateId}
+        onSuccess={() => {
+          setProfileOpen(false);
+          setVersion((prev) => prev + 1);
+        }}
+      />
     </div>
   );
 }

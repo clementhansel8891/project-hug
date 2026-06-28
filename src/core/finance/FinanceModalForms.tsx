@@ -44,6 +44,11 @@ import {
   assetImpairmentSchema,
   assetRevaluationSchema,
   assetDisposalSchema,
+  assetEditSchema,
+  assetTransferSchema,
+  assetMaintenanceSchema,
+  assetImportSchema,
+  depreciationRunSchema,
   reconciliationSchema,
   capexBudgetSchema,
   documentUploadSchema,
@@ -51,6 +56,10 @@ import {
   settlementReconcileSchema,
   sourceLimitSchema,
   payslipConfigSchema,
+  journalPostSchema,
+  journalReverseSchema,
+  treasurySourceCreateSchema,
+  treasurySourceEditSchema,
   type PaymentFormData,
   type ReceivableFormData,
   type PayableFormData,
@@ -58,12 +67,21 @@ import {
   type TreasuryTransferFormData,
   type PolicyFormData,
   type CapexRequestFormData,
+  type JournalPostFormData,
+  type JournalReverseFormData,
+  type TreasurySourceCreateFormData,
+  type TreasurySourceEditFormData,
 } from "./schemas";
 
 import type { RegisterAssetFormData } from "./schemas";
 import type { AssetImpairmentFormData } from "./schemas";
 import type { AssetRevaluationFormData } from "./schemas";
 import type { AssetDisposalFormData } from "./schemas";
+import type { AssetEditFormData } from "./schemas";
+import type { AssetTransferFormData } from "./schemas";
+import type { AssetMaintenanceFormData } from "./schemas";
+import type { AssetImportFormData } from "./schemas";
+import type { DepreciationRunFormData } from "./schemas";
 import type { ReconciliationFormData } from "./schemas";
 import type { CapexBudgetFormData } from "./schemas";
 import type { DocumentUploadFormData } from "./schemas";
@@ -1296,6 +1314,812 @@ export function PayslipConfigModal({ isOpen, onClose, onSuccess }: FinanceModalP
             <FormItem>
               <FormLabel>Logo URL (optional)</FormLabel>
               <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 19. ASSET EDIT MODAL
+// ===========================================================================
+
+export function AssetEditModal({ isOpen, onClose, onSuccess, assetId, defaultValues }: AssetModalProps & { defaultValues?: Partial<AssetEditFormData> }) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<AssetEditFormData, unknown>(
+    `/v1/finance/assets/${assetId}`,
+    "PATCH",
+    ["/v1/finance/assets", "/v1/finance/assets/events"]
+  );
+
+  return (
+    <ModuleModal
+      schema={assetEditSchema}
+      defaultValues={{
+        assetId,
+        description: defaultValues?.description ?? "",
+        assetClass: defaultValues?.assetClass ?? "EQUIPMENT",
+        location: defaultValues?.location ?? "",
+        department: defaultValues?.department ?? "",
+        usefulLifeYears: defaultValues?.usefulLifeYears ?? 5,
+        residualValue: defaultValues?.residualValue ?? 0,
+        depreciationMethod: defaultValues?.depreciationMethod ?? "STRAIGHT_LINE",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Edited Asset", `Asset ${assetId} - ${data.description}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Edit Asset"
+      isOpen={isOpen}
+      description="Update the details of this fixed asset."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="description" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl><Input placeholder="Asset description" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="assetClass" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Asset Class</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  {["LAND","BUILDING","MACHINERY","VEHICLE","FURNITURE","EQUIPMENT","SOFTWARE","OTHER"].map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="location" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl><Input placeholder="Location" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="department" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Department</FormLabel>
+              <FormControl><Input placeholder="Department" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="usefulLifeYears" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Useful Life (years)</FormLabel>
+              <FormControl><Input type="number" placeholder="5" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="residualValue" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Residual Value</FormLabel>
+              <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="depreciationMethod" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Depreciation Method</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="STRAIGHT_LINE">Straight Line</SelectItem>
+                  <SelectItem value="DECLINING_BALANCE">Declining Balance</SelectItem>
+                  <SelectItem value="UNIT_OF_PRODUCTION">Unit of Production</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+// ===========================================================================
+// 20. ASSET TRANSFER MODAL
+// ===========================================================================
+
+export function AssetTransferModal({ isOpen, onClose, onSuccess, assetId }: AssetModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<AssetTransferFormData, unknown>(
+    `/v1/finance/assets/${assetId}/transfer`,
+    "POST",
+    ["/v1/finance/assets", "/v1/finance/assets/events"]
+  );
+
+  return (
+    <ModuleModal
+      schema={assetTransferSchema}
+      defaultValues={{
+        assetId,
+        destinationLocation: "",
+        destinationDepartment: "",
+        transferDate: new Date().toISOString().slice(0, 10),
+        reason: "",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Transferred Asset", `Asset ${assetId} to ${data.destinationDepartment}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Transfer Asset"
+      isOpen={isOpen}
+      description="Transfer this asset between locations or departments."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="destinationLocation" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Destination Location</FormLabel>
+              <FormControl><Input placeholder="New location" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="destinationDepartment" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Destination Department</FormLabel>
+              <FormControl><Input placeholder="New department" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="transferDate" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Transfer Date</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="reason" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reason</FormLabel>
+              <FormControl><Textarea placeholder="Reason for transfer..." {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+// ===========================================================================
+// 21. ASSET MAINTENANCE MODAL
+// ===========================================================================
+
+export function AssetMaintenanceModal({ isOpen, onClose, onSuccess, assetId }: AssetModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<AssetMaintenanceFormData, unknown>(
+    `/v1/finance/assets/${assetId}/maintenance`,
+    "POST",
+    ["/v1/finance/assets", "/v1/finance/assets/events"]
+  );
+
+  return (
+    <ModuleModal
+      schema={assetMaintenanceSchema}
+      defaultValues={{
+        assetId,
+        maintenanceType: "PREVENTIVE",
+        cost: 0,
+        maintenanceDate: new Date().toISOString().slice(0, 10),
+        notes: "",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Logged Maintenance", `Asset ${assetId} - ${data.maintenanceType}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Log Maintenance"
+      isOpen={isOpen}
+      description="Record a maintenance event for this asset."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="maintenanceType" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Maintenance Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="PREVENTIVE">Preventive</SelectItem>
+                  <SelectItem value="CORRECTIVE">Corrective</SelectItem>
+                  <SelectItem value="INSPECTION">Inspection</SelectItem>
+                  <SelectItem value="OVERHAUL">Overhaul</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="cost" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cost</FormLabel>
+              <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="maintenanceDate" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Maintenance Date</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="notes" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes (optional)</FormLabel>
+              <FormControl><Textarea placeholder="Maintenance notes..." {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+// ===========================================================================
+// 22. ASSET IMPORT MODAL
+// ===========================================================================
+
+export function AssetImportModal({ isOpen, onClose, onSuccess }: FinanceModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<AssetImportFormData, unknown>(
+    "/v1/finance/assets/import",
+    "POST",
+    ["/v1/finance/assets"]
+  );
+
+  return (
+    <ModuleModal
+      schema={assetImportSchema}
+      defaultValues={{ fileContent: "", fileName: "", format: "CSV" }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Imported Assets", data.fileName);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Import Assets"
+      isOpen={isOpen}
+      description="Bulk import assets from a CSV or Excel file."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="fileName" render={({ field }) => (
+            <FormItem>
+              <FormLabel>File Name</FormLabel>
+              <FormControl><Input placeholder="assets.csv" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="format" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Format</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="CSV">CSV</SelectItem>
+                  <SelectItem value="XLSX">Excel (XLSX)</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="fileContent" render={({ field }) => (
+            <FormItem>
+              <FormLabel>File Content (paste CSV/data)</FormLabel>
+              <FormControl><Textarea placeholder="Paste CSV content here or upload file..." className="min-h-[120px] font-mono text-xs" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+// ===========================================================================
+// 23. ASSET DEPRECIATION RUN MODAL
+// ===========================================================================
+
+export function AssetDepreciationRunModal({ isOpen, onClose, onSuccess }: FinanceModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<DepreciationRunFormData, unknown>(
+    "/v1/finance/assets/depreciation/run",
+    "POST",
+    ["/v1/finance/assets", "/v1/finance/assets/depreciation"]
+  );
+
+  return (
+    <ModuleModal
+      schema={depreciationRunSchema}
+      defaultValues={{
+        periodStart: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10),
+        periodEnd: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10),
+        postingDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().slice(0, 10),
+        cfoSignoff: true,
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Depreciation Run", `Period ${data.periodStart} to ${data.periodEnd}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Run Scheduled Depreciation"
+      isOpen={isOpen}
+      description="Execute depreciation calculations for the specified period."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="periodStart" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Period Start</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="periodEnd" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Period End</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="postingDate" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Posting Date</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 24. JOURNAL ENTRY POST MODAL
+// ===========================================================================
+
+interface JournalModalProps extends FinanceModalProps {
+  entryId: string;
+}
+
+export function JournalPostModal({ isOpen, onClose, onSuccess, entryId }: JournalModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<JournalPostFormData, unknown>(
+    `/v1/finance/journal-entries/${entryId}/post`,
+    "POST",
+    ["/v1/finance/journal-entries", "/v1/finance/ledger-entries"]
+  );
+
+  return (
+    <ModuleModal
+      schema={journalPostSchema}
+      defaultValues={{
+        entryId,
+        postingDate: new Date().toISOString().slice(0, 10),
+        notes: "",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Posted Journal Entry", `Entry ${entryId}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Post Journal Entry"
+      isOpen={isOpen}
+      description="Confirm and post this draft journal entry to the general ledger."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="postingDate" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Posting Date</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="notes" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes (optional)</FormLabel>
+              <FormControl><Textarea placeholder="Additional notes for posting..." {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 25. JOURNAL ENTRY REVERSE MODAL
+// ===========================================================================
+
+export function JournalReverseModal({ isOpen, onClose, onSuccess, entryId }: JournalModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<JournalReverseFormData, unknown>(
+    `/v1/finance/journal-entries/${entryId}/reverse`,
+    "POST",
+    ["/v1/finance/journal-entries", "/v1/finance/ledger-entries"]
+  );
+
+  return (
+    <ModuleModal
+      schema={journalReverseSchema}
+      defaultValues={{
+        entryId,
+        reversalDate: new Date().toISOString().slice(0, 10),
+        reason: "",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Reversed Journal Entry", `Entry ${entryId} — ${data.reason}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Reverse Journal Entry"
+      isOpen={isOpen}
+      description="Create a reversing entry for the selected posted journal."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="reversalDate" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reversal Date</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="reason" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reason for Reversal</FormLabel>
+              <FormControl><Textarea placeholder="Why is this entry being reversed?" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 26. LEDGER RECONCILIATION MODAL
+// ===========================================================================
+
+export function LedgerReconciliationModal({ isOpen, onClose, onSuccess }: FinanceModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<import("./schemas").ReconciliationFormData, unknown>(
+    "/v1/finance/reconciliation",
+    "POST",
+    ["/v1/finance/ledger-entries", "/v1/finance/reconciliation"]
+  );
+
+  return (
+    <ModuleModal
+      schema={reconciliationSchema}
+      defaultValues={{
+        accountId: "",
+        periodStart: "",
+        periodEnd: "",
+        bankBalance: 0,
+        bookBalance: 0,
+        notes: "",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Ledger Reconciliation", `Account ${data.accountId} — bank: ${data.bankBalance}, book: ${data.bookBalance}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Ledger Reconciliation"
+      isOpen={isOpen}
+      description="Reconcile bank statement balance against book balance for an account."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="accountId" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Account ID</FormLabel>
+              <FormControl><Input placeholder="Account code or ID" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="periodStart" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Period Start</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="periodEnd" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Period End</FormLabel>
+              <FormControl><Input type="date" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="bankBalance" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bank Statement Balance</FormLabel>
+              <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="bookBalance" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Book Balance</FormLabel>
+              <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="notes" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Notes (optional)</FormLabel>
+              <FormControl><Textarea placeholder="Reconciliation notes..." {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 27. TREASURY SOURCE CREATE MODAL
+// ===========================================================================
+
+export function TreasurySourceCreateModal({ isOpen, onClose, onSuccess }: FinanceModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<TreasurySourceCreateFormData, unknown>(
+    "/v1/finance/treasury/sources",
+    "POST",
+    ["/v1/finance/treasury/sources"]
+  );
+
+  return (
+    <ModuleModal
+      schema={treasurySourceCreateSchema}
+      defaultValues={{ name: "", type: "BANK", currency: "IDR", balance: 0, provider: "" }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Created Treasury Source", data.name);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Create Treasury Source"
+      isOpen={isOpen}
+      description="Add a new bank account, wallet, or cash source."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="name" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source Name</FormLabel>
+              <FormControl><Input placeholder="e.g., BCA Giro Corporate" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="type" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="BANK">Bank Account</SelectItem>
+                  <SelectItem value="CASH_REGISTER">Cash Register</SelectItem>
+                  <SelectItem value="E_WALLET">E-Wallet</SelectItem>
+                  <SelectItem value="GATEWAY_SETTLEMENT">Payment Gateway</SelectItem>
+                  <SelectItem value="PETTY_CASH">Petty Cash</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="currency" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Currency</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="IDR">IDR</SelectItem>
+                  <SelectItem value="USD">USD</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="balance" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Opening Balance</FormLabel>
+              <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="provider" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Provider (optional)</FormLabel>
+              <FormControl><Input placeholder="e.g., Midtrans, Xendit" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 28. TREASURY SOURCE EDIT MODAL
+// ===========================================================================
+
+interface TreasurySourceEditModalProps extends FinanceModalProps {
+  sourceId: string;
+  defaultValues?: Partial<TreasurySourceEditFormData>;
+}
+
+export function TreasurySourceEditModal({ isOpen, onClose, onSuccess, sourceId, defaultValues }: TreasurySourceEditModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<TreasurySourceEditFormData, unknown>(
+    `/v1/finance/treasury/sources/${sourceId}`,
+    "PATCH",
+    ["/v1/finance/treasury/sources"]
+  );
+
+  return (
+    <ModuleModal
+      schema={treasurySourceEditSchema}
+      defaultValues={{
+        sourceId,
+        name: defaultValues?.name ?? "",
+        type: defaultValues?.type ?? "BANK",
+        currency: defaultValues?.currency ?? "IDR",
+        provider: defaultValues?.provider ?? "",
+      }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Edited Treasury Source", `${sourceId} — ${data.name}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title="Edit Treasury Source"
+      isOpen={isOpen}
+      description="Update the details of this treasury/cash source."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="name" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source Name</FormLabel>
+              <FormControl><Input placeholder="Source name" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="type" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="BANK">Bank Account</SelectItem>
+                  <SelectItem value="CASH_REGISTER">Cash Register</SelectItem>
+                  <SelectItem value="E_WALLET">E-Wallet</SelectItem>
+                  <SelectItem value="GATEWAY_SETTLEMENT">Payment Gateway</SelectItem>
+                  <SelectItem value="PETTY_CASH">Petty Cash</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="currency" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Currency</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
+                <SelectContent>
+                  <SelectItem value="IDR">IDR</SelectItem>
+                  <SelectItem value="USD">USD</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="provider" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Provider (optional)</FormLabel>
+              <FormControl><Input placeholder="e.g., Midtrans, Xendit" {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+        </>
+      )}
+    </ModuleModal>
+  );
+}
+
+
+// ===========================================================================
+// 29. TREASURY RECONCILIATION MODAL
+// ===========================================================================
+
+interface TreasuryReconciliationModalProps extends FinanceModalProps {
+  sourceId?: string;
+  sourceName?: string;
+  pendingAmount?: number;
+}
+
+export function TreasuryReconciliationModal({ isOpen, onClose, onSuccess, sourceId = "", sourceName = "", pendingAmount = 0 }: TreasuryReconciliationModalProps) {
+  const auditLog = useAuditLog();
+  const mutation = useModuleMutation<SettlementReconcileFormData, unknown>(
+    "/v1/finance/treasury/reconcile",
+    "POST",
+    ["/v1/finance/treasury/sources"]
+  );
+
+  return (
+    <ModuleModal
+      schema={settlementReconcileSchema}
+      defaultValues={{ sourceId, amount: pendingAmount }}
+      onSubmit={async (data) => {
+        await mutation.mutateAsync(data);
+        auditLog("Treasury Reconciliation", `Source ${sourceName || data.sourceId} — ${data.amount}`);
+        onClose();
+        onSuccess?.();
+      }}
+      onCancel={onClose}
+      title={`Reconcile Settlement${sourceName ? ` — ${sourceName}` : ""}`}
+      isOpen={isOpen}
+      description="Finalize the reconciliation of pending settlement amounts."
+    >
+      {(form) => (
+        <>
+          <FormField control={form.control} name="sourceId" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Source ID</FormLabel>
+              <FormControl><Input placeholder="Source ID" {...field} disabled={!!sourceId} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="amount" render={({ field }) => (
+            <FormItem>
+              <FormLabel>Reconcile Amount</FormLabel>
+              <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )} />

@@ -585,7 +585,6 @@ const StaffAssignments = () => {
         isOpen={!!selectedStaffForRoleEdit}
         onClose={() => setSelectedStaffForRoleEdit(null)}
         staff={selectedStaffForRoleEdit}
-        onSubmit={handleRoleModification}
       />
 
       <AuditTrailModal

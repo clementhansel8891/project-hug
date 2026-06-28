@@ -1,4 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { z } from 'zod';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,11 +41,28 @@ import { cn } from '@/lib/utils';
 import { useApp } from '@/contexts/AppContext';
 import { formatCurrency, formatDate } from '@/lib/format';
 import { formatTime } from '@/lib/mock-data';
-import { toast } from '@/hooks/use-toast';
-import { attendanceService } from '@/core/services/hr/attendanceService';
+import { useToast } from '@/hooks/use-toast';
 import { useSession } from '@/core/security/session';
+import { apiRequest } from '@/core/api/apiClient';
 import { retailService } from '@/core/services/retail/retailService';
+import { getMutationToastHandlers } from '@/lib/modal-helpers';
 import { Loader2 } from 'lucide-react';
+
+// ─── Zod Schemas ────────────────────────────────────────────────────────────────
+
+const startShiftSchema = z.object({
+  openingCash: z.coerce.number().min(0, 'Opening cash must be non-negative'),
+  reason: z.string().min(1, 'Reason is required for unscheduled shift start'),
+});
+
+type StartShiftFormValues = z.infer<typeof startShiftSchema>;
+
+const endShiftSchema = z.object({
+  closingCash: z.coerce.number().min(0, 'Closing cash must be non-negative'),
+  notes: z.string().max(500, 'Notes must be at most 500 characters').optional().default(''),
+});
+
+type EndShiftFormValues = z.infer<typeof endShiftSchema>;
 
 interface ShiftRecord {
   id: string;
@@ -83,6 +104,8 @@ interface Denominations {
 
 export default function RetailShifts() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { state, startShift, endShift } = useApp();
   const [isLoading, setIsLoading] = useState(true);
   const [shiftHistory, setShiftHistory] = useState<ShiftRecord[]>([]);
@@ -91,10 +114,6 @@ export default function RetailShifts() {
   const [isEndOpen, setIsEndOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [selectedShift, setSelectedShift] = useState<ShiftRecord | null>(null);
-  const [openingCash, setOpeningCash] = useState('');
-  const [closingCash, setClosingCash] = useState('');
-  const [clockInReason, setClockInReason] = useState('');
-  const [shiftNotes, setShiftNotes] = useState('');
   const [denominations, setDenominations] = useState<Denominations>({
     hundreds: 0,
     fifties: 0,
@@ -106,6 +125,90 @@ export default function RetailShifts() {
     dimes: 0,
     nickels: 0,
     pennies: 0,
+  });
+
+  // ─── React Hook Form — Start Shift ──────────────────────────────────────────
+  const startForm = useForm<StartShiftFormValues>({
+    resolver: zodResolver(startShiftSchema),
+    defaultValues: { openingCash: 0, reason: '' },
+  });
+
+  // ─── React Hook Form — End Shift ───────────────────────────────────────────
+  const endForm = useForm<EndShiftFormValues>({
+    resolver: zodResolver(endShiftSchema),
+    defaultValues: { closingCash: 0, notes: '' },
+  });
+
+  // ─── useMutation — Start Shift ─────────────────────────────────────────────
+  const startMutation = useMutation({
+    mutationFn: (data: StartShiftFormValues) =>
+      apiRequest("/v1/retail/shifts/open", "POST", session, {
+        store_id: state.settings.defaultLocationId || '',
+        opening_cash: data.openingCash,
+        terminal_id: 'WEB_PORTAL',
+        reason: data.reason,
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "shifts"]],
+      onClose: () => {
+        setIsStartOpen(false);
+        // Also start the local shift session
+        const opening = startForm.getValues('openingCash');
+        startShift(opening);
+        const newShift: ShiftRecord = {
+          id: `shift-${Date.now()}`,
+          staffId: state.currentUser?.id || '1',
+          staffName: state.currentUser?.name || 'Current User',
+          startTime: new Date().toISOString(),
+          openingCash: opening,
+          totalSales: 0,
+          transactions: 0,
+          cashSales: 0,
+          cardSales: 0,
+          mobileSales: 0,
+          refunds: 0,
+          notes: startForm.getValues('reason'),
+          status: 'open',
+        };
+        setCurrentShift(newShift);
+        fetchShifts();
+      },
+      form: startForm,
+      successTitle: 'Shift Started',
+      successDescription: 'Opening cash registered successfully.',
+    }),
+  });
+
+  // ─── useMutation — End Shift ───────────────────────────────────────────────
+  const endMutation = useMutation({
+    mutationFn: (data: EndShiftFormValues) => {
+      const shiftId = currentShift?.id || '';
+      return apiRequest(`/v1/retail/shifts/${shiftId}/close`, "PUT", session, {
+        closing_cash: data.closingCash,
+        notes: data.notes,
+      });
+    },
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "shifts"]],
+      onClose: () => {
+        setIsEndOpen(false);
+        const closing = endForm.getValues('closingCash');
+        endShift(closing);
+        setCurrentShift(null);
+        setDenominations({
+          hundreds: 0, fifties: 0, twenties: 0, tens: 0,
+          fives: 0, ones: 0, quarters: 0, dimes: 0, nickels: 0, pennies: 0,
+        });
+        fetchShifts();
+      },
+      form: endForm,
+      successTitle: 'Shift Ended',
+      successDescription: 'Cash reconciliation complete.',
+    }),
   });
 
   const calculatedTotal =
@@ -172,118 +275,16 @@ export default function RetailShifts() {
   const todaySales = todayShifts.reduce((sum, s) => sum + (s.totalSales || 0), 0);
   const totalVariance = todayShifts.reduce((sum, s) => sum + (s.cashDifference || 0), 0);
 
-  // Handle start shift
-  const handleStartShift = async () => {
-    const opening = parseFloat(openingCash) || 0;
-    
-    if (!clockInReason.trim()) {
-      toast({
-        title: 'Reason required',
-        description: 'Please provide a reason for starting an unscheduled shift.',
-        variant: 'destructive',
-      });
-      return;
-    }
+  // Handle start shift — form submission
+  const onStartSubmit = startForm.handleSubmit((data) => startMutation.mutate(data));
 
-    try {
-      // 1. Log to backend attendance system
-      await attendanceService.clockIn(session.tenant_id, session, {
-        locationId: state.settings.defaultLocationId || '1', // Fallback for demo
-        deviceId: 'WEB_PORTAL',
-        verificationMethod: 'MANUAL',
-        reason: clockInReason
-      });
+  // Handle end shift — form submission
+  const onEndSubmit = endForm.handleSubmit((data) => endMutation.mutate(data));
 
-      // 2. Start local retail shift session
-      const newShift: ShiftRecord = {
-        id: `shift-${Date.now()}`,
-        staffId: state.currentUser?.id || '1',
-        staffName: state.currentUser?.name || 'Current User',
-        startTime: new Date().toISOString(),
-        openingCash: opening,
-        totalSales: 0,
-        transactions: 0,
-        cashSales: 0,
-        cardSales: 0,
-        mobileSales: 0,
-        refunds: 0,
-        notes: clockInReason,
-        status: 'open',
-      };
-
-      setCurrentShift(newShift);
-      startShift(opening);
-      setIsStartOpen(false);
-      setClockInReason(''); 
-      
-      // Refresh history
-      fetchShifts();
-      
-      toast({
-        title: 'Shift started',
-        description: `Opening cash: ${formatCurrency(opening)}`,
-      });
-    } catch (err) {
-      toast({
-        title: 'Clock-in failed',
-        description: 'Unable to register attendance with the system.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  // Handle end shift
-  const handleEndShift = () => {
-    if (!currentShift) return;
-
-    const closing = parseFloat(closingCash) || calculatedTotal;
-    // Simulated expected cash calculation
-    const expectedCash = currentShift.openingCash + (currentShift.cashSales || 0);
-    const difference = closing - expectedCash;
-
-    const closedShift: ShiftRecord = {
-      ...currentShift,
-      endTime: new Date().toISOString(),
-      closingCash: closing,
-      expectedCash,
-      cashDifference: difference,
-      totalSales: currentShift.totalSales || 0,
-      transactions: currentShift.transactions || 0,
-      cashSales: currentShift.cashSales || 0,
-      cardSales: currentShift.cardSales || 0,
-      mobileSales: currentShift.mobileSales || 0,
-      notes: shiftNotes,
-      status: 'closed',
-    };
-
-    setShiftHistory((prev) => [closedShift, ...prev]);
-    setCurrentShift(null);
-    endShift(closing);
-    setIsEndOpen(false);
-    
-    // Refresh history from server
-    fetchShifts();
-
-    setClosingCash('');
-    setShiftNotes('');
-    setDenominations({
-      hundreds: 0,
-      fifties: 0,
-      twenties: 0,
-      tens: 0,
-      fives: 0,
-      ones: 0,
-      quarters: 0,
-      dimes: 0,
-      nickels: 0,
-      pennies: 0,
-    });
-
-    toast({
-      title: 'Shift ended',
-      description: `Cash variance: ${formatCurrency(difference)}`,
-    });
-  };
+  // Sync denomination calculator total into end form
+  useEffect(() => {
+    endForm.setValue('closingCash', calculatedTotal);
+  }, [calculatedTotal]);
 
   const formatDuration = (start: string, end?: string) => {
     const startDate = new Date(start);
@@ -517,169 +518,203 @@ export default function RetailShifts() {
       </Card>
 
       {/* Start Shift Dialog */}
-      <Dialog open={isStartOpen} onOpenChange={setIsStartOpen}>
-        <DialogContent>
+      <Dialog open={isStartOpen} onOpenChange={(open) => { if (!open && !startMutation.isPending) { startForm.reset(); setIsStartOpen(false); } }}>
+        <DialogContent aria-describedby="start-shift-description">
           <DialogHeader>
             <DialogTitle>Start New Shift</DialogTitle>
-            <DialogDescription>
+            <DialogDescription id="start-shift-description">
               Count your opening cash drawer and enter the total below.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Opening Cash Amount</Label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={openingCash}
-                  onChange={(e) => setOpeningCash(e.target.value)}
-                  className="pl-9 text-lg"
-                  placeholder="200.00"
-                />
+          <form onSubmit={onStartSubmit} noValidate>
+            <fieldset disabled={startMutation.isPending} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="start-opening-cash">Opening Cash Amount</Label>
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="start-opening-cash"
+                    type="number"
+                    step="0.01"
+                    {...startForm.register('openingCash', { valueAsNumber: true })}
+                    className="pl-9 text-lg"
+                    placeholder="200.00"
+                    aria-describedby={startForm.formState.errors.openingCash ? 'start-opening-cash-error' : undefined}
+                    aria-invalid={!!startForm.formState.errors.openingCash}
+                  />
+                </div>
+                {startForm.formState.errors.openingCash && (
+                  <p id="start-opening-cash-error" className="text-[10px] text-destructive font-medium" role="alert">
+                    {startForm.formState.errors.openingCash.message}
+                  </p>
+                )}
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Unscheduled Reason <Badge variant="outline" className="ml-2 text-[10px] uppercase">Mandatory Audit</Badge></Label>
-              <Textarea
-                placeholder="Briefly explain why this unscheduled shift is being started..."
-                value={clockInReason}
-                onChange={(e) => setClockInReason(e.target.value)}
-                className="min-h-[80px]"
-                required
-              />
-              <p className="text-[10px] text-muted-foreground">
-                This reason will be logged for HOD review as part of the workforce compliance audit.
-              </p>
-            </div>
-            <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                Standard opening float: {formatCurrency(200)}
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsStartOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleStartShift}>
-              <Play className="h-4 w-4 mr-2" />
-              Start Shift
-            </Button>
-          </DialogFooter>
+              <div className="space-y-2">
+                <Label htmlFor="start-reason">Unscheduled Reason <Badge variant="outline" className="ml-2 text-[10px] uppercase">Mandatory Audit</Badge></Label>
+                <Textarea
+                  id="start-reason"
+                  placeholder="Briefly explain why this unscheduled shift is being started..."
+                  {...startForm.register('reason')}
+                  className="min-h-[80px]"
+                  aria-describedby={startForm.formState.errors.reason ? 'start-reason-error' : undefined}
+                  aria-invalid={!!startForm.formState.errors.reason}
+                />
+                {startForm.formState.errors.reason && (
+                  <p id="start-reason-error" className="text-[10px] text-destructive font-medium" role="alert">
+                    {startForm.formState.errors.reason.message}
+                  </p>
+                )}
+                <p className="text-[10px] text-muted-foreground">
+                  This reason will be logged for HOD review as part of the workforce compliance audit.
+                </p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  Standard opening float: {formatCurrency(200)}
+                </p>
+              </div>
+            </fieldset>
+            <DialogFooter className="mt-4">
+              <Button type="button" variant="outline" disabled={startMutation.isPending} onClick={() => { startForm.reset(); setIsStartOpen(false); }}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={startMutation.isPending}>
+                {startMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Play className="h-4 w-4 mr-2" />
+                )}
+                Start Shift
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 
       {/* End Shift Dialog */}
-      <Dialog open={isEndOpen} onOpenChange={setIsEndOpen}>
-        <DialogContent className="max-w-2xl">
+      <Dialog open={isEndOpen} onOpenChange={(open) => { if (!open && !endMutation.isPending) { endForm.reset(); setIsEndOpen(false); } }}>
+        <DialogContent className="max-w-2xl" aria-describedby="end-shift-description">
           <DialogHeader>
             <DialogTitle>End Shift & Cash Reconciliation</DialogTitle>
-            <DialogDescription>
+            <DialogDescription id="end-shift-description">
               Count your cash drawer and enter amounts below for reconciliation.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid grid-cols-2 gap-6">
-            {/* Denomination Calculator */}
-            <div className="space-y-4">
-              <h4 className="font-medium flex items-center gap-2">
-                <Calculator className="h-4 w-4" />
-                Cash Counter
-              </h4>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                {[
-                  { label: 'Rp 100.000', key: 'hundreds', value: 100000 },
-                  { label: 'Rp 50.000', key: 'fifties', value: 50000 },
-                  { label: 'Rp 20.000', key: 'twenties', value: 20000 },
-                  { label: 'Rp 10.000', key: 'tens', value: 10000 },
-                  { label: 'Rp 5.000', key: 'fives', value: 5000 },
-                  { label: 'Rp 1.000', key: 'ones', value: 1000 },
-                  { label: 'Rp 500', key: 'quarters', value: 500 },
-                  { label: 'Rp 200', key: 'dimes', value: 200 },
-                ].map((denom) => (
-                  <div key={denom.key} className="flex items-center gap-2">
-                    <span className="w-10 text-muted-foreground">{denom.label}</span>
-                    <Input
-                      type="number"
-                      min="0"
-                      value={denominations[denom.key as keyof typeof denominations]}
-                      onChange={(e) =>
-                        setDenominations((prev) => ({
-                          ...prev,
-                          [denom.key]: parseInt(e.target.value) || 0,
-                        }))
-                      }
-                      className="h-8 text-center"
-                    />
+          <form onSubmit={onEndSubmit} noValidate>
+            <fieldset disabled={endMutation.isPending}>
+              <div className="grid grid-cols-2 gap-6">
+                {/* Denomination Calculator */}
+                <div className="space-y-4">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <Calculator className="h-4 w-4" />
+                    Cash Counter
+                  </h4>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    {[
+                      { label: 'Rp 100.000', key: 'hundreds', value: 100000 },
+                      { label: 'Rp 50.000', key: 'fifties', value: 50000 },
+                      { label: 'Rp 20.000', key: 'twenties', value: 20000 },
+                      { label: 'Rp 10.000', key: 'tens', value: 10000 },
+                      { label: 'Rp 5.000', key: 'fives', value: 5000 },
+                      { label: 'Rp 1.000', key: 'ones', value: 1000 },
+                      { label: 'Rp 500', key: 'quarters', value: 500 },
+                      { label: 'Rp 200', key: 'dimes', value: 200 },
+                    ].map((denom) => (
+                      <div key={denom.key} className="flex items-center gap-2">
+                        <span className="w-10 text-muted-foreground">{denom.label}</span>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={denominations[denom.key as keyof typeof denominations]}
+                          onChange={(e) =>
+                            setDenominations((prev) => ({
+                              ...prev,
+                              [denom.key]: parseInt(e.target.value) || 0,
+                            }))
+                          }
+                          className="h-8 text-center"
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <p className="text-sm text-muted-foreground">Calculated Total</p>
-                <p className="text-2xl font-bold text-primary">
-                  {formatCurrency(calculatedTotal)}
-                </p>
-              </div>
-            </div>
-
-            {/* Summary */}
-            <div className="space-y-4">
-              <h4 className="font-medium">Shift Summary</h4>
-              {currentShift && (
-                <div className="space-y-3">
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-muted-foreground">Opening Cash</span>
-                    <span className="font-medium">{formatCurrency(currentShift.openingCash)}</span>
-                  </div>
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-muted-foreground">Expected Cash Sales</span>
-                    <span className="font-medium">{formatCurrency(currentShift.cashSales || 0)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-muted-foreground">Expected Total</span>
-                    <span className="font-bold">{formatCurrency(currentShift.openingCash + (currentShift.cashSales || 0))}</span>
-                  </div>
-                  <div className="flex justify-between p-2 bg-muted rounded">
-                    <span className="text-muted-foreground">Actual Count</span>
-                    <span className="font-bold">{formatCurrency(calculatedTotal)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between p-3 rounded-lg">
-                    <span className="text-muted-foreground">Variance</span>
-                    <span className={cn(
-                      "font-bold",
-                      calculatedTotal - (currentShift.openingCash + (currentShift.cashSales || 0)) >= 0
-                        ? "text-success"
-                        : "text-destructive",
-                    )}>
-                      {calculatedTotal - (currentShift.openingCash + (currentShift.cashSales || 0)) >= 0 ? "+" : ""}
-                      {formatCurrency(calculatedTotal - (currentShift.openingCash + (currentShift.cashSales || 0)))}
-                    </span>
+                  <div className="p-3 bg-primary/10 rounded-lg">
+                    <p className="text-sm text-muted-foreground">Calculated Total</p>
+                    <p className="text-2xl font-bold text-primary">
+                      {formatCurrency(calculatedTotal)}
+                    </p>
                   </div>
                 </div>
-              )}
-              <div className="space-y-2">
-                <Label>Notes (optional)</Label>
-                <Textarea
-                  value={shiftNotes}
-                  onChange={(e) => setShiftNotes(e.target.value)}
-                  placeholder="Any notes about this shift..."
-                  rows={3}
-                />
+
+                {/* Summary */}
+                <div className="space-y-4">
+                  <h4 className="font-medium">Shift Summary</h4>
+                  {currentShift && (
+                    <div className="space-y-3">
+                      <div className="flex justify-between p-2 bg-muted rounded">
+                        <span className="text-muted-foreground">Opening Cash</span>
+                        <span className="font-medium">{formatCurrency(currentShift.openingCash)}</span>
+                      </div>
+                      <div className="flex justify-between p-2 bg-muted rounded">
+                        <span className="text-muted-foreground">Expected Cash Sales</span>
+                        <span className="font-medium">{formatCurrency(currentShift.cashSales || 0)}</span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between p-2 bg-muted rounded">
+                        <span className="text-muted-foreground">Expected Total</span>
+                        <span className="font-bold">{formatCurrency(currentShift.openingCash + (currentShift.cashSales || 0))}</span>
+                      </div>
+                      <div className="flex justify-between p-2 bg-muted rounded">
+                        <span className="text-muted-foreground">Actual Count</span>
+                        <span className="font-bold">{formatCurrency(calculatedTotal)}</span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between p-3 rounded-lg">
+                        <span className="text-muted-foreground">Variance</span>
+                        <span className={cn(
+                          "font-bold",
+                          calculatedTotal - (currentShift.openingCash + (currentShift.cashSales || 0)) >= 0
+                            ? "text-success"
+                            : "text-destructive",
+                        )}>
+                          {calculatedTotal - (currentShift.openingCash + (currentShift.cashSales || 0)) >= 0 ? "+" : ""}
+                          {formatCurrency(calculatedTotal - (currentShift.openingCash + (currentShift.cashSales || 0)))}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="end-shift-notes">Notes (optional)</Label>
+                    <Textarea
+                      id="end-shift-notes"
+                      {...endForm.register('notes')}
+                      placeholder="Any notes about this shift..."
+                      rows={3}
+                      aria-describedby={endForm.formState.errors.notes ? 'end-shift-notes-error' : undefined}
+                      aria-invalid={!!endForm.formState.errors.notes}
+                    />
+                    {endForm.formState.errors.notes && (
+                      <p id="end-shift-notes-error" className="text-[10px] text-destructive font-medium" role="alert">
+                        {endForm.formState.errors.notes.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEndOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={handleEndShift}>
-              <Square className="h-4 w-4 mr-2" />
-              End Shift
-            </Button>
-          </DialogFooter>
+            </fieldset>
+            <DialogFooter className="mt-4">
+              <Button type="button" variant="outline" disabled={endMutation.isPending} onClick={() => { endForm.reset(); setIsEndOpen(false); }}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="destructive" disabled={endMutation.isPending}>
+                {endMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <Square className="h-4 w-4 mr-2" />
+                )}
+                End Shift
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 

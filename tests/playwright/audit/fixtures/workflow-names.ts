@@ -13,7 +13,6 @@ export const WORKFLOW_NAMES = [
   'hr',
   'finance',
   'sales',
-  'fnb',
   'marketing',
   'it-service',
   'security',

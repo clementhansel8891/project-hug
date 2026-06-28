@@ -45,6 +45,7 @@ import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/format";
 import { toast } from "sonner";
 import type { IncentivePlan, SalesAttribution, IncentiveAuditLog } from "@/core/types/sales/incentives";
+import { IncentiveConfigModal } from "../modals/IncentiveConfigModal";
 
 export default function IncentiveDesk() {
   const session = useSession();
@@ -58,6 +59,7 @@ export default function IncentiveDesk() {
   const [analytics, setAnalytics] = useState<any>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isRecalcOpen, setIsRecalcOpen] = useState(false);
+  const [isCreatePlanOpen, setIsCreatePlanOpen] = useState(false);
   const [recalcDates, setRecalcDates] = useState({ start: "", end: "" });
 
   const refresh = useCallback(async (isManual = false) => {
@@ -189,7 +191,7 @@ export default function IncentiveDesk() {
           </div>
           <Button 
             className="h-[4.5rem] px-10 rounded-[2rem] bg-primary hover:bg-primary shadow-2xl shadow-indigo-500/30 font-black text-sm gap-3 group transition-all hover:scale-105 active:scale-95"
-            onClick={() => {}}
+            onClick={() => setIsCreatePlanOpen(true)}
           >
             <Plus className="h-6 w-6 group-hover:rotate-90 transition-transform duration-500" /> 
             NEW INCENTIVE PLAN
@@ -561,6 +563,13 @@ export default function IncentiveDesk() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Create Incentive Plan Modal */}
+      <IncentiveConfigModal
+        isOpen={isCreatePlanOpen}
+        onClose={() => setIsCreatePlanOpen(false)}
+        onSuccess={() => refresh(true)}
+      />
     </div>
   );
 }

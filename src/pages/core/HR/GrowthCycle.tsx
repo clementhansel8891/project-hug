@@ -12,6 +12,7 @@ import { useSession } from "@/core/security/session";
 import { performanceService } from "@/core/services/hr/performanceService";
 import { EmptyState } from "@/components/shared/AsyncState";
 import { formatDate } from "@/lib/format";
+import { CreateReviewCycleModal, LaunchCycleModal } from "./modals";
 
 export default function GrowthCycle() {
   const session = useSession();
@@ -163,69 +164,19 @@ export default function GrowthCycle() {
         </WorkspacePanel>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Create Review Cycle</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Input value={cycleName} onChange={(e) => setCycleName(e.target.value)} />
-            <Input value={cycleStart} onChange={(e) => setCycleStart(e.target.value)} />
-            <Input value={cycleEnd} onChange={(e) => setCycleEnd(e.target.value)} />
-            <Input value={cycleDue} onChange={(e) => setCycleDue(e.target.value)} />
-            <Button
-              onClick={() => {
-                performanceService.createReviewCycle(session.tenant_id, session, {
-                  name: cycleName,
-                  status: "draft",
-                  startDate: cycleStart,
-                  endDate: cycleEnd,
-                  dueDate: cycleDue,
-                });
-                setDialogOpen(false);
-                setVersion((prev) => prev + 1);
-              }}
-            >
-              Create Cycle
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateReviewCycleModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
 
-      <Dialog open={actionOpen} onOpenChange={setActionOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Launch Review Cycle</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Select value={selectedCycle} onValueChange={setSelectedCycle}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select cycle" />
-              </SelectTrigger>
-              <SelectContent>
-                {(Array.isArray(overview.cycles) ? overview.cycles : []).map((cycle) => (
-                  <SelectItem key={cycle.id} value={cycle.id}>
-                    {cycle.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Launch notes" />
-            <Button
-              onClick={() => {
-                if (selectedCycle) {
-                  performanceService.launchCycle(session.tenant_id, session, selectedCycle);
-                }
-                setNotes("");
-                setActionOpen(false);
-                setVersion((prev) => prev + 1);
-              }}
-            >
-              Launch
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <LaunchCycleModal
+        isOpen={actionOpen}
+        onClose={() => setActionOpen(false)}
+        cycles={overview.cycles.map((c: any) => ({ id: c.id, name: c.name }))}
+        defaultCycleId={selectedCycle}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
     </div>
   );
 }

@@ -104,6 +104,8 @@ export class AuditController {
   }
 
   @Get('export')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async export(
     @Req() req: any,
     @Query() filters: AuditQueryDto,

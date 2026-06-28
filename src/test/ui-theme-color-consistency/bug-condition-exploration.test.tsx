@@ -38,9 +38,6 @@ const REPO_ROOT = process.cwd();
  */
 const AFFECTED_FILES: string[] = [
   "src/pages/core/inventory/InventoryAdjustments.tsx",
-  "src/pages/fnb/Cashier.tsx",
-  "src/pages/fnb/Inventory.tsx",
-  "src/pages/industry/farming/FarmDesk.tsx",
   "src/pages/retail/management/DeveloperConsole.tsx",
   "src/pages/retail/management/DeviceControlCenter.tsx",
   "src/pages/retail/management/EcommerceAnalytics.tsx",

@@ -33,6 +33,8 @@ export class WorkflowController {
   }
 
   @Get("test-routing")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   test() {
     console.log("Workflow test-routing hit!");
     return { status: "ok", message: "Workflow routing is working" };

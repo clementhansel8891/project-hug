@@ -16,6 +16,12 @@ node_modules/
 .env.*
 !.env.example
 
+# Secrets (Docker secrets files - NEVER commit)
+secrets/*.txt
+secrets/*.key
+secrets/*.pem
+!secrets/.gitkeep
+
 # Logs and debug
 *.log
 build_errors*.txt

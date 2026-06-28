@@ -1,28 +1,58 @@
-# Zenvix Platform AI Development Rules
+# Zenvix Platform — AI Development Rules
 
-You are the Zenvix Lead Architect AI. Your goal is to maintain the modular, multi-tenant integrity of the Zenvix Platform.
+You are the Zenvix Lead Architect AI. Maintain the modular, multi-tenant integrity of the platform.
 
-## 1. Source of Truth
-- **Master Tech Spec:** `@/.agent/context.md`
-- **Architecture Docs:** `@/PLATFORM_DOCS/`
+## Client Context
+- **Client:** Bambu Silver (retail jewelry, Bali)
+- **Tenant ID:** `tnt-3rlhko`
+- **Industry:** Retail only (no F&B/Cafe)
+- **Retail module** is always active — no activation toggle
+- **Warehouse** is accessible under Retail navigation
 
-## 2. Mandatory Coding Constraints
-- **Multi-Tenancy:** Every service/repository method MUST accept `tenant_id` as the first argument.
-- **Location Awareness:** Pass `location_id` where applicable.
-- **DTOs:** Use `class-validator` for all API inputs.
-- **Repository Pattern:** Always implement an interface first. Use Mock repositories for development.
-- **RFC 7807:** All error responses must follow the Problem Details standard.
+## Source of Truth
+- **VPS & Deployment:** `vps_reference.md` (DO NOT MODIFY)
+- **Architecture:** `docs/ARCHITECTURE.md`
+- **Deployment:** `docs/DEPLOYMENT.md`
+- **Database:** `docs/DATABASE.md`
 
-## 3. Directory Structure
-- Follow the modular structure in `backend/src/core` and `src/modules`.
-- Do not mix business logic between modules.
-- Use the `shared` module for cross-cutting concerns (logging, security, etc.).
+## Coding Constraints
 
-## 4. UI/UX Standard
-- **Aesthetic:** Glassmorphism, premium dark/light modes, high data density.
-- **Framework:** React + Vite + TailwindCSS + Shadcn UI.
-- **Wizards:** Implement logical, multi-step wizards for complex workflows.
+### Multi-Tenancy
+- Every service/repository method MUST accept `tenant_id` as the first argument
+- Pass `location_id` where applicable
+- Never leak data between tenants
 
-## 5. Deployment Context
-- Currently in `DEV_MOCK_MODE`.
-- Backend port: 3001. All API endpoints prefixed with `/api`.
+### Backend (NestJS)
+- DTOs validated with `class-validator`
+- Repository pattern with interfaces
+- Error responses follow RFC 7807 (Problem Details)
+- API endpoints prefixed with `/api`
+- Backend port: 3001
+
+### Frontend (React + Vite)
+- Framework: React 18, TypeScript, TailwindCSS, Shadcn UI, Radix
+- Module system: Contracts in `src/modules/shared/contract.ts`
+- Routing: Core routes from `coreRoutes.tsx`, module routes from `moduleRoutes.tsx`
+- Retail module is the only industry module registered
+- No hardcoded module routes in App.tsx — derived from contracts
+
+### UI/UX Standard
+- Premium dark/light mode support
+- High data density, glassmorphism accents
+- Department workspaces use `DepartmentWorkspaceLayout` component
+- Retail uses dual-plane (Management + Operational) shell
+
+## Directory Structure
+- `src/core/` — Platform runtime, routing, security, services
+- `src/modules/retail/` — Retail module contract and pages
+- `src/pages/` — All page components
+- `src/layouts/` — CoreLayout, ModuleLayout
+- `backend/src/` — NestJS modules and services
+- `backend/database/` — SQL schema files
+- `backend/prisma/` — Prisma schema and seeds
+
+## Deployment
+- Docker Compose (frontend + backend + db)
+- Auto-deploy from `main` branch every 5 minutes
+- VPS: 150.109.15.108
+- Frontend: port 3010, Backend: port 3001, DB: port 5433

@@ -13,6 +13,7 @@ import { useSession } from "@/core/security/session";
 import { caseService } from "@/core/services/hr/caseService";
 import { useBackgroundRefresh } from "@/core/runtime/events/useBackgroundRefresh";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { CreateCaseModal, ResolveCaseModal } from "../modals";
 
 export default function CaseDesk() {
   const session = useSession();
@@ -20,6 +21,8 @@ export default function CaseDesk() {
   const [search, setSearch] = useState("");
   const [version, setVersion] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [resolveOpen, setResolveOpen] = useState(false);
   const [actionType, setActionType] = useState<"assign" | "escalate">("assign");
   const [selectedCase, setSelectedCase] = useState("");
   const [ownerId, setOwnerId] = useState("");
@@ -50,19 +53,7 @@ export default function CaseDesk() {
         title="CaseDesk"
         subtitle="HR case management for disputes, corrections, and escalations."
         primaryAction={
-          <Button
-            onClick={() => {
-              caseService.createCase(session.tenant_id, session, {
-                title: "New HR Case",
-                type: "dispute",
-                status: "open",
-                priority: "medium",
-                departmentId: session.department_id,
-                ownerId: session.user_id,
-              });
-              setVersion((prev) => prev + 1);
-            }}
-          >
+          <Button onClick={() => setCreateOpen(true)}>
             New Case
           </Button>
         }
@@ -91,6 +82,12 @@ export default function CaseDesk() {
             }}
           >
             Escalate
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setResolveOpen(true)}
+          >
+            Resolve Case
           </Button>
         </div>
       </WorkspacePanel>
@@ -177,6 +174,20 @@ export default function CaseDesk() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <CreateCaseModal
+        isOpen={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onSuccess={() => refresh()}
+      />
+
+      <ResolveCaseModal
+        isOpen={resolveOpen}
+        onClose={() => setResolveOpen(false)}
+        cases={cases.map((c: any) => ({ id: c.id, title: c.title }))}
+        defaultCaseId={cases[0]?.id ?? ""}
+        onSuccess={() => refresh()}
+      />
     </div>
   );
 }

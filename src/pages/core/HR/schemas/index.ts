@@ -280,3 +280,217 @@ export const createContractSchema = z.object({
 });
 
 export type CreateContractInput = z.infer<typeof createContractSchema>;
+
+// ---------------------------------------------------------------------------
+// Talent Pipeline Schemas (TalentFlow)
+// ---------------------------------------------------------------------------
+
+export const scheduleInterviewSchema = z.object({
+  candidateId: z.string().min(1, "Candidate is required"),
+  date: z.string().min(1, "Interview date is required"),
+  time: z.string().min(1, "Interview time is required"),
+  interviewerNotes: z.string().optional().default(""),
+});
+
+export type ScheduleInterviewInput = z.infer<typeof scheduleInterviewSchema>;
+
+export const advanceCandidateSchema = z.object({
+  candidateId: z.string().min(1, "Candidate is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type AdvanceCandidateInput = z.infer<typeof advanceCandidateSchema>;
+
+export const rejectCandidateSchema = z.object({
+  candidateId: z.string().min(1, "Candidate is required"),
+  reason: z.string().min(1, "Reason is required").max(500),
+});
+
+export type RejectCandidateInput = z.infer<typeof rejectCandidateSchema>;
+
+// ---------------------------------------------------------------------------
+// Org Map Schemas (OrgMap)
+// ---------------------------------------------------------------------------
+
+export const createPositionSchema = z.object({
+  title: z.string().min(1, "Position title is required").max(100),
+  departmentId: z.string().min(1, "Department is required"),
+  level: z.enum(["junior", "mid", "senior", "lead", "manager", "director"], {
+    required_error: "Level is required",
+  }),
+  description: z.string().optional().default(""),
+});
+
+export type CreatePositionInput = z.infer<typeof createPositionSchema>;
+
+export const assignEmployeePositionSchema = z.object({
+  employeeId: z.string().min(1, "Employee is required"),
+  positionId: z.string().min(1, "Position is required"),
+  effectiveDate: z.string().min(1, "Effective date is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type AssignEmployeePositionInput = z.infer<typeof assignEmployeePositionSchema>;
+
+// ---------------------------------------------------------------------------
+// FlowGate Schemas
+// ---------------------------------------------------------------------------
+
+export const createFlowRouteSchema = z.object({
+  entityType: z.enum(["PAYROLL", "LEAVE", "CONTRACT", "RECRUITMENT", "TRAINING", "PERFORMANCE", "CASE"], {
+    required_error: "Entity type is required",
+  }),
+  entityId: z.string().min(1, "Entity ID is required"),
+  destinationDept: z.string().min(1, "Destination department is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type CreateFlowRouteInput = z.infer<typeof createFlowRouteSchema>;
+
+export const editFlowRouteSchema = z.object({
+  destinationDept: z.string().min(1, "Destination department is required"),
+  notes: z.string().optional().default(""),
+  priority: z.enum(["low", "medium", "high", "critical"]).default("medium"),
+});
+
+export type EditFlowRouteInput = z.infer<typeof editFlowRouteSchema>;
+
+export const assignApproversSchema = z.object({
+  flowId: z.string().min(1, "Flow ID is required"),
+  approverIds: z.string().min(1, "At least one approver is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type AssignApproversInput = z.infer<typeof assignApproversSchema>;
+
+// ---------------------------------------------------------------------------
+// Roster/Shift Schemas (RosterGrid)
+// ---------------------------------------------------------------------------
+
+export const createShiftTemplateSchema = z.object({
+  name: z.string().min(1, "Template name is required").max(100),
+  startTime: z.string().min(1, "Start time is required"),
+  endTime: z.string().min(1, "End time is required"),
+  departmentId: z.string().min(1, "Department is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type CreateShiftTemplateInput = z.infer<typeof createShiftTemplateSchema>;
+
+export const assignShiftStaffSchema = z.object({
+  employeeId: z.string().min(1, "Employee is required"),
+  shiftTemplateId: z.string().min(1, "Shift template is required"),
+  date: z.string().min(1, "Date is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type AssignShiftStaffInput = z.infer<typeof assignShiftStaffSchema>;
+
+export const swapShiftSchema = z.object({
+  originalEmployeeId: z.string().min(1, "Original employee is required"),
+  targetEmployeeId: z.string().min(1, "Target employee is required"),
+  date: z.string().min(1, "Shift date is required"),
+  reason: z.string().min(1, "Reason is required").max(500),
+});
+
+export type SwapShiftInput = z.infer<typeof swapShiftSchema>;
+
+// ---------------------------------------------------------------------------
+// Case Resolution Schema
+// ---------------------------------------------------------------------------
+
+export const resolveCaseSchema = z.object({
+  caseId: z.string().min(1, "Case is required"),
+  resolution: z.string().min(1, "Resolution notes are required").max(2000),
+  status: z.enum(["resolved", "closed", "dismissed"]).default("resolved"),
+});
+
+export type ResolveCaseInput = z.infer<typeof resolveCaseSchema>;
+
+// ---------------------------------------------------------------------------
+// SkillTrack Schema
+// ---------------------------------------------------------------------------
+
+export const bulkAssignTrainingSchema = z.object({
+  employeeIds: z.string().min(1, "Employee IDs are required"),
+  programId: z.string().min(1, "Training program is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type BulkAssignTrainingInput = z.infer<typeof bulkAssignTrainingSchema>;
+
+// ---------------------------------------------------------------------------
+// VaultSpace Schema
+// ---------------------------------------------------------------------------
+
+export const createVaultDocumentSchema = z.object({
+  title: z.string().min(1, "Document title is required").max(200),
+  type: z.enum(["CONTRACT", "VISA_FILE", "POLICY", "PAYROLL_EXPORT", "KPI_REPORT"], {
+    required_error: "Document type is required",
+  }),
+  notes: z.string().optional().default(""),
+});
+
+export type CreateVaultDocumentInput = z.infer<typeof createVaultDocumentSchema>;
+
+// ---------------------------------------------------------------------------
+// LexBoard Schema
+// ---------------------------------------------------------------------------
+
+export const createLegalContractSchema = z.object({
+  title: z.string().min(1, "Contract title is required").max(200),
+  templateId: z.string().min(1, "Template is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type CreateLegalContractInput = z.infer<typeof createLegalContractSchema>;
+
+// ---------------------------------------------------------------------------
+// GrowthCycle Schemas
+// ---------------------------------------------------------------------------
+
+export const createReviewCycleSchema = z.object({
+  name: z.string().min(1, "Cycle name is required").max(100),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().min(1, "End date is required"),
+  dueDate: z.string().min(1, "Due date is required"),
+}).refine(
+  (data) => new Date(data.endDate) >= new Date(data.startDate),
+  { message: "End date must be on or after start date", path: ["endDate"] }
+);
+
+export type CreateReviewCycleInput = z.infer<typeof createReviewCycleSchema>;
+
+export const launchCycleSchema = z.object({
+  cycleId: z.string().min(1, "Review cycle is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type LaunchCycleInput = z.infer<typeof launchCycleSchema>;
+
+// ---------------------------------------------------------------------------
+// PayCycle Schema
+// ---------------------------------------------------------------------------
+
+export const createPayrollRunSchema2 = z.object({
+  periodStart: z.string().min(1, "Period start is required"),
+  periodEnd: z.string().min(1, "Period end is required"),
+}).refine(
+  (data) => new Date(data.periodEnd) >= new Date(data.periodStart),
+  { message: "Period end must be on or after period start", path: ["periodEnd"] }
+);
+
+export type CreatePayrollRun2Input = z.infer<typeof createPayrollRunSchema2>;
+
+// ---------------------------------------------------------------------------
+// SchedulingStudio Schema
+// ---------------------------------------------------------------------------
+
+export const shiftOverrideSchema = z.object({
+  employeeId: z.string().min(1, "Employee is required"),
+  coveringEmployeeId: z.string().min(1, "Covering employee is required"),
+  date: z.string().min(1, "Date is required"),
+  reason: z.string().min(1, "Reason is required").max(500),
+});
+
+export type ShiftOverrideInput = z.infer<typeof shiftOverrideSchema>;

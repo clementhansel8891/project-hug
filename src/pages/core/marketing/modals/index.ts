@@ -8,7 +8,7 @@
  * - Toast notifications for success/error feedback
  * - Data preservation on error (modal stays open)
  *
- * 13 modals total covering:
+ * 14 modals total covering:
  * - Campaign: Create, Update Status
  * - Lead: Capture
  * - Funnel: Create, Edit Step
@@ -17,7 +17,7 @@
  * - Connected Account: Connect, Settings
  * - Creative Library: Upload Asset, Edit Tags
  * - Appointment: Create
- * - Omnichannel Inbox: (inline contact picker, not a separate modal component)
+ * - Omnichannel: Config
  */
 
 export { CreateCampaignModal } from "./CreateCampaignModal";
@@ -32,3 +32,4 @@ export { AccountSettingsModal } from "./AccountSettingsModal";
 export { UploadAssetModal } from "./UploadAssetModal";
 export { EditAssetTagsModal } from "./EditAssetTagsModal";
 export { CreateAppointmentModal } from "./CreateAppointmentModal";
+export { OmnichannelConfigModal } from "./OmnichannelConfigModal";

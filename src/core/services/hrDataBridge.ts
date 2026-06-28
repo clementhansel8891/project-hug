@@ -58,38 +58,21 @@ const mockStaff: StaffRecord[] = [
 
 export function getStaffList(tenantId: string): StaffRecord[] {
   if (moduleProvider) return moduleProvider.getStaffList(tenantId);
-  // Support both tenant-specific and generic demo data if tenantId is 'tenant-demo'
-  return (Array.isArray(mockStaff) ? mockStaff : []).filter((staff) => staff.tenantId === tenantId);
+  // No mock fallback — return empty for real tenants
+  return [];
 }
 
 export function getStaffById(tenantId: string, staffId: string): StaffRecord | undefined {
   if (moduleProvider) return moduleProvider.getStaffById(tenantId, staffId);
-  return mockStaff.find((staff) => staff.tenantId === tenantId && staff.id === staffId);
+  return undefined;
 }
 
 export function getPayrollCycles(tenantId: string): PayrollCycle[] {
   if (moduleProvider) return moduleProvider.getPayrollCycles(tenantId);
-  return [
-    {
-      id: `${tenantId}-cycle-01`,
-      tenantId,
-      periodStart: "2026-02-01",
-      periodEnd: "2026-02-15",
-      status: "draft",
-    },
-  ];
+  return [];
 }
 
 export function getComplianceContracts(tenantId: string): ComplianceContract[] {
   if (moduleProvider) return moduleProvider.getComplianceContracts(tenantId);
-  return [
-    {
-      id: `${tenantId}-contract-01`,
-      tenantId,
-      title: "Employment Agreement - Ops",
-      type: "internal",
-      status: "active",
-      expiryDate: "2027-01-30",
-    },
-  ];
+  return [];
 }

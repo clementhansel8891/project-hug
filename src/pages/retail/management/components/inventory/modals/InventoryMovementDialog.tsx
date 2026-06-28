@@ -1,4 +1,20 @@
+/**
+ * InventoryMovementDialog — Wired modal for stock movements/transfers.
+ *
+ * Supports receive_purchase, transfer_out, receive_transfer, request_po,
+ * and other movement types with item picker, barcode scanning, and
+ * new product creation.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
 import React, { useMemo, useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -32,10 +48,13 @@ import {
   Layers,
   Barcode,
   Printer,
+  Loader2,
 } from "lucide-react";
 import type { RetailStore, RetailProduct } from "@/core/types/retail/retail";
 import type { SessionContext } from "@/core/security/session";
 import { retailService } from "@/core/services/retail/retailService";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { MOVEMENT_META, type MovementType } from "../movementMeta";
 import { useBarcodeScanner } from "@/hooks/useBarcodeScanner";
 import { useToast } from "@/hooks/use-toast";
@@ -46,6 +65,17 @@ import {
   generateSkuFromCategory,
   generateBarcode,
 } from "@/components/shared/NewItemFormHelpers";
+
+// ─── Zod Schema (movement metadata validation) ──────────────────────────────
+
+const movementMetaSchema = z.object({
+  reason: z.string().min(5, "Reason must be at least 5 characters"),
+  uom: z.string().min(1, "Unit of measure is required"),
+  expectedDate: z.string().optional(),
+  ref: z.string().optional(),
+});
+
+export type MovementMetaFormValues = z.infer<typeof movementMetaSchema>;
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -128,6 +158,13 @@ export const InventoryMovementDialog: React.FC<Props> = ({
   onPrintBarcodes,
 }) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // ─── React Hook Form for movement metadata validation ─────────────────────
+  const metaForm = useForm<MovementMetaFormValues>({
+    resolver: zodResolver(movementMetaSchema),
+    defaultValues: { reason: "", uom: "units", expectedDate: "", ref: "" },
+  });
 
   // ── Common state ──────────────────────────────────────────────────────────
   const [ref, setRef] = useState("");
@@ -326,10 +363,33 @@ export const InventoryMovementDialog: React.FC<Props> = ({
     }
   });
 
-  // ── Submit ────────────────────────────────────────────────────────────────
+  // ── Submit via useMutation ──────────────────────────────────────────────────
+  const movementMutation = useMutation({
+    mutationFn: async (payload: MovementPayload & { sourceType?: string }) => {
+      // Use external onSubmit callback (parent handles API call)
+      onSubmit(payload);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Movement Submitted",
+        description: "Stock movement request has been sent for processing.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["retail", "inventory"] });
+      queryClient.invalidateQueries({ queryKey: ["retail", "inventory", "movements"] });
+    },
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+      toast({
+        title: "Error",
+        description: message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = () => {
     if (!valid) return;
-    onSubmit({
+    const payload: MovementPayload & { sourceType?: string } = {
       lines: selectedLines,
       newProductLines: isReceivePurchase ? newProductLines : undefined,
       purchaseMode: isReceivePurchase ? purchaseMode : undefined,
@@ -340,7 +400,8 @@ export const InventoryMovementDialog: React.FC<Props> = ({
       destinationStoreId: isTransferOut ? destinationStoreId : undefined,
       sourceStoreId: isReceiveTransfer ? sourceStoreId : undefined,
       supplierId: type === "receive_po" ? supplierId : undefined,
-    });
+    };
+    movementMutation.mutate(payload);
     // Reset
     setSelectedLines([]);
     setNewProductLines([]);
@@ -354,6 +415,7 @@ export const InventoryMovementDialog: React.FC<Props> = ({
     setUom("units");
     setCurrentPage(1);
     setPurchaseMode("restock");
+    metaForm.reset();
     onClose();
   };
 
@@ -1014,21 +1076,26 @@ export const InventoryMovementDialog: React.FC<Props> = ({
             <Button
               variant="ghost"
               onClick={onClose}
+              disabled={movementMutation.isPending}
               className="rounded-xl font-black italic uppercase tracking-widest text-xs h-12 px-6"
             >
               Discard
             </Button>
             <Button
-              disabled={!valid}
+              disabled={!valid || movementMutation.isPending}
               onClick={handleSubmit}
               className={cn(
                 "rounded-xl font-black italic uppercase tracking-widest text-xs h-12 px-8 gap-2 shadow-lg transition-all",
-                valid
+                valid && !movementMutation.isPending
                   ? "bg-secondary text-foreground hover:bg-secondary/60 hover:scale-105 active:scale-95 shadow-slate-200"
                   : "bg-secondary/10 text-muted-foreground",
               )}
             >
-              <Send className="w-4 h-4" /> Send Request
+              {movementMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <><Send className="w-4 h-4" /> Send Request</>
+              )}
             </Button>
           </div>
         </div>

@@ -214,8 +214,6 @@ const MODULE_PATH_REGISTRY: Record<string, string[]> = {
   audit:       ['src/pages/core/adminWorkspace/', 'src/pages/core/Admin.tsx'],
   comms:       ['src/pages/core/comms/'],
   tools:       ['src/pages/core/tools/'],
-  fnb:         ['src/pages/fnb/', 'src/components/pos-cafe/'],
-  industry:    ['src/pages/industry/'],
   portal:      ['src/pages/portal/'],
 };
 
@@ -230,7 +228,6 @@ const WORKFLOW_TO_MODULE: Record<string, string> = {
   'hr':            'hr',
   'finance':       'finance',
   'sales':         'sales',
-  'fnb':           'fnb',
   'marketing':     'marketing',
   'it-service':    'it',
   'security':      'security',

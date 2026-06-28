@@ -181,3 +181,20 @@ export const createAppointmentSchema = z.object({
 });
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>;
+
+// ---------------------------------------------------------------------------
+// Omnichannel Config Schema
+// ---------------------------------------------------------------------------
+
+export const omnichannelConfigSchema = z.object({
+  channel: z.enum(["WHATSAPP", "SMS", "EMAIL"], {
+    required_error: "Channel is required",
+  }),
+  autoReply: z.boolean().default(false),
+  autoReplyMessage: z.string().max(500).optional().or(z.literal("")),
+  assignTo: z.enum(["ROUND_ROBIN", "MANUAL", "AI_ROUTING"]).default("MANUAL"),
+  maxConcurrentChats: z.coerce.number().min(1).max(100).default(10),
+  businessHoursOnly: z.boolean().default(true),
+});
+
+export type OmnichannelConfigInput = z.infer<typeof omnichannelConfigSchema>;

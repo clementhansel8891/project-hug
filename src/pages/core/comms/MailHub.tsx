@@ -35,6 +35,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import DepartmentWorkspaceLayout from "@/components/layouts/DepartmentWorkspaceLayout";
+import { MailComposeModal } from "./modals/MailComposeModal";
 
 interface MailMessage {
   id: string;
@@ -75,7 +76,6 @@ export default function MailHub() {
   const [isComposeOpen, setIsComposeOpen] = useState(false);
   const [composeData, setComposeData] = useState({ to: "", subject: "", body: "", status: "draft" });
   const [filter, setFilter] = useState("");
-  const [isSending, setIsSending] = useState(false);
   const [userAccount, setUserAccount] = useState<MailAccount | null>(null);
 
   const { fetchCounts } = useNotifications();
@@ -159,40 +159,6 @@ export default function MailHub() {
         description: e.message || "Restore operation failed.", 
         variant: "destructive" 
       });
-    }
-  };
-
-  const handleSendMail = async (status: string = "sent") => {
-    if (status === "sent" && (!composeData.to || !composeData.subject)) {
-      toast({ title: "Incomplete", description: "Recipient and Subject are required.", variant: "destructive" });
-      return;
-    }
-    setIsSending(true);
-    try {
-      const payload = {
-        toAddresses: (composeData.to || "").split(/[,;]/).map(a => a.trim()).filter(Boolean),
-        subject: composeData.subject,
-        bodyText: composeData.body,
-        status: status,
-      };
-
-      await apiRequest("/comms/mail/send", "POST", session, payload);
-
-      toast({ 
-        title: "Success", 
-        description: status === 'draft' ? "Draft saved." : "Mail dispatched successfully." 
-      });
-      setIsComposeOpen(false);
-      setComposeData({ to: "", subject: "", body: "", status: "sent" });
-      fetchMessages();
-    } catch (e: any) {
-      toast({ 
-        title: "Transmission Failed", 
-        description: e.message || "Service currently unavailable.", 
-        variant: "destructive" 
-      });
-    } finally {
-      setIsSending(false);
     }
   };
 
@@ -398,62 +364,15 @@ export default function MailHub() {
           </div>
         </div>
 
-        {/* Compose Dialog */}
-        <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
-          <DialogContent className="sm:max-w-2xl border-none shadow-3xl rounded-[3rem] bg-white dark:bg-muted p-0 overflow-hidden">
-            <DialogHeader className="p-8 border-b dark:border-white/5 bg-muted dark:bg-muted">
-              <div className="flex justify-between items-center">
-                <DialogTitle className="text-2xl font-black tracking-tighter dark:text-white uppercase italic">New Correspondence</DialogTitle>
-                <div className="flex gap-2">
-                   <Button variant="ghost" size="icon" onClick={() => handleSendMail('draft')} className="h-11 w-11 rounded-xl text-muted-foreground hover:text-primary"><File className="h-5 w-5" /></Button>
-                   <Button variant="ghost" size="icon" onClick={() => setIsComposeOpen(false)} className="h-11 w-11 rounded-xl"><X className="h-5 w-5" /></Button>
-                </div>
-              </div>
-            </DialogHeader>
-            
-            <div className="p-10 space-y-8">
-               <div className="space-y-4">
-                  <div className="flex items-center gap-6 border-b pb-4 border-border dark:border-white/5">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] w-20 text-muted-foreground">Recipient</span>
-                    <Input 
-                      placeholder="address@zenvix.io" 
-                      className="border-none bg-transparent p-0 text-sm font-black focus-visible:ring-0 placeholder:opacity-30 dark:text-white"
-                      value={composeData.to}
-                      onChange={e => setComposeData({...composeData, to: e.target.value})}
-                    />
-                  </div>
-                  <div className="flex items-center gap-6 border-b pb-4 border-border dark:border-white/5">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] w-20 text-muted-foreground">Subject</span>
-                    <Input 
-                      placeholder="Subject of transmission" 
-                      className="border-none bg-transparent p-0 text-sm font-black focus-visible:ring-0 placeholder:opacity-30 dark:text-white"
-                      value={composeData.subject}
-                      onChange={e => setComposeData({...composeData, subject: e.target.value})}
-                    />
-                  </div>
-               </div>
-               
-               <Textarea 
-                 placeholder="Draft your organizational intelligence here..." 
-                 className="min-h-[350px] border-none bg-muted dark:bg-muted rounded-[2rem] p-10 text-sm font-bold leading-relaxed focus-visible:ring-1 focus-visible:ring-indigo-500/10 shadow-inner dark:text-muted-foreground"
-                 value={composeData.body}
-                 onChange={e => setComposeData({...composeData, body: e.target.value})}
-               />
-               
-               <div className="flex justify-between items-center">
-                  <Button variant="ghost" className="h-14 px-8 font-black uppercase tracking-widest text-[10px] text-destructive hover:bg-destructive dark:hover:bg-destructive" onClick={() => setIsComposeOpen(false)}>Discard</Button>
-                  <Button 
-                    className="h-14 px-12 rounded-[1.5rem] bg-primary hover:bg-primary/90 text-primary-foreground shadow-2xl shadow-primary/40 font-black uppercase tracking-[0.2em] transition-all active:scale-95 disabled:opacity-50"
-                    onClick={() => handleSendMail('sent')}
-                    disabled={isSending}
-                  >
-                    {isSending ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <Send className="h-4 w-4 mr-4" />}
-                    Transmit Now
-                  </Button>
-               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        {/* Compose Modal */}
+        <MailComposeModal
+          isOpen={isComposeOpen}
+          onClose={() => { setIsComposeOpen(false); setComposeData({ to: "", subject: "", body: "", status: "sent" }); }}
+          defaultTo={composeData.to}
+          defaultSubject={composeData.subject}
+          defaultBody={composeData.body}
+          onSuccess={() => fetchMessages()}
+        />
       </div>
     </TooltipProvider>
   );

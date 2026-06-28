@@ -55,7 +55,7 @@ describe('Property 2: Workflow Coverage', () => {
   it('2b: WORKFLOW_NAMES contains all 15 required workflow identifiers', () => {
     const required = [
       'retail-pos', 'inventory', 'procurement', 'hr', 'finance',
-      'sales', 'fnb', 'marketing', 'it-service', 'security',
+      'sales', 'marketing', 'it-service', 'security',
       'audit-trail', 'compliance', 'settings', 'license', 'core-dashboard',
     ];
     for (const name of required) {

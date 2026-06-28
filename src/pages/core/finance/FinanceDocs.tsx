@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -11,9 +14,13 @@ import { DataTableShell } from "@/core/tools/DataTableShell";
 import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeApiClient } from "@/core/services/finance/financeApiClient";
 import type { FinanceDocumentRow } from "@/core/services/finance/financeService";
 import { logService } from "@/core/services/finance/logService";
+import { documentUploadSchema, type DocumentUploadFormData } from "@/core/finance/schemas";
 
 type DocumentTab = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
 
@@ -21,18 +28,44 @@ const TABS: DocumentTab[] = ["ALL", "PENDING", "APPROVED", "REJECTED"];
 
 export default function FinanceDocs() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<DocumentTab>("ALL");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("INVOICE");
-  const [description, setDescription] = useState("");
   const refreshDocs = useCallback(async () => {
     setDocs(await financeApiClient.listDocuments(session.tenant_id, session));
   }, [session.tenant_id, session]);
 
   const [docs, setDocs] = useState<FinanceDocumentRow[]>([]);
   const [selectedItem, setSelectedItem] = useState<FinanceDocumentRow | null>(null);
+
+  // --- React Hook Form: Upload Document ---
+  const docForm = useForm<DocumentUploadFormData>({
+    resolver: zodResolver(documentUploadSchema),
+    defaultValues: { title: "", type: "INVOICE", description: "" },
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: (data: DocumentUploadFormData) =>
+      apiRequest("/v1/finance/documents", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "documents"]],
+      onClose: () => setDialogOpen(false),
+      form: docForm,
+      successTitle: "Document Uploaded",
+      successDescription: "Document has been submitted to the vault.",
+    }),
+    onSuccess: () => {
+      toast({ title: "Document Uploaded", description: "Document has been submitted to the vault." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "documents"] });
+      docForm.reset();
+      setDialogOpen(false);
+      refreshDocs();
+    },
+  });
 
   useEffect(() => {
     refreshDocs();
@@ -48,19 +81,8 @@ export default function FinanceDocs() {
     [docs, search, tab],
   );
 
-  const uploadDoc = async () => {
-    await financeApiClient.uploadDocumentForApproval(session.tenant_id, session, {
-      title,
-      type,
-      description,
-      file: null,
-    });
-    logService.log(session.tenant_id, session.user_id, "Uploaded finance document", title);
-    setDialogOpen(false);
-    setTitle("");
-    setType("INVOICE");
-    setDescription("");
-    refreshDocs();
+  const uploadDoc = (data: DocumentUploadFormData) => {
+    uploadMutation.mutate(data);
   };
 
   const updateStatus = async (id: string, status: "APPROVED" | "REJECTED") => {
@@ -144,7 +166,7 @@ export default function FinanceDocs() {
         </Tabs>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !uploadMutation.isPending) { docForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr]">
             {/* Left Info Panel */}
@@ -184,7 +206,7 @@ export default function FinanceDocs() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={docForm.handleSubmit(uploadDoc)} className="space-y-6">
                 
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Document Source File</label>
@@ -192,18 +214,21 @@ export default function FinanceDocs() {
                     <UploadCloud className="h-10 w-10 text-primary mb-3" />
                     <p className="text-sm font-semibold">Click to upload or drag and drop</p>
                     <p className="text-xs text-muted-foreground mt-1 mb-4">PDF, JPG, PNG (Max 50MB)</p>
-                    <Input type="file" className="w-[200px] text-xs" onChange={() => {}} />
+                    <Input type="file" className="w-[200px] text-xs" onChange={() => {}} disabled={uploadMutation.isPending} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Document Title</label>
-                    <Input placeholder="e.g., Q3 Office Lease" value={title} onChange={(event) => setTitle(event.target.value)} />
+                    <Input placeholder="e.g., Q3 Office Lease" {...docForm.register("title")} disabled={uploadMutation.isPending} />
+                    {docForm.formState.errors.title && (
+                      <p className="text-xs text-destructive mt-1">{docForm.formState.errors.title.message}</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Document Type</label>
-                    <Select value={type} onValueChange={setType}>
+                    <Select value={docForm.watch("type")} onValueChange={(v) => docForm.setValue("type", v)} disabled={uploadMutation.isPending}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
@@ -216,19 +241,24 @@ export default function FinanceDocs() {
                         <SelectItem value="JOURNAL_ENTRY">Journal Entry</SelectItem>
                       </SelectContent>
                     </Select>
+                    {docForm.formState.errors.type && (
+                      <p className="text-xs text-destructive mt-1">{docForm.formState.errors.type.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Description & Metadata</label>
-                  <Input placeholder="Optional reference notes" value={description} onChange={(event) => setDescription(event.target.value)} />
+                  <Input placeholder="Optional reference notes" {...docForm.register("description")} disabled={uploadMutation.isPending} />
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={uploadDoc} className="gap-2"><UploadCloud className="w-4 h-4" /> Upload to Vault</Button>
+                  <Button type="button" variant="outline" onClick={() => { docForm.reset(); setDialogOpen(false); }} disabled={uploadMutation.isPending}>Cancel</Button>
+                  <Button type="submit" className="gap-2" disabled={uploadMutation.isPending}>
+                    <UploadCloud className="w-4 h-4" /> {uploadMutation.isPending ? "Uploading..." : "Upload to Vault"}
+                  </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </DialogContent>

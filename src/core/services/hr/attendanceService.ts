@@ -13,8 +13,8 @@ export const attendanceService = {
     return {
       present: (Array.isArray(todayRecords) ? todayRecords : []).filter(r => !r.checkOut).length,
       late: (Array.isArray(todayRecords) ? todayRecords : []).filter(r => r.status === "late").length,
-      absent: 0, // Mock
-      onLeave: 0 // Mock
+      absent: (Array.isArray(todayRecords) ? todayRecords : []).filter(r => r.status === "absent").length,
+      onLeave: (Array.isArray(todayRecords) ? todayRecords : []).filter(r => r.status === "on_leave").length,
     };
   },
 

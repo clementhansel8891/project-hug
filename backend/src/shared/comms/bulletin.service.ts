@@ -255,6 +255,7 @@ export class BulletinService {
     return this.prisma.bulletin_categories.findMany({
       where: { tenant_id: tenant_id },
       orderBy: { name: 'asc' },
+      take: 100
     });
   }
 

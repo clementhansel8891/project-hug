@@ -31,6 +31,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDateTime, safeText } from "@/lib/format";
 import DepartmentWorkspaceLayout from "@/components/layouts/DepartmentWorkspaceLayout";
+import { ChatCreateModal } from "./modals/ChatCreateModal";
 
 const SECTIONS = [
   {
@@ -76,6 +77,7 @@ export default function ChatHub() {
   const [msgLoading, setMsgLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
   const [search, setSearch] = useState("");
+  const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchChannels = useCallback(async () => {
@@ -144,6 +146,7 @@ export default function ChatHub() {
       <Button
         variant="outline"
         className="rounded-xl bg-card shadow-sm hover:bg-muted font-bold text-[10px] uppercase tracking-widest h-9"
+        onClick={() => setIsCreateGroupOpen(true)}
       >
         <Plus className="h-3 w-3 mr-2" /> New Group
       </Button>
@@ -315,6 +318,7 @@ export default function ChatHub() {
   );
 
   return (
+    <>
     <DepartmentWorkspaceLayout
       title="Secure Terminal"
       subtitle="Operational live chat and secure peer-to-peer transmissions."
@@ -330,5 +334,12 @@ export default function ChatHub() {
     >
       {mainContent}
     </DepartmentWorkspaceLayout>
+
+    <ChatCreateModal
+      isOpen={isCreateGroupOpen}
+      onClose={() => setIsCreateGroupOpen(false)}
+      onSuccess={() => fetchChannels()}
+    />
+    </>
   );
 }

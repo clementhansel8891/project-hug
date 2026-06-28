@@ -89,7 +89,7 @@ export interface PageDefinition {
    *   /m/<moduleId>/...
    *
    * Example:
-   *   /m/fnb/tables
+   *   /m/retail/workspace
    *   /m/retail/sales
    */
   route: string;

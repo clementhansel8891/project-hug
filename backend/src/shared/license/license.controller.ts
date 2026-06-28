@@ -21,6 +21,8 @@ export class LicenseController {
   }
 
   @Get('check/:moduleCode')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async checkLicense(@Req() req: any, @Param('moduleCode') moduleCode: string) {
     return this.licenseService.getLicense(req.tenant_id, moduleCode);
   }

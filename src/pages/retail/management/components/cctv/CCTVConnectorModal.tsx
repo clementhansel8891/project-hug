@@ -1,4 +1,18 @@
+/**
+ * CCTVConnectorModal — CCTV camera registration & connection testing.
+ *
+ * Wired with React Hook Form + Zod + useMutation + getMutationToastHandlers.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
 import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +26,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { retailService } from "@/core/services/retail/retailService";
 import { CCTVCamera, CCTVProvider } from "@/core/types/retail/retail";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import {
   Select,
   SelectContent,
@@ -19,7 +35,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Camera, CheckCircle2, ChevronRight, Server, Wifi } from "lucide-react";
+import { Camera, CheckCircle2, ChevronRight, Server, Wifi, Loader2 } from "lucide-react";
+
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const cctvConnectorSchema = z.object({
+  name: z.string().min(1, "Camera name is required").max(100),
+  provider: z.string().min(1, "Provider is required"),
+  ipAddress: z.string().max(45).optional(),
+  username: z.string().max(100).optional(),
+  password: z.string().max(200).optional(),
+  verificationCode: z.string().max(50).optional(),
+  cloudAccountId: z.string().max(200).optional(),
+  rtspUrl: z.string().max(500).optional(),
+  hlsUrl: z.string().max(500).optional(),
+  location: z.string().max(200).optional().default("Main Area"),
+});
+
+type CCTVConnectorFormValues = z.infer<typeof cctvConnectorSchema>;
 
 interface CCTVConnectorModalProps {
   open: boolean;
@@ -63,40 +96,41 @@ export default function CCTVConnectorModal({
 }: CCTVConnectorModalProps) {
   const session = useSession();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const [provider, setProvider] = useState<CCTVProvider>("ezviz");
-  const [loading, setLoading] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  const [f, setF] = useState<Partial<CCTVCamera>>({
-    name: "",
-    ipAddress: "",
-    username: "",
-    password: "",
-    verificationCode: "",
-    cloudAccountId: "",
-    rtspUrl: "",
-    hlsUrl: "",
-    location: "Main Area",
+  // ─── React Hook Form + Zod ────────────────────────────────────────────────────
+  const form = useForm<CCTVConnectorFormValues>({
+    resolver: zodResolver(cctvConnectorSchema),
+    defaultValues: {
+      name: "",
+      provider: "ezviz",
+      ipAddress: "",
+      username: "",
+      password: "",
+      verificationCode: "",
+      cloudAccountId: "",
+      rtspUrl: "",
+      hlsUrl: "",
+      location: "Main Area",
+    },
   });
 
-  const update = (k: keyof CCTVCamera, v: string) => {
-    setF((prev) => ({ ...prev, [k]: v }));
-    setValidated(false); // reset validation on change
-  };
+  const { register, control, formState: { errors }, handleSubmit, watch, setValue } = form;
+  const provider = watch("provider") as CCTVProvider;
 
-  const handleTest = async () => {
-    if (!session.tenant_id) return;
-    setLoading(true);
-    try {
-      const res = await retailService.validateCCTVConnection(
+  // Test connection mutation
+  const testMutation = useMutation({
+    mutationFn: async (data: CCTVConnectorFormValues) => {
+      if (!session.tenant_id) throw new Error("No tenant");
+      return retailService.validateCCTVConnection(
         session.tenant_id,
         session,
-        {
-          provider,
-          ...f,
-        },
+        { provider: data.provider, ...data },
       );
+    },
+    onSuccess: (res) => {
       if (res.success) {
         setValidated(true);
         toast({
@@ -110,51 +144,73 @@ export default function CCTVConnectorModal({
           variant: "destructive",
         });
       }
-    } catch (e) {
+    },
+    onError: () => {
       toast({
         title: "Test Failed",
         description: "Network error or invalid settings.",
         variant: "destructive",
       });
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+  });
 
-  const handleRegister = async () => {
-    if (!session.tenant_id) return;
-    setLoading(true);
-    try {
-      const saved = await retailService.registerCCTV(
+  // Register camera mutation
+  const registerMutation = useMutation({
+    mutationFn: async (data: CCTVConnectorFormValues) => {
+      if (!session.tenant_id) throw new Error("No tenant");
+      return retailService.registerCCTV(
         session.tenant_id,
         session,
-        {
-          provider,
-          ...f,
-          status: "live",
-        },
+        { provider: data.provider as CCTVProvider, ...data, status: "live" },
       );
-      toast({
-        title: "Camera Registered",
-        description: "CCTV has been added and connected.",
-      });
+    },
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "cctvs"]],
+      onClose: () => {
+        // handled below
+      },
+      form,
+      successTitle: "Camera Registered",
+      successDescription: "CCTV has been added and connected.",
+    }),
+    onSuccess: (saved) => {
+      queryClient.invalidateQueries({ queryKey: ["retail", "cctvs"] });
+      toast({ title: "Camera Registered", description: "CCTV has been added and connected." });
+      form.reset();
       onSuccess(saved);
       onClose();
-    } catch (e) {
-      toast({
-        title: "Registration Error",
-        description: "Could not save camera.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  const loading = testMutation.isPending || registerMutation.isPending;
+
+  const handleTest = handleSubmit((data) => {
+    testMutation.mutate(data);
+  });
+
+  const handleRegister = handleSubmit((data) => {
+    registerMutation.mutate(data);
+  });
+
+  const handleClose = () => {
+    if (loading) return;
+    form.reset();
+    setValidated(false);
+    onClose();
   };
+
+  // Reset validation on field changes
+  const watchAll = watch();
+  React.useEffect(() => {
+    setValidated(false);
+  }, [watchAll.name, watchAll.ipAddress, watchAll.username, watchAll.password, watchAll.cloudAccountId, watchAll.verificationCode, watchAll.rtspUrl]);
 
   const pConfig = PROVIDERS.find((p) => p.id === provider);
 
   return (
-    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent className="max-w-md p-0 overflow-hidden border-border rounded-[28px]">
         <DialogHeader className="p-6 bg-secondary/5 border-b border-border">
           <DialogTitle className="text-xl font-black italic tracking-tighter text-muted-foreground flex items-center gap-3">
@@ -165,142 +221,153 @@ export default function CCTVConnectorModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="p-6 space-y-6">
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                Protocol & Provider
-              </Label>
-              <Select
-                value={provider}
-                onValueChange={(v) => {
-                  setProvider(v as CCTVProvider);
-                  setValidated(false);
-                }}
-              >
-                <SelectTrigger className="rounded-xl border-border text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {(Array.isArray(PROVIDERS) ? PROVIDERS : []).map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      {p.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                Camera Name
-              </Label>
-              <Input
-                placeholder="e.g. Front Door Feed"
-                value={f.name || ""}
-                onChange={(e) => update("name", e.target.value)}
-                className="rounded-xl border-border text-sm"
-              />
-            </div>
-
-            {pConfig?.req.includes("ipAddress") && (
+        <form>
+          <fieldset disabled={loading} className="p-6 space-y-6">
+            <div className="space-y-4">
               <div className="space-y-1.5">
                 <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                  IP Address
+                  Protocol & Provider
                 </Label>
-                <Input
-                  placeholder="192.168.1.100"
-                  value={f.ipAddress || ""}
-                  onChange={(e) => update("ipAddress", e.target.value)}
-                  className="rounded-xl border-border font-mono text-sm"
+                <Controller
+                  control={control}
+                  name="provider"
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={(v) => {
+                        field.onChange(v);
+                        setValidated(false);
+                      }}
+                    >
+                      <SelectTrigger className="rounded-xl border-border text-sm">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {(Array.isArray(PROVIDERS) ? PROVIDERS : []).map((p) => (
+                          <SelectItem key={p.id} value={p.id}>
+                            {p.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
               </div>
-            )}
 
-            {pConfig?.req.includes("username") && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                  Camera Name
+                </Label>
+                <Input
+                  placeholder="e.g. Front Door Feed"
+                  {...register("name")}
+                  aria-describedby={errors.name ? "cctv-name-error" : undefined}
+                  aria-invalid={!!errors.name}
+                  className="rounded-xl border-border text-sm"
+                />
+                {errors.name && (
+                  <p id="cctv-name-error" className="text-[10px] text-destructive font-medium" role="alert">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              {pConfig?.req.includes("ipAddress") && (
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                    Username
+                    IP Address
                   </Label>
                   <Input
-                    placeholder="admin"
-                    value={f.username || ""}
-                    onChange={(e) => update("username", e.target.value)}
-                    className="rounded-xl border-border text-sm"
+                    placeholder="192.168.1.100"
+                    {...register("ipAddress")}
+                    className="rounded-xl border-border font-mono text-sm"
                   />
                 </div>
+              )}
+
+              {pConfig?.req.includes("username") && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                      Username
+                    </Label>
+                    <Input
+                      placeholder="admin"
+                      {...register("username")}
+                      className="rounded-xl border-border text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                      Password
+                    </Label>
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...register("password")}
+                      className="rounded-xl border-border text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {pConfig?.req.includes("cloudAccountId") && (
                 <div className="space-y-1.5">
                   <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                    Password
+                    Cloud Account ID
+                  </Label>
+                  <Input
+                    placeholder="e.g. ezviz_user_123"
+                    {...register("cloudAccountId")}
+                    className="rounded-xl border-border font-mono text-sm"
+                  />
+                </div>
+              )}
+
+              {pConfig?.req.includes("verificationCode") && (
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                    Verification Code
                   </Label>
                   <Input
                     type="password"
-                    placeholder="••••••••"
-                    value={f.password || ""}
-                    onChange={(e) => update("password", e.target.value)}
-                    className="rounded-xl border-border text-sm"
+                    placeholder="6-letter code"
+                    {...register("verificationCode")}
+                    className="rounded-xl border-border font-mono text-sm"
+                  />
+                  <p className="text-[10px] text-muted-foreground font-medium">
+                    Found on the camera sticker
+                  </p>
+                </div>
+              )}
+
+              {pConfig?.req.includes("rtspUrl") && (
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                    RTSP URL
+                  </Label>
+                  <Input
+                    placeholder="rtsp://admin:pass@ip:554/stream1"
+                    {...register("rtspUrl")}
+                    className="rounded-xl border-border font-mono text-sm"
                   />
                 </div>
-              </div>
-            )}
-
-            {pConfig?.req.includes("cloudAccountId") && (
-              <div className="space-y-1.5">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                  Cloud Account ID
-                </Label>
-                <Input
-                  placeholder="e.g. ezviz_user_123"
-                  value={f.cloudAccountId || ""}
-                  onChange={(e) => update("cloudAccountId", e.target.value)}
-                  className="rounded-xl border-border font-mono text-sm"
-                />
-              </div>
-            )}
-
-            {pConfig?.req.includes("verificationCode") && (
-              <div className="space-y-1.5">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                  Verification Code
-                </Label>
-                <Input
-                  type="password"
-                  placeholder="6-letter code"
-                  value={f.verificationCode || ""}
-                  onChange={(e) => update("verificationCode", e.target.value)}
-                  className="rounded-xl border-border font-mono text-sm"
-                />
-                <p className="text-[10px] text-muted-foreground font-medium">
-                  Found on the camera sticker
-                </p>
-              </div>
-            )}
-
-            {pConfig?.req.includes("rtspUrl") && (
-              <div className="space-y-1.5">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-                  RTSP URL
-                </Label>
-                <Input
-                  placeholder="rtsp://admin:pass@ip:554/stream1"
-                  value={f.rtspUrl || ""}
-                  onChange={(e) => update("rtspUrl", e.target.value)}
-                  className="rounded-xl border-border font-mono text-sm"
-                />
-              </div>
-            )}
-          </div>
-        </div>
+              )}
+            </div>
+          </fieldset>
+        </form>
 
         <div className="p-6 bg-secondary/5 border-t border-border flex items-center justify-between">
           <Button
             variant="outline"
+            type="button"
             onClick={handleTest}
-            disabled={!f.name || loading}
+            disabled={!watch("name") || loading}
             className={`rounded-xl h-10 px-5 text-xs font-bold transition-all ${validated ? "border-success bg-success text-success hover:bg-success/10 hover:text-success" : "border-border text-muted-foreground"} gap-2`}
           >
-            {validated ? (
+            {testMutation.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : validated ? (
               <CheckCircle2 className="w-4 h-4" />
             ) : (
               <Wifi className="w-4 h-4" />
@@ -309,11 +376,16 @@ export default function CCTVConnectorModal({
           </Button>
 
           <Button
+            type="button"
             onClick={handleRegister}
             disabled={!validated || loading}
             className="rounded-xl bg-primary hover:bg-primary text-foreground font-black italic uppercase text-[10px] tracking-widest h-10 px-6 gap-2"
           >
-            Connect <Server className="w-3.5 h-3.5" />
+            {registerMutation.isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <>Connect <Server className="w-3.5 h-3.5" /></>
+            )}
           </Button>
         </div>
       </DialogContent>

@@ -356,7 +356,6 @@ export default function Onboarding() {
                     }
                   >
                     <option value="retail">Retail & Merchandising</option>
-                    <option value="fnb">Food & Beverage (Restaurant)</option>
                     <option value="services">Professional Services</option>
                     <option value="tech">Technology / SaaS</option>
                     <option value="manufacturing">Manufacturing</option>

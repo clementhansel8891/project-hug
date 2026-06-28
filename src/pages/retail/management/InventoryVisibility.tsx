@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Layers,
   ClipboardCheck,
@@ -8,6 +12,7 @@ import {
   ShieldCheck,
   RefreshCw,
   Zap,
+  Loader2,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -64,6 +69,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { inventoryService } from "@/core/services/inventory/inventoryService";
 import { retailService } from "@/core/services/retail/retailService";
 import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { crisisManagementService } from "@/core/services/retail/crisisManagementService";
 import type { RetailProduct, RetailStore, RetailChannel } from "@/core/types/retail/retail";
 import type {
@@ -74,6 +80,21 @@ import { MovementType } from "./components/inventory/movementMeta";
 import { useRetail } from "../context/RetailContext";
 
 const PAGE_SIZE = 20;
+
+// ─── Zod Schemas for inline dialogs ────────────────────────────────────────────
+
+const bufferThresholdSchema = z.object({
+  minBuffer: z.coerce.number().min(0, "Buffer must be 0 or more"),
+  globalMinStock: z.coerce.number().min(0, "Global min must be 0 or more"),
+});
+
+type BufferThresholdFormValues = z.infer<typeof bufferThresholdSchema>;
+
+const reclassifySchema = z.object({
+  newCategoryId: z.string().min(1, "Category is required"),
+});
+
+type ReclassifyFormValues = z.infer<typeof reclassifySchema>;
 
 interface InventoryStats {
   totalSKUs: number;
@@ -93,6 +114,7 @@ interface InventoryStats {
 const InventoryVisibility = () => {
   const { session, updateBranch, updateLocation } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { activeStore, activeChannel, setStore } = useRetail();
 
   const [inventory, setInventory] = useState<InventoryItemView[]>([]);
@@ -425,34 +447,72 @@ const InventoryVisibility = () => {
     setPage(1);
   };
 
-  const handleUpdateBuffer = async () => {
-    if (!selectedItem || !locationId) return;
-    setIsUpdatingBuffer(true);
-    try {
-      await retailService.updateProduct(tenantId!, session!, selectedItem.id, {
+  // ─── Buffer Threshold Form + Mutation ─────────────────────────────────────────
+  const bufferForm = useForm<BufferThresholdFormValues>({
+    resolver: zodResolver(bufferThresholdSchema),
+    defaultValues: { minBuffer: 0, globalMinStock: 0 },
+  });
+
+  const bufferMutation = useMutation({
+    mutationFn: async (data: BufferThresholdFormValues) => {
+      if (!selectedItem || !locationId) throw new Error("No item selected");
+      return retailService.updateProduct(tenantId!, session!, selectedItem.id, {
         metadata: {
           ...((selectedItem as unknown as RetailProduct).metadata || {}),
-          minBuffer: bufferValue,
-          min_stock: globalMinStock,
+          minBuffer: data.minBuffer,
+          min_stock: data.globalMinStock,
         },
       });
+    },
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "inventory"]],
+      onClose: () => setIsBufferDialogOpen(false),
+      form: bufferForm,
+      successTitle: "Threshold Updated",
+      successDescription: `Buffer for ${selectedItem?.name || "item"} synchronized across systems.`,
+    }),
+  });
 
-      toast({
-        title: "Threshold Updated",
-        description: `Buffer for ${selectedItem.name} synchronized across systems.`,
-      });
-      setIsBufferDialogOpen(false);
-      fetchInventory();
-    } catch (error) {
-      toast({
-        title: "Update Failed",
-        description: "Could not update stock threshold. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUpdatingBuffer(false);
-    }
+  // Keep old state vars for backward compat but wire through form
+  const [bufferValue, setBufferValue] = useState<number>(0);
+  const [isUpdatingBuffer, setIsUpdatingBuffer] = useState(false);
+  const [globalMinStock, setGlobalMinStock] = useState<number>(0);
+
+  const handleUpdateBuffer = () => {
+    bufferMutation.mutate({
+      minBuffer: bufferForm.getValues("minBuffer"),
+      globalMinStock: bufferForm.getValues("globalMinStock"),
+    });
   };
+
+  // ─── Reclassify Form + Mutation ─────────────────────────────────────────────
+  const reclassifyForm = useForm<ReclassifyFormValues>({
+    resolver: zodResolver(reclassifySchema),
+    defaultValues: { newCategoryId: "" },
+  });
+
+  const reclassifyMutation = useMutation({
+    mutationFn: async (data: ReclassifyFormValues) => {
+      if (!selectedItemForReclassify || !session?.tenant_id) throw new Error("No item selected");
+      return inventoryService.updateItemCategory(
+        session.tenant_id,
+        session,
+        selectedItemForReclassify.id,
+        data.newCategoryId,
+      );
+    },
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "inventory"]],
+      onClose: () => setIsReclassifyOpen(false),
+      form: reclassifyForm,
+      successTitle: "Success",
+      successDescription: "Item reclassified successfully.",
+    }),
+  });
 
   const handleSync = useCallback(async () => {
     if (!session || !locationId) return;
@@ -1269,62 +1329,80 @@ const InventoryVisibility = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-6 py-6">
-            <div className="space-y-3">
-              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Min Buffer Quantity</Label>
-              <div className="relative">
-                <input
-                  type="number"
-                  className="w-full h-14 bg-muted border border-white/5 rounded-2xl px-6 font-black italic text-lg text-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
-                  value={bufferValue}
-                  onChange={(e) => setBufferValue(parseInt(e.target.value) || 0)}
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">
-                  Branch
+          <form onSubmit={bufferForm.handleSubmit((data) => bufferMutation.mutate(data))} noValidate>
+            <fieldset disabled={bufferMutation.isPending} className="space-y-6 py-6">
+              <div className="space-y-3">
+                <Label htmlFor="buffer-min" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Min Buffer Quantity</Label>
+                <div className="relative">
+                  <input
+                    id="buffer-min"
+                    type="number"
+                    className="w-full h-14 bg-muted border border-white/5 rounded-2xl px-6 font-black italic text-lg text-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                    {...bufferForm.register("minBuffer", { valueAsNumber: true })}
+                    aria-describedby={bufferForm.formState.errors.minBuffer ? "buffer-min-error" : undefined}
+                    aria-invalid={!!bufferForm.formState.errors.minBuffer}
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">
+                    Branch
+                  </div>
                 </div>
+                {bufferForm.formState.errors.minBuffer && (
+                  <p id="buffer-min-error" className="text-[10px] text-destructive font-medium" role="alert">
+                    {bufferForm.formState.errors.minBuffer.message}
+                  </p>
+                )}
               </div>
-            </div>
 
-            <div className="space-y-3">
-              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Global Min Stock (Meta)</Label>
-              <div className="relative">
-                <input
-                  type="number"
-                  className="w-full h-14 bg-muted border border-white/5 rounded-2xl px-6 font-black italic text-lg text-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
-                  value={globalMinStock}
-                  onChange={(e) => setGlobalMinStock(parseInt(e.target.value) || 0)}
-                />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">
-                  Global
+              <div className="space-y-3">
+                <Label htmlFor="buffer-global" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">Global Min Stock (Meta)</Label>
+                <div className="relative">
+                  <input
+                    id="buffer-global"
+                    type="number"
+                    className="w-full h-14 bg-muted border border-white/5 rounded-2xl px-6 font-black italic text-lg text-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+                    {...bufferForm.register("globalMinStock", { valueAsNumber: true })}
+                    aria-describedby={bufferForm.formState.errors.globalMinStock ? "buffer-global-error" : undefined}
+                    aria-invalid={!!bufferForm.formState.errors.globalMinStock}
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">
+                    Global
+                  </div>
                 </div>
+                {bufferForm.formState.errors.globalMinStock && (
+                  <p id="buffer-global-error" className="text-[10px] text-destructive font-medium" role="alert">
+                    {bufferForm.formState.errors.globalMinStock.message}
+                  </p>
+                )}
               </div>
-            </div>
               <p className="text-[10px] text-muted-foreground font-bold italic px-2">
                 System will trigger LOW STOCK alert when inventory falls below this level.
               </p>
-            </div>
+            </fieldset>
 
-          <DialogFooter className="gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setIsBufferDialogOpen(false)}
-              className="h-12 rounded-xl font-black italic text-xs uppercase tracking-widest border-white/5 bg-transparent text-muted-foreground hover:bg-muted"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleUpdateBuffer}
-              disabled={isUpdatingBuffer}
-              className="h-12 flex-1 rounded-xl font-black italic text-xs uppercase tracking-widest bg-white text-muted-foreground hover:bg-muted"
-            >
-              {isUpdatingBuffer ? (
-                <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-              ) : (
-                <Zap className="w-4 h-4 mr-2" />
-              )}
-              Update Threshold
-            </Button>
-          </DialogFooter>
+            <DialogFooter className="gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={bufferMutation.isPending}
+                onClick={() => setIsBufferDialogOpen(false)}
+                className="h-12 rounded-xl font-black italic text-xs uppercase tracking-widest border-white/5 bg-transparent text-muted-foreground hover:bg-muted"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={bufferMutation.isPending}
+                className="h-12 flex-1 rounded-xl font-black italic text-xs uppercase tracking-widest bg-white text-muted-foreground hover:bg-muted"
+              >
+                {bufferMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Zap className="w-4 h-4 mr-2" />
+                )}
+                Update Threshold
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 
@@ -1356,56 +1434,56 @@ const InventoryVisibility = () => {
               Move <strong>{selectedItemForReclassify?.name}</strong> to a different category.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label>Select New Category</Label>
-              <Select value={newCategoryId} onValueChange={setNewCategoryId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryOptions.filter(c => c.id !== "all").map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsReclassifyOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              disabled={!newCategoryId}
-              onClick={async () => {
-                if (!selectedItemForReclassify || !session?.tenant_id) return;
-                try {
-                  await inventoryService.updateItemCategory(
-                    session.tenant_id,
-                    session,
-                    selectedItemForReclassify.id,
-                    newCategoryId,
-                  );
-                  toast({
-                    title: "Success",
-                    description: "Item reclassified successfully.",
-                  });
-                  setIsReclassifyOpen(false);
-                  fetchInventory();
-                } catch (err: unknown) {
-                  toast({
-                    title: "Error",
-                    description: err instanceof Error ? err.message : "Failed to reclassify item.",
-                    variant: "destructive",
-                  });
-                }
-              }}
-            >
-              Update Category
-            </Button>
-          </DialogFooter>
+          <form onSubmit={reclassifyForm.handleSubmit((data) => reclassifyMutation.mutate(data))} noValidate>
+            <fieldset disabled={reclassifyMutation.isPending} className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="reclassify-category">Select New Category</Label>
+                <Select
+                  value={reclassifyForm.watch("newCategoryId")}
+                  onValueChange={(val) => reclassifyForm.setValue("newCategoryId", val)}
+                >
+                  <SelectTrigger
+                    id="reclassify-category"
+                    aria-describedby={reclassifyForm.formState.errors.newCategoryId ? "reclassify-category-error" : undefined}
+                    aria-invalid={!!reclassifyForm.formState.errors.newCategoryId}
+                  >
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.filter(c => c.id !== "all").map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {reclassifyForm.formState.errors.newCategoryId && (
+                  <p id="reclassify-category-error" className="text-[10px] text-destructive font-medium" role="alert">
+                    {reclassifyForm.formState.errors.newCategoryId.message}
+                  </p>
+                )}
+              </div>
+            </fieldset>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={reclassifyMutation.isPending}
+                onClick={() => setIsReclassifyOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={reclassifyMutation.isPending || !reclassifyForm.watch("newCategoryId")}
+              >
+                {reclassifyMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : null}
+                Update Category
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

@@ -216,3 +216,134 @@ export const courierDispatchSchema = z.object({
 });
 
 export type CourierDispatchInput = z.infer<typeof courierDispatchSchema>;
+
+// ---------------------------------------------------------------------------
+// Stock Count Schema (Physical Count Reconciliation)
+// ---------------------------------------------------------------------------
+
+export const stockCountSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  location_id: z.string().min(1, "Location is required"),
+  counted_quantity: z.coerce.number().min(0, "Counted quantity must be 0 or greater"),
+  notes: z.string().max(500).optional().default(""),
+});
+
+export type StockCountInput = z.infer<typeof stockCountSchema>;
+
+// ---------------------------------------------------------------------------
+// Reorder Point Schema (Set reorder point/level for items)
+// ---------------------------------------------------------------------------
+
+export const reorderPointSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  reorder_point: z.coerce.number().min(0, "Reorder point must be 0 or greater"),
+  reorder_quantity: z.coerce.number().min(1, "Reorder quantity must be at least 1"),
+  max_stock: z.coerce.number().min(1, "Max stock must be at least 1"),
+});
+
+export type ReorderPointInput = z.infer<typeof reorderPointSchema>;
+
+// ---------------------------------------------------------------------------
+// Category Assign Schema (Assign/change item category)
+// ---------------------------------------------------------------------------
+
+export const categoryAssignSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  category_id: z.string().min(1, "Category is required"),
+});
+
+export type CategoryAssignInput = z.infer<typeof categoryAssignSchema>;
+
+// ---------------------------------------------------------------------------
+// Image Upload Schema (Upload product images — metadata only, file is separate)
+// ---------------------------------------------------------------------------
+
+export const imageUploadSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  alt_text: z.string().max(200).optional().default(""),
+  is_primary: z.boolean().optional().default(false),
+});
+
+export type ImageUploadInput = z.infer<typeof imageUploadSchema>;
+
+// ---------------------------------------------------------------------------
+// Location Assign Schema (Assign item to location/warehouse)
+// ---------------------------------------------------------------------------
+
+export const locationAssignSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  location_id: z.string().min(1, "Location is required"),
+  bin_code: z.string().max(50).optional().default(""),
+  initial_quantity: z.coerce.number().min(0, "Quantity must be 0 or greater").default(0),
+});
+
+export type LocationAssignInput = z.infer<typeof locationAssignSchema>;
+
+// ---------------------------------------------------------------------------
+// Bundle Config Schema (Configure item bundles/kits)
+// ---------------------------------------------------------------------------
+
+export const bundleConfigSchema = z.object({
+  bundle_name: z.string().min(1, "Bundle name is required").max(200),
+  bundle_sku: z.string().min(1, "Bundle SKU is required").max(50),
+  description: z.string().max(500).optional().default(""),
+  items: z
+    .string()
+    .min(1, "At least one item is required (comma-separated item IDs)"),
+  price: z.coerce.number().min(0, "Price must be 0 or greater").default(0),
+});
+
+export type BundleConfigInput = z.infer<typeof bundleConfigSchema>;
+
+// ---------------------------------------------------------------------------
+// Variant Create Schema (Create product variants — size, color, etc.)
+// ---------------------------------------------------------------------------
+
+export const variantCreateSchema = z.object({
+  parent_item_id: z.string().min(1, "Parent item is required"),
+  variant_name: z.string().min(1, "Variant name is required").max(200),
+  variant_sku: z.string().min(1, "Variant SKU is required").max(50),
+  attributes: z.string().min(1, "Attributes are required (e.g. Color: Red, Size: L)"),
+  price_adjustment: z.coerce.number().default(0),
+});
+
+export type VariantCreateInput = z.infer<typeof variantCreateSchema>;
+
+// ---------------------------------------------------------------------------
+// Price Update Schema (Update item pricing)
+// ---------------------------------------------------------------------------
+
+export const priceUpdateSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  base_price: z.coerce.number().min(0, "Base price must be 0 or greater"),
+  selling_price: z.coerce.number().min(0, "Selling price must be 0 or greater"),
+  discount_rate: z.coerce.number().min(0).max(100, "Discount must be 0-100%").default(0),
+});
+
+export type PriceUpdateInput = z.infer<typeof priceUpdateSchema>;
+
+// ---------------------------------------------------------------------------
+// Supplier Link Schema (Link items to suppliers)
+// ---------------------------------------------------------------------------
+
+export const supplierLinkSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  supplier_id: z.string().min(1, "Supplier is required"),
+  supplier_sku: z.string().max(100).optional().default(""),
+  lead_time_days: z.coerce.number().min(0, "Lead time must be 0 or greater").default(0),
+  unit_cost: z.coerce.number().min(0, "Unit cost must be 0 or greater").default(0),
+});
+
+export type SupplierLinkInput = z.infer<typeof supplierLinkSchema>;
+
+// ---------------------------------------------------------------------------
+// Archive Item Schema (Archive/deactivate items)
+// ---------------------------------------------------------------------------
+
+export const archiveItemSchema = z.object({
+  item_id: z.string().min(1, "Item is required"),
+  reason: z.string().min(1, "Reason is required").max(500),
+  archive_stock: z.boolean().optional().default(false),
+});
+
+export type ArchiveItemInput = z.infer<typeof archiveItemSchema>;

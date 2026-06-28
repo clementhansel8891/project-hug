@@ -92,7 +92,7 @@ afterEach(() => {
 
 describe("Preservation — RetailContext auto-selection & configuration (3.5)", () => {
   it("3.5 — auto-selects the first store and marks the module configured when stores exist", async () => {
-    rs.listStores.mockResolvedValue([{ id: "s1" }, { id: "s2" }]);
+    rs.listStores.mockResolvedValue([{ id: "s1", locationId: "loc_s1" }, { id: "s2", locationId: "loc_s2" }]);
     rs.listChannels.mockResolvedValue([]);
 
     renderProvider();
@@ -100,19 +100,19 @@ describe("Preservation — RetailContext auto-selection & configuration (3.5)", 
     await waitFor(() => expect(screen.getByTestId("loading").textContent).toBe("false"));
     expect(screen.getByTestId("configured").textContent).toBe("true");
     expect(screen.getByTestId("active-store").textContent).toBe("s1");
-    expect(updateLocationMock).toHaveBeenCalledWith("s1");
+    expect(updateLocationMock).toHaveBeenCalledWith("loc_s1");
   });
 
   it("3.5 — restores the saved store from localStorage instead of defaulting to the first", async () => {
     localStorage.setItem("retail_active_store_id", "s2");
-    rs.listStores.mockResolvedValue([{ id: "s1" }, { id: "s2" }]);
+    rs.listStores.mockResolvedValue([{ id: "s1", locationId: "loc_s1" }, { id: "s2", locationId: "loc_s2" }]);
     rs.listChannels.mockResolvedValue([]);
 
     renderProvider();
 
     await waitFor(() => expect(screen.getByTestId("loading").textContent).toBe("false"));
     expect(screen.getByTestId("active-store").textContent).toBe("s2");
-    expect(updateLocationMock).toHaveBeenCalledWith("s2");
+    expect(updateLocationMock).toHaveBeenCalledWith("loc_s2");
   });
 
   it("3.5 — no stores or channels: isConfigured is false and nothing is auto-selected", async () => {
@@ -129,7 +129,7 @@ describe("Preservation — RetailContext auto-selection & configuration (3.5)", 
   });
 
   it("3.5 — ref-based anti-loop: renders settle and do not grow unbounded", async () => {
-    rs.listStores.mockResolvedValue([{ id: "s1" }, { id: "s2" }]);
+    rs.listStores.mockResolvedValue([{ id: "s1", locationId: "loc_s1" }, { id: "s2", locationId: "loc_s2" }]);
     rs.listChannels.mockResolvedValue([{ id: "c1" }]);
 
     renderProvider();
@@ -148,7 +148,7 @@ describe("Preservation — RetailContext auto-selection & configuration (3.5)", 
 });
 
 describe("Preservation — RetailContext isConfigured & auto-select invariants (3.5, property-based)", () => {
-  const storesArb = fc.array(fc.record({ id: fc.uuid() }), { maxLength: 4 });
+  const storesArb = fc.array(fc.record({ id: fc.uuid(), locationId: fc.uuid() }), { maxLength: 4 });
   const channelsArb = fc.array(fc.record({ id: fc.uuid() }), { maxLength: 4 });
 
   it("3.5 — for random store/channel populations, isConfigured and first-store auto-select hold", async () => {

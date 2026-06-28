@@ -15,6 +15,7 @@ import { useBackgroundRefresh } from "@/core/runtime/events/useBackgroundRefresh
 import { ZenTooltip } from "@/core/ui/ZenTooltip";
 import { PlusCircle, Search, FileText, CheckCircle2, XCircle, RefreshCcw } from "lucide-react";
 import { formatDate } from "@/lib/format";
+import { CreateFlowRouteModal, EditFlowRouteModal, AssignApproversModal } from "./modals";
 
 export default function FlowGate() {
   const session = useSession();
@@ -22,6 +23,8 @@ export default function FlowGate() {
   const [notes, setNotes] = useState("");
   const [version, setVersion] = useState(0);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
   const [entityType, setEntityType] = useState<"PAYROLL" | "LEAVE" | "CONTRACT" | "RECRUITMENT" | "TRAINING" | "PERFORMANCE" | "CASE">("PAYROLL");
   const [entityId, setEntityId] = useState("");
   const [destinationDept, setDestinationDept] = useState("HR");
@@ -256,73 +259,28 @@ export default function FlowGate() {
         </div>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Create Workflow Route</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Select value={entityType} onValueChange={(value) => setEntityType(value as typeof entityType)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Entity type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PAYROLL">Payroll</SelectItem>
-                <SelectItem value="LEAVE">Leave</SelectItem>
-                <SelectItem value="CONTRACT">Contract</SelectItem>
-                <SelectItem value="RECRUITMENT">Recruitment</SelectItem>
-                <SelectItem value="TRAINING">Training</SelectItem>
-                <SelectItem value="PERFORMANCE">Performance</SelectItem>
-                <SelectItem value="CASE">Case</SelectItem>
-              </SelectContent>
-            </Select>
-            <Input
-              placeholder="Entity ID"
-              value={entityId}
-              onChange={(event) => setEntityId(event.target.value)}
-            />
-            <Select value={destinationDept} onValueChange={setDestinationDept}>
-              <SelectTrigger>
-                <SelectValue placeholder="Destination dept" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="HR">HR</SelectItem>
-                <SelectItem value="FINANCE">Finance</SelectItem>
-                <SelectItem value="LEGAL">Legal</SelectItem>
-                <SelectItem value="OPERATIONS">Operations</SelectItem>
-                <SelectItem value="ADMIN">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-            <Textarea
-              placeholder="Notes"
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-            />
-            <Button
-              onClick={() => {
-                try {
-                  workflowService.createRequest(session.tenant_id, session, {
-                    entityType,
-                    entityId: entityId || `${entityType.toLowerCase()}-${Date.now()}`,
-                    makerDept: session.department_id,
-                    destinationDept,
-                    notes,
-                  });
-                  setStatusMessage(`New ${entityType} route created successfully.`);
-                  setEntityId("");
-                  setNotes("");
-                  setDialogOpen(false);
-                  setVersion((prev) => prev + 1);
-                } catch (err) {
-                  setErrorMessage("Failed to create route.");
-                }
-              }}
-            >
-              Create Route
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateFlowRouteModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={() => {
+          setVersion((prev) => prev + 1);
+        }}
+      />
+
+      <EditFlowRouteModal
+        isOpen={editOpen}
+        onClose={() => setEditOpen(false)}
+        flowId={selected?.id ?? ""}
+        defaultDestinationDept={selected?.destinationDept ?? "HR"}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
+
+      <AssignApproversModal
+        isOpen={assignOpen}
+        onClose={() => setAssignOpen(false)}
+        defaultFlowId={selected?.id ?? ""}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
 
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

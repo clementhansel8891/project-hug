@@ -14,6 +14,7 @@ import { useBackgroundRefresh } from "@/core/runtime/events/useBackgroundRefresh
 import { Roles } from "@/core/security/roles";
 import { EmptyState } from "@/components/shared/AsyncState";
 import { formatDate } from "@/lib/format";
+import { CreatePayrollRunModal2 } from "./modals";
 
 export default function PayCycleStudio() {
   const session = useSession();
@@ -222,32 +223,11 @@ export default function PayCycleStudio() {
           </div>
         </WorkspacePanel>
       </div>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Run Payroll</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">Period start</label>
-              <Input value={periodStart} onChange={(e) => setPeriodStart(e.target.value)} />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">Period end</label>
-              <Input value={periodEnd} onChange={(e) => setPeriodEnd(e.target.value)} />
-            </div>
-            <Button
-              onClick={() => {
-                payrollService.prepareCycle(session.tenant_id, session, periodStart, periodEnd);
-                setDialogOpen(false);
-                setVersion((prev) => prev + 1);
-              }}
-            >
-              Create Run
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreatePayrollRunModal2
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
     </div>
   );
 }

@@ -1,4 +1,17 @@
-import React from "react";
+/**
+ * ReportFilterDialog — Wired modal for report extraction parameters.
+ *
+ * Filter-only dialog (no API mutation) — uses useForm + Zod for validation
+ * of date range and store selection. Export actions are handled by parent.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 4 (Loading State),
+ *               10 (Consistent Pattern)
+ */
+
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Download,
   FileText,
@@ -32,6 +45,26 @@ import { cn } from "@/lib/utils";
 import { ReportTemplate } from "./ReportingHubTypes";
 import type { RetailStore } from "@/core/types/retail/retail";
 
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const reportFilterSchema = z.object({
+  branchId: z.string().min(1, "Store selection is required"),
+  dateFrom: z.string().min(1, "Start date is required"),
+  dateTo: z.string().min(1, "End date is required"),
+  costPrice: z.boolean(),
+  supplierInfo: z.boolean(),
+  barcodes: z.boolean(),
+}).refine((data) => {
+  if (data.dateFrom && data.dateTo) {
+    return new Date(data.dateFrom) <= new Date(data.dateTo);
+  }
+  return true;
+}, { message: "Start date must be before end date", path: ["dateTo"] });
+
+export type ReportFilterFormValues = z.infer<typeof reportFilterSchema>;
+
+// ─── Props ──────────────────────────────────────────────────────────────────────
+
 interface ReportFilterDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -55,6 +88,8 @@ interface ReportFilterDialogProps {
   handleExport: (format: "CSV" | "PDF" | "EXCEL") => void;
 }
 
+// ─── Component ──────────────────────────────────────────────────────────────────
+
 export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
   isOpen,
   onOpenChange,
@@ -73,6 +108,51 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
   isGenerating,
   handleExport,
 }) => {
+  const form = useForm<ReportFilterFormValues>({
+    resolver: zodResolver(reportFilterSchema),
+    defaultValues: {
+      branchId: effectiveBranchId || "all",
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      costPrice: toggles.costPrice,
+      supplierInfo: toggles.supplierInfo,
+      barcodes: toggles.barcodes,
+    },
+  });
+
+  const { register, control, formState: { errors }, watch, setValue, reset } = form;
+
+  // Sync form values with parent state
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        branchId: effectiveBranchId || "all",
+        dateFrom,
+        dateTo,
+        costPrice: toggles.costPrice,
+        supplierInfo: toggles.supplierInfo,
+        barcodes: toggles.barcodes,
+      });
+    }
+  }, [isOpen, effectiveBranchId, dateFrom, dateTo, toggles, reset]);
+
+  // Sync parent state when form values change
+  const watchedBranchId = watch("branchId");
+  const watchedDateFrom = watch("dateFrom");
+  const watchedDateTo = watch("dateTo");
+
+  useEffect(() => {
+    if (watchedBranchId !== effectiveBranchId) setBranchId(watchedBranchId);
+  }, [watchedBranchId, effectiveBranchId, setBranchId]);
+
+  useEffect(() => {
+    if (watchedDateFrom !== dateFrom) setDateFrom(watchedDateFrom);
+  }, [watchedDateFrom, dateFrom, setDateFrom]);
+
+  useEffect(() => {
+    if (watchedDateTo !== dateTo) setDateTo(watchedDateTo);
+  }, [watchedDateTo, dateTo, setDateTo]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[1000px] p-0 border-none rounded-[2rem] overflow-hidden bg-white/95 backdrop-blur-2xl shadow-[0_64px_128px_-24px_rgba(0,0,0,0.15)] ring-1 ring-black/5">
@@ -126,149 +206,177 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
               </DialogHeader>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Branch Selection */}
-              <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-3">
-                  <Building2 className="w-4 h-4 text-primary" /> Store
-                  Isolation
-                </Label>
-                <Select
-                  value={effectiveBranchId}
-                  onValueChange={setBranchId}
-                  disabled={!isAdmin}
-                >
-                  <SelectTrigger className="h-16 rounded-xl font-black italic border-border bg-white shadow-sm px-6 hover:bg-secondary/5 transition-all">
-                    <SelectValue placeholder="Select Location" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-[2rem] border-none shadow-2xl p-3 font-black italic bg-white/95 backdrop-blur-md">
-                    <SelectItem
-                      value="all"
-                      className="rounded-xl py-4 focus:bg-primary/5"
-                    >
-                      Global HQ (All Branches)
-                    </SelectItem>
-                    <Separator className="my-3 opacity-50" />
-                    {(Array.isArray(stores) ? stores : []).map((s) => (
-                      <SelectItem
-                        key={s.id}
-                        value={s.id}
-                        className="rounded-xl py-4 focus:bg-primary/5"
-                      >
-                        {s.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Date Selection */}
-              <div className="space-y-5">
-                <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-primary" /> Time
-                  Dimension
-                </Label>
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    type="date"
-                    value={dateFrom}
-                    onChange={(e) => setDateFrom(e.target.value)}
-                    className="h-16 rounded-xl border-border bg-white shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
-                  />
-                  <Input
-                    type="date"
-                    value={dateTo}
-                    onChange={(e) => setDateTo(e.target.value)}
-                    className="h-16 rounded-xl border-border bg-white shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Data Toggles */}
-            <div className="space-y-6">
-              <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">
-                Information Manifest (Toggle Columns)
-              </Label>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { key: "costPrice", label: "Cost", icon: Layers },
-                  { key: "supplierInfo", label: "Vendor", icon: Info },
-                  { key: "barcodes", label: "UPC", icon: History },
-                ].map((toggle) => (
-                  <div
-                    key={toggle.key}
-                    onClick={() =>
-                      toggleField(toggle.key as keyof typeof toggles)
-                    }
-                    className={cn(
-                      "flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer transition-all border-2 text-center space-y-4",
-                      toggles[toggle.key as keyof typeof toggles]
-                        ? "bg-primary/5 border-primary shadow-xl shadow-indigo-100/50"
-                        : "bg-white border-border text-muted-foreground hover:border-border",
-                    )}
+            <fieldset disabled={isGenerating}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Branch Selection */}
+                <div className="space-y-5">
+                  <Label
+                    htmlFor="report-branch"
+                    className="text-[11px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-3"
                   >
-                    <toggle.icon
-                      className={cn(
-                        "w-7 h-7",
-                        toggles[toggle.key as keyof typeof toggles]
-                          ? "text-primary"
-                          : "text-muted-foreground/60",
+                    <Building2 className="w-4 h-4 text-primary" /> Store Isolation
+                  </Label>
+                  <Controller
+                    control={control}
+                    name="branchId"
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={!isAdmin}
+                      >
+                        <SelectTrigger
+                          id="report-branch"
+                          className="h-16 rounded-xl font-black italic border-border bg-white shadow-sm px-6 hover:bg-secondary/5 transition-all"
+                          aria-describedby={errors.branchId ? "report-branch-error" : undefined}
+                          aria-invalid={!!errors.branchId}
+                        >
+                          <SelectValue placeholder="Select Location" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-[2rem] border-none shadow-2xl p-3 font-black italic bg-white/95 backdrop-blur-md">
+                          <SelectItem value="all" className="rounded-xl py-4 focus:bg-primary/5">
+                            Global HQ (All Branches)
+                          </SelectItem>
+                          <Separator className="my-3 opacity-50" />
+                          {(Array.isArray(stores) ? stores : []).map((s) => (
+                            <SelectItem key={s.id} value={s.id} className="rounded-xl py-4 focus:bg-primary/5">
+                              {s.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.branchId && (
+                    <p id="report-branch-error" className="text-[10px] text-destructive font-medium" role="alert">
+                      {errors.branchId.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Date Selection */}
+                <div className="space-y-5">
+                  <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-3">
+                    <Calendar className="w-4 h-4 text-primary" /> Time Dimension
+                  </Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Input
+                        type="date"
+                        {...register("dateFrom")}
+                        aria-describedby={errors.dateFrom ? "report-datefrom-error" : undefined}
+                        aria-invalid={!!errors.dateFrom}
+                        className="h-16 rounded-xl border-border bg-white shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
+                      />
+                      {errors.dateFrom && (
+                        <p id="report-datefrom-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                          {errors.dateFrom.message}
+                        </p>
                       )}
-                    />
-                    <div
-                      className={cn(
-                        "text-[10px] font-black italic uppercase tracking-widest",
-                        toggles[toggle.key as keyof typeof toggles]
-                          ? "text-primary"
-                          : "text-muted-foreground",
+                    </div>
+                    <div>
+                      <Input
+                        type="date"
+                        {...register("dateTo")}
+                        aria-describedby={errors.dateTo ? "report-dateto-error" : undefined}
+                        aria-invalid={!!errors.dateTo}
+                        className="h-16 rounded-xl border-border bg-white shadow-sm px-6 font-bold focus:ring-indigo-500 transition-all text-sm"
+                      />
+                      {errors.dateTo && (
+                        <p id="report-dateto-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                          {errors.dateTo.message}
+                        </p>
                       )}
-                    >
-                      {toggle.label}
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
 
-            {/* Export Actions */}
-            <div className="pt-8 flex flex-col sm:flex-row gap-5">
-              <Button
-                onClick={() => handleExport("CSV")}
-                disabled={isGenerating}
-                className="flex-1 h-20 rounded-2xl bg-primary hover:bg-primary/90 text-foreground font-black italic uppercase tracking-[0.25em] text-sm gap-4 shadow-2xl shadow-indigo-200 transition-all active:scale-95"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-6 h-6 animate-spin" /> Processing...
-                  </>
-                ) : (
-                  <>
-                    <Download className="w-6 h-6" /> Deploy Extract
-                  </>
-                )}
-              </Button>
-              <div className="flex gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => handleExport("EXCEL")}
-                  disabled={isGenerating}
-                  className="w-20 h-20 rounded-2xl p-0 border-2 border-border hover:bg-secondary/5 hover:border-border transition-all"
-                  title="Export .XLSX"
-                >
-                  <Layers className="w-6 h-6 text-foreground" />
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleExport("PDF")}
-                  disabled={isGenerating}
-                  className="w-20 h-20 rounded-2xl p-0 border-2 border-border hover:bg-secondary/5 hover:border-border transition-all"
-                  title="Export .PDF"
-                >
-                  <FileText className="w-6 h-6 text-foreground" />
-                </Button>
+              {/* Data Toggles */}
+              <div className="space-y-6 mt-10">
+                <Label className="text-[11px] font-black uppercase tracking-widest text-muted-foreground">
+                  Information Manifest (Toggle Columns)
+                </Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    { key: "costPrice" as const, label: "Cost", icon: Layers },
+                    { key: "supplierInfo" as const, label: "Vendor", icon: Info },
+                    { key: "barcodes" as const, label: "UPC", icon: History },
+                  ].map((toggle) => (
+                    <div
+                      key={toggle.key}
+                      onClick={() => {
+                        toggleField(toggle.key);
+                        setValue(toggle.key, !watch(toggle.key));
+                      }}
+                      className={cn(
+                        "flex flex-col items-center justify-center p-8 rounded-2xl cursor-pointer transition-all border-2 text-center space-y-4",
+                        watch(toggle.key)
+                          ? "bg-primary/5 border-primary shadow-xl shadow-indigo-100/50"
+                          : "bg-white border-border text-muted-foreground hover:border-border",
+                      )}
+                    >
+                      <toggle.icon
+                        className={cn(
+                          "w-7 h-7",
+                          watch(toggle.key) ? "text-primary" : "text-muted-foreground/60",
+                        )}
+                      />
+                      <div
+                        className={cn(
+                          "text-[10px] font-black italic uppercase tracking-widest",
+                          watch(toggle.key) ? "text-primary" : "text-muted-foreground",
+                        )}
+                      >
+                        {toggle.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+
+              {/* Export Actions */}
+              <div className="pt-8 flex flex-col sm:flex-row gap-5">
+                <Button
+                  type="button"
+                  onClick={() => handleExport("CSV")}
+                  disabled={isGenerating}
+                  className="flex-1 h-20 rounded-2xl bg-primary hover:bg-primary/90 text-foreground font-black italic uppercase tracking-[0.25em] text-sm gap-4 shadow-2xl shadow-indigo-200 transition-all active:scale-95"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-6 h-6 animate-spin" /> Processing...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-6 h-6" /> Deploy Extract
+                    </>
+                  )}
+                </Button>
+                <div className="flex gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleExport("EXCEL")}
+                    disabled={isGenerating}
+                    className="w-20 h-20 rounded-2xl p-0 border-2 border-border hover:bg-secondary/5 hover:border-border transition-all"
+                    title="Export .XLSX"
+                  >
+                    <Layers className="w-6 h-6 text-foreground" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleExport("PDF")}
+                    disabled={isGenerating}
+                    className="w-20 h-20 rounded-2xl p-0 border-2 border-border hover:bg-secondary/5 hover:border-border transition-all"
+                    title="Export .PDF"
+                  >
+                    <FileText className="w-6 h-6 text-foreground" />
+                  </Button>
+                </div>
+              </div>
+            </fieldset>
           </div>
         </div>
       </DialogContent>

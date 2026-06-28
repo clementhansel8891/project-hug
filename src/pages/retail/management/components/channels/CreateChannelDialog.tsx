@@ -1,4 +1,18 @@
+/**
+ * CreateChannelDialog — Multi-step channel creation wizard.
+ *
+ * Wired with React Hook Form + Zod + useMutation + getMutationToastHandlers.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
 import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -26,15 +40,28 @@ import {
   ArrowRight,
   ChevronLeft,
   Info,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
+import { apiRequest } from "@/core/api/apiClient";
 import {
   ecommerceHubService,
   type CreateChannelPayload,
   type ChannelCreateResult,
 } from "@/core/services/retail/ecommerceHubService";
 import type { SessionContext } from "@/core/security/session";
+
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const createChannelSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name must be 100 characters or fewer"),
+  platform: z.string().min(1, "Platform is required"),
+  syncFrequency: z.enum(["15min", "30min", "1h", "6h", "24h"]).default("1h"),
+});
+
+type CreateChannelFormValues = z.infer<typeof createChannelSchema>;
 
 const CHANNEL_TYPES = [
   {
@@ -182,38 +209,31 @@ export const CreateChannelDialog: React.FC<Props> = ({
   onCreated,
 }) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedType, setSelectedType] = useState<string>("");
-  const [form, setForm] = useState({
-    name: "",
-    platform: "",
-    syncFrequency: "1h", // backend values: 15min, 30min, 1h, 6h, 24h
-  });
   const [result, setResult] = useState<ChannelCreateResult | null>(null);
-  const [isSaving, setIsSaving] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  const reset = () => {
-    setStep(1);
-    setSelectedType("");
-    setForm({ name: "", platform: "", syncFrequency: "1h" });
-    setResult(null);
-  };
+  // ─── React Hook Form + Zod ────────────────────────────────────────────────────
+  const form = useForm<CreateChannelFormValues>({
+    resolver: zodResolver(createChannelSchema),
+    defaultValues: {
+      name: "",
+      platform: "",
+      syncFrequency: "1h",
+    },
+  });
 
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
+  const { register, control, formState: { errors }, handleSubmit } = form;
 
-  const handleCreate = async () => {
-    setIsSaving(true);
-    try {
-      // Map UI values → backend enum values
-      const adapterType = ADAPTER_TYPE_MAP[form.platform] ?? "CUSTOM";
-      const syncFrequency = SYNC_FREQ_MAP[form.syncFrequency] ?? "1h";
+  const mutation = useMutation({
+    mutationFn: async (data: CreateChannelFormValues) => {
+      const adapterType = ADAPTER_TYPE_MAP[data.platform] ?? "CUSTOM";
+      const syncFrequency = SYNC_FREQ_MAP[data.syncFrequency] ?? "1h";
 
       const payload: CreateChannelPayload = {
-        name: form.name,
+        name: data.name,
         type: selectedType,
         adapterType,
         syncFrequency,
@@ -224,17 +244,40 @@ export const CreateChannelDialog: React.FC<Props> = ({
               ? "PREMADE"
               : "PRESET",
       };
-      const res = await ecommerceHubService.createChannel(session, payload);
+      return ecommerceHubService.createChannel(session, payload);
+    },
+    onSuccess: (res) => {
       setResult(res);
       setStep(3);
+      queryClient.invalidateQueries({ queryKey: ["retail", "channels"] });
       onCreated();
-    } catch (err) {
-      console.error(err);
-      toast({ title: "Channel creation failed", variant: "destructive" });
-    } finally {
-      setIsSaving(false);
-    }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Channel creation failed",
+        description: error?.message || "An unexpected error occurred.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const isSaving = mutation.isPending;
+
+  const reset = () => {
+    setStep(1);
+    setSelectedType("");
+    form.reset();
+    setResult(null);
   };
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
+  const handleCreate = handleSubmit((data) => {
+    mutation.mutate(data);
+  });
 
   const copy = (value: string, field: string) => {
     navigator.clipboard.writeText(value);
@@ -251,8 +294,10 @@ export const CreateChannelDialog: React.FC<Props> = ({
   };
 
   const platforms = PLATFORM_OPTIONS[selectedType] ?? [];
-  const selectedPlatform = platforms.find((p) => p.value === form.platform);
-  const valid2 = form.name.trim().length >= 2 && form.platform;
+  const watchPlatform = form.watch("platform");
+  const watchName = form.watch("name");
+  const selectedPlatform = platforms.find((p) => p.value === watchPlatform);
+  const valid2 = (watchName?.trim().length ?? 0) >= 2 && !!watchPlatform;
   const selectedChannelType = CHANNEL_TYPES.find((t) => t.id === selectedType);
 
   const STEP_LABELS = ["Channel Type", "Configuration", "Credentials"];
@@ -381,10 +426,7 @@ export const CreateChannelDialog: React.FC<Props> = ({
                     Channel Name *
                   </Label>
                   <Input
-                    value={form.name}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, name: e.target.value }))
-                    }
+                    {...register("name")}
                     placeholder={
                       selectedType === "MARKETPLACE"
                         ? "e.g. Shopee Main Store"
@@ -392,8 +434,15 @@ export const CreateChannelDialog: React.FC<Props> = ({
                           ? "e.g. Main Vite Storefront"
                           : "e.g. ERP Webhook Bridge"
                     }
+                    aria-describedby={errors.name ? "create-channel-name-error" : undefined}
+                    aria-invalid={!!errors.name}
                     className="h-12 rounded-xl font-bold"
                   />
+                  {errors.name && (
+                    <p id="create-channel-name-error" className="text-[10px] text-destructive font-medium" role="alert">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -401,60 +450,73 @@ export const CreateChannelDialog: React.FC<Props> = ({
                     <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                       Platform *
                     </Label>
-                    <Select
-                      value={form.platform}
-                      onValueChange={(v) =>
-                        setForm((p) => ({ ...p, platform: v }))
-                      }
-                    >
-                      <SelectTrigger className="h-12 rounded-xl font-bold">
-                        <SelectValue placeholder="Select platform" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(Array.isArray(platforms) ? platforms : []).map((p) => (
-                          <SelectItem
-                            key={p.value}
-                            value={p.value}
-                            className="font-bold"
-                          >
-                            {p.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Controller
+                      control={control}
+                      name="platform"
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="h-12 rounded-xl font-bold" aria-invalid={!!errors.platform}>
+                            <SelectValue placeholder="Select platform" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(Array.isArray(platforms) ? platforms : []).map((p) => (
+                              <SelectItem
+                                key={p.value}
+                                value={p.value}
+                                className="font-bold"
+                              >
+                                {p.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    {errors.platform && (
+                      <p className="text-[10px] text-destructive font-medium" role="alert">
+                        {errors.platform.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1.5">
                     <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                       Sync Frequency
                     </Label>
-                    <Select
-                      value={form.syncFrequency}
-                      onValueChange={(v) =>
-                        setForm((p) => ({ ...p, syncFrequency: v }))
-                      }
-                    >
-                      <SelectTrigger className="h-12 rounded-xl font-bold">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[
-                          { value: "15min", label: "Every 15 min" },
-                          { value: "30min", label: "Every 30 min" },
-                          { value: "1h", label: "Every 1 hour" },
-                          { value: "6h", label: "Every 6 hours" },
-                          { value: "24h", label: "Every 24 hours" },
-                        ].map((f) => (
-                          <SelectItem
-                            key={f.value}
-                            value={f.value}
-                            className="font-bold"
-                          >
-                            {f.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Controller
+                      control={control}
+                      name="syncFrequency"
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger className="h-12 rounded-xl font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[
+                              { value: "15min", label: "Every 15 min" },
+                              { value: "30min", label: "Every 30 min" },
+                              { value: "1h", label: "Every 1 hour" },
+                              { value: "6h", label: "Every 6 hours" },
+                              { value: "24h", label: "Every 24 hours" },
+                            ].map((f) => (
+                              <SelectItem
+                                key={f.value}
+                                value={f.value}
+                                className="font-bold"
+                              >
+                                {f.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
                   </div>
                 </div>
 
@@ -485,6 +547,7 @@ export const CreateChannelDialog: React.FC<Props> = ({
                 <Button
                   variant="ghost"
                   onClick={() => setStep(1)}
+                  disabled={isSaving}
                   className="rounded-xl font-black italic gap-1"
                 >
                   <ChevronLeft className="w-4 h-4" /> Back
@@ -494,6 +557,9 @@ export const CreateChannelDialog: React.FC<Props> = ({
                   onClick={handleCreate}
                   className="rounded-xl font-black italic bg-secondary"
                 >
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  ) : null}
                   {isSaving ? "Creating…" : "Create Channel"}
                 </Button>
               </DialogFooter>

@@ -7,6 +7,7 @@ import { useSession } from "@/core/security/session";
 import { adminService } from "@/core/services/adminService";
 import { useToast } from "@/hooks/use-toast";
 import { RequestModal } from "@/core/ui/RequestModal";
+import { AdminInviteModal } from "./AdminInviteModal";
 import { formatDateTime, safeText } from "@/lib/format";
 import DepartmentWorkspaceLayout from "@/components/layouts/DepartmentWorkspaceLayout";
 
@@ -27,6 +28,7 @@ export default function CoreAdmin() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchDashboard() {
@@ -71,43 +73,8 @@ export default function CoreAdmin() {
     toast({ title: "Report Exported", description: "Audit trail downloaded successfully." });
   };
 
-  const handleInvite = async () => {
-    const email = window.prompt("Enter admin email to invite:");
-    if (!email) return;
-
-    try {
-      const response = await adminService.createInvitation(session, {
-        email,
-        role: "ADMIN",
-        justification: "System Audit Invitation"
-      });
-
-      if (response.success) {
-        toast({ 
-          title: "Invitation Generated", 
-          description: `Magic Link for ${email} created. Please copy it from the audit log or share manually.`,
-          action: (
-            <Button 
-              contentEditable={false}
-              variant="outline" 
-              size="sm" 
-              onClick={() => {
-                navigator.clipboard.writeText(response.data.magic_link);
-                toast({ title: "Copied", description: "Magic link copied to clipboard." });
-              }}
-            >
-              Copy Link
-            </Button>
-          )
-        });
-      }
-    } catch (err) {
-      toast({ 
-        title: "Invitation Failed", 
-        description: "Could not generate security token.",
-        variant: "destructive"
-      });
-    }
+  const handleInvite = () => {
+    setIsInviteModalOpen(true);
   };
 
   const handleEmergencyRequest = async (data: { title: string; reason: string }) => {
@@ -253,6 +220,11 @@ export default function CoreAdmin() {
         description="Request temporary authorization to perform restricted platform-level actions. Your session will be heavily audited."
         defaultTitle="Restricted Action Authorization"
         placeholder="Identify the active incident and the specific restricted action required..."
+      />
+
+      <AdminInviteModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
       />
     </div>
   );

@@ -47,6 +47,7 @@ export class AuditChainService {
         created_at: fromTimestamp ? { gte: fromTimestamp } : undefined,
       },
       orderBy: { created_at: 'asc' },
+      take: 10000
     });
 
     let corruptionDetected = false;
@@ -151,6 +152,7 @@ export class AuditChainService {
       where: { tenant_id },
       orderBy: { created_at: 'asc' },
       select: { id: true, previous_hash: true, hash_chain: true },
+      take: 10000
     });
 
     if (logs.length === 0) {

@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription
 } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  FileText, Save, Download, FileSpreadsheet, Image as ImageIcon, 
-  AlertCircle, CheckCircle2, Clock, X, Package, ArrowRight
+import {
+  FileText, Save, Download, FileSpreadsheet, Image as ImageIcon,
+  AlertCircle, CheckCircle2, Clock, X, Package, ArrowRight, Loader2
 } from "lucide-react";
 import { inventoryService } from "@/core/services/inventory/inventoryService";
 import { useSession } from "@/core/security/session";
 import { saveStockOpnameReport, ReportItem } from "@/core/tools/explorer/reportingService";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface StockOpnameSummaryModalProps {
@@ -36,9 +37,9 @@ export const StockOpnameSummaryModal = ({
   auditorName,
 }: StockOpnameSummaryModalProps) => {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [itemImages, setItemImages] = useState<Record<string, string>>({});
-  const [isSaving, setIsSaving] = useState(false);
-  const [hasActioned, setHasActioned] = useState(false);
 
   // Fetch primary images for items
   useEffect(() => {
@@ -48,7 +49,7 @@ export const StockOpnameSummaryModal = ({
           try {
             const images = await inventoryService.listItemImages(session.tenant_id, session, item.id);
             if (images && images.length > 0) {
-              const primary = images.find(img => img.is_primary) || images[0];
+              const primary = images.find((img: any) => img.is_primary) || images[0];
               setItemImages(prev => ({ ...prev, [item.id!]: primary.url }));
             }
           } catch (e) {
@@ -59,44 +60,48 @@ export const StockOpnameSummaryModal = ({
     }
   }, [isOpen, items, session]);
 
-  const handleFinalCommit = async () => {
-    if (hasActioned) return;
-    setHasActioned(true);
-    setIsSaving(true);
-    try {
+  // ─── Commit Mutation ─────────────────────────────────────────────────────────
+
+  const commitMutation = useMutation({
+    mutationFn: async () => {
       await saveStockOpnameReport(session, locationName, auditorName, items);
       await onConfirm();
-      toast({ 
-        title: "Audit Finalized", 
-        description: "Report archived to Explorer and stock updated successfully." 
+    },
+    onSuccess: () => {
+      toast({
+        title: "Audit Finalized",
+        description: "Report archived to Explorer and stock updated successfully."
       });
+      queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      queryClient.invalidateQueries({ queryKey: ["shared", "stock-opname"] });
       onClose();
-    } catch (e) {
-      console.error(e);
-      toast({ 
-        title: "Commit Failed", 
-        description: "System error during finalization. Please retry.", 
-        variant: "destructive" 
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Commit Failed",
+        description: error.message || "System error during finalization. Please retry.",
+        variant: "destructive"
       });
-      setHasActioned(false); // Allow retry
-    } finally {
-      setIsSaving(false);
-    }
+    },
+  });
+
+  const handleFinalCommit = () => {
+    if (commitMutation.isPending) return;
+    commitMutation.mutate();
   };
 
   const handleExportPDF = () => {
-    setHasActioned(true);
     const doc = new jsPDF();
     doc.setFontSize(22);
     doc.setTextColor(40, 40, 40);
     doc.text("Stock Opname Audit Report", 14, 25);
-    
+
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text(`Location: ${locationName}`, 14, 35);
     doc.text(`Auditor: ${auditorName}`, 14, 40);
     doc.text(`Timestamp: ${new Date().toLocaleString()}`, 14, 45);
-    
+
     autoTable(doc, {
       startY: 55,
       head: [['SKU', 'Item Name', 'Expected', 'Actual', 'Variance', 'Status']],
@@ -114,13 +119,12 @@ export const StockOpnameSummaryModal = ({
       headStyles: { fillStyle: 'fill', fillColor: [59, 130, 246] },
       alternateRowStyles: { fillColor: [245, 247, 250] }
     });
-    
+
     doc.save(`Stock_Opname_${locationName}_${new Date().getTime()}.pdf`);
-    toast({ title: "PDF Exported" });
+    toast({ title: "PDF Exported", description: "Report downloaded as PDF." });
   };
 
   const handleExportCSV = () => {
-    setHasActioned(true);
     const headers = ["SKU", "Item Name", "Expected", "Actual", "Variance"];
     const rows = items.map(item => [
       item.sku,
@@ -129,7 +133,7 @@ export const StockOpnameSummaryModal = ({
       item.actualCount,
       item.actualCount - (item.systemCount || 0)
     ]);
-    
+
     const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -138,7 +142,7 @@ export const StockOpnameSummaryModal = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast({ title: "CSV Exported" });
+    toast({ title: "CSV Exported", description: "Report downloaded as CSV." });
   };
 
   const totalItemsCount = items.reduce((a, b) => a + b.actualCount, 0);
@@ -146,7 +150,7 @@ export const StockOpnameSummaryModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!open && !hasActioned) {
+      if (!open && !commitMutation.isPending) {
         handleFinalCommit();
       }
     }}>
@@ -190,23 +194,25 @@ export const StockOpnameSummaryModal = ({
             </ScrollArea>
 
             <div className="p-10 pt-0 space-y-4 bg-muted backdrop-blur-md border-t border-white/5">
-              <Button 
+              <Button
                 onClick={handleFinalCommit}
-                disabled={isSaving}
+                disabled={commitMutation.isPending}
                 className="w-full h-16 rounded-2xl bg-primary text-primary-foreground font-black italic uppercase tracking-widest text-xs gap-3 shadow-xl">
-                {isSaving ? <Clock className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {commitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 Finalize & Archive
               </Button>
               <div className="grid grid-cols-2 gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={handleExportPDF}
+                  disabled={commitMutation.isPending}
                   className="h-12 rounded-xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
                   <FileText className="w-3 h-3" /> PDF
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={handleExportCSV}
+                  disabled={commitMutation.isPending}
                   className="h-12 rounded-xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
                   <FileSpreadsheet className="w-3 h-3" /> CSV
                 </Button>
@@ -220,11 +226,17 @@ export const StockOpnameSummaryModal = ({
               <div className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">
                 Final Audit Manifest
               </div>
-              <Button variant="ghost" size="icon" onClick={() => !hasActioned && handleFinalCommit()} className="rounded-xl hover:bg-muted dark:hover:bg-muted transition-all">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => !commitMutation.isPending && handleFinalCommit()}
+                className="rounded-xl hover:bg-muted dark:hover:bg-muted transition-all"
+                disabled={commitMutation.isPending}
+              >
                 <X className="w-5 h-5" />
               </Button>
             </div>
-            
+
             <ScrollArea className="flex-1 p-8">
               <Table>
                 <TableHeader>
@@ -264,11 +276,11 @@ export const StockOpnameSummaryModal = ({
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Badge 
+                          <Badge
                             variant="outline"
                             className={cn(
                               "rounded-lg px-3 py-1 font-black italic border-none uppercase text-[10px] tracking-widest",
-                              variance === 0 ? "bg-success text-success" : 
+                              variance === 0 ? "bg-success text-success" :
                               variance > 0 ? "bg-primary text-primary" : "bg-destructive text-destructive"
                             )}
                           >
@@ -281,7 +293,7 @@ export const StockOpnameSummaryModal = ({
                 </TableBody>
               </Table>
             </ScrollArea>
-            
+
             <div className="p-8 bg-muted dark:bg-muted border-t border-border dark:border-border">
               <div className="flex items-center gap-4 text-muted-foreground">
                 <AlertCircle className="w-5 h-5 text-primary animate-pulse" />

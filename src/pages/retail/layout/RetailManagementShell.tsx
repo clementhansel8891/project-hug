@@ -19,7 +19,13 @@ import {
   Cpu, 
   Briefcase, 
   Settings,
-  Activity
+  Activity,
+  Warehouse,
+  Layers,
+  PackageOpen,
+  PackageCheck as PackingIcon,
+  TrendingUp,
+  ClipboardCheck,
 } from "lucide-react";
 import { useRetail } from "../context/RetailContext";
 import { RetailModeSwitchControl } from "../components/RetailModeSwitchControl";
@@ -45,6 +51,18 @@ const SECTIONS: MenuSection[] = [
       { label: "Stock Request", to: "/m/retail/management/prs?dept=RETAIL", icon: ShoppingCart },
       { label: "Stock Intake", to: "/m/retail/operational/receiving", icon: ArrowDownLeft },
       { label: "Stock Opname", to: "/m/retail/operational/opname", icon: Archive },
+    ],
+  },
+  {
+    title: "WAREHOUSE",
+    items: [
+      { label: "Warehouse Hub", to: "/core/warehouse", icon: Warehouse },
+      { label: "Storage Hierarchy", to: "/core/warehouse/hierarchy", icon: Layers },
+      { label: "WH Receiving", to: "/core/warehouse/receiving", icon: PackageOpen },
+      { label: "Picking", to: "/core/warehouse/picking", icon: PackageCheck },
+      { label: "Packing", to: "/core/warehouse/packing", icon: PackingIcon },
+      { label: "Occupancy Trends", to: "/core/warehouse/analytics", icon: TrendingUp },
+      { label: "WH Audit", to: "/core/warehouse/audit", icon: ClipboardCheck },
     ],
   },
   {
@@ -89,7 +107,12 @@ const ROUTE_LABELS: Record<string, string> = {
   "infrastructure": "Infra Control",
   "admin": "Administrative",
   "logs": "System Logs",
-  "workflow": "Workflow Inbox"
+  "workflow": "Workflow Inbox",
+  "warehouse": "Warehouse Hub",
+  "hierarchy": "Storage Hierarchy",
+  "picking": "Picking",
+  "packing": "Packing",
+  "analytics": "Occupancy Trends",
 };
 
 export const RetailManagementShell: React.FC<{ children: React.ReactNode }> = () => {

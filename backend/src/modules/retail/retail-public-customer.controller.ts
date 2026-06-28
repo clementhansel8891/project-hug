@@ -16,6 +16,7 @@ import { ChannelCredentialsGuard } from "./guards/channel-credentials.guard";
 import { CustomerAuthGuard } from "./guards/customer-auth.guard";
 import { RetailPublicAuthService } from "./retail-public-auth.service";
 import { RetailPublicCustomerService } from "./retail-public-customer.service";
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 
 @Controller('retail/public')
 @UseInterceptors(TenantInterceptor)
@@ -37,6 +38,8 @@ export class RetailPublicCustomerController {
   }
 
   @Get("cart")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getCart(@Req() request: Request) {
     const { customer, tenant_id } = await this.resolveCustomer(request);
     const payload = await this.customerService.buildCartResponse(
@@ -91,6 +94,8 @@ export class RetailPublicCustomerController {
   }
 
   @Get("wishlist")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getWishlist(@Req() request: Request) {
     const { customer, tenant_id } = await this.resolveCustomer(request);
     const payload = await this.customerService.buildWishlistResponse(

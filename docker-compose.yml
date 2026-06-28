@@ -6,15 +6,18 @@ services:
     image: postgres:16-alpine
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-zenvix}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-zenvix_dev_password}
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       POSTGRES_DB: ${POSTGRES_DB:-zenvix_dev}
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    secrets:
+      - db_user
+      - db_password
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zenvix} -d ${POSTGRES_DB:-zenvix_dev}"]
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/db_user) -d ${POSTGRES_DB:-zenvix_dev}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -66,6 +69,18 @@ services:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - FRONTEND_URL=${FRONTEND_URL}
+    secrets:
+      - db_user
+      - db_password
+      - jwt_secret
+      - stripe_secret_key
+      - stripe_webhook_secret
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
     volumes:
       - ./backups:/data/backups
       - ./logs:/data/logs
@@ -120,3 +135,15 @@ networks:
 
 volumes:
   postgres_data:
+
+secrets:
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  jwt_secret:
+    file: ./secrets/jwt_secret.txt
+  stripe_secret_key:
+    file: ./secrets/stripe_secret_key.txt
+  stripe_webhook_secret:
+    file: ./secrets/stripe_webhook_secret.txt

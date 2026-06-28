@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -40,64 +41,26 @@ export const TransferTrackingModal: React.FC<TransferTrackingModalProps> = ({
   onClose,
 }) => {
   const session = useSession();
-  const [transfer, setTransfer] = useState<TransferData | null>(null);
-  const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isOpen || !transferId || !session?.tenant_id) return;
+  // ─── useQuery for transfer tracking data ──────────────────────────────────
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["retail", "transfers", transferId, "tracking"],
+    queryFn: () =>
+      apiRequest<{
+        transfer: TransferData;
+        timeline: TimelineEvent[];
+      }>(`/inventory/transfers/${transferId}/tracking`, "GET", session),
+    enabled: isOpen && !!transferId && !!session?.tenant_id,
+  });
 
-    const fetchTransferTracking = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const data = await apiRequest<{
-          transfer: TransferData;
-          timeline: TimelineEvent[];
-        }>(`/inventory/transfers/${transferId}/tracking`, "GET", session);
-
-        if (data) {
-          setTransfer(data.transfer || {
-            id: transferId,
-            from: "Unknown",
-            to: "Unknown",
-            status: "UNKNOWN",
-            eta: "N/A",
-            items: 0,
-          });
-          setTimeline(Array.isArray(data.timeline) ? data.timeline : []);
-        }
-      } catch (err: any) {
-        console.error("Failed to fetch transfer tracking", err);
-        setError(err?.message || "Failed to load transfer tracking data");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTransferTracking();
-  }, [isOpen, transferId, session?.tenant_id]);
-
-  const handleRetry = () => {
-    if (!isOpen || !transferId) return;
-    setError(null);
-    setIsLoading(true);
-    apiRequest<{
-      transfer: TransferData;
-      timeline: TimelineEvent[];
-    }>(`/inventory/transfers/${transferId}/tracking`, "GET", session)
-      .then((data) => {
-        if (data) {
-          setTransfer(data.transfer || null);
-          setTimeline(Array.isArray(data.timeline) ? data.timeline : []);
-        }
-      })
-      .catch((err: any) => {
-        setError(err?.message || "Failed to load transfer tracking data");
-      })
-      .finally(() => setIsLoading(false));
-  };
+  const transfer = data?.transfer ?? null;
+  const timeline = Array.isArray(data?.timeline) ? data.timeline : [];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -113,15 +76,15 @@ export const TransferTrackingModal: React.FC<TransferTrackingModalProps> = ({
 
         {isLoading && <LoadingSpinner label="Loading transfer tracking…" />}
 
-        {!isLoading && error && (
-          <QueryErrorState message={error} onRetry={handleRetry} />
+        {!isLoading && isError && (
+          <QueryErrorState message={(error as any)?.message || "Failed to load transfer tracking data"} onRetry={() => refetch()} />
         )}
 
-        {!isLoading && !error && !transfer && (
+        {!isLoading && !isError && !transfer && (
           <QueryEmptyState message="No tracking data available for this transfer." />
         )}
 
-        {!isLoading && !error && transfer && (
+        {!isLoading && !isError && transfer && (
           <div className="space-y-6 py-4">
             {/* Transfer Summary */}
             <div className="bg-secondary/5 rounded-2xl p-6 space-y-4">

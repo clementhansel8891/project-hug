@@ -104,6 +104,7 @@ export class AuditService implements OnModuleDestroy {
         const tenants = await this.prisma.audit_logs.findMany({
           distinct: ['tenant_id'],
           select: { tenant_id: true },
+          take: 500
         });
 
         for (const { tenant_id: tenant_id } of (tenants as any[])) {
@@ -340,6 +341,7 @@ export class AuditService implements OnModuleDestroy {
         created_at: fromTimestamp ? { gte: fromTimestamp } : undefined,
       },
       orderBy: { created_at: 'asc' },
+      take: 10000
     });
 
     let lastHash = 'GENESIS';
@@ -504,6 +506,7 @@ export class AuditService implements OnModuleDestroy {
     const logs = await this.prisma.audit_logs.findMany({
       where: { tenant_id },
       orderBy: { created_at: 'asc' },
+      take: 10000
     });
 
     if (logs.length === 0) return { success: true, repairedCount: 0, totalRecords: 0 };

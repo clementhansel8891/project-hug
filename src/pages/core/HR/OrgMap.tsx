@@ -13,6 +13,7 @@ import { useSession } from "@/core/security/session";
 import { orgService } from "@/core/services/hr/orgService";
 import { useBackgroundRefresh } from "@/core/runtime/events/useBackgroundRefresh";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { CreateDepartmentModal, CreatePositionModal, AssignEmployeePositionModal } from "./modals";
 
 type OrgMapDept = {
   id: string;
@@ -28,6 +29,8 @@ export default function OrgMap() {
   const session = useSession();
   const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [positionOpen, setPositionOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
   const [deptName, setDeptName] = useState("New Department");
   const [deptCode, setDeptCode] = useState("NEW");
   const [search, setSearch] = useState("");
@@ -98,6 +101,18 @@ export default function OrgMap() {
             }}
           >
             Open requisition
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setPositionOpen(true)}
+          >
+            Create Position
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setAssignOpen(true)}
+          >
+            Assign Employee
           </Button>
         </div>
       </WorkspacePanel>
@@ -197,36 +212,24 @@ export default function OrgMap() {
           </div>
         </WorkspacePanel>
       </div>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Create Department</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Input value={deptName} onChange={(e) => setDeptName(e.target.value)} />
-            <Input value={deptCode} onChange={(e) => setDeptCode(e.target.value)} />
-            <Button
-              onClick={async () => {
-                try {
-                  await orgService.createDepartment(session.tenant_id, session, {
-                    id: `dept-${deptCode.toLowerCase()}`,
-                    name: deptName,
-                    code: deptCode.toUpperCase(),
-                    status: "active",
-                  });
-                  setStatusMessage(`Department ${deptName} created.`);
-                  setDialogOpen(false);
-                  setVersion((prev) => prev + 1);
-                } catch (err) {
-                  setErrorMessage("Failed to create department.");
-                }
-              }}
-            >
-              Create
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateDepartmentModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
+
+      <CreatePositionModal
+        isOpen={positionOpen}
+        onClose={() => setPositionOpen(false)}
+        departments={data.map((d) => ({ id: d.id, name: d.name }))}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
+
+      <AssignEmployeePositionModal
+        isOpen={assignOpen}
+        onClose={() => setAssignOpen(false)}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
 
       <Dialog open={actionOpen} onOpenChange={setActionOpen}>
         <DialogContent className="max-w-lg">

@@ -42,6 +42,7 @@ import { ZenTooltip } from "@/core/ui/ZenTooltip";
 import { Check, ChevronRight, MapPin, Briefcase, CreditCard } from "lucide-react";
 import { EmptyState } from "@/components/shared/AsyncState";
 import { formatCurrency, formatDate, formatDateTime, safeText } from "@/lib/format";
+import { CreateWorkflowRequestModal, UpdateEmployeeModal, TransferEmployeeModal, TerminateEmployeeModal } from "./modals";
 
 export default function PeopleCore() {
   const session = useSession();

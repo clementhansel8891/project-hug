@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // cspell:ignore qris gopay shopeepay
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,10 +27,14 @@ import { WorkspacePanel } from "@/core/ui/WorkspacePanel";
 import { DataTableShell } from "@/core/tools/DataTableShell";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeApiClient } from "@/core/services/finance/financeApiClient";
 import { logService } from "@/core/services/finance/logService";
 import { useTreasury } from "@/hooks/finance/useTreasury";
 import { formatNumber } from "@/lib/format";
+import { paymentSchema, type PaymentFormData } from "@/core/finance/schemas";
 
 type PaymentStatus =
   | "PENDING"
@@ -60,22 +67,76 @@ const TABS: PaymentTab[] = [
 
 export default function PayFlow() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<PaymentTab>("PENDING");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [batchDialogOpen, setBatchDialogOpen] = useState(false);
-  const [payment, setPayment] = useState<Payment>({
-    amount: 0,
-    method: "BANK_TRANSFER",
-    destination: "",
-    purpose: "",
-    status: "PENDING",
-    approvalLevel: 0,
-  });
   const [batchPayments, setBatchPayments] = useState<Payment[]>([]);
   const [selectedItem, setSelectedItem] = useState<Payment | null>(null);
 
   const { sources } = useTreasury(session.tenant_id, session);
+
+  // --- React Hook Form: Create Payment ---
+  const form = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentSchema),
+    defaultValues: {
+      beneficiary: "",
+      amount: 0,
+      method: "BANK_TRANSFER",
+      purpose: "",
+      source: "",
+      department: "",
+      currency: "IDR",
+      scheduledDate: "",
+      extraInfo: "",
+    },
+  });
+
+  const createPaymentMutation = useMutation({
+    mutationFn: (data: PaymentFormData) =>
+      apiRequest("/v1/finance/payments", "POST", session, {
+        amount: data.amount,
+        beneficiary: data.beneficiary,
+        method: data.method,
+        purpose: data.purpose,
+        extraInfo: { scheduledDate: data.scheduledDate },
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "payments"]],
+      onClose: () => setDialogOpen(false),
+      form,
+      successTitle: "Payment Created",
+      successDescription: "Payment has been authorized and routed.",
+    }),
+  });
+
+  const batchMutation = useMutation({
+    mutationFn: async (payments: Payment[]) => {
+      await Promise.all((Array.isArray(payments) ? payments : []).map(async (p) => {
+        await financeApiClient.createPayment(session.tenant_id, session, {
+          amount: p.amount,
+          beneficiary: p.destination,
+          method: p.method as "QRIS" | "GOPAY" | "OVO" | "DANA" | "SHOPEEPAY" | "BANK_TRANSFER" | "CARD",
+          purpose: p.purpose,
+          extraInfo: { scheduledDate: p.scheduledDate, recurring: p.recurring }
+        });
+      }));
+    },
+    onSuccess: () => {
+      toast({ title: "Batch Created", description: "All payments have been submitted." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "payments"] });
+      setBatchDialogOpen(false);
+      setBatchPayments([]);
+      refreshPayments();
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error?.message || "Batch creation failed.", variant: "destructive" });
+    },
+  });
 
   const fetchPayments = useCallback(async () => {
     const raw = await financeApiClient.listPayments(session.tenant_id, session);
@@ -138,49 +199,12 @@ export default function PayFlow() {
     [groupedPayments, search, tab],
   );
 
-  const handleCreatePayment = async () => {
-    await financeApiClient.createPayment(session.tenant_id, session, {
-      amount: payment.amount,
-      beneficiary: payment.destination,
-      method: payment.method as "QRIS" | "GOPAY" | "OVO" | "DANA" | "SHOPEEPAY" | "BANK_TRANSFER" | "CARD",
-      purpose: payment.purpose,
-      extraInfo: { scheduledDate: payment.scheduledDate, recurring: payment.recurring }
-    });
-    logService.log(
-      session.tenant_id,
-      session.user_id,
-      `Created Payment: ${JSON.stringify(payment)}`,
-    );
-    setDialogOpen(false);
-    setPayment({
-      amount: 0,
-      method: "BANK_TRANSFER",
-      destination: "",
-      purpose: "",
-      status: "PENDING",
-      approvalLevel: 0,
-    });
-    refreshPayments();
+  const handleCreatePayment = (data: PaymentFormData) => {
+    createPaymentMutation.mutate(data);
   };
 
-  const handleCreateBatch = async () => {
-    await Promise.all((Array.isArray(batchPayments) ? batchPayments : []).map(async (p) => {
-      await financeApiClient.createPayment(session.tenant_id, session, {
-        amount: p.amount,
-        beneficiary: p.destination,
-        method: p.method as "QRIS" | "GOPAY" | "OVO" | "DANA" | "SHOPEEPAY" | "BANK_TRANSFER" | "CARD",
-        purpose: p.purpose,
-        extraInfo: { scheduledDate: p.scheduledDate, recurring: p.recurring }
-      });
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        `Created Payment: ${JSON.stringify(p)}`,
-      );
-    }));
-    setBatchDialogOpen(false);
-    setBatchPayments([]);
-    refreshPayments();
+  const handleCreateBatch = () => {
+    batchMutation.mutate(batchPayments);
   };
 
   const handleApprovalAction = async (id: string, action: "APPROVED" | "REJECTED") => {
@@ -337,7 +361,7 @@ export default function PayFlow() {
       </WorkspacePanel>
 
       {/* Dialogs */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !createPaymentMutation.isPending) { form.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr] h-full">
             {/* Left Info Panel */}
@@ -375,22 +399,26 @@ export default function PayFlow() {
 
             {/* Right Form Panel */}
             <div className="p-6 flex flex-col">
-              <div className="space-y-6 flex-1 overflow-y-auto pr-2">
+              <form onSubmit={form.handleSubmit(handleCreatePayment)} className="space-y-6 flex-1 overflow-y-auto pr-2">
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-3 block">Transaction Directives</label>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
                        <Input
                         placeholder="Destination Account / Beneficiary"
-                        value={payment.destination}
-                        onChange={(e) => setPayment({ ...payment, destination: e.target.value })}
+                        {...form.register("beneficiary")}
                         className="font-medium text-sm"
+                        disabled={createPaymentMutation.isPending}
                       />
+                      {form.formState.errors.beneficiary && (
+                        <p className="text-xs text-destructive mt-1">{form.formState.errors.beneficiary.message}</p>
+                      )}
                     </div>
                     <div>
                        <Select
-                        value={payment.method}
-                        onValueChange={(value) => setPayment({ ...payment, method: value })}
+                        value={form.watch("method")}
+                        onValueChange={(value) => form.setValue("method", value as any)}
+                        disabled={createPaymentMutation.isPending}
                       >
                         <SelectTrigger><SelectValue placeholder="Payment Rail / Method" /></SelectTrigger>
                         <SelectContent>
@@ -410,11 +438,13 @@ export default function PayFlow() {
                       <Input
                         placeholder="Amount"
                         type="number"
-                        value={payment.amount || ""}
-                        onChange={(e) => setPayment({ ...payment, amount: Number(e.target.value) })}
-                        prefix="¤"
+                        {...form.register("amount", { valueAsNumber: true })}
                         className="font-mono"
+                        disabled={createPaymentMutation.isPending}
                       />
+                      {form.formState.errors.amount && (
+                        <p className="text-xs text-destructive mt-1">{form.formState.errors.amount.message}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -423,10 +453,13 @@ export default function PayFlow() {
                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-3 block">Purpose & Traceability</label>
                    <Textarea
                     placeholder="Provide explicit business rationale. This will be embedded in the audit blockchain."
-                    value={payment.purpose}
-                    onChange={(e) => setPayment({ ...payment, purpose: e.target.value })}
+                    {...form.register("purpose")}
                     className="resize-none h-20"
+                    disabled={createPaymentMutation.isPending}
                   />
+                  {form.formState.errors.purpose && (
+                    <p className="text-xs text-destructive mt-1">{form.formState.errors.purpose.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -437,35 +470,26 @@ export default function PayFlow() {
                        <Input
                         type="date"
                         className="pl-9"
-                        value={payment.scheduledDate || ""}
-                        onChange={(e) => setPayment({ ...payment, scheduledDate: e.target.value })}
+                        {...form.register("scheduledDate")}
+                        disabled={createPaymentMutation.isPending}
                       />
                      </div>
-                     <label className="flex items-center space-x-2 text-sm border p-2.5 rounded-md cursor-pointer hover:bg-muted transition-colors">
-                      <Input
-                        type="checkbox"
-                        className="w-4 h-4"
-                        checked={payment.recurring}
-                        onChange={(e) => setPayment({ ...payment, recurring: e.target.checked })}
-                      />
-                      <span className="font-medium">Recurring</span>
-                    </label>
                    </div>
                 </div>
-              </div>
 
               <div className="mt-6 pt-4 border-t flex justify-end gap-3">
-                <Button variant="ghost" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                <Button onClick={handleCreatePayment} className="gap-2 px-6">
-                  Authorize & Route <ArrowRight className="w-4 h-4" />
+                <Button type="button" variant="ghost" onClick={() => { form.reset(); setDialogOpen(false); }} disabled={createPaymentMutation.isPending}>Cancel</Button>
+                <Button type="submit" className="gap-2 px-6" disabled={createPaymentMutation.isPending}>
+                  {createPaymentMutation.isPending ? "Processing..." : "Authorize & Route"} <ArrowRight className="w-4 h-4" />
                 </Button>
               </div>
+              </form>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={batchDialogOpen} onOpenChange={setBatchDialogOpen}>
+      <Dialog open={batchDialogOpen} onOpenChange={(open) => { if (!open && !batchMutation.isPending) setBatchDialogOpen(false); }}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Batch Payments</DialogTitle>
@@ -479,6 +503,7 @@ export default function PayFlow() {
                 <Input
                   placeholder="Destination"
                   value={p.destination}
+                  disabled={batchMutation.isPending}
                   onChange={(e) =>
                     setBatchPayments(
                       (Array.isArray(batchPayments) ? batchPayments : []).map((b, i) =>
@@ -491,6 +516,7 @@ export default function PayFlow() {
                   placeholder="Amount"
                   type="number"
                   value={p.amount}
+                  disabled={batchMutation.isPending}
                   onChange={(e) =>
                     setBatchPayments(
                       (Array.isArray(batchPayments) ? batchPayments : []).map((b, i) =>
@@ -504,6 +530,7 @@ export default function PayFlow() {
               </div>
             ))}
             <Button
+              disabled={batchMutation.isPending}
               onClick={() =>
                 setBatchPayments([
                   ...batchPayments,
@@ -521,7 +548,9 @@ export default function PayFlow() {
               Add Payment
             </Button>
             <div className="flex justify-end gap-2">
-              <Button onClick={handleCreateBatch}>Create Batch</Button>
+              <Button onClick={handleCreateBatch} disabled={batchMutation.isPending}>
+                {batchMutation.isPending ? "Creating..." : "Create Batch"}
+              </Button>
             </div>
           </div>
         </DialogContent>

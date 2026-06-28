@@ -115,9 +115,13 @@ export const procurementService = {
   listContracts: async (tenantId: string, session: SessionContext) =>
     apiRequest<ContractRecord[]>("/v1/procurement/contracts", "GET", session),
 
-  listPortalMessages: async (tenantId: string, session: SessionContext) => [], // Backend placeholder
+  listPortalMessages: async (tenantId: string, session: SessionContext) => {
+    try { return await apiRequest<any[]>("/v1/procurement/portal-messages", "GET", session); } catch { return []; }
+  },
 
-  listRatingLogs: async (tenantId: string, session: SessionContext) => [], // Backend placeholder
+  listRatingLogs: async (tenantId: string, session: SessionContext) => {
+    try { return await apiRequest<any[]>("/v1/procurement/rating-logs", "GET", session); } catch { return []; }
+  },
 
   listRiskSignals: async (tenantId: string, session: SessionContext) =>
     apiRequest<RiskSignal[]>("/v1/procurement/risk-signals", "GET", session),

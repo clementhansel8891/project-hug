@@ -9,7 +9,8 @@ import {
   Terminal, 
   Zap,
   Globe,
-  Plus
+  Plus,
+  AlertTriangle
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,7 @@ import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { EmptyState } from "@/components/shared/AsyncState";
 import { safeText } from "@/lib/format";
 import { CreateTicketModal } from "./modals/CreateTicketModal";
+import { IncidentReportModal } from "./modals/IncidentReportModal";
 
 export default function ITDashboard() {
   const session = useSession();
@@ -28,6 +30,7 @@ export default function ITDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
+  const [incidentModalOpen, setIncidentModalOpen] = useState(false);
 
   const loadData = useCallback(() => {
     setIsLoading(true);
@@ -61,6 +64,13 @@ export default function ITDashboard() {
               className="bg-primary hover:bg-primary/90 text-white rounded-xl font-black italic tracking-widest uppercase gap-3 shadow-lg shadow-primary/20 active:scale-95 transition-all"
             >
               <Plus className="w-4 h-4" /> New Ticket
+            </Button>
+            <Button
+              onClick={() => setIncidentModalOpen(true)}
+              variant="outline"
+              className="rounded-xl font-black italic tracking-widest uppercase gap-3 active:scale-95 transition-all border-destructive text-destructive hover:bg-destructive/10"
+            >
+              <AlertTriangle className="w-4 h-4" /> Report Incident
             </Button>
             <Button variant="outline" className="rounded-xl font-black italic tracking-widest uppercase gap-3 active:scale-95 transition-all">
               <Terminal className="w-4 h-4" /> System Console
@@ -136,6 +146,12 @@ export default function ITDashboard() {
       <CreateTicketModal
         isOpen={ticketModalOpen}
         onClose={() => setTicketModalOpen(false)}
+        onSuccess={() => loadData()}
+      />
+
+      <IncidentReportModal
+        isOpen={incidentModalOpen}
+        onClose={() => setIncidentModalOpen(false)}
         onSuccess={() => loadData()}
       />
     </div>

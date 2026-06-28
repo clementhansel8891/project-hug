@@ -1,5 +1,8 @@
 import { useMemo, useState } from "react";
-import { ArrowRightLeft, Building2, CreditCard, Wallet, Landmark, Info } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ArrowRightLeft, Wallet, Landmark, Info, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,20 +25,31 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { useTreasury } from "@/hooks/finance/useTreasury";
-import { logService } from "@/core/services/finance/logService";
 import { Roles, type Role } from "@/core/security/roles";
+import { treasuryTransferSchema, settlementReconcileSchema, type TreasuryTransferFormData, type SettlementReconcileFormData } from "@/core/finance/schemas";
+import {
+  TreasurySourceCreateModal,
+  TreasurySourceEditModal,
+} from "@/core/finance/FinanceModalForms";
 import type { MoneySource } from "@/core/types/finance/accounts";
 import type { TreasuryTransfer } from "@/core/types/finance/treasury";
 import { formatNumber } from "@/lib/format";
 import { EmptyState } from "@/components/shared/AsyncState";
-import { TreasuryTransferModal, SettlementReconcileModal } from "@/core/finance/FinanceModalForms";
 
 export default function TreasuryMap() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [reconcileDialogOpen, setReconcileDialogOpen] = useState(false);
+  const [sourceCreateOpen, setSourceCreateOpen] = useState(false);
+  const [sourceEditOpen, setSourceEditOpen] = useState(false);
+  const [editingSource, setEditingSource] = useState<MoneySource | null>(null);
   const [selectedSource, setSelectedSource] = useState<{
     id: string;
     name: string;
@@ -45,10 +59,6 @@ export default function TreasuryMap() {
     useState<MoneySource | null>(null);
   const [selectedTransferDetail, setSelectedTransferDetail] =
     useState<TreasuryTransfer | null>(null);
-  const [reconcileAmount, setReconcileAmount] = useState(0);
-  const [fromSource, setFromSource] = useState("");
-  const [toSource, setToSource] = useState("");
-  const [amount, setAmount] = useState("1000000");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -69,8 +79,83 @@ export default function TreasuryMap() {
     return allowed.includes(role);
   }, [session.role]);
 
-  const { sources, transfers, createTransfer, reconcileSettlement } =
+  const { sources, transfers, fetchSources, fetchTransfers } =
     useTreasury(session.tenant_id, session);
+
+  // --- React Hook Form for Transfer ---
+  const transferForm = useForm<TreasuryTransferFormData>({
+    resolver: zodResolver(treasuryTransferSchema),
+    defaultValues: { sourceId: "", destinationId: "", amount: 0, description: "" },
+  });
+
+  const transferMutation = useMutation({
+    mutationFn: (data: TreasuryTransferFormData) =>
+      apiRequest("/v1/finance/treasury/transfers", "POST", session, {
+        fromSourceId: data.sourceId,
+        toSourceId: data.destinationId,
+        amount: data.amount,
+        status: isHighLevelRole ? "approved" : "pending",
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "treasury-sources"], ["/v1/finance/treasury/transfers"]],
+      onClose: () => setDialogOpen(false),
+      form: transferForm,
+      successTitle: isHighLevelRole ? "Transfer Executed" : "Transfer Requested",
+      successDescription: "The inter-account transfer has been processed.",
+    }),
+    onSuccess: () => {
+      toast({ title: isHighLevelRole ? "Transfer Executed" : "Transfer Requested", description: "The inter-account transfer has been processed." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "treasury-sources"] });
+      transferForm.reset();
+      setDialogOpen(false);
+      void fetchSources();
+      void fetchTransfers();
+    },
+  });
+
+  const handleTransfer = transferForm.handleSubmit((data) => {
+    transferMutation.mutate(data);
+  });
+
+  // --- React Hook Form for Reconciliation ---
+  const reconcileForm = useForm<SettlementReconcileFormData>({
+    resolver: zodResolver(settlementReconcileSchema),
+    defaultValues: { sourceId: "", amount: 0 },
+  });
+
+  const reconcileMutation = useMutation({
+    mutationFn: (data: SettlementReconcileFormData) =>
+      apiRequest("/v1/finance/treasury/reconcile", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "treasury-sources"]],
+      onClose: () => { setReconcileDialogOpen(false); setSelectedSource(null); },
+      form: reconcileForm,
+      successTitle: "Reconciliation Complete",
+      successDescription: "Settlement has been reconciled successfully.",
+    }),
+    onSuccess: () => {
+      toast({ title: "Reconciliation Complete", description: "Settlement has been reconciled successfully." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "treasury-sources"] });
+      reconcileForm.reset();
+      setReconcileDialogOpen(false);
+      setSelectedSource(null);
+      void fetchSources();
+    },
+  });
+
+  const handleReconcile = reconcileForm.handleSubmit((data) => {
+    reconcileMutation.mutate(data);
+  });
+
+  // Watch transfer form sources for display
+  const watchedSourceId = transferForm.watch("sourceId");
+  const watchedDestId = transferForm.watch("destinationId");
+  const selectedFromSource = useMemo(() => sources.find(s => s.id === watchedSourceId), [sources, watchedSourceId]);
+  const selectedToSource = useMemo(() => sources.find(s => s.id === watchedDestId), [sources, watchedDestId]);
 
   const filteredSources = useMemo(
     () =>
@@ -80,58 +165,6 @@ export default function TreasuryMap() {
     [sources, search],
   );
 
-  const selectedFromSource = useMemo(() => sources.find(s => s.id === (fromSource || sources[0]?.id)), [sources, fromSource]);
-  const selectedToSource = useMemo(() => sources.find(s => s.id === (toSource || sources[1]?.id)), [sources, toSource]);
-
-  // Submit inter-account transfer
-  const handleTransfer = () => {
-    try {
-      const transferRequest = {
-        fromSourceId: fromSource || sources[0]?.id || "",
-        toSourceId: toSource || sources[1]?.id || "",
-        amount: Number(amount || "0"),
-        status: isHighLevelRole ? "approved" : "pending",
-      };
-
-      createTransfer(transferRequest);
-
-      // Audit log
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        `${isHighLevelRole ? "Saved" : "Requested"} Transfer: ${JSON.stringify(
-          transferRequest,
-        )}`,
-      );
-
-      setStatusMessage(
-        `Transfer of ${formatNumber(Number(amount))} ${
-          isHighLevelRole ? "saved" : "requested"
-        } successfully.`,
-      );
-      setDialogOpen(false);
-    } catch (err) {
-      setErrorMessage("Failed to create transfer. Operation aborted.");
-    }
-  };
-
-  const handleReconcile = () => {
-    try {
-      if (!selectedSource) return;
-      reconcileSettlement(selectedSource.id, reconcileAmount);
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        `Reconciled ${selectedSource.name} pending settlement: ${reconcileAmount}`,
-      );
-      setStatusMessage(`Successfully reconciled ${selectedSource.name}.`);
-      setReconcileDialogOpen(false);
-      setSelectedSource(null);
-    } catch (err) {
-      setErrorMessage("Reconciliation failed. Technical exception.");
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -139,9 +172,14 @@ export default function TreasuryMap() {
         title="Treasury Map"
         subtitle="Real-time cash positioning, liquidity, inter-account transfers, and settlements."
         primaryAction={
-          <Button onClick={() => setDialogOpen(true)}>
-            {isHighLevelRole ? "Create Transfer" : "Request Transfer"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => setSourceCreateOpen(true)}>
+              <Plus className="w-4 h-4 mr-1" /> Add Source
+            </Button>
+            <Button onClick={() => setDialogOpen(true)}>
+              {isHighLevelRole ? "Create Transfer" : "Request Transfer"}
+            </Button>
+          </div>
         }
         secondaryActions={
           <Input
@@ -232,7 +270,10 @@ export default function TreasuryMap() {
                       name: src.name,
                       pending: src.pendingSettlement ?? 0,
                     });
-                    setReconcileAmount(src.pendingSettlement ?? 0);
+                    reconcileForm.reset({
+                      sourceId: src.id,
+                      amount: src.pendingSettlement ?? 0,
+                    });
                     setReconcileDialogOpen(true);
                   }}
                 >
@@ -295,7 +336,7 @@ export default function TreasuryMap() {
       </WorkspacePanel>
 
       {/* Transfer Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !transferMutation.isPending) { transferForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr]">
             {/* Left Info Panel */}
@@ -342,14 +383,18 @@ export default function TreasuryMap() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={handleTransfer}>
+                <fieldset disabled={transferMutation.isPending} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block flex items-center gap-1.5">
+                    <label htmlFor="tf-from" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block flex items-center gap-1.5">
                       <Wallet className="w-3 h-3" /> From Source
                     </label>
-                    <Select value={fromSource || sources[0]?.id} onValueChange={setFromSource}>
-                      <SelectTrigger className="w-full">
+                    <Select
+                      value={transferForm.watch("sourceId")}
+                      onValueChange={(val) => transferForm.setValue("sourceId", val, { shouldValidate: true })}
+                    >
+                      <SelectTrigger id="tf-from" className="w-full" aria-invalid={!!transferForm.formState.errors.sourceId} aria-describedby={transferForm.formState.errors.sourceId ? "tf-from-error" : undefined}>
                         <SelectValue placeholder="From source" />
                       </SelectTrigger>
                       <SelectContent>
@@ -360,14 +405,20 @@ export default function TreasuryMap() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {transferForm.formState.errors.sourceId && (
+                      <p id="tf-from-error" role="alert" className="text-xs text-destructive mt-1">{transferForm.formState.errors.sourceId.message}</p>
+                    )}
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block flex items-center gap-1.5">
+                    <label htmlFor="tf-to" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block flex items-center gap-1.5">
                       <Landmark className="w-3 h-3" /> To Destination
                     </label>
-                    <Select value={toSource || sources[1]?.id} onValueChange={setToSource}>
-                      <SelectTrigger className="w-full">
+                    <Select
+                      value={transferForm.watch("destinationId")}
+                      onValueChange={(val) => transferForm.setValue("destinationId", val, { shouldValidate: true })}
+                    >
+                      <SelectTrigger id="tf-to" className="w-full" aria-invalid={!!transferForm.formState.errors.destinationId} aria-describedby={transferForm.formState.errors.destinationId ? "tf-to-error" : undefined}>
                         <SelectValue placeholder="To source" />
                       </SelectTrigger>
                       <SelectContent>
@@ -378,58 +429,94 @@ export default function TreasuryMap() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {transferForm.formState.errors.destinationId && (
+                      <p id="tf-to-error" role="alert" className="text-xs text-destructive mt-1">{transferForm.formState.errors.destinationId.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Transfer Amount (IDR)</label>
+                  <label htmlFor="tf-amount" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Transfer Amount (IDR)</label>
                   <div className="relative">
                     <span className="absolute left-3 top-2.5 text-muted-foreground font-medium">Rp</span>
                     <Input
+                      id="tf-amount"
+                      type="number"
                       className="pl-9 text-lg font-medium"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
                       placeholder="0"
+                      {...transferForm.register("amount", { valueAsNumber: true })}
+                      aria-invalid={!!transferForm.formState.errors.amount}
+                      aria-describedby={transferForm.formState.errors.amount ? "tf-amount-error" : undefined}
                     />
                   </div>
+                  {transferForm.formState.errors.amount && (
+                    <p id="tf-amount-error" role="alert" className="text-xs text-destructive mt-1">{transferForm.formState.errors.amount.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="tf-desc" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Description</label>
+                  <Input
+                    id="tf-desc"
+                    placeholder="Transfer description"
+                    {...transferForm.register("description")}
+                    aria-invalid={!!transferForm.formState.errors.description}
+                    aria-describedby={transferForm.formState.errors.description ? "tf-desc-error" : undefined}
+                  />
+                  {transferForm.formState.errors.description && (
+                    <p id="tf-desc-error" role="alert" className="text-xs text-destructive mt-1">{transferForm.formState.errors.description.message}</p>
+                  )}
                 </div>
 
                 <div className="border-t pt-4 flex justify-end gap-3 mt-8">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={handleTransfer} size="lg" className="gap-2">
+                  <Button type="button" variant="outline" onClick={() => { transferForm.reset(); setDialogOpen(false); }} disabled={transferMutation.isPending}>Cancel</Button>
+                  <Button type="submit" size="lg" className="gap-2" disabled={transferMutation.isPending}>
                     <ArrowRightLeft className="w-4 h-4" />
-                    {isHighLevelRole ? "Execute Transfer" : "Submit Request"}
+                    {transferMutation.isPending ? "Processing..." : isHighLevelRole ? "Execute Transfer" : "Submit Request"}
                   </Button>
                 </div>
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>
       </Dialog>
       {/* Reconcile Dialog */}
-      <Dialog open={reconcileDialogOpen} onOpenChange={setReconcileDialogOpen}>
+      <Dialog open={reconcileDialogOpen} onOpenChange={(open) => { if (!open && !reconcileMutation.isPending) { reconcileForm.reset(); setReconcileDialogOpen(false); setSelectedSource(null); } }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>
-              Reconcile Settlement - {selectedSource?.name}
+              Reconcile Settlement{selectedSource ? ` - ${selectedSource.name}` : ""}
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <span className="text-sm font-medium">Reconcile Amount</span>
-              <Input
-                type="number"
-                value={reconcileAmount}
-                onChange={(e) => setReconcileAmount(Number(e.target.value))}
-              />
-              <p className="text-xs text-muted-foreground">
-                Max pending: {formatNumber(selectedSource?.pending ?? 0)}
-              </p>
-            </div>
-            <Button className="w-full" onClick={handleReconcile}>
-              Finalize Reconciliation
-            </Button>
-          </div>
+          <form onSubmit={handleReconcile}>
+            <fieldset disabled={reconcileMutation.isPending} className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="rc-amount" className="text-sm font-medium">Reconcile Amount</label>
+                <Input
+                  id="rc-amount"
+                  type="number"
+                  {...reconcileForm.register("amount", { valueAsNumber: true })}
+                  aria-invalid={!!reconcileForm.formState.errors.amount}
+                  aria-describedby={reconcileForm.formState.errors.amount ? "rc-amount-error" : undefined}
+                />
+                {reconcileForm.formState.errors.amount && (
+                  <p id="rc-amount-error" role="alert" className="text-xs text-destructive">{reconcileForm.formState.errors.amount.message}</p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Max pending: {formatNumber(selectedSource?.pending ?? 0)}
+                </p>
+              </div>
+              <div className="flex justify-end gap-3">
+                <Button type="button" variant="outline" onClick={() => { reconcileForm.reset(); setReconcileDialogOpen(false); setSelectedSource(null); }} disabled={reconcileMutation.isPending}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={reconcileMutation.isPending}>
+                  {reconcileMutation.isPending ? "Processing..." : "Finalize Reconciliation"}
+                </Button>
+              </div>
+            </fieldset>
+          </form>
         </DialogContent>
       </Dialog>
       {/* Account Detail Dialog */}
@@ -465,6 +552,19 @@ export default function TreasuryMap() {
               <div className="rounded-md border border-dashed p-4 text-center text-xs text-muted-foreground">
                 No recent transactions for this account found.
               </div>
+            </div>
+            <div className="flex justify-end border-t pt-4">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1"
+                onClick={() => {
+                  setEditingSource(selectedAccountDetail);
+                  setSourceEditOpen(true);
+                }}
+              >
+                <Pencil className="w-3 h-3" /> Edit Source
+              </Button>
             </div>
           </div>
         </DialogContent>
@@ -520,6 +620,27 @@ export default function TreasuryMap() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Treasury Source Create Modal */}
+      <TreasurySourceCreateModal
+        isOpen={sourceCreateOpen}
+        onClose={() => setSourceCreateOpen(false)}
+        onSuccess={() => void fetchSources()}
+      />
+
+      {/* Treasury Source Edit Modal */}
+      <TreasurySourceEditModal
+        isOpen={sourceEditOpen}
+        onClose={() => { setSourceEditOpen(false); setEditingSource(null); }}
+        onSuccess={() => void fetchSources()}
+        sourceId={editingSource?.id || ""}
+        defaultValues={editingSource ? {
+          name: editingSource.name,
+          type: editingSource.type,
+          currency: editingSource.currency,
+          provider: editingSource.provider,
+        } : undefined}
+      />
     </div>
   );
 }

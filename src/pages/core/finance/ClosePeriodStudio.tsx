@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -9,9 +12,12 @@ import { DataTableShell } from "@/core/tools/DataTableShell";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
 import { financeService, type AccountingPeriod } from "@/core/services/finance/financeService";
 import { workflowService } from "@/core/services/hr/workflowService";
 import { logService } from "@/core/services/finance/logService";
+import { closePeriodSchema, type ClosePeriodFormData } from "@/core/finance/schemas";
 
 type PeriodTab = "OPEN" | "CLOSING" | "CLOSED" | "FAILED";
 
@@ -19,6 +25,8 @@ const TABS: PeriodTab[] = ["OPEN", "CLOSING", "CLOSED", "FAILED"];
 
 export default function ClosePeriodStudio() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<PeriodTab>("OPEN");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -26,6 +34,20 @@ export default function ClosePeriodStudio() {
   const [periods, setPeriods] = useState<AccountingPeriod[]>([]);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const closePeriodMutation = useMutation({
+    mutationFn: (periodId: string) =>
+      apiRequest(`/v1/finance/periods/${periodId}/close`, "POST", session, {}),
+    onSuccess: () => {
+      toast({ title: "Period Close Started", description: "Period close process initiated and routed for approval." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "periods"] });
+      setDialogOpen(false);
+      refresh();
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error?.message || "Failed to start period close.", variant: "destructive" });
+    },
+  });
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -53,22 +75,7 @@ export default function ClosePeriodStudio() {
   );
 
   const startClose = (period: AccountingPeriod) => {
-    try {
-      financeService.lockPeriod(session.tenant_id, session, period.id);
-      workflowService.createRequest(session.tenant_id, session, {
-        entityType: "PAYMENT",
-        entityId: period.id,
-        makerDept: session.department_id,
-        destinationDept: "FINANCE",
-        notes: "Period close approval",
-      });
-      logService.log(session.tenant_id, session.user_id, "Started period close", period.id);
-      setStatusMessage(`Period close process started for ${period.startDate}.`);
-      setDialogOpen(false);
-      refresh();
-    } catch (err) {
-      setErrorMessage("Failed to start period close. Access denied.");
-    }
+    closePeriodMutation.mutate(period.id);
   };
 
   const approveClose = (period: AccountingPeriod) => {
@@ -217,7 +224,7 @@ export default function ClosePeriodStudio() {
         </Tabs>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !closePeriodMutation.isPending) setDialogOpen(false); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Start Period Close</DialogTitle>
@@ -236,18 +243,20 @@ export default function ClosePeriodStudio() {
                     <span>
                       {period.startDate} - {period.endDate}
                     </span>
-                    <Button size="sm" onClick={() => startClose(period)}>
-                      Start Close
+                    <Button size="sm" onClick={() => startClose(period)} disabled={closePeriodMutation.isPending}>
+                      {closePeriodMutation.isPending ? "Closing..." : "Start Close"}
                     </Button>
                   </div>
                 ))}
             </div>
             {selectedPeriod ? (
               <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={closePeriodMutation.isPending}>
                   Cancel
                 </Button>
-                <Button onClick={() => startClose(selectedPeriod)}>Confirm</Button>
+                <Button onClick={() => startClose(selectedPeriod)} disabled={closePeriodMutation.isPending}>
+                  {closePeriodMutation.isPending ? "Processing..." : "Confirm"}
+                </Button>
               </div>
             ) : null}
           </div>

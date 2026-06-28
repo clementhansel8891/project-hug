@@ -1,14 +1,13 @@
-import { cafeModule } from "./fnb";
 import { retailModule } from "./retail";
 import { registerModule } from "@/core/runtime/moduleRegistry";
 
 /**
- * Industry Module Bundle
+ * Module Bundle
  * 
- * This file centralizes all industry-specific modules and handles 
- * their registration into the core runtime.
+ * Registers the Retail module into the core runtime.
+ * Retail uses its own dual-shell layout (Management + Operational)
+ * and is always active for all tenants.
  */
 export function registerIndustryModules(): void {
-  registerModule(cafeModule);
   registerModule(retailModule);
 }

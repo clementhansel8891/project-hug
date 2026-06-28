@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // cspell:ignore qris gopay shopeepay
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,10 +29,14 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { WorkflowRequestCard } from "@/core/tools/WorkflowRequestCard";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeService } from "@/core/services/finance/financeService";
 import { logService } from "@/core/services/finance/logService";
 import { Landmark, TrendingUp, TrendingDown, ArrowRightLeft, AlertTriangle } from "lucide-react";
 import { formatNumber } from "@/lib/format";
+import { paymentSchema, type PaymentFormData, sourceLimitSchema, type SourceLimitFormData } from "@/core/finance/schemas";
 import type { FinanceAlert } from "@/core/types/finance/assets";
 import type {
   PaymentMethod,
@@ -50,19 +57,13 @@ const PAYMENT_METHODS: PaymentMethod[] = [
 
 export default function MoneyDesk() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<"approvals" | "alerts" | "tasks" | "payments" | "sources">(
     "approvals",
   );
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [amount, setAmount] = useState("");
-  const [method, setMethod] = useState<PaymentMethod>("BANK_TRANSFER");
-  const [destination, setDestination] = useState("");
-  const [purpose, setPurpose] = useState("");
-
-  const [source, setSource] = useState("");
-  const [department, setDepartment] = useState("");
-  const [extraInfo, setExtraInfo] = useState("");
 
   const [alerts, setAlerts] = useState<FinanceAlert[]>([]);
   const [tasks, setTasks] = useState<WorkflowRequest[]>([]);
@@ -77,9 +78,58 @@ export default function MoneyDesk() {
     useState<WorkflowRequest | null>(null);
   const [selectedAlert, setSelectedAlert] = useState<FinanceAlert | null>(null);
   const [editingSource, setEditingSource] = useState<any>(null);
-  const [limitMin, setLimitMin] = useState("");
-  const [limitMax, setLimitMax] = useState("");
-  const [isUpdatingLimit, setIsUpdatingLimit] = useState(false);
+
+  // --- React Hook Form: Create Payment ---
+  const paymentForm = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentSchema),
+    defaultValues: {
+      beneficiary: "",
+      amount: 0,
+      method: "BANK_TRANSFER",
+      purpose: "",
+      source: "",
+      department: "",
+      currency: "IDR",
+      extraInfo: "",
+    },
+  });
+
+  const paymentMutation = useMutation({
+    mutationFn: (data: PaymentFormData) =>
+      apiRequest("/v1/finance/payments", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "payments"]],
+      onClose: () => setDialogOpen(false),
+      form: paymentForm,
+      successTitle: "Payment Created",
+      successDescription: "Payment request has been submitted successfully.",
+    }),
+  });
+
+  // --- React Hook Form: Source Limit ---
+  const limitForm = useForm<SourceLimitFormData>({
+    resolver: zodResolver(sourceLimitSchema),
+    defaultValues: { sourceId: "", limitMin: 0, limitMax: 0 },
+  });
+
+  const limitMutation = useMutation({
+    mutationFn: (data: SourceLimitFormData) =>
+      apiRequest(`/v1/finance/treasury/sources/${data.sourceId}/limits`, "PATCH", session, {
+        minLimit: data.limitMin,
+        maxLimit: data.limitMax,
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "treasury-sources"]],
+      onClose: () => setEditingSource(null),
+      form: limitForm,
+      successTitle: "Thresholds Updated",
+      successDescription: "Source balance limits have been saved.",
+    }),
+  });
 
   const refreshDesk = useCallback(() => {
     financeService
@@ -166,46 +216,8 @@ export default function MoneyDesk() {
     session.role?.toUpperCase() || "",
   );
 
-  const submitPaymentRequest = async () => {
-    try {
-      let parsedExtra = undefined;
-      try {
-        if (extraInfo) parsedExtra = JSON.parse(extraInfo);
-      } catch (e) {
-        // Skip
-      }
-
-      await financeService.createPaymentRequest(session.tenant_id, session, {
-        amount: Number(amount || "0"),
-        method,
-        source: source || undefined,
-        beneficiary: destination,
-        departmentId: department || undefined,
-        purpose,
-        extraInfo: parsedExtra,
-      });
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        "Created payment request from MoneyDesk",
-        `${destination} - ${amount}`,
-      );
-      setErrorMessage(null);
-      setStatusMessage(
-        isHighLevel
-          ? "Payment request directly processed."
-          : "Payment request routed for approval.",
-      );
-      setDialogOpen(false);
-      refreshDesk();
-    } catch (error) {
-      setStatusMessage(null);
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Failed to create payment request.",
-      );
-    }
+  const submitPaymentRequest = (data: PaymentFormData) => {
+    paymentMutation.mutate(data);
   };
 
   const approveTask = (workflowId: string) => {
@@ -248,23 +260,8 @@ export default function MoneyDesk() {
       });
   };
 
-  const handleUpdateLimits = async () => {
-    if (!editingSource) return;
-    setIsUpdatingLimit(true);
-    try {
-      await financeService.updateMoneySource(session.tenant_id, editingSource.id, {
-        minLimit: limitMin ? Number(limitMin) : null,
-        maxLimit: limitMax ? Number(limitMax) : null,
-      }, session);
-      
-      setStatusMessage(`Thresholds updated for ${editingSource.name}`);
-      setEditingSource(null);
-      refreshDesk();
-    } catch (error) {
-      setErrorMessage("Failed to update thresholds");
-    } finally {
-      setIsUpdatingLimit(false);
-    }
+  const handleUpdateLimits = (data: SourceLimitFormData) => {
+    limitMutation.mutate(data);
   };
 
   return (
@@ -468,8 +465,11 @@ export default function MoneyDesk() {
                       className="h-8 w-8 text-primary"
                       onClick={() => {
                         setEditingSource(source);
-                        setLimitMin(source.minLimit?.toString() || "");
-                        setLimitMax(source.maxLimit?.toString() || "");
+                        limitForm.reset({
+                          sourceId: source.id,
+                          limitMin: source.minLimit ?? 0,
+                          limitMax: source.maxLimit ?? 0,
+                        });
                       }}
                     >
                       <ArrowRightLeft className="w-4 h-4 rotate-90" />
@@ -554,7 +554,7 @@ export default function MoneyDesk() {
         </DataTableShell>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !paymentMutation.isPending) { paymentForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr]">
             {/* Left Info Panel */}
@@ -571,7 +571,7 @@ export default function MoneyDesk() {
                   <div className="bg-background p-3 rounded-lg border shadow-sm">
                     <p className="text-xs text-muted-foreground uppercase font-semibold mb-1">Source Default</p>
                     <p className="font-semibold text-sm">
-                      {source ? moneySources.find((s) => s.id === source)?.name : "Main Treasury"}
+                      {paymentForm.watch("source") ? moneySources.find((s) => s.id === paymentForm.watch("source"))?.name : "Main Treasury"}
                     </p>
                   </div>
                   <div className="flex justify-center -my-2 relative z-10">
@@ -603,27 +603,31 @@ export default function MoneyDesk() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={paymentForm.handleSubmit(submitPaymentRequest)} className="space-y-6">
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Payment Amount (IDR)</label>
                   <div className="relative">
                     <span className="absolute left-3 top-2.5 text-muted-foreground font-medium">Rp</span>
                     <Input
                       className="pl-9 text-lg font-medium"
-                      value={amount}
-                      onChange={(event) => setAmount(event.target.value)}
+                      {...paymentForm.register("amount", { valueAsNumber: true })}
                       placeholder="0"
                       type="number"
+                      disabled={paymentMutation.isPending}
                     />
                   </div>
+                  {paymentForm.formState.errors.amount && (
+                    <p className="text-xs text-destructive mt-1">{paymentForm.formState.errors.amount.message}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Payment Method</label>
                     <Select
-                      value={method}
-                      onValueChange={(value) => setMethod(value as PaymentMethod)}
+                      value={paymentForm.watch("method")}
+                      onValueChange={(value) => paymentForm.setValue("method", value as any)}
+                      disabled={paymentMutation.isPending}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Payment Method" />
@@ -640,7 +644,11 @@ export default function MoneyDesk() {
 
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Funding Source</label>
-                    <Select value={source} onValueChange={setSource}>
+                    <Select
+                      value={paymentForm.watch("source") || ""}
+                      onValueChange={(value) => paymentForm.setValue("source", value)}
+                      disabled={paymentMutation.isPending}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Source Account" />
                       </SelectTrigger>
@@ -664,18 +672,21 @@ export default function MoneyDesk() {
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Beneficiary</label>
                     <Input
-                      value={destination}
-                      onChange={(event) => setDestination(event.target.value)}
+                      {...paymentForm.register("beneficiary")}
                       placeholder="Name / Account Number"
+                      disabled={paymentMutation.isPending}
                     />
+                    {paymentForm.formState.errors.beneficiary && (
+                      <p className="text-xs text-destructive mt-1">{paymentForm.formState.errors.beneficiary.message}</p>
+                    )}
                   </div>
 
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Requesting Dept</label>
                     <Input
-                      value={department}
-                      onChange={(event) => setDepartment(event.target.value)}
+                      {...paymentForm.register("department")}
                       placeholder="Department ID (e.g. IT, HR)"
+                      disabled={paymentMutation.isPending}
                     />
                   </div>
                 </div>
@@ -683,35 +694,38 @@ export default function MoneyDesk() {
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Purpose of Payment</label>
                   <Textarea
-                    value={purpose}
-                    onChange={(event) => setPurpose(event.target.value)}
+                    {...paymentForm.register("purpose")}
                     placeholder="Provide clear justification..."
                     className="resize-none"
                     rows={2}
+                    disabled={paymentMutation.isPending}
                   />
+                  {paymentForm.formState.errors.purpose && (
+                    <p className="text-xs text-destructive mt-1">{paymentForm.formState.errors.purpose.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Extra Metadata (JSON)</label>
                   <Textarea
-                    value={extraInfo}
-                    onChange={(event) => setExtraInfo(event.target.value)}
+                    {...paymentForm.register("extraInfo")}
                     placeholder='{"invoiceId": "INV-1234"}'
                     className="font-mono text-xs resize-none"
                     rows={2}
+                    disabled={paymentMutation.isPending}
                   />
                 </div>
 
                 <div className="border-t pt-4 flex justify-end gap-3 mt-4">
-                  <Button onClick={() => setDialogOpen(false)} variant="outline">
+                  <Button type="button" onClick={() => { paymentForm.reset(); setDialogOpen(false); }} variant="outline" disabled={paymentMutation.isPending}>
                     Cancel
                   </Button>
-                  <Button onClick={submitPaymentRequest} className="gap-2">
+                  <Button type="submit" className="gap-2" disabled={paymentMutation.isPending}>
                     <Send className="w-4 h-4" />
-                    {isHighLevel ? "Process Payment" : "Submit Request"}
+                    {paymentMutation.isPending ? "Processing..." : isHighLevel ? "Process Payment" : "Submit Request"}
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </DialogContent>
@@ -820,13 +834,13 @@ export default function MoneyDesk() {
 
       <Dialog
         open={!!editingSource}
-        onOpenChange={() => setEditingSource(null)}
+        onOpenChange={() => { if (!limitMutation.isPending) { limitForm.reset(); setEditingSource(null); } }}
       >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Configure Thresholds</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 pt-2">
+          <form onSubmit={limitForm.handleSubmit(handleUpdateLimits)} className="space-y-4 pt-2">
             <div className="bg-primary/5 p-3 rounded-lg border border-primary/10 mb-4">
               <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Target Account</p>
               <p className="font-black text-sm">{editingSource?.name}</p>
@@ -837,19 +851,25 @@ export default function MoneyDesk() {
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Min Balance Limit</label>
                 <Input 
                   type="number" 
-                  value={limitMin} 
-                  onChange={e => setLimitMin(e.target.value)} 
+                  {...limitForm.register("limitMin", { valueAsNumber: true })}
                   placeholder="No limit"
+                  disabled={limitMutation.isPending}
                 />
+                {limitForm.formState.errors.limitMin && (
+                  <p className="text-xs text-destructive">{limitForm.formState.errors.limitMin.message}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Max Balance Limit</label>
                 <Input 
                   type="number" 
-                  value={limitMax} 
-                  onChange={e => setLimitMax(e.target.value)} 
+                  {...limitForm.register("limitMax", { valueAsNumber: true })}
                   placeholder="No limit"
+                  disabled={limitMutation.isPending}
                 />
+                {limitForm.formState.errors.limitMax && (
+                  <p className="text-xs text-destructive">{limitForm.formState.errors.limitMax.message}</p>
+                )}
               </div>
             </div>
 
@@ -859,12 +879,12 @@ export default function MoneyDesk() {
             </div>
 
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" className="flex-1" onClick={() => setEditingSource(null)}>Cancel</Button>
-              <Button className="flex-1" disabled={isUpdatingLimit} onClick={handleUpdateLimits}>
-                {isUpdatingLimit ? "Saving..." : "Save Configuration"}
+              <Button type="button" variant="outline" className="flex-1" onClick={() => { limitForm.reset(); setEditingSource(null); }} disabled={limitMutation.isPending}>Cancel</Button>
+              <Button type="submit" className="flex-1" disabled={limitMutation.isPending}>
+                {limitMutation.isPending ? "Saving..." : "Save Configuration"}
               </Button>
             </div>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

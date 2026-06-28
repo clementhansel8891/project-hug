@@ -67,7 +67,7 @@ const arbitraryInteractiveElement: fc.Arbitrary<InteractiveElement> = fc.record(
     fc.string({ minLength: 0, maxLength: 200 }),
   ),
   parentComponent: fc.stringMatching(/^[A-Z][a-zA-Z]{0,29}$/),
-  layer: fc.constantFrom('auth', 'core', 'retail', 'fnb', 'industry', 'portal', 'unknown'),
+  layer: fc.constantFrom('auth', 'core', 'retail', 'portal', 'unknown'),
   pagePath: fc.stringMatching(/^\/[a-z0-9/_-]{0,40}$/),
 });
 

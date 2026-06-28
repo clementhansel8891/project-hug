@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -8,14 +9,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  AlertTriangle, 
-  PackagePlus, 
-  CheckSquare, 
+import {
+  AlertTriangle,
+  PackagePlus,
+  CheckSquare,
   Square,
   Barcode,
   Zap,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from "lucide-react";
 import { ItemCreationTab } from "./ItemCreationTab";
 import { useSession } from "@/core/security/session";
@@ -46,19 +48,17 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
 }) => {
   const session = useSession();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [selected, setSelected] = useState<string[]>([]);
   const [showItemCreation, setShowItemCreation] = useState(false);
-  const [isQuickRegistering, setIsQuickRegistering] = useState(false);
 
   // Safety net: ensure page is always interactive when the modal fully closes
-  // or when transitioning between dialog views. This guards against Radix
-  // pointer-events race conditions in nested/transitioning dialogs.
   const handleClose = React.useCallback(() => {
     document.body.style.pointerEvents = "auto";
     onClose();
   }, [onClose]);
 
-  // If the modal opens, pre-select all barcodes by default for convenience
+  // Pre-select all barcodes when the modal opens
   React.useEffect(() => {
     if (isOpen) {
       setSelected(unresolvedBarcodes);
@@ -74,41 +74,28 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
   };
 
   const toggleSelect = (barcode: string) => {
-    setSelected(prev => 
-      prev.includes(barcode) 
-        ? prev.filter(b => b !== barcode) 
+    setSelected(prev =>
+      prev.includes(barcode)
+        ? prev.filter(b => b !== barcode)
         : [...prev, barcode]
     );
   };
 
   const handleFlagSelected = () => {
     if (selected.length === 0) return;
-    
     onFlagAnomalies(selected);
-    // Remove flagged from selection
     setSelected([]);
   };
 
-  // Non-blocking path: create minimal stub items into the "Anomaly" category
-  // without forcing the operator to fill out the full product form. Items are
-  // created with status "incomplete" server-side, flagged as anomalies, and
-  // can be completed later with full details.
-  const handleQuickRegisterIncomplete = async () => {
-    if (selected.length === 0 || !session?.tenant_id) return;
+  // ─── Quick Register Mutation ─────────────────────────────────────────────────
 
-    setIsQuickRegistering(true);
-    try {
-      const payload = buildQuickRegisterPayload(selected);
-
-      const res = await retailService.batchCreateItemsJson(
-        session.tenant_id,
-        session,
-        payload,
-      );
-
+  const quickRegisterMutation = useMutation({
+    mutationFn: async (barcodes: string[]) => {
+      const payload = buildQuickRegisterPayload(barcodes);
+      return retailService.batchCreateItemsJson(session!.tenant_id, session!, payload);
+    },
+    onSuccess: (res) => {
       if (res.success) {
-        // Guarantee each resolved item carries its barcode so the parent can
-        // reconcile against the scanned list regardless of backend shape.
         const created = (Array.isArray(res.data) ? res.data : []) as Record<string, unknown>[];
         const resolved = resolveQuickRegisterResponse(selected, created);
 
@@ -117,6 +104,7 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
           description: `${selected.length} item(s) created in the "${ANOMALY_CATEGORY_NAME}" category. These items are flagged for later completion.`,
         });
 
+        queryClient.invalidateQueries({ queryKey: ["inventory"] });
         onItemsRegistered(resolved);
 
         if (selected.length === unresolvedBarcodes.length) {
@@ -131,23 +119,26 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
           variant: "destructive",
         });
       }
-    } catch (err) {
-      console.error("Quick register failed", err);
+    },
+    onError: (error: any) => {
       toast({
         title: "Registration Failed",
-        description: "An error occurred while registering items.",
+        description: error.message || "An error occurred while registering items.",
         variant: "destructive",
       });
-    } finally {
-      setIsQuickRegistering(false);
-    }
+    },
+  });
+
+  const handleQuickRegisterIncomplete = () => {
+    if (selected.length === 0 || !session?.tenant_id) return;
+    quickRegisterMutation.mutate(selected);
   };
 
   if (showItemCreation) {
     const initialRows = selected.map(barcode => ({
       barcode: barcode,
-      sku: barcode, // Default SKU to barcode
-      name: `New Item - ${barcode}`, // Placeholder name
+      sku: barcode,
+      name: `New Item - ${barcode}`,
     }));
 
     return (
@@ -159,13 +150,13 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
       }}>
         <DialogContent className="max-w-[95vw] h-[90vh] rounded-[2rem] border-none shadow-2xl bg-muted dark:bg-muted p-0 overflow-y-auto">
           <div className="p-8">
-            <ItemCreationTab 
-              canWrite={true} 
-              session={session} 
-              tenantId={session.tenant_id} 
+            <ItemCreationTab
+              canWrite={true}
+              session={session}
+              tenantId={session.tenant_id}
               categoryOptions={categoryOptions}
               onSuccess={(createdItems) => {
-                // When items are registered successfully, we need to notify the parent
+                queryClient.invalidateQueries({ queryKey: ["inventory"] });
                 onItemsRegistered(createdItems);
                 document.body.style.pointerEvents = "auto";
                 setShowItemCreation(false);
@@ -205,7 +196,7 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
           <div>
             <h3 className="font-black text-lg italic text-muted-foreground uppercase">Action Required</h3>
             <p className="text-sm text-muted-foreground font-medium">
-              You scanned {unresolvedBarcodes.length} barcode(s) that are not in the master list. 
+              You scanned {unresolvedBarcodes.length} barcode(s) that are not in the master list.
               Please resolve them before finalizing the audit.
             </p>
           </div>
@@ -225,14 +216,14 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
             </div>
             <div className="max-h-[300px] overflow-y-auto p-2">
               {unresolvedBarcodes.map(barcode => (
-                <div 
-                  key={barcode} 
+                <div
+                  key={barcode}
                   className="flex items-center gap-4 p-3 hover:bg-muted rounded-xl cursor-pointer transition-colors"
                   onClick={() => toggleSelect(barcode)}
                 >
-                  <Checkbox 
-                    checked={selected.includes(barcode)} 
-                    onCheckedChange={() => toggleSelect(barcode)} 
+                  <Checkbox
+                    checked={selected.includes(barcode)}
+                    onCheckedChange={() => toggleSelect(barcode)}
                   />
                   <div className="font-mono font-bold text-muted-foreground bg-white border border-border px-3 py-1 rounded-lg">
                     {barcode}
@@ -257,14 +248,14 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
               <Button
                 variant="outline"
                 className="flex-1 min-w-[180px] h-14 rounded-xl border-warning text-warning bg-warning hover:bg-warning hover:text-warning font-black italic uppercase tracking-widest text-xs"
-                disabled={selected.length === 0 || isQuickRegistering}
+                disabled={selected.length === 0 || quickRegisterMutation.isPending}
                 onClick={handleFlagSelected}
               >
                 <AlertTriangle className="w-4 h-4 mr-2" /> Flag as Anomalies
               </Button>
               <Button
                 className="flex-1 min-w-[180px] h-14 rounded-xl bg-success hover:bg-success/90 text-white font-black italic uppercase tracking-widest text-xs shadow-xl relative"
-                disabled={selected.length === 0 || isQuickRegistering}
+                disabled={selected.length === 0 || quickRegisterMutation.isPending}
                 onClick={handleQuickRegisterIncomplete}
               >
                 <span className="absolute top-2 right-2">
@@ -272,8 +263,8 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
                     Anomaly
                   </span>
                 </span>
-                {isQuickRegistering ? (
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                {quickRegisterMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 ) : (
                   <Zap className="w-4 h-4 mr-2" />
                 )}
@@ -282,7 +273,7 @@ export const UnresolvedBarcodesModal: React.FC<UnresolvedBarcodesModalProps> = (
               <Button
                 variant="outline"
                 className="flex-1 min-w-[180px] h-14 rounded-xl border-primary/30 text-primary bg-primary/5 hover:bg-primary/10 font-black italic uppercase tracking-widest text-xs"
-                disabled={selected.length === 0 || isQuickRegistering}
+                disabled={selected.length === 0 || quickRegisterMutation.isPending}
                 onClick={() => setShowItemCreation(true)}
               >
                 <PackagePlus className="w-4 h-4 mr-2" /> Register with Details

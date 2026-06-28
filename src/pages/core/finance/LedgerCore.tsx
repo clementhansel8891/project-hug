@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,13 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { BookOpen, CheckCircle2, AlertTriangle, Plus } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { PageHeader } from "@/core/ui/PageHeader";
 import { WorkspacePanel } from "@/core/ui/WorkspacePanel";
 import { DataTableShell } from "@/core/tools/DataTableShell";
@@ -23,9 +19,16 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
 import { financeApiClient } from "@/core/services/finance/financeApiClient";
-import { logService } from "@/core/services/finance/logService";
-import { journalEntrySchema } from "@/core/finance/schemas";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
+import { journalEntrySchema, type JournalEntryFormData } from "@/core/finance/schemas";
+import {
+  JournalPostModal,
+  JournalReverseModal,
+  LedgerReconciliationModal,
+} from "@/core/finance/FinanceModalForms";
 import type {
   FinanceInvoiceRow,
   FinanceJournalRow,
@@ -43,55 +46,60 @@ const toPeriod = () => {
 
 export default function LedgerCore() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<LedgerTab>("journals");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [payrollDialogOpen, setPayrollDialogOpen] = useState(false);
-  const [entry, setEntry] = useState<{
-    description: string;
-    ref: string;
-    lines: Array<{
-      accountCode: string;
-      description: string;
-      debit: number;
-      credit: number;
-    }>;
-  }>({
-    description: "",
-    ref: "",
-    lines: [
-      { accountCode: "", description: "", debit: 0, credit: 0 },
-      { accountCode: "", description: "", debit: 0, credit: 0 },
-    ],
+  const [postDialogOpen, setPostDialogOpen] = useState(false);
+  const [reverseDialogOpen, setReverseDialogOpen] = useState(false);
+  const [reconciliationDialogOpen, setReconciliationDialogOpen] = useState(false);
+
+  // --- React Hook Form for Journal Entry Create ---
+  const form = useForm<JournalEntryFormData>({
+    resolver: zodResolver(journalEntrySchema),
+    defaultValues: {
+      description: "",
+      ref: "",
+      lines: [
+        { accountCode: "", description: "", debit: 0, credit: 0 },
+        { accountCode: "", description: "", debit: 0, credit: 0 },
+      ],
+    },
   });
 
+  const watchedLines = form.watch("lines");
+
   const totalDebits = useMemo(
-    () => entry.lines.reduce((sum, l) => sum + l.debit, 0),
-    [entry.lines],
+    () => (watchedLines || []).reduce((sum, l) => sum + (l.debit || 0), 0),
+    [watchedLines],
   );
   const totalCredits = useMemo(
-    () => entry.lines.reduce((sum, l) => sum + l.credit, 0),
-    [entry.lines],
+    () => (watchedLines || []).reduce((sum, l) => sum + (l.credit || 0), 0),
+    [watchedLines],
   );
   const isBalanced = useMemo(
     () =>
-      Math.abs(totalDebits - totalCredits) < 0.01 && entry.lines.length >= 2,
-    [totalDebits, totalCredits, entry.lines.length],
+      Math.abs(totalDebits - totalCredits) < 0.01 && (watchedLines || []).length >= 2,
+    [totalDebits, totalCredits, watchedLines],
   );
 
   const addLine = () => {
-    setEntry({
-      ...entry,
-      lines: [
-        ...entry.lines,
-        { accountCode: "", description: "", debit: 0, credit: 0 },
-      ],
-    });
+    const current = form.getValues("lines");
+    form.setValue("lines", [
+      ...current,
+      { accountCode: "", description: "", debit: 0, credit: 0 },
+    ]);
   };
 
   const removeLine = (index: number) => {
-    const newLines = (Array.isArray(entry.lines) ? entry.lines : []).filter((_, i) => i !== index);
-    setEntry({ ...entry, lines: newLines });
+    const current = form.getValues("lines");
+    if (current.length <= 2) return;
+    form.setValue(
+      "lines",
+      current.filter((_, i) => i !== index),
+    );
   };
 
   const updateLine = (
@@ -103,10 +111,30 @@ export default function LedgerCore() {
       credit: number;
     }>,
   ) => {
-    const newLines = [...entry.lines];
+    const current = form.getValues("lines");
+    const newLines = [...current];
     newLines[index] = { ...newLines[index], ...updates };
-    setEntry({ ...entry, lines: newLines });
+    form.setValue("lines", newLines);
   };
+
+  // --- useMutation for Journal Entry Create ---
+  const createJournalMutation = useMutation({
+    mutationFn: (data: JournalEntryFormData) =>
+      apiRequest("/v1/finance/journal-entries", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "ledger-entries"], ["finance", "journal-entries"]],
+      onClose: () => setDialogOpen(false),
+      form,
+      successTitle: "Journal Entry Created",
+      successDescription: "The journal entry has been posted to the general ledger.",
+    }),
+  });
+
+  const handleCreateJournal = form.handleSubmit((data) => {
+    createJournalMutation.mutate(data);
+  });
   const [payrollPeriod, setPayrollPeriod] = useState(toPeriod());
   const [payrollEstimates, setPayrollEstimates] = useState<PayrollEstimate[] | null>(null);
   const [isEstimating, setIsEstimating] = useState(false);
@@ -180,44 +208,6 @@ export default function LedgerCore() {
     [payrollEntries, search],
   );
 
-  const handleCreateJournal = async () => {
-    // Validate with Zod schema (double-entry accounting: debits = credits ±0.01, ≥ 2 lines)
-    const validation = journalEntrySchema.safeParse(entry);
-    if (!validation.success) {
-      const firstError = validation.error.errors[0]?.message || "Validation failed";
-      setErrorMessage(firstError);
-      return;
-    }
-    if (!isBalanced) {
-      setErrorMessage("Journal entry must be balanced (Debits = Credits).");
-      return;
-    }
-    try {
-      await financeApiClient.createJournal(session.tenant_id, session, entry);
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        "Created Journal Entry",
-        `${entry.description} (${entry.lines.length} lines)`,
-      );
-      setStatusMessage(`Journal entry created successfully.`);
-      setDialogOpen(false);
-      setEntry({
-        description: "",
-        ref: "",
-        lines: [
-          { accountCode: "", description: "", debit: 0, credit: 0 },
-          { accountCode: "", description: "", debit: 0, credit: 0 },
-        ],
-      });
-      void refreshLedger();
-    } catch (err) {
-      setErrorMessage(
-        "Failed to create journal entry. Access denied or invalid data.",
-      );
-    }
-  };
-
   const calculateEstimates = async () => {
     setIsEstimating(true);
     setErrorMessage(null);
@@ -264,9 +254,14 @@ export default function LedgerCore() {
         title="Ledger Core"
         subtitle="Unified ledger workspace for journals, invoices, and payroll postings."
         primaryAction={
-          <Button onClick={() => setDialogOpen(true)}>
-            Create Journal Entry
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => setReconciliationDialogOpen(true)}>
+              Reconciliation
+            </Button>
+            <Button onClick={() => setDialogOpen(true)}>
+              Create Journal Entry
+            </Button>
+          </div>
         }
         secondaryActions={
           <Input
@@ -438,7 +433,7 @@ export default function LedgerCore() {
         </Tabs>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !createJournalMutation.isPending) { form.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-6xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_3fr]">
             {/* Left Info Panel */}
@@ -474,28 +469,34 @@ export default function LedgerCore() {
 
             {/* Right Form Panel */}
             <div className="p-6 overflow-y-auto max-h-[85vh]">
-              <div className="space-y-6">
+              <form onSubmit={handleCreateJournal}>
+                <fieldset disabled={createJournalMutation.isPending} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase text-muted-foreground">
+                    <label htmlFor="je-description" className="text-xs font-semibold uppercase text-muted-foreground">
                       Description
                     </label>
                     <Input
+                      id="je-description"
                       placeholder="e.g., Monthly Rent Adjustment"
-                      value={entry.description}
-                      onChange={(e) =>
-                        setEntry({ ...entry, description: e.target.value })
-                      }
+                      {...form.register("description")}
+                      aria-invalid={!!form.formState.errors.description}
+                      aria-describedby={form.formState.errors.description ? "je-description-error" : undefined}
                     />
+                    {form.formState.errors.description && (
+                      <p id="je-description-error" role="alert" className="text-xs text-destructive">
+                        {form.formState.errors.description.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold uppercase text-muted-foreground">
+                    <label htmlFor="je-ref" className="text-xs font-semibold uppercase text-muted-foreground">
                       Reference (Optional)
                     </label>
                     <Input
+                      id="je-ref"
                       placeholder="REF-001"
-                      value={entry.ref}
-                      onChange={(e) => setEntry({ ...entry, ref: e.target.value })}
+                      {...form.register("ref")}
                     />
                   </div>
                 </div>
@@ -512,7 +513,7 @@ export default function LedgerCore() {
                       </tr>
                     </thead>
                     <tbody className="divide-y">
-                      {(Array.isArray(entry.lines) ? entry.lines : []).map((line, idx) => (
+                      {(Array.isArray(watchedLines) ? watchedLines : []).map((line, idx) => (
                         <tr key={idx} className="hover:bg-muted/20">
                           <td className="p-2">
                             <Input
@@ -562,11 +563,12 @@ export default function LedgerCore() {
                           </td>
                           <td className="p-2 text-center">
                             <Button
+                              type="button"
                               variant="ghost"
                               size="icon"
                               className="h-6 w-6 text-destructive"
                               onClick={() => removeLine(idx)}
-                              disabled={entry.lines.length <= 2}
+                              disabled={(watchedLines || []).length <= 2}
                             >
                               &times;
                             </Button>
@@ -576,24 +578,30 @@ export default function LedgerCore() {
                     </tbody>
                   </table>
                 </div>
+                {form.formState.errors.lines && (
+                  <p role="alert" className="text-xs text-destructive">
+                    {form.formState.errors.lines.message || form.formState.errors.lines.root?.message}
+                  </p>
+                )}
 
                 <div className="flex items-center justify-between border-t pt-4">
-                  <Button variant="outline" size="sm" onClick={addLine} className="gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={addLine} className="gap-2">
                     <Plus className="w-4 h-4" /> Add Line Item
                   </Button>
                   <div className="flex items-center gap-3">
-                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                    <Button type="button" variant="outline" onClick={() => { form.reset(); setDialogOpen(false); }} disabled={createJournalMutation.isPending}>
                       Cancel
                     </Button>
                     <Button
-                      onClick={handleCreateJournal}
-                      disabled={!isBalanced || !entry.description}
+                      type="submit"
+                      disabled={!isBalanced || !form.watch("description") || createJournalMutation.isPending}
                     >
-                      Post to General Ledger
+                      {createJournalMutation.isPending ? "Posting..." : "Post to General Ledger"}
                     </Button>
                   </div>
                 </div>
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>
@@ -698,7 +706,7 @@ export default function LedgerCore() {
         </DialogContent>
       </Dialog>
 
-      {/* Journal Detail Dialog */}
+      {/* Journal Detail Dialog (Account Detail) */}
       <Dialog
         open={!!selectedJournal}
         onOpenChange={() => setSelectedJournal(null)}
@@ -758,6 +766,31 @@ export default function LedgerCore() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Post / Reverse actions */}
+            <div className="flex justify-end gap-3 border-t pt-4">
+              {selectedJournal?.status === "DRAFT" && (
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setPostDialogOpen(true);
+                  }}
+                >
+                  Post Entry
+                </Button>
+              )}
+              {selectedJournal?.status === "POSTED" && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => {
+                    setReverseDialogOpen(true);
+                  }}
+                >
+                  Reverse Entry
+                </Button>
+              )}
             </div>
           </div>
         </DialogContent>
@@ -834,6 +867,35 @@ export default function LedgerCore() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Journal Entry Post Modal */}
+      <JournalPostModal
+        isOpen={postDialogOpen}
+        onClose={() => setPostDialogOpen(false)}
+        onSuccess={() => {
+          void refreshLedger();
+          setSelectedJournal(null);
+        }}
+        entryId={selectedJournal?.id || ""}
+      />
+
+      {/* Journal Entry Reverse Modal */}
+      <JournalReverseModal
+        isOpen={reverseDialogOpen}
+        onClose={() => setReverseDialogOpen(false)}
+        onSuccess={() => {
+          void refreshLedger();
+          setSelectedJournal(null);
+        }}
+        entryId={selectedJournal?.id || ""}
+      />
+
+      {/* Ledger Reconciliation Modal */}
+      <LedgerReconciliationModal
+        isOpen={reconciliationDialogOpen}
+        onClose={() => setReconciliationDialogOpen(false)}
+        onSuccess={() => void refreshLedger()}
+      />
     </div>
   );
 }

@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/select";
 import { ZenTooltip } from "@/core/ui/ZenTooltip";
 import { format, addDays, startOfWeek, eachDayOfInterval, isSameDay } from "date-fns";
+import { ShiftOverrideModal } from "./modals";
 
 export default function SchedulingStudio() {
   const session = useSession();
@@ -309,57 +310,18 @@ export default function SchedulingStudio() {
         </div>
       </div>
 
-      {/* Emergency Override Dialog */}
-      <Dialog open={isOverrideOpen} onOpenChange={setIsOverrideOpen}>
-        <DialogContent className="max-w-md border-destructive/20 shadow-2xl shadow-destructive/10">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-destructive">
-              <ShieldAlert className="w-5 h-5" />
-              Emergency Shift Override
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="p-3 bg-muted/50 rounded-lg">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Target Shift</p>
-              <p className="text-sm font-semibold">
-                {selectedCell && employees.find(e => e.id === selectedCell.employeeId)?.fullName}
-              </p>
-              <p className="text-xs text-muted-foreground">{selectedCell?.date}</p>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-foreground">Covering Professional</label>
-              <Select onValueChange={(val) => setOverrideForm(f => ({ ...f, coveringEmployeeId: val }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select relief professional" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(Array.isArray(employees) ? employees : []).filter(e => e.id !== selectedCell?.employeeId).map(e => (
-                    <SelectItem key={e.id} value={e.id}>{e.fullName}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-foreground">Operational Reason</label>
-              <Input 
-                placeholder="e.g. Unscheduled Sick Leave - High Priority" 
-                value={overrideForm.reason}
-                onChange={(e) => setOverrideForm(f => ({ ...f, reason: e.target.value }))}
-              />
-            </div>
-
-            <div className="flex gap-2 pt-4">
-              <Button variant="outline" className="flex-1" onClick={() => setIsOverrideOpen(false)}>Cancel</Button>
-              <Button variant="destructive" className="flex-1 font-bold shadow-lg shadow-destructive/20" onClick={submitOverride}>
-                <ShieldAlert className="w-4 h-4 mr-2" />
-                Authorize Override
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Emergency Override Modal */}
+      <ShiftOverrideModal
+        isOpen={isOverrideOpen}
+        onClose={() => {
+          setIsOverrideOpen(false);
+          setSelectedCell(null);
+        }}
+        employees={employees.map((e) => ({ id: e.id, fullName: e.fullName || "" }))}
+        defaultEmployeeId={selectedCell?.employeeId ?? ""}
+        defaultDate={selectedCell?.date ?? ""}
+        onSuccess={() => loadData()}
+      />
     </div>
   );
 }

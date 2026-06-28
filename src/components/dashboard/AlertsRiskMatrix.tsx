@@ -17,15 +17,8 @@ export const AlertsRiskMatrix: React.FC<AlertsRiskMatrixProps> = ({ data = [] })
   const tooltipBg = isDark ? '#1e293b' : '#ffffff';
   const colors = isDark ? CHART_COLORS_DARK : CHART_COLORS;
 
-  const mockData = [
-    { module: 'Retail', critical: 2, high: 5, medium: 8, low: 12 },
-    { module: 'Finance', critical: 0, high: 2, medium: 4, low: 6 },
-    { module: 'HR', critical: 1, high: 3, medium: 5, low: 7 },
-    { module: 'IT', critical: 0, high: 1, medium: 2, low: 4 },
-    { module: 'Inventory', critical: 3, high: 6, medium: 9, low: 11 }
-  ];
-
-  const activeData = data.length > 0 ? data : mockData;
+  // Use real data; if empty, show informational empty state
+  const activeData = data.length > 0 ? data : [];
 
   const handleBarClick = (payload: any) => {
     const module = payload.module;

@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -10,36 +13,45 @@ import { DataTableShell } from "@/core/tools/DataTableShell";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
 import { procurementService } from "@/core/services/procurement/procurementService";
 import { formatNumber } from "@/lib/format";
 import type { DraftPurchaseOrder, FinalPurchaseOrder, Requisition } from "@/core/types/procurement/procurement";
-import { FileText, ClipboardList, Info, Building2, ShoppingCart, CheckCircle2, DollarSign, Tag, ArrowRight } from "lucide-react";
-import { supplierQuoteSchema, goodsReceiptSchema, validatePoTransition } from "@/modules/procurement/schemas";
+import { FileText, ClipboardList, Info, Building2, ShoppingCart, CheckCircle2, DollarSign, Tag, ArrowRight, Loader2 } from "lucide-react";
+import { supplierQuoteSchema, goodsReceiptSchema, validatePoTransition, type SupplierQuoteFormValues } from "@/modules/procurement/schemas";
 import {
   useConfirmSupplierQuote,
   useReleasePurchaseOrder,
   useRecordReceipt,
+  PROCUREMENT_KEYS,
 } from "@/modules/procurement/hooks";
 
 export default function PoReleaseDesk() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
   const [selectedDraftId, setSelectedDraftId] = useState("");
-  const [quoteReference, setQuoteReference] = useState("");
-  const [quoteNotes, setQuoteNotes] = useState("");
   const [requisitions, setRequisitions] = useState<Requisition[]>([]);
   const [drafts, setDrafts] = useState<DraftPurchaseOrder[]>([]);
   const [finalPos, setFinalPos] = useState<FinalPurchaseOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [quoteFieldErrors, setQuoteFieldErrors] = useState<Record<string, string>>({});
+
+  // ─── React Hook Form: Quote Confirmation ──────────────────────────────────────
+  const quoteForm = useForm<SupplierQuoteFormValues>({
+    resolver: zodResolver(supplierQuoteSchema),
+    defaultValues: { draftPoId: "", quoteReference: "", quoteNotes: "" },
+  });
 
   // TanStack Query mutations
   const confirmQuoteMutation = useConfirmSupplierQuote();
   const releasePoMutation = useReleasePurchaseOrder();
   const recordReceiptMutation = useRecordReceipt();
+
+  const quoteIsPending = confirmQuoteMutation.isPending;
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -98,49 +110,33 @@ export default function PoReleaseDesk() {
     [finalPos, search],
   );
 
-  const confirmQuote = async () => {
-    setQuoteFieldErrors({});
-    const result = supplierQuoteSchema.safeParse({
-      draftPoId: selectedDraftId,
-      quoteReference: quoteReference || `Q-${Date.now()}`,
-      quoteNotes: quoteNotes || undefined,
-    });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        if (!errors[field]) errors[field] = issue.message;
-      });
-      setQuoteFieldErrors(errors);
-      return;
-    }
+  const onSubmitQuote = quoteForm.handleSubmit(async (data) => {
     try {
-      await confirmQuoteMutation.mutateAsync(result.data);
-      setStatusMessage("Supplier quote confirmed.");
+      await confirmQuoteMutation.mutateAsync(data);
+      toast({ title: "Quote Confirmed", description: "Supplier quote confirmed." });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.draftPos });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.requisitions });
+      quoteForm.reset();
       setQuoteDialogOpen(false);
-      setSelectedDraftId("");
-      setQuoteReference("");
-      setQuoteNotes("");
-      setQuoteFieldErrors({});
       refresh();
-    } catch (err) {
-      setErrorMessage("Quote confirmation failed.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Quote confirmation failed.", variant: "destructive" });
     }
-  };
+  });
 
   const releasePo = async (requisitionId: string) => {
     // Validate the PO state transition (conceptually: approved → released/received)
     const transition = validatePoTransition("approved", "received");
     if (!transition.valid) {
-      setErrorMessage(transition.error || "Invalid PO state transition.");
+      toast({ title: "Error", description: transition.error || "Invalid PO state transition.", variant: "destructive" });
       return;
     }
     try {
       await releasePoMutation.mutateAsync(requisitionId);
-      setStatusMessage("Purchase Order released and synchronized with Payable/Receipt systems.");
+      toast({ title: "PO Released", description: "Purchase Order released and synchronized with Payable/Receipt systems." });
       refresh();
-    } catch (err) {
-      setErrorMessage("PO release failed.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "PO release failed.", variant: "destructive" });
     }
   };
 
@@ -155,15 +151,15 @@ export default function PoReleaseDesk() {
     };
     const result = goodsReceiptSchema.safeParse(receiptData);
     if (!result.success) {
-      setErrorMessage("Receipt data validation failed: " + result.error.issues.map(i => i.message).join(", "));
+      toast({ title: "Error", description: "Receipt data validation failed: " + result.error.issues.map(i => i.message).join(", "), variant: "destructive" });
       return;
     }
     try {
       await recordReceiptMutation.mutateAsync(result.data);
-      setStatusMessage("Receipt record posted and rating engine updated.");
+      toast({ title: "Receipt Recorded", description: "Receipt record posted and rating engine updated." });
       refresh();
-    } catch (err) {
-      setErrorMessage("Receipt recording failed.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Receipt recording failed.", variant: "destructive" });
     }
   };
 
@@ -217,6 +213,7 @@ export default function PoReleaseDesk() {
                           variant="outline"
                           onClick={() => {
                             setSelectedDraftId(draft.id);
+                            quoteForm.setValue("draftPoId", draft.id);
                             setQuoteDialogOpen(true);
                           }}
                         >
@@ -314,7 +311,7 @@ export default function PoReleaseDesk() {
         </DataTableShell>
       </WorkspacePanel>
 
-      <Dialog open={quoteDialogOpen} onOpenChange={setQuoteDialogOpen}>
+      <Dialog open={quoteDialogOpen} onOpenChange={(open) => { if (!open && !quoteIsPending) { quoteForm.reset(); setQuoteDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby="quote-confirm-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Supplier Quote Confirmation</DialogTitle>
@@ -335,7 +332,7 @@ export default function PoReleaseDesk() {
                     <ShoppingCart className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Draft PO Reference</p>
-                      <p className="text-xs font-mono">{selectedDraftId}</p>
+                      <p className="text-xs font-mono">{quoteForm.watch("draftPoId")}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3 text-sm">
@@ -360,28 +357,33 @@ export default function PoReleaseDesk() {
 
             {/* Right Column: Form */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={onSubmitQuote} noValidate>
+                <fieldset disabled={quoteIsPending} className="space-y-6">
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Quote Reference Number</label>
+                  <label htmlFor="quote-ref" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Quote Reference Number</label>
                   <div className="relative">
                     <FileText className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                     <Input 
+                      id="quote-ref"
                       placeholder="e.g. Q-2024-889012"
-                      value={quoteReference}
-                      onChange={e => setQuoteReference(e.target.value)}
+                      {...quoteForm.register("quoteReference")}
                       className="pl-10 h-10 font-medium"
+                      aria-describedby={quoteForm.formState.errors.quoteReference ? "quote-ref-error" : undefined}
+                      aria-invalid={!!quoteForm.formState.errors.quoteReference}
                     />
                   </div>
-                  {quoteFieldErrors.quoteReference && <p className="text-xs text-destructive mt-1">{quoteFieldErrors.quoteReference}</p>}
+                  {quoteForm.formState.errors.quoteReference && (
+                    <p id="quote-ref-error" className="text-xs text-destructive mt-1" role="alert">{quoteForm.formState.errors.quoteReference.message}</p>
+                  )}
                   <p className="text-[10px] text-muted-foreground mt-1.5 italic">Official reference from the supplier's quotation document.</p>
                 </div>
 
                 <div className="pt-4 border-t">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Negotiation & Technical Notes</label>
+                  <label htmlFor="quote-notes" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Negotiation & Technical Notes</label>
                   <Input 
+                    id="quote-notes"
                     placeholder="Discounts applied, validity period, payment terms adjustments..."
-                    value={quoteNotes}
-                    onChange={e => setQuoteNotes(e.target.value)}
+                    {...quoteForm.register("quoteNotes")}
                     className="h-10"
                   />
                 </div>
@@ -398,13 +400,15 @@ export default function PoReleaseDesk() {
                 </div>
 
                 <div className="flex justify-end gap-3 pt-6 border-t mt-4">
-                  <Button variant="outline" onClick={() => setQuoteDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={confirmQuote} className="shadow-sm">
+                  <Button type="button" variant="outline" disabled={quoteIsPending} onClick={() => { quoteForm.reset(); setQuoteDialogOpen(false); }}>Cancel</Button>
+                  <Button type="submit" disabled={quoteIsPending} className="shadow-sm">
+                    {quoteIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
                     Confirm and Route
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>

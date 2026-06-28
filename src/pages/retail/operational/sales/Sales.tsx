@@ -1,4 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -29,21 +33,35 @@ import {
 import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/format';
 import { useApp } from '@/contexts/AppContext';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { retailService } from '@/core/services/retail/retailService';
 import { useSession } from '@/core/security/session';
 import { RetailProduct } from '@/core/types/retail/retail';
 import { Loader2 } from 'lucide-react';
+import { apiRequest } from '@/core/api/apiClient';
+import { getMutationToastHandlers } from '@/lib/modal-helpers';
 
 interface CartItem {
   product: RetailProduct;
   quantity: number;
 }
 
+// ─── Zod Schema — Checkout Form ─────────────────────────────────────────────
+
+const checkoutSchema = z.object({
+  paymentMethod: z.enum(["cash", "card", "mobile"], {
+    required_error: "Payment method is required",
+  }),
+});
+
+type CheckoutFormValues = z.infer<typeof checkoutSchema>;
+
 const retailCategories = ['All', 'Coffee', 'Merchandise', 'Gift Cards', 'Equipment'];
 
 export default function RetailSales() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const { state, addToCart, removeFromCart, clearCart } = useApp();
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<RetailProduct[]>([]);
@@ -52,8 +70,55 @@ export default function RetailSales() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<'cash' | 'card' | 'mobile' | null>(null);
   const barcodeInputRef = useRef<HTMLInputElement>(null);
+
+  // ─── Checkout Form + Mutation ───────────────────────────────────────────────
+  const checkoutForm = useForm<CheckoutFormValues>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: { paymentMethod: undefined },
+  });
+
+  const selectedPayment = checkoutForm.watch("paymentMethod");
+
+  const checkoutMutation = useMutation({
+    mutationFn: (data: CheckoutFormValues) => {
+      const payload = {
+        items: cart.map((item) => ({
+          productId: item.product.id,
+          name: item.product.name,
+          quantity: item.quantity,
+          unitPrice: item.product.price,
+          totalPrice: item.product.price * item.quantity,
+        })),
+        subtotal,
+        tax,
+        totalAmount: total,
+        paymentMethod: data.paymentMethod,
+        storeId: state.settings.defaultLocationId || undefined,
+      };
+      return apiRequest("/v1/retail/orders", "POST", session, payload);
+    },
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "orders"], ["retail", "sales"]],
+      onClose: () => {
+        clearCartLocal();
+        setIsCheckoutOpen(false);
+      },
+      form: checkoutForm,
+      successTitle: "Transaction Complete",
+      successDescription: `Payment of ${formatCurrency(total)} received successfully.`,
+    }),
+  });
+
+  const onCheckoutSubmit = checkoutForm.handleSubmit((data) => checkoutMutation.mutate(data));
+
+  const handleCloseCheckout = () => {
+    if (checkoutMutation.isPending) return;
+    checkoutForm.reset();
+    setIsCheckoutOpen(false);
+  };
 
   // Focus barcode input on mount
   useEffect(() => {
@@ -178,27 +243,8 @@ export default function RetailSales() {
       });
       return;
     }
+    checkoutForm.reset({ paymentMethod: undefined });
     setIsCheckoutOpen(true);
-  };
-
-  const completeTransaction = () => {
-    if (!selectedPayment) {
-      toast({
-        title: 'Select payment method',
-        description: 'Choose cash, card, or mobile payment',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    toast({
-      title: 'Transaction complete',
-      description: `Payment of ${formatCurrency(total)} received via ${selectedPayment}`,
-    });
-
-    clearCartLocal();
-    setIsCheckoutOpen(false);
-    setSelectedPayment(null);
   };
 
   return (
@@ -406,64 +452,84 @@ export default function RetailSales() {
       </div>
 
       {/* Checkout Dialog */}
-      <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
+      <Dialog open={isCheckoutOpen} onOpenChange={(open) => { if (!open) handleCloseCheckout(); }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Complete Payment</DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4">
-            <div className="text-center py-4">
-              <p className="text-3xl font-bold text-primary">
-                {formatCurrency(total)}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {itemCount} item{itemCount !== 1 ? 's' : ''}
-              </p>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <p className="text-sm font-medium">Select Payment Method</p>
-              <div className="grid grid-cols-3 gap-3">
-                <Button
-                  variant={selectedPayment === 'cash' ? 'default' : 'outline'}
-                  className="h-20 flex-col gap-2"
-                  onClick={() => setSelectedPayment('cash')}
-                >
-                  <Banknote className="h-6 w-6" />
-                  <span>Cash</span>
-                </Button>
-                <Button
-                  variant={selectedPayment === 'card' ? 'default' : 'outline'}
-                  className="h-20 flex-col gap-2"
-                  onClick={() => setSelectedPayment('card')}
-                >
-                  <CreditCard className="h-6 w-6" />
-                  <span>Card</span>
-                </Button>
-                <Button
-                  variant={selectedPayment === 'mobile' ? 'default' : 'outline'}
-                  className="h-20 flex-col gap-2"
-                  onClick={() => setSelectedPayment('mobile')}
-                >
-                  <Smartphone className="h-6 w-6" />
-                  <span>Mobile</span>
-                </Button>
+          <form onSubmit={onCheckoutSubmit} noValidate>
+            <fieldset disabled={checkoutMutation.isPending} className="space-y-4">
+              <div className="text-center py-4">
+                <p className="text-3xl font-bold text-primary">
+                  {formatCurrency(total)}
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {itemCount} item{itemCount !== 1 ? 's' : ''}
+                </p>
               </div>
-            </div>
-          </div>
 
-          <DialogFooter className="gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => setIsCheckoutOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={completeTransaction} disabled={!selectedPayment}>
-              <Check className="mr-2 h-4 w-4" />
-              Complete Sale
-            </Button>
-          </DialogFooter>
+              <Separator />
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Select Payment Method</p>
+                <Controller
+                  control={checkoutForm.control}
+                  name="paymentMethod"
+                  render={({ field }) => (
+                    <div className="grid grid-cols-3 gap-3">
+                      <Button
+                        type="button"
+                        variant={field.value === 'cash' ? 'default' : 'outline'}
+                        className="h-20 flex-col gap-2"
+                        onClick={() => field.onChange('cash')}
+                      >
+                        <Banknote className="h-6 w-6" />
+                        <span>Cash</span>
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={field.value === 'card' ? 'default' : 'outline'}
+                        className="h-20 flex-col gap-2"
+                        onClick={() => field.onChange('card')}
+                      >
+                        <CreditCard className="h-6 w-6" />
+                        <span>Card</span>
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={field.value === 'mobile' ? 'default' : 'outline'}
+                        className="h-20 flex-col gap-2"
+                        onClick={() => field.onChange('mobile')}
+                      >
+                        <Smartphone className="h-6 w-6" />
+                        <span>Mobile</span>
+                      </Button>
+                    </div>
+                  )}
+                />
+                {checkoutForm.formState.errors.paymentMethod && (
+                  <p className="text-xs text-destructive" role="alert">
+                    {checkoutForm.formState.errors.paymentMethod.message}
+                  </p>
+                )}
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button type="button" variant="outline" onClick={handleCloseCheckout} disabled={checkoutMutation.isPending}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={!selectedPayment || checkoutMutation.isPending}>
+                  {checkoutMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="mr-2 h-4 w-4" />
+                  )}
+                  Complete Sale
+                </Button>
+              </DialogFooter>
+            </fieldset>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

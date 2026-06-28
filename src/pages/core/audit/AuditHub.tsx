@@ -29,6 +29,7 @@ import {
 import { Search, Info, Loader2, Shield, Activity, Terminal } from "lucide-react";
 import { formatDateTime, safeText } from "@/lib/format";
 import DepartmentWorkspaceLayout from "@/components/layouts/DepartmentWorkspaceLayout";
+import { AuditExportModal } from "./AuditExportModal";
 
 const SECTIONS = [
   {
@@ -58,6 +59,7 @@ export default function AuditHub() {
   });
 
   const [selectedLog, setSelectedLog] = useState<any>(null);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
@@ -174,6 +176,9 @@ export default function AuditHub() {
           <Button type="submit">
             <Search className="h-4 w-4 mr-2" /> Search
           </Button>
+          <Button type="button" variant="outline" onClick={() => setExportModalOpen(true)}>
+            Export
+          </Button>
         </form>
 
         {loading ? (
@@ -263,6 +268,11 @@ export default function AuditHub() {
           </div>
         </div>
       </WorkspacePanel>
+
+      <AuditExportModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+      />
 
       <Sheet open={!!selectedLog} onOpenChange={(open) => !open && setSelectedLog(null)}>
         <SheetContent className="sm:max-w-xl overflow-y-auto">

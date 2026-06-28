@@ -1,4 +1,24 @@
-import React, { useState } from "react";
+/**
+ * RoleModificationModal — Role assignment/modification with React Hook Form + Zod + useMutation.
+ *
+ * Wired according to the canonical pattern:
+ * 1. Zod schema for validation (newRole, reason required)
+ * 2. useForm with zodResolver
+ * 3. useMutation with apiRequest
+ * 4. getMutationToastHandlers for standardized success/error
+ * 5. Loading states (isPending disables submit/cancel/fields via fieldset)
+ * 6. Accessibility: aria-describedby on error fields, aria-invalid, role="alert"
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -14,15 +34,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ShieldHalf, Lock, AlertTriangle } from "lucide-react";
+import { ShieldHalf, Lock, AlertTriangle, Loader2 } from "lucide-react";
+import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import type { Employee } from "@/core/types/hr/employee";
 
-interface RoleModificationModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  staff: Employee | null;
-  onSubmit: (newRole: string, reason: string) => Promise<void>;
-}
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const roleModificationSchema = z.object({
+  newRole: z.string().min(1, "Role selection is required"),
+  reason: z.string().min(5, "Justification must be at least 5 characters").max(500, "Justification must be 500 characters or fewer"),
+});
+
+export type RoleModificationFormValues = z.infer<typeof roleModificationSchema>;
+
+// ─── Constants ──────────────────────────────────────────────────────────────────
 
 const AVAILABLE_ROLES = [
   "Cashier",
@@ -32,28 +60,67 @@ const AVAILABLE_ROLES = [
   "Retail HOD",
 ];
 
+// ─── Props ──────────────────────────────────────────────────────────────────────
+
+interface RoleModificationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  staff: Employee | null;
+}
+
+// ─── Component ──────────────────────────────────────────────────────────────────
+
 export const RoleModificationModal: React.FC<RoleModificationModalProps> = ({
   isOpen,
   onClose,
   staff,
-  onSubmit,
 }) => {
-  const [newRole, setNewRole] = useState("");
-  const [reason, setReason] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const form = useForm<RoleModificationFormValues>({
+    resolver: zodResolver(roleModificationSchema),
+    defaultValues: {
+      newRole: "",
+      reason: "",
+    },
+  });
+
+  const { control, register, formState: { errors }, handleSubmit, reset } = form;
+
+  const mutation = useMutation({
+    mutationFn: (data: RoleModificationFormValues) =>
+      apiRequest("/v1/retail/staff/roles", "POST", session, {
+        employeeId: staff?.id,
+        newRole: data.newRole,
+        reason: data.reason,
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "staff"], ["retail", "roles"]],
+      onClose: handleClose,
+      form,
+      successTitle: "Role Modified",
+      successDescription: `Role has been updated successfully.`,
+    }),
+  });
+
+  const isPending = mutation.isPending;
+
+  function handleClose() {
+    if (isPending) return;
+    reset();
+    onClose();
+  }
+
+  const onSubmit = handleSubmit((data) => mutation.mutate(data));
 
   if (!staff) return null;
 
-  const handleSubmit = async () => {
-    if (!newRole || !reason) return;
-    setIsSubmitting(true);
-    await onSubmit(newRole, reason);
-    setIsSubmitting(false);
-    onClose();
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
       <DialogContent className="max-w-md bg-secondary border-border p-8 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] text-foreground">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-xl font-black italic tracking-tighter flex items-center gap-3">
@@ -67,77 +134,116 @@ export const RoleModificationModal: React.FC<RoleModificationModalProps> = ({
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <div className="p-4 rounded-3xl bg-warning border border-warning/20 flex gap-4">
-            <AlertTriangle className="w-6 h-6 text-warning shrink-0" />
-            <div className="text-[10px] font-bold italic text-warning uppercase leading-relaxed">
-              Warning: Elevating access scope requires an audit trail entry.
-              This action will be logged into the Zenvix Vault permanently.
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2">
-                Target Personnel
-              </label>
-              <div className="h-12 bg-secondary/60 rounded-xl border border-white/5 flex items-center px-4 font-bold text-sm text-muted-foreground/60">
-                {staff.fullName} ({staff.roleTitle})
+        <form onSubmit={onSubmit} noValidate>
+          <fieldset disabled={isPending} className="space-y-6">
+            <div className="p-4 rounded-3xl bg-warning border border-warning/20 flex gap-4">
+              <AlertTriangle className="w-6 h-6 text-warning shrink-0" />
+              <div className="text-[10px] font-bold italic text-warning uppercase leading-relaxed">
+                Warning: Elevating access scope requires an audit trail entry.
+                This action will be logged into the Zenvix Vault permanently.
               </div>
             </div>
 
-            <div>
-              <label className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2">
-                New Assignable Role
-              </label>
-              <Select value={newRole} onValueChange={setNewRole}>
-                <SelectTrigger className="w-full h-12 bg-secondary/60 border-border text-foreground font-bold italic rounded-xl">
-                  <SelectValue placeholder="Select Governance Role..." />
-                </SelectTrigger>
-                <SelectContent className="bg-secondary/60 border-border text-foreground rounded-xl">
-                  {(Array.isArray(AVAILABLE_ROLES) ? AVAILABLE_ROLES : []).map((role) => (
-                    <SelectItem
-                      key={role}
-                      value={role}
-                      className="font-bold cursor-pointer italic text-xs hover:bg-secondary"
-                    >
-                      {role}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2">
+                  Target Personnel
+                </label>
+                <div className="h-12 bg-secondary/60 rounded-xl border border-white/5 flex items-center px-4 font-bold text-sm text-muted-foreground/60">
+                  {staff.fullName} ({staff.roleTitle})
+                </div>
+              </div>
 
-            <div>
-              <label className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2">
-                Required: Justification
-              </label>
-              <textarea
-                className="w-full h-24 bg-secondary/60 border-border text-foreground rounded-xl p-4 font-bold italic text-sm placeholder:text-muted-foreground focus:border-warning outline-none resize-none transition-colors"
-                placeholder="Enter cryptographic audit reason..."
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
+              <div>
+                <label
+                  htmlFor="role-mod-newrole"
+                  className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2"
+                >
+                  New Assignable Role *
+                </label>
+                <Controller
+                  control={control}
+                  name="newRole"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        id="role-mod-newrole"
+                        className="w-full h-12 bg-secondary/60 border-border text-foreground font-bold italic rounded-xl"
+                        aria-describedby={errors.newRole ? "role-mod-newrole-error" : undefined}
+                        aria-invalid={!!errors.newRole}
+                      >
+                        <SelectValue placeholder="Select Governance Role..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-secondary/60 border-border text-foreground rounded-xl">
+                        {AVAILABLE_ROLES.map((role) => (
+                          <SelectItem
+                            key={role}
+                            value={role}
+                            className="font-bold cursor-pointer italic text-xs hover:bg-secondary"
+                          >
+                            {role}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.newRole && (
+                  <p id="role-mod-newrole-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                    {errors.newRole.message}
+                  </p>
+                )}
+              </div>
 
-        <DialogFooter className="mt-8 gap-3 sm:gap-0">
-          <Button
-            variant="ghost"
-            onClick={onClose}
-            className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary/60 rounded-xl h-11"
-          >
-            Cancel Protocol
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!newRole || !reason || isSubmitting}
-            className="text-[10px] font-black italic uppercase tracking-widest bg-warning hover:bg-warning text-foreground rounded-xl h-11 px-6 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
-          >
-            <Lock className="w-3.5 h-3.5 mr-2" /> Sign & Modify
-          </Button>
-        </DialogFooter>
+              <div>
+                <label
+                  htmlFor="role-mod-reason"
+                  className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2"
+                >
+                  Required: Justification *
+                </label>
+                <textarea
+                  id="role-mod-reason"
+                  className="w-full h-24 bg-secondary/60 border-border text-foreground rounded-xl p-4 font-bold italic text-sm placeholder:text-muted-foreground focus:border-warning outline-none resize-none transition-colors"
+                  placeholder="Enter cryptographic audit reason..."
+                  {...register("reason")}
+                  aria-describedby={errors.reason ? "role-mod-reason-error" : undefined}
+                  aria-invalid={!!errors.reason}
+                />
+                {errors.reason && (
+                  <p id="role-mod-reason-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                    {errors.reason.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </fieldset>
+
+          <DialogFooter className="mt-8 gap-3 sm:gap-0">
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={isPending}
+              onClick={handleClose}
+              className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary/60 rounded-xl h-11"
+            >
+              Cancel Protocol
+            </Button>
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="text-[10px] font-black italic uppercase tracking-widest bg-warning hover:bg-warning text-foreground rounded-xl h-11 px-6 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+            >
+              {isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Lock className="w-3.5 h-3.5 mr-2" /> Sign & Modify
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

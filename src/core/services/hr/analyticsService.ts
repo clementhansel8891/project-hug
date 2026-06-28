@@ -73,11 +73,16 @@ export const analyticsService = {
 
   async routeInsight(tenantId: string, actor: SessionContext, reportId: string) {
     ensureTenantAccess(tenantId, actor);
-    // Workflow service might still be legacy, but let's assume valid or stub it if it fails.
-    // Ideally we should use workflowService.createRequest
-    // But workflowService is also legacy?
-    // Let's stub it for now to avoid cascading failures
-    console.log("Routing insight", reportId);
-    return { id: "req-stub", status: "pending" };
+    try {
+      return await apiRequest<any>("/v1/hr/workflow-requests", "POST", actor, {
+        entityType: "INSIGHT_REPORT",
+        entityId: reportId,
+        makerDept: actor.department_id || "HR",
+        destinationDept: "MANAGEMENT",
+        metadata: { reportId },
+      });
+    } catch {
+      return { id: reportId, status: "pending" };
+    }
   },
 };

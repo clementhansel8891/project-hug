@@ -27,7 +27,9 @@ export const recruitmentService = {
   },
 
   async listCandidates(tenantId: string, actor: SessionContext): Promise<CandidateRecord[]> {
-    return [];
+    try {
+      return await apiRequest<CandidateRecord[]>(`/v1/hr/candidates`, "GET", actor);
+    } catch { return []; }
   },
 
   async createRequisition(
@@ -58,18 +60,11 @@ export const recruitmentService = {
   },
 
   async getCandidateProfile(tenantId: string, actor: SessionContext, candidateId: string) {
-    return {
-      id: candidateId,
-      name: "Candidate Details",
-      email: "candidate@example.com",
-      phone: "+1 (555) 000-0000",
-      education: "Master of Science in Operations",
-      experience: "8 years in retail management",
-      documents: [
-        { id: "doc-1", name: "Resume_v2.pdf", type: "PDF", size: "1.2 MB" },
-        { id: "doc-2", name: "Certifications.zip", type: "ZIP", size: "4.5 MB" },
-      ],
-    };
+    try {
+      return await apiRequest<any>(`/v1/hr/candidates/${candidateId}`, "GET", actor);
+    } catch {
+      return { id: candidateId, name: "Unknown", email: "", phone: "", education: "", experience: "", documents: [] };
+    }
   },
 
   async advanceCandidate(tenantId: string, actor: SessionContext, candidateId: string) {

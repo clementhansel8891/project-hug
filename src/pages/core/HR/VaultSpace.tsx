@@ -13,6 +13,7 @@ import { documentService } from "@/core/services/hr/documentService";
 import { legalService } from "@/core/services/hr/legalService";
 import { workflowService } from "@/core/services/hr/workflowService";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { CreateVaultDocumentModal } from "./modals";
 
 export default function VaultSpace() {
   const session = useSession();
@@ -176,56 +177,11 @@ export default function VaultSpace() {
         </WorkspacePanel>
       </div>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Document Action</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <Input value={docTitle} onChange={(e) => setDocTitle(e.target.value)} />
-            <Select value={docType} onValueChange={(value) => setDocType(value as typeof docType)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Document type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="CONTRACT">Contract</SelectItem>
-                <SelectItem value="VISA_FILE">Visa File</SelectItem>
-                <SelectItem value="POLICY">Policy</SelectItem>
-                <SelectItem value="PAYROLL_EXPORT">Payroll Export</SelectItem>
-                <SelectItem value="KPI_REPORT">KPI Report</SelectItem>
-              </SelectContent>
-            </Select>
-            <Textarea
-              placeholder="Notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-            />
-            <Button
-              onClick={async () => {
-                if (actionType === "contract") {
-                  await legalService.createContract(session.tenant_id, session, {
-                    title: docTitle,
-                    type: "internal",
-                    status: "draft",
-                  });
-                }
-                if (actionType === "attach") {
-                  await documentService.attachDocument(session.tenant_id, session, {
-                    title: docTitle,
-                    type: docType,
-                    metadata: notes ? { notes } : undefined,
-                  });
-                }
-                setDialogOpen(false);
-                setNotes("");
-                setVersion((prev) => prev + 1);
-              }}
-            >
-              Confirm
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateVaultDocumentModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
     </div>
   );
 }

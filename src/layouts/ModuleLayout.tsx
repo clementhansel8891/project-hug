@@ -1,13 +1,10 @@
 // ============================================================================
-// MODULE LAYOUT (PHASE 3)
+// MODULE LAYOUT
 // ============================================================================
 //
 // Purpose:
-// - Shell wrapper for all industry modules
-// - Provides consistent layout + outlet rendering
-//
-// Modules do NOT own layouts.
-// Core owns layout enforcement.
+// - Shell wrapper for the retail module (the only module using /m/ routing)
+// - Retail has its own RetailRootLayout, so this is a minimal pass-through
 //
 // ============================================================================
 
@@ -19,19 +16,18 @@ export function ModuleLayout() {
   const { moduleId } = useParams();
   const location = useLocation();
 
-  // Detect if we are in an operational or workspace route where we want a clean shell
+  // Retail uses its own RetailRootLayout which handles all shell logic
+  const isRetail = moduleId === 'retail';
   const isOperational = location.pathname.includes('/operational/');
-  const isRetailBase = moduleId === 'retail' && (location.pathname.includes('/management/') || location.pathname.includes('/workspace'));
-  
-  const hideHeader = isOperational || isRetailBase;
-  const noPadding = isOperational;
+  const hideHeader = isRetail || isOperational;
+  const noPadding = isOperational || isRetail;
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header - Suppressed for immersion-heavy modes */}
+      {/* Header - Hidden for retail (it has its own shell) */}
       {!hideHeader && (
         <header className="border-b px-6 py-3 font-semibold bg-background z-[40]">
-          Module: {moduleId}
+          {moduleId}
         </header>
       )}
 

@@ -141,7 +141,8 @@ export class NotificationService {
         },
         include: {
           chat_members: { where: { user_id: user_id } }
-        }
+        },
+        take: 100
       })
     ]);
 

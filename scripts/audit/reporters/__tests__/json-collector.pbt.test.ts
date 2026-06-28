@@ -24,7 +24,7 @@ import type { ModuleAuditData } from '../../types/audit-types.js';
 const moduleAuditDataArb: fc.Arbitrary<ModuleAuditData> = fc
   .record({
     name:  fc.string({ minLength: 1, maxLength: 32 }),
-    layer: fc.constantFrom('auth', 'core', 'retail', 'fnb', 'industry', 'portal'),
+    layer: fc.constantFrom('auth', 'core', 'retail', 'portal'),
 
     // ── elements parts — total derived from sum ────────────────────────────
     elementsFunctional: fc.nat(),

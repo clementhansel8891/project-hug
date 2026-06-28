@@ -100,7 +100,8 @@ export class EventBusService implements OnModuleInit, OnModuleDestroy {
           status: 'PROCESSING',
           processing_started_at: { lt: timeoutThreshold }
         },
-        include: { event_deliveries: true }
+        include: { event_deliveries: true },
+        take: 100
       });
 
       for (const event of stuckEvents) {
@@ -469,7 +470,8 @@ export class EventBusService implements OnModuleInit, OnModuleDestroy {
   async getEventDeliveries(eventId: string) {
     return this.prisma.event_deliveries.findMany({
       where: { event_id: eventId },
-      orderBy: { created_at: 'asc' }
+      orderBy: { created_at: 'asc' },
+      take: 200
     });
   }
 

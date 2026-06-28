@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,6 +29,7 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
 import { procurementService } from "@/core/services/procurement/procurementService";
 import { formatCurrency } from "@/lib/format";
 import type {
@@ -34,8 +38,8 @@ import type {
   SupplierMaster,
   SupplierBranch,
 } from "@/core/types/procurement/procurement";
-import { ClipboardList, FileText, Info, Building2, MapPin, Tag, Wallet, ShieldCheck, ArrowUpRight, Plus, ShoppingCart, User } from "lucide-react";
-import { requisitionSchema, draftPurchaseOrderSchema, validatePoTransition } from "@/modules/procurement/schemas";
+import { ClipboardList, FileText, Info, Building2, MapPin, Tag, Wallet, ShieldCheck, ArrowUpRight, Plus, ShoppingCart, User, Loader2 } from "lucide-react";
+import { requisitionSchema, draftPurchaseOrderSchema, validatePoTransition, type RequisitionFormValues, type DraftPurchaseOrderFormValues } from "@/modules/procurement/schemas";
 import {
   useCreateRequisition,
   useBuildDraftPo,
@@ -43,28 +47,16 @@ import {
   useApproveDraftPo,
   useSetFinalApproval,
   useRunRiskScan,
+  PROCUREMENT_KEYS,
 } from "@/modules/procurement/hooks";
 
 export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boolean }) {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [requestDialogOpen, setRequestDialogOpen] = useState(false);
   const [draftDialogOpen, setDraftDialogOpen] = useState(false);
-  const [selectedRequisitionId, setSelectedRequisitionId] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("Machinery");
-  const [branchCode, setBranchCode] = useState("JKT");
-  const [budgetClass, setBudgetClass] =
-    useState<Requisition["budgetClass"]>("OPEX");
-  const [amount, setAmount] = useState("0");
-  const [contractRequired, setContractRequired] = useState<"YES" | "NO">("YES");
-  const [supplierId, setSupplierId] = useState("");
-  const [supplierBranchId, setSupplierBranchId] = useState("");
-  const [lineSku, setLineSku] = useState("");
-  const [lineDescription, setLineDescription] = useState("");
-  const [lineQuantity, setLineQuantity] = useState("1");
-  const [linePrice, setLinePrice] = useState("0");
   const [requisitions, setRequisitions] = useState<Requisition[]>([]);
   const [draftPos, setDraftPos] = useState<DraftPurchaseOrder[]>([]);
   const [suppliers, setSuppliers] = useState<SupplierMaster[]>([]);
@@ -76,8 +68,32 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [categoryList, setCategoryList] = useState<any[]>([]);
-  const [reqFieldErrors, setReqFieldErrors] = useState<Record<string, string>>({});
-  const [draftFieldErrors, setDraftFieldErrors] = useState<Record<string, string>>({});
+
+  // ─── React Hook Form: Requisition ─────────────────────────────────────────────
+  const reqForm = useForm<RequisitionFormValues>({
+    resolver: zodResolver(requisitionSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      category: "Machinery",
+      branchCode: "JKT",
+      budgetClass: "OPEX",
+      amount: 0,
+      contractRequired: true,
+    },
+  });
+
+  // ─── React Hook Form: Draft PO ────────────────────────────────────────────────
+  const draftForm = useForm<DraftPurchaseOrderFormValues>({
+    resolver: zodResolver(draftPurchaseOrderSchema),
+    defaultValues: {
+      requisitionId: "",
+      supplierId: "",
+      supplierBranchId: "",
+      contractType: "SPOT",
+      lineItems: [{ productSku: "", description: "", quantity: 1, uom: "EA", unitPrice: 0 }],
+    },
+  });
 
   // TanStack Query mutations with cache invalidation
   const createRequisitionMutation = useCreateRequisition();
@@ -86,6 +102,9 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
   const approveDraftPoMutation = useApproveDraftPo();
   const setFinalApprovalMutation = useSetFinalApproval();
   const runRiskScanMutation = useRunRiskScan();
+
+  const reqIsPending = createRequisitionMutation.isPending;
+  const draftIsPending = buildDraftPoMutation.isPending;
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -132,106 +151,53 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
     [requisitions, search],
   );
 
-  const createRequisition = async () => {
-    setReqFieldErrors({});
-    const result = requisitionSchema.safeParse({
-      title,
-      description,
-      category,
-      branchCode,
-      budgetClass,
-      amount: Number(amount || "0"),
-      contractRequired: contractRequired === "YES",
-    });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        if (!errors[field]) errors[field] = issue.message;
-      });
-      setReqFieldErrors(errors);
-      return;
-    }
+  // ─── Submit Handlers ──────────────────────────────────────────────────────────
+
+  const onSubmitRequisition = reqForm.handleSubmit(async (data) => {
     try {
-      await createRequisitionMutation.mutateAsync(result.data);
-      setStatusMessage(`Requisition "${title}" created and routed to HOD.`);
+      await createRequisitionMutation.mutateAsync(data);
+      toast({ title: "Requisition Created", description: `Requisition "${data.title}" created and routed to HOD.` });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.requisitions });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.overview });
+      reqForm.reset();
       setRequestDialogOpen(false);
-      setTitle("");
-      setDescription("");
-      setCategory("Machinery");
-      setAmount("0");
-      setReqFieldErrors({});
       refresh();
-    } catch (err) {
-      setErrorMessage(
-        "Failed to create requisition. Budget limit exceeded or server error.",
-      );
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to create requisition.", variant: "destructive" });
     }
-  };
+  });
+
+  const onSubmitDraftPo = draftForm.handleSubmit(async (data) => {
+    try {
+      await buildDraftPoMutation.mutateAsync(data);
+      toast({ title: "Draft PO Built", description: "Draft Purchase Order built successfully." });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.draftPos });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.requisitions });
+      draftForm.reset();
+      setDraftDialogOpen(false);
+      refresh();
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to build draft PO.", variant: "destructive" });
+    }
+  });
 
   const approveRequesterHod = async (requisitionId: string) => {
     try {
       await approveRequesterHodMutation.mutateAsync(requisitionId);
-      setStatusMessage("Requisition approved by Department HOD.");
+      toast({ title: "Approved", description: "Requisition approved by Department HOD." });
       refresh();
-    } catch (err) {
-      setErrorMessage("HOD approval failed.");
-    }
-  };
-
-  const buildDraftPo = async () => {
-    setDraftFieldErrors({});
-    const result = draftPurchaseOrderSchema.safeParse({
-      requisitionId: selectedRequisitionId,
-      supplierId,
-      supplierBranchId,
-      contractType: "SPOT",
-      lineItems: [
-        {
-          productSku: lineSku || "GEN-ITEM",
-          description: lineDescription || "Procurement line item",
-          quantity: Number(lineQuantity || "1"),
-          uom: "EA",
-          unitPrice: Number(linePrice || "0"),
-        },
-      ],
-    });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const path = issue.path.join(".");
-        if (!errors[path]) errors[path] = issue.message;
-      });
-      setDraftFieldErrors(errors);
-      return;
-    }
-    try {
-      await buildDraftPoMutation.mutateAsync(result.data);
-      setStatusMessage("Draft Purchase Order built successfully.");
-      setDraftDialogOpen(false);
-      setSelectedRequisitionId("");
-      setSupplierId("");
-      setSupplierBranchId("");
-      setLineSku("");
-      setLineDescription("");
-      setLineQuantity("1");
-      setLinePrice("0");
-      setDraftFieldErrors({});
-      refresh();
-    } catch (err) {
-      setErrorMessage(
-        "Failed to build draft PO. Supplier missing or inactive.",
-      );
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "HOD approval failed.", variant: "destructive" });
     }
   };
 
   const approveDraft = async (draftId: string) => {
     try {
       await approveDraftPoMutation.mutateAsync(draftId);
-      setStatusMessage("Draft PO approved at Procurement HOD gate.");
+      toast({ title: "Draft Approved", description: "Draft PO approved at Procurement HOD gate." });
       refresh();
-    } catch (err) {
-      setErrorMessage("Draft approval failed.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Draft approval failed.", variant: "destructive" });
     }
   };
 
@@ -241,21 +207,19 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
   ) => {
     try {
       await setFinalApprovalMutation.mutateAsync({ requisitionId, approver });
-      setStatusMessage(`Final approval recorded for ${approver}.`);
+      toast({ title: "Final Approval", description: `Final approval recorded for ${approver}.` });
       refresh();
-    } catch (err) {
-      setErrorMessage("Final approval failed.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Final approval failed.", variant: "destructive" });
     }
   };
 
   const runRiskScan = async () => {
     try {
       await runRiskScanMutation.mutateAsync();
-      setStatusMessage(
-        "Anti-fraud risk scan completed. No critical threats found.",
-      );
-    } catch (err) {
-      setErrorMessage("Risk scan failed.");
+      toast({ title: "Risk Scan Complete", description: "Anti-fraud risk scan completed. No critical threats found." });
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Risk scan failed.", variant: "destructive" });
     }
   };
 
@@ -364,7 +328,7 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                             variant="outline"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedRequisitionId(item.id);
+                              draftForm.setValue("requisitionId", item.id);
                               setDraftDialogOpen(true);
                             }}
                           >
@@ -494,7 +458,7 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
         </div>
       </WorkspacePanel>
 
-      <Dialog open={requestDialogOpen} onOpenChange={setRequestDialogOpen}>
+      <Dialog open={requestDialogOpen} onOpenChange={(open) => { if (!open && !reqIsPending) { reqForm.reset(); setRequestDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby="req-create-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Create Requisition</DialogTitle>
@@ -539,30 +503,39 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
 
             {/* Right Column: Form */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={onSubmitRequisition} noValidate>
+                <fieldset disabled={reqIsPending} className="space-y-6">
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">What do you need?</label>
+                  <label htmlFor="req-title" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">What do you need?</label>
                   <Input
+                    id="req-title"
                     placeholder="Brief title (e.g. Server Maintenance Parts)"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    {...reqForm.register("title")}
                     className="text-lg font-medium"
+                    aria-describedby={reqForm.formState.errors.title ? "req-title-error" : undefined}
+                    aria-invalid={!!reqForm.formState.errors.title}
                   />
-                  {reqFieldErrors.title && <p className="text-xs text-destructive mt-1">{reqFieldErrors.title}</p>}
+                  {reqForm.formState.errors.title && (
+                    <p id="req-title-error" className="text-xs text-destructive mt-1" role="alert">{reqForm.formState.errors.title.message}</p>
+                  )}
                   <Textarea
+                    id="req-description"
                     placeholder="Detailed justification and specifications..."
                     className="mt-3 min-h-[100px] resize-none"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    {...reqForm.register("description")}
+                    aria-describedby={reqForm.formState.errors.description ? "req-desc-error" : undefined}
+                    aria-invalid={!!reqForm.formState.errors.description}
                   />
-                  {reqFieldErrors.description && <p className="text-xs text-destructive mt-1">{reqFieldErrors.description}</p>}
+                  {reqForm.formState.errors.description && (
+                    <p id="req-desc-error" className="text-xs text-destructive mt-1" role="alert">{reqForm.formState.errors.description.message}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Category</label>
-                    <Select value={category} onValueChange={setCategory}>
-                      <SelectTrigger>
+                    <label htmlFor="req-category" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Category</label>
+                    <Select value={reqForm.watch("category")} onValueChange={(v) => reqForm.setValue("category", v, { shouldValidate: true })}>
+                      <SelectTrigger id="req-category">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -573,16 +546,22 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                     </Select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Branch/Location Code</label>
-                    <Input placeholder="JKT" value={branchCode} onChange={e => setBranchCode(e.target.value.toUpperCase())} />
+                    <label htmlFor="req-branch" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Branch/Location Code</label>
+                    <Input id="req-branch" placeholder="JKT" {...reqForm.register("branchCode")}
+                      aria-describedby={reqForm.formState.errors.branchCode ? "req-branch-error" : undefined}
+                      aria-invalid={!!reqForm.formState.errors.branchCode}
+                    />
+                    {reqForm.formState.errors.branchCode && (
+                      <p id="req-branch-error" className="text-xs text-destructive mt-1" role="alert">{reqForm.formState.errors.branchCode.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Budget Class</label>
-                    <Select value={budgetClass} onValueChange={v => setBudgetClass(v as any)}>
-                      <SelectTrigger>
+                    <label htmlFor="req-budget" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Budget Class</label>
+                    <Select value={reqForm.watch("budgetClass")} onValueChange={v => reqForm.setValue("budgetClass", v as any, { shouldValidate: true })}>
+                      <SelectTrigger id="req-budget">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -593,23 +572,28 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                     </Select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Estimated Amount</label>
+                    <label htmlFor="req-amount" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Estimated Amount</label>
                     <div className="relative">
                       <span className="absolute left-3 top-2.5 text-xs font-bold text-muted-foreground">IDR</span>
-                      <Input type="number" className="pl-12" value={amount} onChange={e => setAmount(e.target.value)} />
+                      <Input id="req-amount" type="number" className="pl-12" {...reqForm.register("amount", { valueAsNumber: true })}
+                        aria-describedby={reqForm.formState.errors.amount ? "req-amount-error" : undefined}
+                        aria-invalid={!!reqForm.formState.errors.amount}
+                      />
                     </div>
-                    {reqFieldErrors.amount && <p className="text-xs text-destructive mt-1">{reqFieldErrors.amount}</p>}
+                    {reqForm.formState.errors.amount && (
+                      <p id="req-amount-error" className="text-xs text-destructive mt-1" role="alert">{reqForm.formState.errors.amount.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="pt-4 border-t">
                   <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Contract Governance</label>
                   <div className="flex gap-4">
-                    <label className={`flex-1 p-3 border rounded-lg cursor-pointer transition-all ${contractRequired === 'YES' ? 'bg-primary/5 border-primary shadow-sm' : 'hover:bg-muted'}`}>
-                      <input type="radio" className="sr-only" checked={contractRequired === 'YES'} onChange={() => setContractRequired('YES')} />
+                    <label className={`flex-1 p-3 border rounded-lg cursor-pointer transition-all ${reqForm.watch("contractRequired") === true ? 'bg-primary/5 border-primary shadow-sm' : 'hover:bg-muted'}`}>
+                      <input type="radio" className="sr-only" checked={reqForm.watch("contractRequired") === true} onChange={() => reqForm.setValue("contractRequired", true)} />
                       <div className="flex items-center gap-3">
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${contractRequired === 'YES' ? 'border-primary' : ''}`}>
-                          {contractRequired === 'YES' && <div className="w-2 h-2 rounded-full bg-primary" />}
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${reqForm.watch("contractRequired") === true ? 'border-primary' : ''}`}>
+                          {reqForm.watch("contractRequired") === true && <div className="w-2 h-2 rounded-full bg-primary" />}
                         </div>
                         <div>
                           <p className="text-xs font-bold">Formal Contract</p>
@@ -617,11 +601,11 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                         </div>
                       </div>
                     </label>
-                    <label className={`flex-1 p-3 border rounded-lg cursor-pointer transition-all ${contractRequired === 'NO' ? 'bg-primary/5 border-primary shadow-sm' : 'hover:bg-muted'}`}>
-                      <input type="radio" className="sr-only" checked={contractRequired === 'NO'} onChange={() => setContractRequired('NO')} />
+                    <label className={`flex-1 p-3 border rounded-lg cursor-pointer transition-all ${reqForm.watch("contractRequired") === false ? 'bg-primary/5 border-primary shadow-sm' : 'hover:bg-muted'}`}>
+                      <input type="radio" className="sr-only" checked={reqForm.watch("contractRequired") === false} onChange={() => reqForm.setValue("contractRequired", false)} />
                       <div className="flex items-center gap-3">
-                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${contractRequired === 'NO' ? 'border-primary' : ''}`}>
-                          {contractRequired === 'NO' && <div className="w-2 h-2 rounded-full bg-primary" />}
+                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${reqForm.watch("contractRequired") === false ? 'border-primary' : ''}`}>
+                          {reqForm.watch("contractRequired") === false && <div className="w-2 h-2 rounded-full bg-primary" />}
                         </div>
                         <div>
                           <p className="text-xs font-bold">Spot Purchase</p>
@@ -633,19 +617,20 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                 </div>
 
                 <div className="flex justify-end gap-3 pt-6 border-t">
-                  <Button variant="outline" onClick={() => setRequestDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={createRequisition}>
-                    <Plus className="w-4 h-4 mr-2" />
+                  <Button type="button" variant="outline" disabled={reqIsPending} onClick={() => { reqForm.reset(); setRequestDialogOpen(false); }}>Cancel</Button>
+                  <Button type="submit" disabled={reqIsPending}>
+                    {reqIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                     Submit Request
                   </Button>
                 </div>
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={draftDialogOpen} onOpenChange={setDraftDialogOpen}>
+      <Dialog open={draftDialogOpen} onOpenChange={(open) => { if (!open && !draftIsPending) { draftForm.reset(); setDraftDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby="draft-po-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Build Draft PO</DialogTitle>
@@ -665,7 +650,7 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                     <Building2 className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Selected REQ</p>
-                      <p className="text-xs font-mono">{selectedRequisitionId}</p>
+                      <p className="text-xs font-mono">{draftForm.watch("requisitionId")}</p>
                     </div>
                   </div>
                 </div>
@@ -673,31 +658,44 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
             </div>
 
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={onSubmitDraftPo} noValidate>
+                <fieldset disabled={draftIsPending} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block tracking-wider">Target Supplier Master</label>
-                    <Select value={supplierId} onValueChange={setSupplierId}>
-                      <SelectTrigger className="h-10">
+                    <label htmlFor="draft-supplier" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block tracking-wider">Target Supplier Master</label>
+                    <Select value={draftForm.watch("supplierId")} onValueChange={(v) => draftForm.setValue("supplierId", v, { shouldValidate: true })}>
+                      <SelectTrigger id="draft-supplier" className="h-10"
+                        aria-describedby={draftForm.formState.errors.supplierId ? "draft-supplier-error" : undefined}
+                        aria-invalid={!!draftForm.formState.errors.supplierId}
+                      >
                         <SelectValue placeholder="Select Validated Supplier" />
                       </SelectTrigger>
                       <SelectContent>
                         {(Array.isArray(suppliers) ? suppliers : []).map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
+                    {draftForm.formState.errors.supplierId && (
+                      <p id="draft-supplier-error" className="text-xs text-destructive mt-1" role="alert">{draftForm.formState.errors.supplierId.message}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block tracking-wider">Fulfillment Branch</label>
-                    <Select value={supplierBranchId} onValueChange={setSupplierBranchId}>
-                      <SelectTrigger className="h-10 text-foreground">
+                    <label htmlFor="draft-branch" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block tracking-wider">Fulfillment Branch</label>
+                    <Select value={draftForm.watch("supplierBranchId")} onValueChange={(v) => draftForm.setValue("supplierBranchId", v, { shouldValidate: true })}>
+                      <SelectTrigger id="draft-branch" className="h-10 text-foreground"
+                        aria-describedby={draftForm.formState.errors.supplierBranchId ? "draft-branch-error" : undefined}
+                        aria-invalid={!!draftForm.formState.errors.supplierBranchId}
+                      >
                         <SelectValue placeholder="Select Location" />
                       </SelectTrigger>
                       <SelectContent>
-                        {(Array.isArray(branches) ? branches : []).filter(b => !supplierId || b.supplierId === supplierId).map(b => (
+                        {(Array.isArray(branches) ? branches : []).filter(b => !draftForm.watch("supplierId") || b.supplierId === draftForm.watch("supplierId")).map(b => (
                           <SelectItem key={b.id} value={b.id}>{b.branchCode} - {b.branchName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {draftForm.formState.errors.supplierBranchId && (
+                      <p id="draft-branch-error" className="text-xs text-destructive mt-1" role="alert">{draftForm.formState.errors.supplierBranchId.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -705,32 +703,33 @@ export default function PurchaseRequestDesk({ noShell = false }: { noShell?: boo
                   <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Line Item Specifications</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
-                      <label className="text-xs font-medium mb-1.5 block text-foreground">SKU / Catalog ID</label>
-                      <Input placeholder="e.g. MOT-8892-IND" value={lineSku} onChange={e => setLineSku(e.target.value)} />
+                      <label htmlFor="draft-sku" className="text-xs font-medium mb-1.5 block text-foreground">SKU / Catalog ID</label>
+                      <Input id="draft-sku" placeholder="e.g. MOT-8892-IND" {...draftForm.register("lineItems.0.productSku")} />
                     </div>
                     <div className="col-span-2">
-                      <label className="text-xs font-medium mb-1.5 block text-foreground">Item Description</label>
-                      <Input placeholder="Technical specs, part numbers..." value={lineDescription} onChange={e => setLineDescription(e.target.value)} />
+                      <label htmlFor="draft-desc" className="text-xs font-medium mb-1.5 block text-foreground">Item Description</label>
+                      <Input id="draft-desc" placeholder="Technical specs, part numbers..." {...draftForm.register("lineItems.0.description")} />
                     </div>
                     <div>
-                      <label className="text-xs font-medium mb-1.5 block text-foreground">Quantity</label>
-                      <Input type="number" placeholder="1" value={lineQuantity} onChange={e => setLineQuantity(e.target.value)} />
+                      <label htmlFor="draft-qty" className="text-xs font-medium mb-1.5 block text-foreground">Quantity</label>
+                      <Input id="draft-qty" type="number" placeholder="1" {...draftForm.register("lineItems.0.quantity", { valueAsNumber: true })} />
                     </div>
                     <div>
-                      <label className="text-xs font-medium mb-1.5 block text-foreground">Target Unit Price</label>
-                      <Input type="number" placeholder="0" value={linePrice} onChange={e => setLinePrice(e.target.value)} />
+                      <label htmlFor="draft-price" className="text-xs font-medium mb-1.5 block text-foreground">Target Unit Price</label>
+                      <Input id="draft-price" type="number" placeholder="0" {...draftForm.register("lineItems.0.unitPrice", { valueAsNumber: true })} />
                     </div>
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-6 border-t">
-                  <Button variant="outline" onClick={() => setDraftDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={buildDraftPo}>
-                    <ShoppingCart className="w-4 h-4 mr-2" />
+                  <Button type="button" variant="outline" disabled={draftIsPending} onClick={() => { draftForm.reset(); setDraftDialogOpen(false); }}>Cancel</Button>
+                  <Button type="submit" disabled={draftIsPending}>
+                    {draftIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ShoppingCart className="w-4 h-4 mr-2" />}
                     Build Draft PO
                   </Button>
                 </div>
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>

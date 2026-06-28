@@ -1,9 +1,15 @@
 import { useState, useMemo } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -30,12 +36,27 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useModuleList } from "@/hooks/useModuleQuery";
 import { QueryStateWrapper } from "@/components/shared/QueryStateWrapper";
 import { useApp } from "@/contexts/AppContext";
+import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
+
+// ---------------------------------------------------------------------------
+// Zod Schema — Refund Form
+// ---------------------------------------------------------------------------
+
+const refundSchema = z.object({
+  reason: z.string().min(1, "Reason is required").max(500, "Reason must be 500 characters or fewer"),
+});
+
+type RefundFormValues = z.infer<typeof refundSchema>;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -125,11 +146,53 @@ function getStatusConfig(status: string) {
 
 export default function RetailHistory() {
   const { state } = useApp();
+  const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
   const [selectedTransaction, setSelectedTransaction] = useState<TransactionRecord | null>(null);
+  const [isRefundOpen, setIsRefundOpen] = useState(false);
+
+  // ─── Refund Form ────────────────────────────────────────────────────────────
+  const refundForm = useForm<RefundFormValues>({
+    resolver: zodResolver(refundSchema),
+    defaultValues: { reason: "" },
+  });
+
+  const refundMutation = useMutation({
+    mutationFn: (data: RefundFormValues) =>
+      apiRequest(`/v1/retail/orders/${selectedTransaction?.id}/refund`, "POST", session, {
+        reason: data.reason,
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "orders"]],
+      onClose: () => {
+        setIsRefundOpen(false);
+        setSelectedTransaction(null);
+      },
+      form: refundForm,
+      successTitle: "Refund Issued",
+      successDescription: "The transaction has been refunded successfully.",
+    }),
+  });
+
+  const handleOpenRefund = () => {
+    refundForm.reset({ reason: "" });
+    setIsRefundOpen(true);
+  };
+
+  const handleCloseRefund = () => {
+    if (refundMutation.isPending) return;
+    refundForm.reset();
+    setIsRefundOpen(false);
+  };
+
+  const onRefundSubmit = refundForm.handleSubmit((data) => refundMutation.mutate(data));
 
   // Fetch transactions from backend using shared TanStack Query hook
   const {
@@ -475,13 +538,63 @@ export default function RetailHistory() {
               </div>
 
               {selectedTransaction.status === "completed" && (
-                <Button disabled title="Not available yet" variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleOpenRefund}>
                   <RotateCcw className="mr-2 h-4 w-4" />
                   Issue Refund
                 </Button>
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Refund Dialog */}
+      <Dialog open={isRefundOpen} onOpenChange={(open) => { if (!open) handleCloseRefund(); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Issue Refund</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={onRefundSubmit} noValidate>
+            <fieldset disabled={refundMutation.isPending} className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  Refunding transaction <span className="font-semibold">{selectedTransaction?.id}</span> for{" "}
+                  <span className="font-semibold">{formatCurrency(selectedTransaction?.totalAmount ?? 0)}</span>
+                </p>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="refund-reason" className="text-sm font-medium">
+                  Reason *
+                </Label>
+                <Textarea
+                  id="refund-reason"
+                  placeholder="Enter refund reason..."
+                  {...refundForm.register("reason")}
+                  aria-describedby={refundForm.formState.errors.reason ? "refund-reason-error" : undefined}
+                  aria-invalid={!!refundForm.formState.errors.reason}
+                  className="resize-none h-20"
+                />
+                {refundForm.formState.errors.reason && (
+                  <p id="refund-reason-error" className="text-xs text-destructive" role="alert">
+                    {refundForm.formState.errors.reason.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button type="button" variant="outline" onClick={handleCloseRefund} disabled={refundMutation.isPending}>
+                  Cancel
+                </Button>
+                <Button type="submit" variant="destructive" disabled={refundMutation.isPending}>
+                  {refundMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                  )}
+                  Confirm Refund
+                </Button>
+              </div>
+            </fieldset>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

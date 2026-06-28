@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Info, Calculator, Calendar, PieChart, Coins, TrendingUp } from "lucide-react";
+import { Calculator, Calendar, PieChart, Coins, TrendingUp } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/core/ui/PageHeader";
@@ -27,7 +27,6 @@ import type {
   AssetEvent,
   CapexRequest,
   DepreciationMethod,
-  DisposalType,
   FixedAsset,
 } from "@/core/types/finance/assets";
 import {
@@ -36,11 +35,16 @@ import {
   AssetImpairmentModal,
   AssetRevaluationModal,
   AssetDisposalModal,
+  AssetEditModal,
+  AssetTransferModal,
+  AssetMaintenanceModal,
+  AssetImportModal,
+  AssetDepreciationRunModal,
   CapexBudgetModal,
 } from "@/core/finance/FinanceModalForms";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryStateWrapper } from "@/components/shared/QueryStateWrapper";
-import { apiRequest, ApiError } from "@/core/api/apiClient";
+import { ApiError } from "@/core/api/apiClient";
 
 type AssetTab = "register" | "capex" | "depreciation" | "events";
 
@@ -101,9 +105,6 @@ export default function Assets() {
   const [selectedAsset, setSelectedAsset] = useState<FixedAsset | null>(null);
 
   const [capexForm, setCapexForm] = useState<AssetCapexInput>(defaultCapexForm);
-  const [impairmentForm, setImpairmentForm] = useState({ amount: 0, reason: "" });
-  const [revaluationForm, setRevaluationForm] = useState({ amount: 0, reason: "" });
-  const [disposalForm, setDisposalForm] = useState({ proceeds: 0, type: "SALE" as DisposalType });
 
   const [assets, setAssets] = useState<FixedAsset[]>([]);
   const [capexRequests, setCapexRequests] = useState<CapexRequest[]>([]);
@@ -119,6 +120,11 @@ export default function Assets() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [registerAssetDialogOpen, setRegisterAssetDialogOpen] = useState(false);
+  const [editAssetDialogOpen, setEditAssetDialogOpen] = useState(false);
+  const [transferAssetDialogOpen, setTransferAssetDialogOpen] = useState(false);
+  const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [depreciationRunDialogOpen, setDepreciationRunDialogOpen] = useState(false);
   const [selectedCapexDetail, setSelectedCapexDetail] = useState<CapexRequest | null>(null);
   const [selectedDepreciationDetail, setSelectedDepreciationDetail] = useState<AssetDepreciationEntry | null>(null);
   const [selectedEventDetail, setSelectedEventDetail] = useState<AssetEvent | null>(null);
@@ -128,18 +134,6 @@ export default function Assets() {
     setStatusMessage(null);
     setErrorMessage(null);
   };
-
-  const [registerAssetForm, setRegisterAssetForm] = useState<Partial<FixedAsset>>({
-    description: "",
-    assetClass: "EQUIPMENT",
-    location: "",
-    department: "",
-    acquisitionCost: 0,
-    acquisitionDate: new Date().toISOString().slice(0, 10),
-    usefulLifeYears: 5,
-    residualValue: 0,
-    depreciationMethod: "STRAIGHT_LINE",
-  });
 
   useEffect(() => {
     sessionRef.current = session;
@@ -273,54 +267,6 @@ export default function Assets() {
     }, "Asset capitalized.");
   };
 
-  const impairment = async () => {
-    if (!selectedAsset) return;
-    await runAction(async () => {
-      await financeApiClient.recordAssetImpairment(session.tenant_id, session, {
-        assetId: selectedAsset.id,
-        impairmentAmount: impairmentForm.amount,
-        reason: impairmentForm.reason,
-        attachmentDocumentIds: selectedDocumentIds,
-      });
-      logService.log(session.tenant_id, session.user_id, "Recorded impairment", selectedAsset.id);
-      setImpairmentDialogOpen(false);
-      setSelectedAsset(null);
-      await loadData();
-    }, "Impairment recorded with journal posting.");
-  };
-
-  const revalue = async () => {
-    if (!selectedAsset) return;
-    await runAction(async () => {
-      await financeApiClient.recordAssetRevaluation(session.tenant_id, session, {
-        assetId: selectedAsset.id,
-        revaluedAmount: revaluationForm.amount,
-        reason: revaluationForm.reason,
-        attachmentDocumentIds: selectedDocumentIds,
-      });
-      logService.log(session.tenant_id, session.user_id, "Recorded revaluation", selectedAsset.id);
-      setRevaluationDialogOpen(false);
-      setSelectedAsset(null);
-      await loadData();
-    }, "Revaluation recorded with journal posting.");
-  };
-
-  const dispose = async () => {
-    if (!selectedAsset) return;
-    await runAction(async () => {
-      await financeApiClient.disposeAsset(session.tenant_id, session, {
-        assetId: selectedAsset.id,
-        disposalType: disposalForm.type,
-        proceeds: disposalForm.proceeds,
-        attachmentDocumentIds: selectedDocumentIds,
-      });
-      logService.log(session.tenant_id, session.user_id, "Disposed asset", selectedAsset.id);
-      setDisposalDialogOpen(false);
-      setSelectedAsset(null);
-      await loadData();
-    }, "Disposal recorded with gain/loss journal.");
-  };
-
   const runScheduledDepreciation = async () => {
     await runAction(async () => {
       const result = await financeApiClient.runScheduledPeriodDepreciation(
@@ -337,31 +283,6 @@ export default function Assets() {
       logService.log(session.tenant_id, session.user_id, "Scheduled depreciation run", result.runId);
       await loadData();
     }, "Scheduled depreciation run completed.");
-  };
-
-  const handleRegisterAsset = async () => {
-    await runAction(async () => {
-      // In a real app, this would call financeService.registerAsset
-      // For now, we'll mock it via createCapex and auto-approve/capitalize if it's a "backfill"
-      // or just assume the service has a direct method.
-      // Since we follow DEV_MOCK_MODE, we can assume it's available or we add it to mock.
-      await financeApiClient.createCapexRequest(session.tenant_id, session, {
-        assetDescription: registerAssetForm.description || "",
-        requestedAmount: registerAssetForm.acquisitionCost || 0,
-        department: registerAssetForm.department || "",
-        projectCode: "MANUAL-REG",
-        location: registerAssetForm.location || "",
-        acquisitionDate: registerAssetForm.acquisitionDate || "",
-        usefulLifeYears: registerAssetForm.usefulLifeYears || 5,
-        residualValue: registerAssetForm.residualValue || 0,
-        depreciationMethod: registerAssetForm.depreciationMethod || "STRAIGHT_LINE",
-        assetClass: registerAssetForm.assetClass || "EQUIPMENT",
-      });
-      
-      logService.log(session.tenant_id, session.user_id, "Manually registered asset", registerAssetForm.description);
-      setRegisterAssetDialogOpen(false);
-      await loadData();
-    }, "Asset registered successfully.");
   };
 
   const openAuditPack = async (assetId: string) => {
@@ -493,7 +414,8 @@ export default function Assets() {
           </TabsList>
 
           <TabsContent value="register" className="mt-4">
-            <div className="mb-4 flex justify-end">
+            <div className="mb-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setImportDialogOpen(true)}>Import Assets</Button>
               <Button variant="outline" onClick={() => setRegisterAssetDialogOpen(true)}>Register Existing Asset</Button>
             </div>
             <DataTableShell total={filteredAssets.length} page={1} pageSize={10}>
@@ -547,10 +469,19 @@ export default function Assets() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                onClick={() => {
+                                  setSelectedAsset(asset);
+                                  setEditAssetDialogOpen(true);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 disabled={!selectedDocumentIds.length}
                                 onClick={() => {
                                   setSelectedAsset(asset);
-                                  setImpairmentForm({ amount: 0, reason: "" });
                                   setImpairmentDialogOpen(true);
                                 }}
                               >
@@ -562,8 +493,6 @@ export default function Assets() {
                                 disabled={!selectedDocumentIds.length}
                                 onClick={() => {
                                   setSelectedAsset(asset);
-                                  const currentVal = toSafeNumber(asset.carryingValue, toSafeNumber(asset.acquisitionCost));
-                                  setRevaluationForm({ amount: Math.round(currentVal * 1.05), reason: "Fair value reassessment" });
                                   setRevaluationDialogOpen(true);
                                 }}
                               >
@@ -571,12 +500,30 @@ export default function Assets() {
                               </Button>
                               <Button
                                 size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedAsset(asset);
+                                  setTransferAssetDialogOpen(true);
+                                }}
+                              >
+                                Transfer
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setSelectedAsset(asset);
+                                  setMaintenanceDialogOpen(true);
+                                }}
+                              >
+                                Maintenance
+                              </Button>
+                              <Button
+                                size="sm"
                                 variant="destructive"
                                 disabled={!selectedDocumentIds.length}
                                 onClick={() => {
                                   setSelectedAsset(asset);
-                                  const currentVal = toSafeNumber(asset.carryingValue, toSafeNumber(asset.acquisitionCost));
-                                  setDisposalForm({ proceeds: Math.max(Math.round(currentVal * 0.8), 0), type: "SALE" });
                                   setDisposalDialogOpen(true);
                                 }}
                               >
@@ -1026,152 +973,74 @@ export default function Assets() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={impairmentDialogOpen} onOpenChange={setImpairmentDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Record Impairment - {selectedAsset?.description}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <span className="text-sm font-medium">Impairment Amount</span>
-              <Input
-                type="number"
-                value={impairmentForm.amount}
-                onChange={(e) => setImpairmentForm({ ...impairmentForm, amount: Number(e.target.value) })}
-              />
-            </div>
-            <div className="space-y-1">
-              <span className="text-sm font-medium">Reason</span>
-              <Input
-                value={impairmentForm.reason}
-                onChange={(e) => setImpairmentForm({ ...impairmentForm, reason: e.target.value })}
-                placeholder="e.g., Damage, obsolescence"
-              />
-            </div>
-            <Button className="w-full" onClick={impairment}>Record Impairment</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AssetImpairmentModal
+        isOpen={impairmentDialogOpen}
+        onClose={() => { setImpairmentDialogOpen(false); setSelectedAsset(null); }}
+        onSuccess={() => loadData()}
+        assetId={selectedAsset?.id ?? ""}
+      />
 
-      <Dialog open={revaluationDialogOpen} onOpenChange={setRevaluationDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Record Revaluation - {selectedAsset?.description}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <span className="text-sm font-medium">New Fair Value</span>
-              <Input
-                type="number"
-                value={revaluationForm.amount}
-                onChange={(e) => setRevaluationForm({ ...revaluationForm, amount: Number(e.target.value) })}
-              />
-            </div>
-            <div className="space-y-1">
-              <span className="text-sm font-medium">Reason</span>
-              <Input
-                value={revaluationForm.reason}
-                onChange={(e) => setRevaluationForm({ ...revaluationForm, reason: e.target.value })}
-                placeholder="e.g., Annual assessment"
-              />
-            </div>
-            <Button className="w-full" onClick={revalue}>Record Revaluation</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AssetRevaluationModal
+        isOpen={revaluationDialogOpen}
+        onClose={() => { setRevaluationDialogOpen(false); setSelectedAsset(null); }}
+        onSuccess={() => loadData()}
+        assetId={selectedAsset?.id ?? ""}
+      />
 
-      <Dialog open={disposalDialogOpen} onOpenChange={setDisposalDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Dispose Asset - {selectedAsset?.description}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <span className="text-sm font-medium">Disposal Type</span>
-              <Select value={disposalForm.type} onValueChange={(v) => setDisposalForm({ ...disposalForm, type: v as DisposalType })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SALE">Sale</SelectItem>
-                  <SelectItem value="SCRAP">Scrap</SelectItem>
-                  <SelectItem value="WRITE_OFF">Write Off</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1">
-              <span className="text-sm font-medium">Proceeds</span>
-              <Input
-                type="number"
-                value={disposalForm.proceeds}
-                onChange={(e) => setDisposalForm({ ...disposalForm, proceeds: Number(e.target.value) })}
-              />
-            </div>
-            <Button className="w-full" variant="destructive" onClick={dispose}>Record Disposal</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AssetDisposalModal
+        isOpen={disposalDialogOpen}
+        onClose={() => { setDisposalDialogOpen(false); setSelectedAsset(null); }}
+        onSuccess={() => loadData()}
+        assetId={selectedAsset?.id ?? ""}
+      />
 
-      <Dialog open={registerAssetDialogOpen} onOpenChange={setRegisterAssetDialogOpen}>
-        <DialogContent className="max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Register Existing Asset</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="md:col-span-2">
-              <span className="text-sm font-medium">Description</span>
-              <Input
-                value={registerAssetForm.description}
-                onChange={(e) => setRegisterAssetForm({ ...registerAssetForm, description: e.target.value })}
-              />
-            </div>
-            <div>
-              <span className="text-sm font-medium">Asset Class</span>
-              <Select
-                value={registerAssetForm.assetClass}
-                onValueChange={(v) => setRegisterAssetForm({ ...registerAssetForm, assetClass: v as any })}
-              >
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="LAND">Land</SelectItem>
-                  <SelectItem value="BUILDING">Building</SelectItem>
-                  <SelectItem value="MACHINERY">Machinery</SelectItem>
-                  <SelectItem value="VEHICLE">Vehicle</SelectItem>
-                  <SelectItem value="FURNITURE">Furniture</SelectItem>
-                  <SelectItem value="EQUIPMENT">Equipment</SelectItem>
-                  <SelectItem value="SOFTWARE">Software</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <span className="text-sm font-medium">Acquisition Cost</span>
-              <Input
-                type="number"
-                value={registerAssetForm.acquisitionCost}
-                onChange={(e) => setRegisterAssetForm({ ...registerAssetForm, acquisitionCost: Number(e.target.value) })}
-              />
-            </div>
-            <div>
-              <span className="text-sm font-medium">Acquisition Date</span>
-              <Input
-                type="date"
-                value={registerAssetForm.acquisitionDate}
-                onChange={(e) => setRegisterAssetForm({ ...registerAssetForm, acquisitionDate: e.target.value })}
-              />
-            </div>
-            <div>
-              <span className="text-sm font-medium">Location</span>
-              <Input
-                value={registerAssetForm.location}
-                onChange={(e) => setRegisterAssetForm({ ...registerAssetForm, location: e.target.value })}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Button className="w-full" onClick={handleRegisterAsset}>Register Asset and Post to Ledger</Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <RegisterAssetModal
+        isOpen={registerAssetDialogOpen}
+        onClose={() => setRegisterAssetDialogOpen(false)}
+        onSuccess={() => loadData()}
+      />
+
+      <AssetEditModal
+        isOpen={editAssetDialogOpen}
+        onClose={() => { setEditAssetDialogOpen(false); setSelectedAsset(null); }}
+        onSuccess={() => loadData()}
+        assetId={selectedAsset?.id ?? ""}
+        defaultValues={selectedAsset ? {
+          description: selectedAsset.description,
+          assetClass: selectedAsset.assetClass,
+          location: selectedAsset.location,
+          department: selectedAsset.department,
+          usefulLifeYears: selectedAsset.usefulLifeYears,
+          residualValue: selectedAsset.residualValue,
+          depreciationMethod: selectedAsset.depreciationMethod,
+        } : undefined}
+      />
+
+      <AssetTransferModal
+        isOpen={transferAssetDialogOpen}
+        onClose={() => { setTransferAssetDialogOpen(false); setSelectedAsset(null); }}
+        onSuccess={() => loadData()}
+        assetId={selectedAsset?.id ?? ""}
+      />
+
+      <AssetMaintenanceModal
+        isOpen={maintenanceDialogOpen}
+        onClose={() => { setMaintenanceDialogOpen(false); setSelectedAsset(null); }}
+        onSuccess={() => loadData()}
+        assetId={selectedAsset?.id ?? ""}
+      />
+
+      <AssetImportModal
+        isOpen={importDialogOpen}
+        onClose={() => setImportDialogOpen(false)}
+        onSuccess={() => loadData()}
+      />
+
+      <AssetDepreciationRunModal
+        isOpen={depreciationRunDialogOpen}
+        onClose={() => setDepreciationRunDialogOpen(false)}
+        onSuccess={() => loadData()}
+      />
 
       <Dialog open={!!selectedCapexDetail} onOpenChange={() => setSelectedCapexDetail(null)}>
         <DialogContent className="max-w-md">

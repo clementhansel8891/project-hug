@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -11,24 +14,53 @@ import { DataTableShell } from "@/core/tools/DataTableShell";
 import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeService, type FinanceInvoiceRow } from "@/core/services/finance/financeService";
 import { logService } from "@/core/services/finance/logService";
+import { invoiceCaptureSchema, type InvoiceCaptureFormData } from "@/core/finance/schemas";
 import { InvoiceCaptureModal } from "@/core/finance/FinanceModalForms";
 
 type InvoiceKind = "PAYABLE" | "RECEIVABLE";
 
 export default function InvoiceCapture() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [kindFilter, setKindFilter] = useState<InvoiceKind | "ALL">("ALL");
   const [formKind, setFormKind] = useState<InvoiceKind>("PAYABLE");
-  const [counterparty, setCounterparty] = useState("");
-  const [amount, setAmount] = useState("0");
-  const [invoiceDate, setInvoiceDate] = useState("");
-  const [dueDate, setDueDate] = useState("");
   const [invoices, setInvoices] = useState<FinanceInvoiceRow[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<FinanceInvoiceRow | null>(null);
+
+  // --- React Hook Form: Invoice Capture ---
+  const invoiceForm = useForm<InvoiceCaptureFormData>({
+    resolver: zodResolver(invoiceCaptureSchema),
+    defaultValues: { vendor: "", amount: 0, invoiceDate: "", dueDate: "" },
+  });
+
+  const captureMutation = useMutation({
+    mutationFn: (data: InvoiceCaptureFormData) =>
+      apiRequest("/v1/finance/invoices", "POST", session, { ...data, kind: formKind }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "invoices"]],
+      onClose: () => setDialogOpen(false),
+      form: invoiceForm,
+      successTitle: "Invoice Captured",
+      successDescription: "Invoice has been captured and routed to the ledger.",
+    }),
+    onSuccess: () => {
+      toast({ title: "Invoice Captured", description: "Invoice has been captured and routed to the ledger." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "invoices"] });
+      invoiceForm.reset();
+      setDialogOpen(false);
+      refreshInvoices();
+    },
+  });
 
   const refreshInvoices = useCallback(() => {
     financeService.listInvoices(session.tenant_id, session).then(setInvoices).catch(console.error);
@@ -61,34 +93,8 @@ export default function InvoiceCapture() {
     return groups;
   }, [filteredInvoices]);
 
-  const captureInvoice = () => {
-    if (formKind === "PAYABLE") {
-      financeService.capturePayableInvoice(session.tenant_id, session, {
-        vendor: counterparty,
-        amount: Number(amount || "0"),
-        invoiceDate,
-        dueDate,
-      });
-    } else {
-      financeService.createReceivable(session.tenant_id, session, {
-        customer: counterparty,
-        amount: Number(amount || "0"),
-        dueDate,
-        invoiceDate,
-      });
-    }
-    logService.log(
-      session.tenant_id,
-      session.user_id,
-      "Captured invoice",
-      `${formKind} - ${counterparty}`,
-    );
-    setDialogOpen(false);
-    setCounterparty("");
-    setAmount("0");
-    setInvoiceDate("");
-    setDueDate("");
-    refreshInvoices();
+  const captureInvoice = (data: InvoiceCaptureFormData) => {
+    captureMutation.mutate(data);
   };
 
   const renderTable = (items: FinanceInvoiceRow[]) => (
@@ -181,7 +187,7 @@ export default function InvoiceCapture() {
         </Tabs>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !captureMutation.isPending) { invoiceForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden">
           <div className="grid md:grid-cols-[1fr_2fr]">
             {/* Left Info Panel */}
@@ -221,10 +227,10 @@ export default function InvoiceCapture() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={invoiceForm.handleSubmit(captureInvoice)} className="space-y-6">
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Invoice Type</label>
-                  <Select value={formKind} onValueChange={(value) => setFormKind(value as InvoiceKind)}>
+                  <Select value={formKind} onValueChange={(value) => setFormKind(value as InvoiceKind)} disabled={captureMutation.isPending}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Invoice type" />
                     </SelectTrigger>
@@ -242,13 +248,19 @@ export default function InvoiceCapture() {
                     </label>
                     <Input
                       placeholder={formKind === "PAYABLE" ? "e.g., Acme Corp" : "e.g., Jane Doe"}
-                      value={counterparty}
-                      onChange={(event) => setCounterparty(event.target.value)}
+                      {...invoiceForm.register("vendor")}
+                      disabled={captureMutation.isPending}
                     />
+                    {invoiceForm.formState.errors.vendor && (
+                      <p className="text-xs text-destructive mt-1">{invoiceForm.formState.errors.vendor.message}</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Total Amount (IDR)</label>
-                    <Input placeholder="0" type="number" value={amount} onChange={(event) => setAmount(event.target.value)} />
+                    <Input placeholder="0" type="number" {...invoiceForm.register("amount", { valueAsNumber: true })} disabled={captureMutation.isPending} />
+                    {invoiceForm.formState.errors.amount && (
+                      <p className="text-xs text-destructive mt-1">{invoiceForm.formState.errors.amount.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -260,10 +272,13 @@ export default function InvoiceCapture() {
                       <Input
                         className="pl-9"
                         type="date"
-                        value={invoiceDate}
-                        onChange={(event) => setInvoiceDate(event.target.value)}
+                        {...invoiceForm.register("invoiceDate")}
+                        disabled={captureMutation.isPending}
                       />
                     </div>
+                    {invoiceForm.formState.errors.invoiceDate && (
+                      <p className="text-xs text-destructive mt-1">{invoiceForm.formState.errors.invoiceDate.message}</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Due Date</label>
@@ -272,10 +287,13 @@ export default function InvoiceCapture() {
                       <Input
                         className="pl-9"
                         type="date"
-                        value={dueDate}
-                        onChange={(event) => setDueDate(event.target.value)}
+                        {...invoiceForm.register("dueDate")}
+                        disabled={captureMutation.isPending}
                       />
                     </div>
+                    {invoiceForm.formState.errors.dueDate && (
+                      <p className="text-xs text-destructive mt-1">{invoiceForm.formState.errors.dueDate.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -289,10 +307,12 @@ export default function InvoiceCapture() {
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={captureInvoice}>Capture Details</Button>
+                  <Button type="button" variant="outline" onClick={() => { invoiceForm.reset(); setDialogOpen(false); }} disabled={captureMutation.isPending}>Cancel</Button>
+                  <Button type="submit" disabled={captureMutation.isPending}>
+                    {captureMutation.isPending ? "Capturing..." : "Capture Details"}
+                  </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </DialogContent>

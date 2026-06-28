@@ -1,4 +1,19 @@
-import React from "react";
+/**
+ * ChannelDetailDialog — Channel detail & configuration dialog.
+ *
+ * Wired with React Hook Form + Zod + useMutation + getMutationToastHandlers.
+ * Manages channel metadata, sync settings, and security actions.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Globe,
   ShoppingBag,
@@ -13,6 +28,7 @@ import {
   ShieldCheck,
   ArrowRight,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import {
   Dialog,
@@ -38,8 +54,28 @@ import { Separator } from "@/components/ui/separator";
 import { CredentialField } from "../shared/SharedUI";
 import { Roles } from "@/core/security/roles";
 import { type SessionContext } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import type { ChannelRecord } from "@/core/services/retail/ecommerceHubService";
 import type { RetailChannel, ChannelStatus } from "@/core/types/retail/retail";
+
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const channelDetailSchema = z.object({
+  name: z.string().min(1, "Channel name is required").max(100, "Name must be 100 characters or fewer"),
+  syncFrequency: z.enum(["5min", "15min", "1h"], { required_error: "Sync frequency is required" }),
+  settings: z.object({
+    autoSyncStock: z.boolean().optional(),
+    overwritePrices: z.boolean().optional(),
+    syncOrders: z.boolean().optional(),
+    notifyStatus: z.boolean().optional(),
+  }).optional(),
+});
+
+type ChannelDetailFormValues = z.infer<typeof channelDetailSchema>;
+
+// ─── Props ───────────────────────────────────────────────────────────────────────
 
 interface ChannelDetailDialogProps {
   isOpen: boolean;
@@ -98,6 +134,72 @@ export const ChannelDetailDialog = ({
   handleRequestApproval,
   copyCredential,
 }: ChannelDetailDialogProps) => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const form = useForm<ChannelDetailFormValues>({
+    resolver: zodResolver(channelDetailSchema),
+    defaultValues: {
+      name: detailName || "",
+      syncFrequency: (detailSyncFreq as "5min" | "15min" | "1h") || "15min",
+      settings: {
+        autoSyncStock: !!detailSettings?.autoSyncStock,
+        overwritePrices: !!detailSettings?.overwritePrices,
+        syncOrders: !!detailSettings?.syncOrders,
+        notifyStatus: !!detailSettings?.notifyStatus,
+      },
+    },
+  });
+
+  // Sync form with parent state when channel changes
+  useEffect(() => {
+    if (selectedChannel) {
+      form.reset({
+        name: detailName || selectedChannel.name || "",
+        syncFrequency: (detailSyncFreq as "5min" | "15min" | "1h") || "15min",
+        settings: {
+          autoSyncStock: !!detailSettings?.autoSyncStock,
+          overwritePrices: !!detailSettings?.overwritePrices,
+          syncOrders: !!detailSettings?.syncOrders,
+          notifyStatus: !!detailSettings?.notifyStatus,
+        },
+      });
+    }
+  }, [selectedChannel?.id]);
+
+  // Keep parent state in sync with form
+  const watchName = form.watch("name");
+  const watchSyncFreq = form.watch("syncFrequency");
+
+  useEffect(() => {
+    if (watchName !== detailName) setDetailName(watchName);
+  }, [watchName]);
+
+  useEffect(() => {
+    if (watchSyncFreq !== detailSyncFreq) setDetailSyncFreq(watchSyncFreq);
+  }, [watchSyncFreq]);
+
+  const mutation = useMutation({
+    mutationFn: (data: ChannelDetailFormValues) =>
+      apiRequest(`/v1/retail/channels/${selectedChannel?.id}`, "PATCH", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "channels"]],
+      onClose: () => onOpenChange(false),
+      form,
+      successTitle: "Channel Updated",
+      successDescription: "Channel configuration saved successfully.",
+    }),
+  });
+
+  const isPending = mutation.isPending || isSaving;
+
+  const onSubmit = form.handleSubmit((data) => {
+    mutation.mutate(data);
+    handleSaveChannel();
+  });
+
   if (!selectedChannel) return null;
 
   return (
@@ -358,41 +460,53 @@ export const ChannelDetailDialog = ({
                     <div className="col-span-2 space-y-2">
                       <Input
                         placeholder="Channel Display Name"
-                        value={detailName}
-                        onChange={(e) => setDetailName(e.target.value)}
-                        disabled={!canEdit}
+                        {...form.register("name")}
+                        disabled={!canEdit || isPending}
+                        aria-describedby={form.formState.errors.name ? "channel-name-error" : undefined}
+                        aria-invalid={!!form.formState.errors.name}
                         className="h-16 px-6 rounded-2xl bg-secondary/5 border-none font-black italic text-lg text-foreground shadow-inner"
                       />
+                      {form.formState.errors.name && (
+                        <p id="channel-name-error" className="text-[10px] text-destructive font-medium" role="alert">
+                          {form.formState.errors.name.message}
+                        </p>
+                      )}
                     </div>
-                    <Select
-                      value={detailSyncFreq}
-                      onValueChange={setDetailSyncFreq}
-                      disabled={!canEdit}
-                    >
-                      <SelectTrigger className="h-16 rounded-2xl bg-secondary/5 border-none font-black italic uppercase text-[10px] tracking-widest text-foreground shadow-inner">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
-                        <SelectItem
-                          value="5min"
-                          className="rounded-xl font-black italic uppercase text-[10px] py-4"
+                    <Controller
+                      control={form.control}
+                      name="syncFrequency"
+                      render={({ field }) => (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          disabled={!canEdit || isPending}
                         >
-                          5m Pulse
-                        </SelectItem>
-                        <SelectItem
-                          value="15min"
-                          className="rounded-xl font-black italic uppercase text-[10px] py-4"
-                        >
-                          15m Pulse
-                        </SelectItem>
-                        <SelectItem
-                          value="1h"
-                          className="rounded-xl font-black italic uppercase text-[10px] py-4"
-                        >
-                          60m Pulse
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                          <SelectTrigger className="h-16 rounded-2xl bg-secondary/5 border-none font-black italic uppercase text-[10px] tracking-widest text-foreground shadow-inner">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-2xl border-none shadow-2xl p-2 bg-white">
+                            <SelectItem
+                              value="5min"
+                              className="rounded-xl font-black italic uppercase text-[10px] py-4"
+                            >
+                              5m Pulse
+                            </SelectItem>
+                            <SelectItem
+                              value="15min"
+                              className="rounded-xl font-black italic uppercase text-[10px] py-4"
+                            >
+                              15m Pulse
+                            </SelectItem>
+                            <SelectItem
+                              value="1h"
+                              className="rounded-xl font-black italic uppercase text-[10px] py-4"
+                            >
+                              60m Pulse
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
                   </div>
                 </div>
               </TabsContent>
@@ -403,18 +517,19 @@ export const ChannelDetailDialog = ({
         <DialogFooter className="p-8 bg-secondary/5 border-t border-border flex flex-row items-center justify-end gap-6 shrink-0">
           <Button
             variant="ghost"
-            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+            onClick={() => { form.reset(); onOpenChange(false); }}
             className="font-black italic uppercase text-[10px] tracking-[0.2em] text-muted-foreground"
           >
             CANCEL SESSION
           </Button>
           <Button
-            onClick={handleSaveChannel}
-            disabled={!canEdit || isSaving}
+            onClick={onSubmit}
+            disabled={!canEdit || isPending}
             className="h-16 px-12 rounded-2xl bg-secondary text-foreground font-black italic uppercase tracking-widest text-[10px] flex items-center gap-3 shadow-xl hover:scale-[1.02] transition-transform"
           >
-            {isSaving ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
+            {isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               "COMMIT CHANGES"
             )}

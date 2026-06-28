@@ -12,10 +12,11 @@
  * Requirements: 3, 3.1, 3.3, 3.4
  */
 
-import { describe, test, expect, beforeEach, afterEach } from "vitest";
+import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
 import { cleanup, render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import * as fc from "fast-check";
 import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // ---------------------------------------------------------------------------
 // Mocks (must be above component imports for hoisting)
@@ -91,7 +92,10 @@ function renderModal(props: Partial<React.ComponentProps<typeof UnresolvedBarcod
     categoryOptions: [{ id: "cat-1", name: "General" }],
   };
   const merged = { ...defaultProps, ...props };
-  return { ...render(React.createElement(UnresolvedBarcodesModal, merged)), props: merged };
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+  return { ...render(React.createElement(QueryClientProvider, { client: queryClient }, React.createElement(UnresolvedBarcodesModal, merged))), props: merged };
 }
 
 /**
@@ -276,15 +280,18 @@ describe("Property 1: Modal close never leaves page locked", () => {
             document.body.style.pointerEvents = "none";
 
             const onClose = vi.fn();
+            const qc = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
             const { unmount } = render(
-              React.createElement(UnresolvedBarcodesModal, {
-                isOpen: true,
-                onClose,
-                unresolvedBarcodes: uniqueBarcodes,
-                onFlagAnomalies: vi.fn(),
-                onItemsRegistered: vi.fn(),
-                categoryOptions: [{ id: "cat-1", name: "General" }],
-              })
+              React.createElement(QueryClientProvider, { client: qc },
+                React.createElement(UnresolvedBarcodesModal, {
+                  isOpen: true,
+                  onClose,
+                  unresolvedBarcodes: uniqueBarcodes,
+                  onFlagAnomalies: vi.fn(),
+                  onItemsRegistered: vi.fn(),
+                  categoryOptions: [{ id: "cat-1", name: "General" }],
+                })
+              )
             );
 
             // Close by unmounting (simulates any close path since cleanup runs)
@@ -324,15 +331,18 @@ describe("Property 1: Modal close never leaves page locked", () => {
           document.body.style.pointerEvents = initialPointerEvents;
 
           const onClose = vi.fn();
+          const qc2 = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
           const { unmount } = render(
-            React.createElement(UnresolvedBarcodesModal, {
-              isOpen: true,
-              onClose,
-              unresolvedBarcodes: uniqueBarcodes,
-              onFlagAnomalies: vi.fn(),
-              onItemsRegistered: vi.fn(),
-              categoryOptions: [{ id: "cat-1", name: "General" }],
-            })
+            React.createElement(QueryClientProvider, { client: qc2 },
+              React.createElement(UnresolvedBarcodesModal, {
+                isOpen: true,
+                onClose,
+                unresolvedBarcodes: uniqueBarcodes,
+                onFlagAnomalies: vi.fn(),
+                onItemsRegistered: vi.fn(),
+                categoryOptions: [{ id: "cat-1", name: "General" }],
+              })
+            )
           );
 
           // Close the modal

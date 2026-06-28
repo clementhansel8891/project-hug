@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -12,33 +15,43 @@ import { DataTableShell } from "@/core/tools/DataTableShell";
 import { FilterBar } from "@/core/tools/FilterBar";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
 import { procurementService } from "@/core/services/procurement/procurementService";
 import { formatDateTime } from "@/lib/format";
 import type { SupplierPortalMessage, SupplierMaster, SupplierBranch } from "@/core/types/procurement/procurement";
-import { MessageSquare, Send, Paperclip, Building2, Info, ArrowUpRight, ArrowDownLeft, ShieldCheck, Mail } from "lucide-react";
-import { portalMessageSchema } from "@/modules/procurement/schemas";
-import { useCreatePortalMessage } from "@/modules/procurement/hooks";
+import { MessageSquare, Send, Paperclip, Building2, Info, ArrowUpRight, ArrowDownLeft, ShieldCheck, Mail, Loader2 } from "lucide-react";
+import { portalMessageSchema, type PortalMessageFormValues } from "@/modules/procurement/schemas";
+import { useCreatePortalMessage, PROCUREMENT_KEYS } from "@/modules/procurement/hooks";
 
 export default function SupplierPortalDesk() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [supplierId, setSupplierId] = useState("");
-  const [supplierBranchId, setSupplierBranchId] = useState("");
-  const [type, setType] = useState<SupplierPortalMessage["type"]>("GENERAL");
-  const [direction, setDirection] = useState<SupplierPortalMessage["direction"]>("OUTBOUND");
-  const [content, setContent] = useState("");
-  const [attachmentName, setAttachmentName] = useState("");
   const [messages, setMessages] = useState<SupplierPortalMessage[]>([]);
   const [suppliers, setSuppliers] = useState<SupplierMaster[]>([]);
   const [branches, setBranches] = useState<SupplierBranch[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [portalFieldErrors, setPortalFieldErrors] = useState<Record<string, string>>({});
+
+  // ─── React Hook Form: Portal Message ──────────────────────────────────────────
+  const portalForm = useForm<PortalMessageFormValues>({
+    resolver: zodResolver(portalMessageSchema),
+    defaultValues: {
+      supplierId: "",
+      supplierBranchId: "",
+      direction: "OUTBOUND",
+      type: "GENERAL",
+      content: "",
+      attachmentName: "",
+    },
+  });
 
   // TanStack Query mutation
   const createPortalMessageMutation = useCreatePortalMessage();
+  const portalIsPending = createPortalMessageMutation.isPending;
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -77,37 +90,18 @@ export default function SupplierPortalDesk() {
     [messages, search],
   );
 
-  const createMessage = async () => {
-    setPortalFieldErrors({});
-    const result = portalMessageSchema.safeParse({
-      supplierId,
-      supplierBranchId,
-      direction,
-      type,
-      content,
-      attachmentName: attachmentName || undefined,
-    });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        if (!errors[field]) errors[field] = issue.message;
-      });
-      setPortalFieldErrors(errors);
-      return;
-    }
+  const onSubmitPortalMessage = portalForm.handleSubmit(async (data) => {
     try {
-      await createPortalMessageMutation.mutateAsync(result.data);
-      setStatusMessage("Portal message sent to supplier.");
+      await createPortalMessageMutation.mutateAsync(data);
+      toast({ title: "Message Sent", description: "Portal message sent to supplier." });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.portalMessages });
+      portalForm.reset();
       setDialogOpen(false);
-      setContent("");
-      setAttachmentName("");
-      setPortalFieldErrors({});
       refresh();
-    } catch (err) {
-      setErrorMessage("Failed to send portal message.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to send portal message.", variant: "destructive" });
     }
-  };
+  });
 
   return (
     <div className="space-y-6">
@@ -165,7 +159,7 @@ export default function SupplierPortalDesk() {
         </DataTableShell>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !portalIsPending) { portalForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby="portal-msg-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Create Supplier Portal Message</DialogTitle>
@@ -211,39 +205,52 @@ export default function SupplierPortalDesk() {
 
             {/* Right Column: Message Form */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={onSubmitPortalMessage} noValidate>
+                <fieldset disabled={portalIsPending} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Target Supplier</label>
-                    <Select value={supplierId} onValueChange={setSupplierId}>
-                      <SelectTrigger className="h-10">
+                    <label htmlFor="portal-supplier" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Target Supplier</label>
+                    <Select value={portalForm.watch("supplierId")} onValueChange={(v) => portalForm.setValue("supplierId", v, { shouldValidate: true })}>
+                      <SelectTrigger id="portal-supplier" className="h-10"
+                        aria-describedby={portalForm.formState.errors.supplierId ? "portal-supplier-error" : undefined}
+                        aria-invalid={!!portalForm.formState.errors.supplierId}
+                      >
                         <SelectValue placeholder="Select Master" />
                       </SelectTrigger>
                       <SelectContent>
                         {(Array.isArray(suppliers) ? suppliers : []).map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
                       </SelectContent>
                     </Select>
+                    {portalForm.formState.errors.supplierId && (
+                      <p id="portal-supplier-error" className="text-xs text-destructive mt-1" role="alert">{portalForm.formState.errors.supplierId.message}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Branch/Contact</label>
-                    <Select value={supplierBranchId} onValueChange={setSupplierBranchId}>
-                      <SelectTrigger className="h-10">
+                    <label htmlFor="portal-branch" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Branch/Contact</label>
+                    <Select value={portalForm.watch("supplierBranchId")} onValueChange={(v) => portalForm.setValue("supplierBranchId", v, { shouldValidate: true })}>
+                      <SelectTrigger id="portal-branch" className="h-10"
+                        aria-describedby={portalForm.formState.errors.supplierBranchId ? "portal-branch-error" : undefined}
+                        aria-invalid={!!portalForm.formState.errors.supplierBranchId}
+                      >
                         <SelectValue placeholder="Select Location" />
                       </SelectTrigger>
                       <SelectContent>
-                        {(Array.isArray(branches) ? branches : []).filter(b => !supplierId || b.supplierId === supplierId).map(b => (
+                        {(Array.isArray(branches) ? branches : []).filter(b => !portalForm.watch("supplierId") || b.supplierId === portalForm.watch("supplierId")).map(b => (
                           <SelectItem key={b.id} value={b.id}>{b.branchCode} - {b.branchName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                    {portalForm.formState.errors.supplierBranchId && (
+                      <p id="portal-branch-error" className="text-xs text-destructive mt-1" role="alert">{portalForm.formState.errors.supplierBranchId.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Direction</label>
-                    <Select value={direction} onValueChange={v => setDirection(v as any)}>
-                      <SelectTrigger className="h-10">
+                    <label htmlFor="portal-direction" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Direction</label>
+                    <Select value={portalForm.watch("direction")} onValueChange={v => portalForm.setValue("direction", v as any, { shouldValidate: true })}>
+                      <SelectTrigger id="portal-direction" className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -253,9 +260,9 @@ export default function SupplierPortalDesk() {
                     </Select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Communication Category</label>
-                    <Select value={type} onValueChange={v => setType(v as any)}>
-                      <SelectTrigger className="h-10">
+                    <label htmlFor="portal-type" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Communication Category</label>
+                    <Select value={portalForm.watch("type")} onValueChange={v => portalForm.setValue("type", v as any, { shouldValidate: true })}>
+                      <SelectTrigger id="portal-type" className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -270,43 +277,42 @@ export default function SupplierPortalDesk() {
                 </div>
 
                 <div className="pt-4 border-t">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Message Content</label>
+                  <label htmlFor="portal-content" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Message Content</label>
                   <Textarea 
+                    id="portal-content"
                     placeholder="Enter message body or interaction summary..."
                     className="min-h-[120px] resize-none"
-                    value={content}
-                    onChange={e => setContent(e.target.value)}
+                    {...portalForm.register("content")}
+                    aria-describedby={portalForm.formState.errors.content ? "portal-content-error" : undefined}
+                    aria-invalid={!!portalForm.formState.errors.content}
                   />
+                  {portalForm.formState.errors.content && (
+                    <p id="portal-content-error" className="text-xs text-destructive mt-1" role="alert">{portalForm.formState.errors.content.message}</p>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Attachment Metadata</label>
+                  <label htmlFor="portal-attachment" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-2 block">Attachment Metadata</label>
                   <div className="relative">
                     <Paperclip className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                     <Input 
+                      id="portal-attachment"
                       placeholder="e.g. quote-v1.pdf, signed-invoice.png"
                       className="pl-10"
-                      value={attachmentName}
-                      onChange={e => setAttachmentName(e.target.value)}
+                      {...portalForm.register("attachmentName")}
                     />
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-6 border-t mt-4">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={createMessage}>
-                    <Send className="w-4 h-4 mr-2" />
+                  <Button type="button" variant="outline" disabled={portalIsPending} onClick={() => { portalForm.reset(); setDialogOpen(false); }}>Cancel</Button>
+                  <Button type="submit" disabled={portalIsPending}>
+                    {portalIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
                     Dispatch Message
                   </Button>
                 </div>
-                {Object.keys(portalFieldErrors).length > 0 && (
-                  <div className="space-y-1 pt-2">
-                    {Object.entries(portalFieldErrors).map(([field, msg]) => (
-                      <p key={field} className="text-xs text-destructive">{msg}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>

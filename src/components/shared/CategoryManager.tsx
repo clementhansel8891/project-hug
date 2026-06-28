@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,10 +22,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Trash2, Edit2, Save, X, FolderTree } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, FolderTree, Loader2 } from "lucide-react";
 import { inventoryService } from "@/core/services/inventory/inventoryService";
 import { useSession } from "@/core/security/session";
-import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+
+// ─── Zod Schemas ───────────────────────────────────────────────────────────────
+
+const createCategorySchema = z.object({
+  name: z.string().min(1, "Category name is required").max(100, "Name too long"),
+});
+
+const editCategorySchema = z.object({
+  name: z.string().min(1, "Category name is required").max(100, "Name too long"),
+});
+
+type CreateCategoryFormValues = z.infer<typeof createCategorySchema>;
+type EditCategoryFormValues = z.infer<typeof editCategorySchema>;
+
+// ─── Types ─────────────────────────────────────────────────────────────────────
 
 interface Category {
   id: string;
@@ -38,76 +58,104 @@ interface CategoryManagerProps {
 
 export function CategoryManager({ isOpen, onClose, onCategoriesChange }: CategoryManagerProps) {
   const { session } = useSession();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [newName, setNewName] = useState("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
-  const fetchCategories = async () => {
-    if (!session?.tenant_id) return;
-    setLoading(true);
-    try {
-      const data = await inventoryService.listCategories(session.tenant_id, session);
-      setCategories(data);
-    } catch (err: any) {
-      setError("Failed to fetch categories.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // ─── Create Form ───────────────────────────────────────────────────────────
+  const createForm = useForm<CreateCategoryFormValues>({
+    resolver: zodResolver(createCategorySchema),
+    defaultValues: { name: "" },
+  });
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchCategories();
-      setError(null);
-      setSuccess(null);
-    }
-  }, [isOpen]);
+  // ─── Edit Form ─────────────────────────────────────────────────────────────
+  const editForm = useForm<EditCategoryFormValues>({
+    resolver: zodResolver(editCategorySchema),
+    defaultValues: { name: "" },
+  });
 
-  const handleCreate = async () => {
-    if (!newName.trim() || !session?.tenant_id) return;
-    try {
-      await inventoryService.createCategory(session.tenant_id, session, { name: newName.trim() });
-      setNewName("");
-      setSuccess("Category created successfully.");
-      fetchCategories();
+  // ─── Query: Fetch Categories ───────────────────────────────────────────────
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ["shared", "categories", session?.tenant_id],
+    queryFn: () => inventoryService.listCategories(session!.tenant_id, session!),
+    enabled: isOpen && !!session?.tenant_id,
+  });
+
+  // ─── Mutation: Create Category ─────────────────────────────────────────────
+  const createMutation = useMutation({
+    mutationFn: (data: CreateCategoryFormValues) =>
+      inventoryService.createCategory(session!.tenant_id, session!, { name: data.name }),
+    onSuccess: () => {
+      toast({ title: "Category Created", description: "New category added successfully." });
+      queryClient.invalidateQueries({ queryKey: ["shared", "categories"] });
+      createForm.reset();
       onCategoriesChange?.();
-    } catch (err: any) {
-      setError(err.message || "Failed to create category.");
-    }
-  };
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to create category.", variant: "destructive" });
+    },
+  });
 
-  const handleUpdate = async (id: string) => {
-    if (!editingName.trim() || !session?.tenant_id) return;
-    try {
-      await inventoryService.updateCategory(session.tenant_id, session, id, { name: editingName.trim() });
+  // ─── Mutation: Update Category ─────────────────────────────────────────────
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: EditCategoryFormValues }) =>
+      inventoryService.updateCategory(session!.tenant_id, session!, id, { name: data.name }),
+    onSuccess: () => {
+      toast({ title: "Category Updated", description: "Category renamed successfully." });
+      queryClient.invalidateQueries({ queryKey: ["shared", "categories"] });
       setEditingId(null);
-      setSuccess("Category updated successfully.");
-      fetchCategories();
+      editForm.reset();
       onCategoriesChange?.();
-    } catch (err: any) {
-      setError(err.message || "Failed to update category.");
-    }
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to update category.", variant: "destructive" });
+    },
+  });
+
+  // ─── Mutation: Delete Category ─────────────────────────────────────────────
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) =>
+      inventoryService.deleteCategory(session!.tenant_id, session!, id),
+    onSuccess: () => {
+      toast({ title: "Category Deleted", description: "Category removed successfully." });
+      queryClient.invalidateQueries({ queryKey: ["shared", "categories"] });
+      onCategoriesChange?.();
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error.message || "Failed to delete category.", variant: "destructive" });
+    },
+  });
+
+  // ─── Handlers ──────────────────────────────────────────────────────────────
+
+  const handleCreate = createForm.handleSubmit((data) => {
+    createMutation.mutate(data);
+  });
+
+  const handleUpdate = editForm.handleSubmit((data) => {
+    if (!editingId) return;
+    updateMutation.mutate({ id: editingId, data });
+  });
+
+  const handleDelete = (id: string) => {
+    if (!confirm("Are you sure you want to delete this category?")) return;
+    deleteMutation.mutate(id);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!session?.tenant_id) return;
-    if (!confirm("Are you sure you want to delete this category?")) return;
-    try {
-      await inventoryService.deleteCategory(session.tenant_id, session, id);
-      setSuccess("Category deleted successfully.");
-      fetchCategories();
-      onCategoriesChange?.();
-    } catch (err: any) {
-      setError(err.message || "Failed to delete category.");
-    }
+  const startEditing = (cat: Category) => {
+    setEditingId(cat.id);
+    editForm.reset({ name: cat.name });
   };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    editForm.reset();
+  };
+
+  const isPending = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !isPending) { createForm.reset(); onClose(); } }}>
       <DialogContent className="rounded-[3rem] border-white/10 bg-muted backdrop-blur-3xl shadow-2xl sm:max-w-[700px] p-0 overflow-hidden max-h-[85vh]">
         <DialogHeader className="p-10 bg-white/5 border-b border-white/5">
           <div className="flex items-center justify-between">
@@ -122,17 +170,21 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" /> CLASSIFICATION_ENGINE_V2
               </p>
             </div>
-            <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-white/5 text-muted-foreground hover:text-white" onClick={onClose}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-12 w-12 rounded-2xl hover:bg-white/5 text-muted-foreground hover:text-white"
+              onClick={onClose}
+              disabled={isPending}
+            >
               <X className="h-6 w-6" />
             </Button>
           </div>
         </DialogHeader>
 
         <div className="p-10 space-y-8 overflow-y-auto custom-scrollbar">
-          <FeedbackAlert message={success} variant="success" onClose={() => setSuccess(null)} />
-          <FeedbackAlert message={error} variant="error" onClose={() => setError(null)} />
-
-          <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 space-y-6">
+          {/* Create Form */}
+          <form onSubmit={handleCreate} className="p-8 bg-white/5 rounded-[2rem] border border-white/10 space-y-6">
             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Initialize New Node</p>
             <div className="flex gap-4 items-end">
               <div className="flex-1 space-y-3">
@@ -140,23 +192,32 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                 <Input
                   id="new-category"
                   placeholder="e.g. RAW_MATERIALS_01"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
+                  {...createForm.register("name")}
                   onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                   className="h-14 rounded-xl bg-muted border-white/5 text-white shadow-inner font-black italic tracking-widest placeholder:text-muted-foreground focus:border-primary transition-all"
+                  disabled={createMutation.isPending}
+                  aria-describedby={createForm.formState.errors.name ? "create-name-error" : undefined}
                 />
+                {createForm.formState.errors.name && (
+                  <p id="create-name-error" className="text-sm text-destructive ml-2">{createForm.formState.errors.name.message}</p>
+                )}
               </div>
-              <Button 
-                onClick={handleCreate} 
-                disabled={!newName.trim()}
+              <Button
+                type="submit"
+                disabled={createMutation.isPending}
                 className="h-14 px-8 rounded-xl bg-white text-muted-foreground font-black italic uppercase tracking-widest text-[10px] hover:bg-muted shadow-2xl transition-all hover:scale-105"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                {createMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4 mr-2" />
+                )}
                 Commit
               </Button>
             </div>
-          </div>
+          </form>
 
+          {/* Categories Table */}
           <div className="rounded-[2rem] border border-white/5 bg-muted overflow-hidden shadow-2xl">
             <Table>
               <TableHeader>
@@ -166,31 +227,41 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.length === 0 ? (
+                {isLoading ? (
+                  <TableRow className="hover:bg-transparent">
+                    <TableCell colSpan={2} className="text-center py-20">
+                      <Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" />
+                    </TableCell>
+                  </TableRow>
+                ) : categories.length === 0 ? (
                   <TableRow className="hover:bg-transparent">
                     <TableCell colSpan={2} className="text-center py-20 text-muted-foreground italic font-black uppercase tracking-widest text-xs">
                       No classification nodes found. Initialization required.
                     </TableCell>
                   </TableRow>
                 ) : (
-                  categories.map((cat, i) => (
+                  categories.map((cat: Category, i: number) => (
                     <TableRow key={cat.id} className={cn("group hover:bg-white/5 transition-all duration-300 border-white/5", i === categories.length - 1 && "border-0")}>
                       <TableCell className="p-6">
                         {editingId === cat.id ? (
                           <Input
-                            value={editingName}
-                            onChange={(e) => setEditingName(e.target.value)}
+                            {...editForm.register("name")}
                             className="h-12 rounded-lg bg-white/5 border-white/10 text-white font-black italic tracking-widest"
                             autoFocus
-                            onKeyDown={(e) => e.key === "Enter" && handleUpdate(cat.id)}
+                            onKeyDown={(e) => e.key === "Enter" && handleUpdate()}
+                            disabled={updateMutation.isPending}
+                            aria-describedby={editForm.formState.errors.name ? "edit-name-error" : undefined}
                           />
                         ) : (
                           <div className="flex items-center gap-4">
-                             <div className="w-8 h-8 rounded-lg bg-primary border border-primary flex items-center justify-center">
-                                <FolderTree className="h-4 w-4 text-primary" />
-                             </div>
-                             <span className="font-black text-white italic tracking-tight uppercase text-base">{cat.name}</span>
+                            <div className="w-8 h-8 rounded-lg bg-primary border border-primary flex items-center justify-center">
+                              <FolderTree className="h-4 w-4 text-primary" />
+                            </div>
+                            <span className="font-black text-white italic tracking-tight uppercase text-base">{cat.name}</span>
                           </div>
+                        )}
+                        {editingId === cat.id && editForm.formState.errors.name && (
+                          <p id="edit-name-error" className="text-sm text-destructive mt-1">{editForm.formState.errors.name.message}</p>
                         )}
                       </TableCell>
                       <TableCell className="p-6 text-right">
@@ -201,15 +272,17 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                                 variant="ghost"
                                 size="icon"
                                 className="h-10 w-10 rounded-xl text-success hover:bg-success"
-                                onClick={() => handleUpdate(cat.id)}
+                                onClick={() => handleUpdate()}
+                                disabled={updateMutation.isPending}
                               >
-                                <Save className="h-4 w-4" />
+                                {updateMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 className="h-10 w-10 rounded-xl text-destructive hover:bg-destructive"
-                                onClick={() => setEditingId(null)}
+                                onClick={cancelEditing}
+                                disabled={updateMutation.isPending}
                               >
                                 <X className="h-4 w-4" />
                               </Button>
@@ -220,10 +293,8 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                                 variant="ghost"
                                 size="icon"
                                 className="h-10 w-10 rounded-xl text-primary hover:bg-primary"
-                                onClick={() => {
-                                  setEditingId(cat.id);
-                                  setEditingName(cat.name);
-                                }}
+                                onClick={() => startEditing(cat)}
+                                disabled={isPending}
                               >
                                 <Edit2 className="h-4 w-4" />
                               </Button>
@@ -232,8 +303,9 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
                                 size="icon"
                                 className="h-10 w-10 rounded-xl text-destructive hover:text-destructive hover:bg-destructive"
                                 onClick={() => handleDelete(cat.id)}
+                                disabled={isPending}
                               >
-                                <Trash2 className="h-4 w-4" />
+                                {deleteMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                               </Button>
                             </>
                           )}
@@ -248,12 +320,13 @@ export function CategoryManager({ isOpen, onClose, onCategoriesChange }: Categor
         </div>
 
         <DialogFooter className="p-10 bg-white/5 border-t border-white/5">
-          <Button 
-             variant="outline" 
-             className="rounded-xl font-black italic text-[10px] uppercase tracking-widest h-12 px-8 border-white/10 bg-white/5 text-white hover:bg-white/10" 
-             onClick={onClose}
+          <Button
+            variant="outline"
+            className="rounded-xl font-black italic text-[10px] uppercase tracking-widest h-12 px-8 border-white/10 bg-white/5 text-white hover:bg-white/10"
+            onClick={onClose}
+            disabled={isPending}
           >
-             Termination Protocol
+            Termination Protocol
           </Button>
         </DialogFooter>
       </DialogContent>

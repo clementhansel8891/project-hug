@@ -1,4 +1,8 @@
 import { useState, useCallback, useRef } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +46,8 @@ import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/format";
 import { toast } from "@/hooks/use-toast";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { emitRetailPushEvent } from "@/modules/retail/api/retailGatewayPush";
 import { retailService } from "@/core/services/retail/retailService";
 import { RetailProduct } from "@/core/types/retail/retail";
@@ -58,6 +64,35 @@ interface InventoryItem extends RetailProduct {
   lastRestocked?: string;
   supplier?: string;
 }
+
+// ─── Zod Schemas for inventory dialogs ──────────────────────────────────────────
+
+const addItemSchema = z.object({
+  name: z.string().min(1, "Product name is required"),
+  category: z.string().min(1, "Category is required"),
+  price: z.string().min(1, "Price is required"),
+  barcode: z.string().optional().default(""),
+  supplier: z.string().optional().default(""),
+  stock: z.string().optional().default("0"),
+  minStock: z.string().optional().default("10"),
+  maxStock: z.string().optional().default("100"),
+  reorderPoint: z.string().optional().default("20"),
+});
+
+type AddItemFormValues = z.infer<typeof addItemSchema>;
+
+const adjustStockSchema = z.object({
+  quantity: z.coerce.number().refine((v) => v !== 0, "Adjustment cannot be zero"),
+  reason: z.string().min(1, "Reason is required"),
+});
+
+type AdjustStockFormValues = z.infer<typeof adjustStockSchema>;
+
+const reorderSchema = z.object({
+  quantity: z.coerce.number().positive("Quantity must be greater than 0"),
+});
+
+type ReorderFormValues = z.infer<typeof reorderSchema>;
 
 const productCategories = ['Coffee', 'Merchandise', 'Gift Cards', 'Equipment'];
 
@@ -91,6 +126,7 @@ const suppliers = [
 
 export default function RetailInventory() {
   const session = useSession();
+  const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -287,176 +323,195 @@ export default function RetailInventory() {
     return Math.min(100, (item.stock / item.maxStock) * 100);
   };
 
-  // Add new item
-  const handleAddItem = async () => {
-    if (!formData.name || !formData.category || !formData.price) {
-      toast({
-        title: "Missing fields",
-        description: "Please fill all required fields",
-        variant: "destructive",
-      });
-      return;
-    }
+  // ─── useForm for Add/Edit ────────────────────────────────────────────────────
+  const addEditForm = useForm<AddItemFormValues>({
+    resolver: zodResolver(addItemSchema),
+    defaultValues: {
+      name: "",
+      category: "",
+      price: "",
+      barcode: "",
+      supplier: "",
+      stock: "0",
+      minStock: "10",
+      maxStock: "100",
+      reorderPoint: "20",
+    },
+  });
 
-    try {
-      const newItem = await retailService.createProduct(session.tenant_id!, session, {
-        name: formData.name,
-        categoryId: formData.category, // assuming category name maps to ID or backend handles it
-        price: parseFloat(formData.price),
-        barcode: formData.barcode,
+  // ─── useForm for Adjust Stock ──────────────────────────────────────────────
+  const adjustForm = useForm<AdjustStockFormValues>({
+    resolver: zodResolver(adjustStockSchema),
+    defaultValues: { quantity: 0, reason: "" },
+  });
+
+  // ─── useForm for Reorder ───────────────────────────────────────────────────
+  const reorderForm = useForm<ReorderFormValues>({
+    resolver: zodResolver(reorderSchema),
+    defaultValues: { quantity: 20 },
+  });
+
+  // ─── Mutations ─────────────────────────────────────────────────────────────
+  const addItemMutation = useMutation({
+    mutationFn: async (data: AddItemFormValues) => {
+      return retailService.createProduct(session.tenant_id!, session, {
+        name: data.name,
+        categoryId: data.category,
+        price: parseFloat(data.price),
+        barcode: data.barcode,
         metadata: {
-          min_stock: parseInt(formData.minStock),
-          max_stock: parseInt(formData.maxStock),
-          reorder_point: parseInt(formData.reorderPoint),
-          supplier: formData.supplier,
-          stock_on_hand: parseInt(formData.stock) || 0,
-        }
+          min_stock: parseInt(data.minStock),
+          max_stock: parseInt(data.maxStock),
+          reorder_point: parseInt(data.reorderPoint),
+          supplier: data.supplier,
+          stock_on_hand: parseInt(data.stock) || 0,
+        },
       });
-
+    },
+    onSuccess: (newItem) => {
       const mapped: InventoryItem = {
         ...newItem,
-        minStock: parseInt(formData.minStock),
-        maxStock: parseInt(formData.maxStock),
-        reorderPoint: parseInt(formData.reorderPoint),
-        supplier: formData.supplier,
+        minStock: parseInt(addEditForm.getValues("minStock")),
+        maxStock: parseInt(addEditForm.getValues("maxStock")),
+        reorderPoint: parseInt(addEditForm.getValues("reorderPoint")),
+        supplier: addEditForm.getValues("supplier"),
         lastRestocked: new Date().toISOString(),
       };
-
       setInventory((prev) => [...prev, mapped]);
-      toast({
-        title: "Item added",
-        description: `${mapped.name} has been added to inventory`,
-      });
+      toast({ title: "Item added", description: `${mapped.name} has been added to inventory` });
+      queryClient.invalidateQueries({ queryKey: ["retail", "inventory"] });
       setIsAddOpen(false);
+      addEditForm.reset();
       resetForm();
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Failed to create product on backend.",
-        variant: "destructive",
-      });
-    }
-  };
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to create product on backend.", variant: "destructive" });
+    },
+  });
 
-  // Edit item
-  const handleEditItem = async () => {
-    if (
-      !selectedProduct ||
-      !formData.name ||
-      !formData.category ||
-      !formData.price
-    ) {
-      toast({
-        title: "Missing fields",
-        description: "Please fill all required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const updatedProduct = await retailService.updateProduct(session.tenant_id!, session, selectedProduct.id, {
-        name: formData.name,
-        categoryId: formData.category,
-        price: parseFloat(formData.price),
-        barcode: formData.barcode,
+  const editItemMutation = useMutation({
+    mutationFn: async (data: AddItemFormValues) => {
+      if (!selectedProduct) throw new Error("No product selected");
+      return retailService.updateProduct(session.tenant_id!, session, selectedProduct.id, {
+        name: data.name,
+        categoryId: data.category,
+        price: parseFloat(data.price),
+        barcode: data.barcode,
         metadata: {
           ...((selectedProduct.metadata as Record<string, unknown>) || {}),
-          min_stock: parseInt(formData.minStock),
-          max_stock: parseInt(formData.maxStock),
-          reorder_point: parseInt(formData.reorderPoint),
-          supplier: formData.supplier,
-          stock_on_hand: parseInt(formData.stock) || 0,
-        }
+          min_stock: parseInt(data.minStock),
+          max_stock: parseInt(data.maxStock),
+          reorder_point: parseInt(data.reorderPoint),
+          supplier: data.supplier,
+          stock_on_hand: parseInt(data.stock) || 0,
+        },
       });
-
+    },
+    onSuccess: (updatedProduct) => {
       const mapped: InventoryItem = {
         ...updatedProduct,
-        minStock: parseInt(formData.minStock),
-        maxStock: parseInt(formData.maxStock),
-        reorderPoint: parseInt(formData.reorderPoint),
-        supplier: formData.supplier,
-        lastRestocked: selectedProduct.lastRestocked,
+        minStock: parseInt(addEditForm.getValues("minStock")),
+        maxStock: parseInt(addEditForm.getValues("maxStock")),
+        reorderPoint: parseInt(addEditForm.getValues("reorderPoint")),
+        supplier: addEditForm.getValues("supplier"),
+        lastRestocked: selectedProduct?.lastRestocked,
       };
-
       setInventory((prev) =>
-        (Array.isArray(prev) ? prev : []).map((item) => (item.id === selectedProduct.id ? mapped : item)),
+        (Array.isArray(prev) ? prev : []).map((item) => (item.id === selectedProduct?.id ? mapped : item)),
       );
-
-      toast({
-        title: "Item updated",
-        description: `${formData.name} has been updated`,
-      });
+      toast({ title: "Item updated", description: `${addEditForm.getValues("name")} has been updated` });
+      queryClient.invalidateQueries({ queryKey: ["retail", "inventory"] });
       setIsEditOpen(false);
       setSelectedProduct(null);
+      addEditForm.reset();
       resetForm();
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Failed to update product on backend.",
-        variant: "destructive",
-      });
-    }
-  };
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update product on backend.", variant: "destructive" });
+    },
+  });
 
-  // Delete item
-  const handleDeleteItem = async () => {
-    if (!selectedProduct) return;
-
-    try {
-      await retailService.deleteProduct(session.tenant_id!, session, selectedProduct.id);
+  const deleteItemMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedProduct) throw new Error("No product selected");
+      return retailService.deleteProduct(session.tenant_id!, session, selectedProduct.id);
+    },
+    onSuccess: () => {
       setInventory((prev) =>
-        (Array.isArray(prev) ? prev : []).filter((item) => item.id !== selectedProduct.id),
+        (Array.isArray(prev) ? prev : []).filter((item) => item.id !== selectedProduct?.id),
       );
-      toast({
-        title: "Item deleted",
-        description: `${selectedProduct.name} has been removed from inventory`,
-      });
+      toast({ title: "Item deleted", description: `${selectedProduct?.name} has been removed from inventory` });
+      queryClient.invalidateQueries({ queryKey: ["retail", "inventory"] });
       setIsDeleteOpen(false);
       setSelectedProduct(null);
-    } catch (e) {
-      toast({
-        title: "Error",
-        description: "Failed to remove product from registry.",
-        variant: "destructive",
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to remove product from registry.", variant: "destructive" });
+    },
+  });
+
+  const adjustStockMutation = useMutation({
+    mutationFn: async (data: AdjustStockFormValues) => {
+      if (!selectedProduct) throw new Error("No product selected");
+      const previousStock = selectedProduct.stock || 0;
+      const newStock = Math.max(0, previousStock + data.quantity);
+
+      // Emit event for stock adjustment
+      void emitRetailPushEvent({
+        type: "inventory.stock.adjusted",
+        tenantId: session.tenant_id,
+        payload: {
+          id: selectedProduct.id,
+          name: selectedProduct.name,
+          category: selectedProduct.category,
+          previousStock,
+          newStock,
+          delta: data.quantity,
+          reason: data.reason || "manual_adjustment",
+        },
       });
-    }
+
+      return { newStock, quantity: data.quantity };
+    },
+    onSuccess: (result) => {
+      if (!selectedProduct) return;
+      setInventory((prev) =>
+        (Array.isArray(prev) ? prev : []).map((item) =>
+          item.id === selectedProduct.id ? { ...item, stock: result.newStock } : item,
+        ),
+      );
+      toast({
+        title: "Stock adjusted",
+        description: `${selectedProduct.name}: ${result.quantity > 0 ? "+" : ""}${result.quantity} units`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["retail", "inventory"] });
+      setIsAdjustOpen(false);
+      setSelectedProduct(null);
+      adjustForm.reset();
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to adjust stock.", variant: "destructive" });
+    },
+  });
+
+  // Add new item (wired)
+  const handleAddItem = () => {
+    addEditForm.handleSubmit((data) => addItemMutation.mutate(data))();
   };
 
-  // Handle stock adjustment
+  // Edit item (wired)
+  const handleEditItem = () => {
+    addEditForm.handleSubmit((data) => editItemMutation.mutate(data))();
+  };
+
+  // Delete item (wired)
+  const handleDeleteItem = () => {
+    deleteItemMutation.mutate();
+  };
+
+  // Handle stock adjustment (wired)
   const handleAdjustStock = () => {
-    if (!selectedProduct || adjustQuantity === 0) return;
-
-    const previousStock = selectedProduct.stock || 0;
-    const newStock = Math.max(0, previousStock + adjustQuantity);
-    setInventory((prev) =>
-      (Array.isArray(prev) ? prev : []).map((item) =>
-        item.id === selectedProduct.id ? { ...item, stock: newStock } : item,
-      ),
-    );
-
-    toast({
-      title: "Stock adjusted",
-      description: `${selectedProduct.name}: ${adjustQuantity > 0 ? "+" : ""}${adjustQuantity} units`,
-    });
-    void emitRetailPushEvent({
-      type: "inventory.stock.adjusted",
-      tenantId: session.tenant_id,
-      payload: {
-        id: selectedProduct.id,
-        name: selectedProduct.name,
-        category: selectedProduct.category,
-        previousStock,
-        newStock,
-        delta: adjustQuantity,
-        reason: adjustReason || "manual_adjustment",
-      },
-    });
-
-    setIsAdjustOpen(false);
-    setSelectedProduct(null);
-    setAdjustQuantity(0);
-    setAdjustReason("");
+    adjustForm.handleSubmit((data) => adjustStockMutation.mutate(data))();
   };
 
   // Handle reorder request
@@ -483,6 +538,7 @@ export default function RetailInventory() {
     setIsReorderOpen(false);
     setSelectedProduct(null);
     setReorderQuantity(20);
+    reorderForm.reset();
   };
 
   // Update reorder status
@@ -867,7 +923,8 @@ export default function RetailInventory() {
           <DialogHeader>
             <DialogTitle>Add New Item</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <form onSubmit={(e) => { e.preventDefault(); handleAddItem(); }} noValidate>
+            <fieldset disabled={addItemMutation.isPending} className="space-y-4">
             <div className="space-y-2">
               <Label>Product Name *</Label>
               <Input
@@ -876,6 +933,7 @@ export default function RetailInventory() {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 placeholder="Enter product name"
+                aria-invalid={addItemMutation.isError && !formData.name}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -994,7 +1052,9 @@ export default function RetailInventory() {
           </div>
           <DialogFooter>
             <Button
+              type="button"
               variant="outline"
+              disabled={addItemMutation.isPending}
               onClick={() => {
                 setIsAddOpen(false);
                 resetForm();
@@ -1002,11 +1062,17 @@ export default function RetailInventory() {
             >
               Cancel
             </Button>
-            <Button onClick={handleAddItem}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button type="submit" disabled={addItemMutation.isPending}>
+              {addItemMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Plus className="h-4 w-4 mr-2" />
+              )}
               Add Item
             </Button>
           </DialogFooter>
+          </fieldset>
+          </form>
         </DialogContent>
       </Dialog>
 
@@ -1016,7 +1082,8 @@ export default function RetailInventory() {
           <DialogHeader>
             <DialogTitle>Edit Item</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <form onSubmit={(e) => { e.preventDefault(); handleEditItem(); }} noValidate>
+            <fieldset disabled={editItemMutation.isPending} className="space-y-4">
             <div className="space-y-2">
               <Label>Product Name *</Label>
               <Input
@@ -1135,7 +1202,9 @@ export default function RetailInventory() {
           </div>
           <DialogFooter>
             <Button
+              type="button"
               variant="outline"
+              disabled={editItemMutation.isPending}
               onClick={() => {
                 setIsEditOpen(false);
                 resetForm();
@@ -1143,8 +1212,15 @@ export default function RetailInventory() {
             >
               Cancel
             </Button>
-            <Button onClick={handleEditItem}>Save Changes</Button>
+            <Button type="submit" disabled={editItemMutation.isPending}>
+              {editItemMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : null}
+              Save Changes
+            </Button>
           </DialogFooter>
+          </fieldset>
+          </form>
         </DialogContent>
       </Dialog>
 
@@ -1160,11 +1236,15 @@ export default function RetailInventory() {
             undone.
           </p>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
+            <Button variant="outline" disabled={deleteItemMutation.isPending} onClick={() => setIsDeleteOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={handleDeleteItem}>
-              <Trash2 className="h-4 w-4 mr-2" />
+            <Button variant="destructive" disabled={deleteItemMutation.isPending} onClick={handleDeleteItem}>
+              {deleteItemMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4 mr-2" />
+              )}
               Delete
             </Button>
           </DialogFooter>
@@ -1178,7 +1258,8 @@ export default function RetailInventory() {
             <DialogTitle>Adjust Stock</DialogTitle>
           </DialogHeader>
           {selectedProduct && (
-            <div className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); handleAdjustStock(); }} noValidate>
+              <fieldset disabled={adjustStockMutation.isPending} className="space-y-4">
               <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
                 <Package className="h-8 w-8 text-muted-foreground" />
                 <div>
@@ -1193,6 +1274,7 @@ export default function RetailInventory() {
                 <Label>Adjustment Quantity</Label>
                 <div className="flex items-center gap-2">
                   <Button
+                    type="button"
                     variant="outline"
                     size="icon"
                     onClick={() => setAdjustQuantity((q) => q - 1)}
@@ -1206,8 +1288,10 @@ export default function RetailInventory() {
                       setAdjustQuantity(parseInt(e.target.value) || 0)
                     }
                     className="text-center"
+                    aria-invalid={adjustQuantity === 0}
                   />
                   <Button
+                    type="button"
                     variant="outline"
                     size="icon"
                     onClick={() => setAdjustQuantity((q) => q + 1)}
@@ -1236,19 +1320,24 @@ export default function RetailInventory() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+
+              <DialogFooter>
+                <Button type="button" variant="outline" disabled={adjustStockMutation.isPending} onClick={() => setIsAdjustOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={adjustQuantity === 0 || !adjustReason || adjustStockMutation.isPending}
+                >
+                  {adjustStockMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : null}
+                  Save Adjustment
+                </Button>
+              </DialogFooter>
+              </fieldset>
+            </form>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAdjustOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleAdjustStock}
-              disabled={adjustQuantity === 0 || !adjustReason}
-            >
-              Save Adjustment
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 

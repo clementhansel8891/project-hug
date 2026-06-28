@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -12,31 +15,28 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
 import { procurementService } from "@/core/services/procurement/procurementService";
 import { formatCurrency } from "@/lib/format";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import type { SupplierBranch, SupplierMaster, SupplierRecommendation } from "@/core/types/procurement/procurement";
-import { Building2, Globe, User, Mail, Phone, MapPin, Tag, Info, ArrowUpRight, Plus, Trash2 } from "lucide-react";
-import { supplierMasterSchema, supplierBranchSchema, categorySchema } from "@/modules/procurement/schemas";
+import { Building2, Globe, User, Mail, Phone, MapPin, Tag, Info, ArrowUpRight, Plus, Trash2, Loader2 } from "lucide-react";
+import { supplierMasterSchema, supplierBranchSchema, categorySchema, type SupplierMasterFormValues, type SupplierBranchFormValues, type CategoryFormValues } from "@/modules/procurement/schemas";
 import {
   useCreateSupplierMaster,
   useCreateSupplierBranch,
   useUpsertCategory,
   useDeleteCategory,
+  PROCUREMENT_KEYS,
 } from "@/modules/procurement/hooks";
 
 export default function SupplierDesk() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [masterDialogOpen, setMasterDialogOpen] = useState(false);
   const [branchDialogOpen, setBranchDialogOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [taxId, setTaxId] = useState("");
-  const [categories, setCategories] = useState("General");
-  const [supplierId, setSupplierId] = useState("");
-  const [branchCode, setBranchCode] = useState("JKT");
-  const [branchName, setBranchName] = useState("");
-  const [location, setLocation] = useState("Jakarta");
-  const [leadTimeDays, setLeadTimeDays] = useState("3");
   const [recBranchCode, setRecBranchCode] = useState("JKT");
   const [recCategory, setRecCategory] = useState("Machinery");
   const [masters, setMasters] = useState<SupplierMaster[]>([]);
@@ -49,26 +49,48 @@ export default function SupplierDesk() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // New Rich Data States
-  const [website, setWebsite] = useState("");
-  const [contactPerson, setContactPerson] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [fullAddress, setFullAddress] = useState("");
-
   // Category Management States
   const [categoryList, setCategoryList] = useState<{ id: string; name: string; description?: string }[]>([]);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
-  const [newCatName, setNewCatName] = useState("");
-  const [newCatDesc, setNewCatDesc] = useState("");
 
-  // Validation error states
-  const [masterFieldErrors, setMasterFieldErrors] = useState<Record<string, string>>({});
-  const [branchFieldErrors, setBranchFieldErrors] = useState<Record<string, string>>({});
-  const [categoryFieldErrors, setCategoryFieldErrors] = useState<Record<string, string>>({});
+  // ─── React Hook Form: Supplier Master ─────────────────────────────────────────
+  const masterForm = useForm<SupplierMasterFormValues>({
+    resolver: zodResolver(supplierMasterSchema),
+    defaultValues: {
+      name: "",
+      taxId: "",
+      categories: "General",
+      website: "",
+      contactPerson: "",
+      contactEmail: "",
+      contactPhone: "",
+      address: "",
+    },
+  });
 
-  // TanStack Query mutations
+  // ─── React Hook Form: Supplier Branch ─────────────────────────────────────────
+  const branchForm = useForm<SupplierBranchFormValues>({
+    resolver: zodResolver(supplierBranchSchema),
+    defaultValues: {
+      supplierId: "",
+      branchCode: "JKT",
+      branchName: "",
+      location: "Jakarta",
+      leadTimeDays: 3,
+      fullAddress: "",
+      contactPerson: "",
+      contactEmail: "",
+      contactPhone: "",
+    },
+  });
+
+  // ─── React Hook Form: Category ────────────────────────────────────────────────
+  const categoryForm = useForm<CategoryFormValues>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: { name: "", description: "" },
+  });
+
+  // TanStack Query mutations with toast handlers
   const createSupplierMasterMutation = useCreateSupplierMaster();
   const createSupplierBranchMutation = useCreateSupplierBranch();
   const upsertCategoryMutation = useUpsertCategory();
@@ -129,124 +151,62 @@ export default function SupplierDesk() {
     [masters, search],
   );
 
-  const createMaster = async () => {
-    setMasterFieldErrors({});
-    const result = supplierMasterSchema.safeParse({
-      name,
-      taxId,
-      categories,
-      website: website || undefined,
-      contactPerson: contactPerson || undefined,
-      contactEmail: contactEmail || undefined,
-      contactPhone: contactPhone || undefined,
-      address: address || undefined,
-    });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        if (!errors[field]) errors[field] = issue.message;
-      });
-      setMasterFieldErrors(errors);
-      return;
-    }
+  // ─── Mutation Submit Handlers ─────────────────────────────────────────────────
+
+  const onSubmitMaster = masterForm.handleSubmit(async (data) => {
     try {
-      await createSupplierMasterMutation.mutateAsync(result.data);
-      setStatusMessage(`Supplier Master "${name}" created and routed for compliance vetting.`);
+      await createSupplierMasterMutation.mutateAsync(data);
+      toast({ title: "Supplier Created", description: `Supplier "${data.name}" created and routed for compliance vetting.` });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.suppliers });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.branches });
+      masterForm.reset();
       setMasterDialogOpen(false);
-      resetMasterForm();
-      setMasterFieldErrors({});
       refresh();
-    } catch (err) {
-      setErrorMessage("Failed to create supplier master.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to create supplier master.", variant: "destructive" });
     }
-  };
+  });
 
-  const resetMasterForm = () => {
-    setName("");
-    setTaxId("");
-    setCategories("General");
-    setWebsite("");
-    setContactPerson("");
-    setContactEmail("");
-    setContactPhone("");
-    setAddress("");
-  };
-
-  const createBranch = async () => {
-    setBranchFieldErrors({});
-    const result = supplierBranchSchema.safeParse({
-      supplierId,
-      branchCode,
-      branchName: branchName || undefined,
-      location,
-      leadTimeDays: Number(leadTimeDays || "0"),
-      fullAddress: fullAddress || undefined,
-      contactPerson: contactPerson || undefined,
-      contactEmail: contactEmail || undefined,
-      contactPhone: contactPhone || undefined,
-    });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        if (!errors[field]) errors[field] = issue.message;
-      });
-      setBranchFieldErrors(errors);
-      return;
-    }
+  const onSubmitBranch = branchForm.handleSubmit(async (data) => {
     try {
-      await createSupplierBranchMutation.mutateAsync(result.data);
-      setStatusMessage(`Supplier branch "${branchName || branchCode}" added successfully.`);
+      await createSupplierBranchMutation.mutateAsync(data);
+      toast({ title: "Branch Added", description: `Supplier branch "${data.branchName || data.branchCode}" added successfully.` });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.branches });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.suppliers });
+      branchForm.reset();
       setBranchDialogOpen(false);
-      resetBranchForm();
-      setBranchFieldErrors({});
       refresh();
-    } catch (err) {
-      setErrorMessage("Failed to add supplier branch.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to add supplier branch.", variant: "destructive" });
     }
-  };
+  });
 
-  const resetBranchForm = () => {
-    setBranchName("");
-    setLeadTimeDays("3");
-    setFullAddress("");
-    setContactPerson("");
-    setContactEmail("");
-    setContactPhone("");
-  };
-
-  const handleCreateCategory = async () => {
-    setCategoryFieldErrors({});
-    const result = categorySchema.safeParse({ name: newCatName, description: newCatDesc || undefined });
-    if (!result.success) {
-      const errors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as string;
-        if (!errors[field]) errors[field] = issue.message;
-      });
-      setCategoryFieldErrors(errors);
-      return;
-    }
+  const onSubmitCategory = categoryForm.handleSubmit(async (data) => {
     try {
-      await upsertCategoryMutation.mutateAsync(result.data);
-      setNewCatName("");
-      setNewCatDesc("");
-      setCategoryFieldErrors({});
+      await upsertCategoryMutation.mutateAsync(data);
+      toast({ title: "Category Created", description: `Category "${data.name}" saved.` });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.categories });
+      categoryForm.reset();
       refresh();
-    } catch (err) {
-      setErrorMessage("Failed to create category.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to create category.", variant: "destructive" });
     }
-  };
+  });
 
   const handleDeleteCategory = async (id: string) => {
     try {
       await deleteCategoryMutation.mutateAsync(id);
+      toast({ title: "Category Removed", description: "Category deactivated successfully." });
+      queryClient.invalidateQueries({ queryKey: PROCUREMENT_KEYS.categories });
       refresh();
-    } catch (err) {
-      setErrorMessage("Failed to deactivate category.");
+    } catch (err: any) {
+      toast({ title: "Error", description: err?.message || "Failed to deactivate category.", variant: "destructive" });
     }
   };
+
+  const masterIsPending = createSupplierMasterMutation.isPending;
+  const branchIsPending = createSupplierBranchMutation.isPending;
+  const categoryIsPending = upsertCategoryMutation.isPending;
 
   return (
     <div className="space-y-6">
@@ -410,7 +370,7 @@ export default function SupplierDesk() {
         </DataTableShell>
       </WorkspacePanel>
 
-      <Dialog open={masterDialogOpen} onOpenChange={setMasterDialogOpen}>
+      <Dialog open={masterDialogOpen} onOpenChange={(open) => { if (!open && !masterIsPending) { masterForm.reset(); setMasterDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby="master-create-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Create Supplier Master</DialogTitle>
@@ -455,39 +415,55 @@ export default function SupplierDesk() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={onSubmitMaster} noValidate>
+                <fieldset disabled={masterIsPending} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Official Supplier Name</label>
+                    <label htmlFor="master-name" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Official Supplier Name</label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-primary" />
                       <Input
+                        id="master-name"
                         className="pl-9"
                         placeholder="e.g. PT. Nusantara Tech Hub"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
+                        {...masterForm.register("name")}
+                        aria-describedby={masterForm.formState.errors.name ? "master-name-error" : undefined}
+                        aria-invalid={!!masterForm.formState.errors.name}
                       />
                     </div>
+                    {masterForm.formState.errors.name && (
+                      <p id="master-name-error" className="text-xs text-destructive mt-1" role="alert">{masterForm.formState.errors.name.message}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Tax ID (NPWP)</label>
+                    <label htmlFor="master-taxid" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Tax ID (NPWP)</label>
                     <Input
+                      id="master-taxid"
                       placeholder="01.234.567.8-091.000"
-                      value={taxId}
-                      onChange={(event) => setTaxId(event.target.value)}
+                      {...masterForm.register("taxId")}
+                      aria-describedby={masterForm.formState.errors.taxId ? "master-taxid-error" : undefined}
+                      aria-invalid={!!masterForm.formState.errors.taxId}
                     />
+                    {masterForm.formState.errors.taxId && (
+                      <p id="master-taxid-error" className="text-xs text-destructive mt-1" role="alert">{masterForm.formState.errors.taxId.message}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Website</label>
+                    <label htmlFor="master-website" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Website</label>
                     <div className="relative">
                       <Globe className="absolute left-3 top-2.5 h-4 w-4 text-primary" />
                       <Input
+                        id="master-website"
                         className="pl-9"
                         placeholder="https://www.example.com"
-                        value={website}
-                        onChange={(event) => setWebsite(event.target.value)}
+                        {...masterForm.register("website")}
+                        aria-describedby={masterForm.formState.errors.website ? "master-website-error" : undefined}
+                        aria-invalid={!!masterForm.formState.errors.website}
                       />
                     </div>
+                    {masterForm.formState.errors.website && (
+                      <p id="master-website-error" className="text-xs text-destructive mt-1" role="alert">{masterForm.formState.errors.website.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -495,66 +471,74 @@ export default function SupplierDesk() {
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Contact Profile & Address</p>
                   <div className="grid grid-cols-2 gap-4 text-foreground">
                     <div>
-                      <label className="text-xs font-medium mb-1.5 block">Person in Charge</label>
+                      <label htmlFor="master-contact" className="text-xs font-medium mb-1.5 block">Person in Charge</label>
                       <div className="relative">
                         <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input className="pl-9 h-9" placeholder="Full Name" value={contactPerson} onChange={e => setContactPerson(e.target.value)} />
+                        <Input id="master-contact" className="pl-9 h-9" placeholder="Full Name" {...masterForm.register("contactPerson")} />
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-medium mb-1.5 block">Contact Email</label>
+                      <label htmlFor="master-email" className="text-xs font-medium mb-1.5 block">Contact Email</label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input className="pl-9 h-9" placeholder="billing@vendor.com" value={contactEmail} onChange={e => setContactEmail(e.target.value)} />
+                        <Input id="master-email" className="pl-9 h-9" placeholder="billing@vendor.com" {...masterForm.register("contactEmail")}
+                          aria-describedby={masterForm.formState.errors.contactEmail ? "master-email-error" : undefined}
+                          aria-invalid={!!masterForm.formState.errors.contactEmail}
+                        />
                       </div>
+                      {masterForm.formState.errors.contactEmail && (
+                        <p id="master-email-error" className="text-xs text-destructive mt-1" role="alert">{masterForm.formState.errors.contactEmail.message}</p>
+                      )}
                     </div>
                     <div>
-                      <label className="text-xs font-medium mb-1.5 block">Contact Phone</label>
+                      <label htmlFor="master-phone" className="text-xs font-medium mb-1.5 block">Contact Phone</label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input className="pl-9 h-9" placeholder="+62 81..." value={contactPhone} onChange={e => setContactPhone(e.target.value)} />
+                        <Input id="master-phone" className="pl-9 h-9" placeholder="+62 81..." {...masterForm.register("contactPhone")} />
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-medium mb-1.5 block">HQ Address</label>
+                      <label htmlFor="master-address" className="text-xs font-medium mb-1.5 block">HQ Address</label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input className="pl-9 h-9" placeholder="Street, Building, Floor" value={address} onChange={e => setAddress(e.target.value)} />
+                        <Input id="master-address" className="pl-9 h-9" placeholder="Street, Building, Floor" {...masterForm.register("address")} />
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="pt-2 border-t">
-                  <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Product Categories</label>
+                  <label htmlFor="master-categories" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Product Categories</label>
                   <Input
+                    id="master-categories"
                     placeholder="Electronics, Machinery (Comma separated)"
-                    value={categories}
-                    onChange={(event) => setCategories(event.target.value)}
+                    {...masterForm.register("categories")}
+                    aria-describedby={masterForm.formState.errors.categories ? "master-categories-error" : undefined}
+                    aria-invalid={!!masterForm.formState.errors.categories}
                   />
+                  {masterForm.formState.errors.categories && (
+                    <p id="master-categories-error" className="text-xs text-destructive mt-1" role="alert">{masterForm.formState.errors.categories.message}</p>
+                  )}
                   <p className="text-[10px] text-muted-foreground mt-2 italic flex items-center gap-1">
                     <Info className="w-3 h-3" /> Tip: Accurate categories improve your recommendation score.
                   </p>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button variant="outline" onClick={() => { setMasterDialogOpen(false); resetMasterForm(); }}>Cancel</Button>
-                  <Button onClick={createMaster}>Create and Route</Button>
+                  <Button type="button" variant="outline" disabled={masterIsPending} onClick={() => { masterForm.reset(); setMasterDialogOpen(false); }}>Cancel</Button>
+                  <Button type="submit" disabled={masterIsPending}>
+                    {masterIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                    Create and Route
+                  </Button>
                 </div>
-                {Object.keys(masterFieldErrors).length > 0 && (
-                  <div className="space-y-1 pt-2">
-                    {Object.entries(masterFieldErrors).map(([field, msg]) => (
-                      <p key={field} className="text-xs text-destructive">{msg}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={branchDialogOpen} onOpenChange={setBranchDialogOpen}>
+      <Dialog open={branchDialogOpen} onOpenChange={(open) => { if (!open && !branchIsPending) { branchForm.reset(); setBranchDialogOpen(false); } }}>
         <DialogContent className="max-w-4xl p-0 overflow-hidden" aria-describedby="branch-create-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Add Supplier Branch</DialogTitle>
@@ -582,11 +566,12 @@ export default function SupplierDesk() {
             </div>
 
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={onSubmitBranch} noValidate>
+                <fieldset disabled={branchIsPending} className="space-y-6">
                 <div>
-                  <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Parent Supplier</label>
-                  <Select value={supplierId} onValueChange={setSupplierId}>
-                    <SelectTrigger className="h-10">
+                  <label htmlFor="branch-supplier" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Parent Supplier</label>
+                  <Select value={branchForm.watch("supplierId")} onValueChange={(v) => branchForm.setValue("supplierId", v, { shouldValidate: true })}>
+                    <SelectTrigger id="branch-supplier" className="h-10" aria-describedby={branchForm.formState.errors.supplierId ? "branch-supplier-error" : undefined} aria-invalid={!!branchForm.formState.errors.supplierId}>
                       <SelectValue placeholder="Identify Supplier Master" />
                     </SelectTrigger>
                     <SelectContent>
@@ -595,63 +580,81 @@ export default function SupplierDesk() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {branchForm.formState.errors.supplierId && (
+                    <p id="branch-supplier-error" className="text-xs text-destructive mt-1" role="alert">{branchForm.formState.errors.supplierId.message}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Branch Code</label>
-                    <Input placeholder="JKT-SBY-01" value={branchCode} onChange={e => setBranchCode(e.target.value.toUpperCase())} />
+                    <label htmlFor="branch-code" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Branch Code</label>
+                    <Input id="branch-code" placeholder="JKT-SBY-01" {...branchForm.register("branchCode")}
+                      aria-describedby={branchForm.formState.errors.branchCode ? "branch-code-error" : undefined}
+                      aria-invalid={!!branchForm.formState.errors.branchCode}
+                    />
+                    {branchForm.formState.errors.branchCode && (
+                      <p id="branch-code-error" className="text-xs text-destructive mt-1" role="alert">{branchForm.formState.errors.branchCode.message}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Branch Nickname</label>
-                    <Input placeholder="Surabaya East Hub" value={branchName} onChange={e => setBranchName(e.target.value)} />
+                    <label htmlFor="branch-nickname" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Branch Nickname</label>
+                    <Input id="branch-nickname" placeholder="Surabaya East Hub" {...branchForm.register("branchName")} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                   <div className="col-span-2">
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Full Fulfillment Address</label>
-                    <Input placeholder="Warehouse B, Industrial Zone 4" value={fullAddress} onChange={e => setFullAddress(e.target.value)} />
+                    <label htmlFor="branch-fulladdress" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Full Fulfillment Address</label>
+                    <Input id="branch-fulladdress" placeholder="Warehouse B, Industrial Zone 4" {...branchForm.register("fullAddress")} />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Lead Time (Days)</label>
-                    <Input type="number" value={leadTimeDays} onChange={e => setLeadTimeDays(e.target.value)} />
+                    <label htmlFor="branch-leadtime" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Lead Time (Days)</label>
+                    <Input id="branch-leadtime" type="number" {...branchForm.register("leadTimeDays", { valueAsNumber: true })}
+                      aria-describedby={branchForm.formState.errors.leadTimeDays ? "branch-leadtime-error" : undefined}
+                      aria-invalid={!!branchForm.formState.errors.leadTimeDays}
+                    />
+                    {branchForm.formState.errors.leadTimeDays && (
+                      <p id="branch-leadtime-error" className="text-xs text-destructive mt-1" role="alert">{branchForm.formState.errors.leadTimeDays.message}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Location City</label>
-                    <Input placeholder="Jakarta" value={location} onChange={e => setLocation(e.target.value)} />
+                    <label htmlFor="branch-location" className="text-xs font-semibold uppercase text-muted-foreground mb-2 block tracking-wider">Location City</label>
+                    <Input id="branch-location" placeholder="Jakarta" {...branchForm.register("location")}
+                      aria-describedby={branchForm.formState.errors.location ? "branch-location-error" : undefined}
+                      aria-invalid={!!branchForm.formState.errors.location}
+                    />
+                    {branchForm.formState.errors.location && (
+                      <p id="branch-location-error" className="text-xs text-destructive mt-1" role="alert">{branchForm.formState.errors.location.message}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                   <div>
-                    <label className="text-xs font-medium mb-1.5 block">Local Contact Name</label>
-                    <Input className="h-9" placeholder="Branch Manager" value={contactPerson} onChange={e => setContactPerson(e.target.value)} />
+                    <label htmlFor="branch-contact" className="text-xs font-medium mb-1.5 block">Local Contact Name</label>
+                    <Input id="branch-contact" className="h-9" placeholder="Branch Manager" {...branchForm.register("contactPerson")} />
                   </div>
                   <div>
-                    <label className="text-xs font-medium mb-1.5 block">Local Phone</label>
-                    <Input className="h-9" placeholder="+62..." value={contactPhone} onChange={e => setContactPhone(e.target.value)} />
+                    <label htmlFor="branch-phone" className="text-xs font-medium mb-1.5 block">Local Phone</label>
+                    <Input id="branch-phone" className="h-9" placeholder="+62..." {...branchForm.register("contactPhone")} />
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button variant="outline" onClick={() => { setBranchDialogOpen(false); resetBranchForm(); }}>Cancel</Button>
-                  <Button onClick={createBranch}>Confirm Addition</Button>
+                  <Button type="button" variant="outline" disabled={branchIsPending} onClick={() => { branchForm.reset(); setBranchDialogOpen(false); }}>Cancel</Button>
+                  <Button type="submit" disabled={branchIsPending}>
+                    {branchIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                    Confirm Addition
+                  </Button>
                 </div>
-                {Object.keys(branchFieldErrors).length > 0 && (
-                  <div className="space-y-1 pt-2">
-                    {Object.entries(branchFieldErrors).map(([field, msg]) => (
-                      <p key={field} className="text-xs text-destructive">{msg}</p>
-                    ))}
-                  </div>
-                )}
-              </div>
+                </fieldset>
+              </form>
             </div>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog>  </div>
 
-      <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
+      <Dialog open={categoryDialogOpen} onOpenChange={(open) => { if (!open && !categoryIsPending) { categoryForm.reset(); setCategoryDialogOpen(false); } }}>
         <DialogContent className="max-w-xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -663,13 +666,24 @@ export default function SupplierDesk() {
           <div className="space-y-6 py-4">
             <div className="rounded-xl border p-4 bg-muted/30">
               <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Add New Category</p>
-              <div className="grid gap-3">
-                <Input placeholder="Category Name (e.g. Raw Materials)" value={newCatName} onChange={e => setNewCatName(e.target.value)} />
-                {categoryFieldErrors.name && <p className="text-xs text-destructive">{categoryFieldErrors.name}</p>}
-                <Input placeholder="Description (Optional)" value={newCatDesc} onChange={e => setNewCatDesc(e.target.value)} />
-                <Button onClick={handleCreateCategory} className="w-full">
-                  <Plus className="w-4 h-4 mr-2" /> Create Category
-                </Button>
+              <form onSubmit={onSubmitCategory} noValidate>
+                <fieldset disabled={categoryIsPending} className="grid gap-3">
+                  <div>
+                    <Input id="cat-name" placeholder="Category Name (e.g. Raw Materials)" {...categoryForm.register("name")}
+                      aria-describedby={categoryForm.formState.errors.name ? "cat-name-error" : undefined}
+                      aria-invalid={!!categoryForm.formState.errors.name}
+                    />
+                    {categoryForm.formState.errors.name && (
+                      <p id="cat-name-error" className="text-xs text-destructive mt-1" role="alert">{categoryForm.formState.errors.name.message}</p>
+                    )}
+                  </div>
+                  <Input placeholder="Description (Optional)" {...categoryForm.register("description")} />
+                  <Button type="submit" disabled={categoryIsPending} className="w-full">
+                    {categoryIsPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+                    Create Category
+                  </Button>
+                </fieldset>
+              </form>
               </div>
             </div>
 

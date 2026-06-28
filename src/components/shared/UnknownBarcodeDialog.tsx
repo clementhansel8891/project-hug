@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -10,16 +13,24 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Barcode, 
-  Plus, 
-  AlertTriangle, 
-  CheckCircle2, 
+import {
+  Barcode,
+  AlertTriangle,
+  CheckCircle2,
   ArrowRight,
   PackagePlus,
-  History
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+// ─── Zod Schema ────────────────────────────────────────────────────────────────
+
+const createItemSchema = z.object({
+  name: z.string().min(1, "Item name is required").max(200, "Name too long"),
+  categoryId: z.string().min(1, "Category is required"),
+});
+
+type CreateItemFormValues = z.infer<typeof createItemSchema>;
+
+// ─── Types ─────────────────────────────────────────────────────────────────────
 
 interface UnknownBarcodeDialogProps {
   isOpen: boolean;
@@ -38,14 +49,21 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
   onCreateNew,
   categoryOptions,
 }) => {
-  const [step, setStep] = useState<"choice" | "create">("choice");
-  const [name, setName] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [step, setStep] = React.useState<"choice" | "create">("choice");
+
+  const form = useForm<CreateItemFormValues>({
+    resolver: zodResolver(createItemSchema),
+    defaultValues: {
+      name: "",
+      categoryId: "",
+    },
+  });
+
+  const { formState: { errors } } = form;
 
   const reset = () => {
     setStep("choice");
-    setName("");
-    setCategoryId("");
+    form.reset();
   };
 
   const handleClose = () => {
@@ -53,17 +71,17 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
     onClose();
   };
 
-  const handleCreate = () => {
+  const handleCreate = form.handleSubmit((data) => {
     onCreateNew({
-      name,
-      category_id: categoryId,
+      name: data.name,
+      category_id: data.categoryId,
       barcode,
-      sku: barcode, // Default SKU to barcode for quick entry
+      sku: barcode,
       unit: "pcs",
       module_tags: ["inventory"],
     });
     handleClose();
-  };
+  });
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -126,31 +144,39 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
               </div>
             </div>
           ) : (
-            <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
+            <form onSubmit={handleCreate} className="space-y-6 animate-in slide-in-from-right-4 duration-300">
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Item Name</Label>
-                  <Input 
+                  <Label htmlFor="item-name" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Item Name</Label>
+                  <Input
+                    id="item-name"
                     autoFocus
                     placeholder="e.g. Red Bull 250ml"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    {...form.register("name")}
                     className="h-12 rounded-xl border-border font-bold focus:ring-2 focus:ring-indigo-500/20"
+                    aria-describedby={errors.name ? "item-name-error" : undefined}
                   />
+                  {errors.name && (
+                    <p id="item-name-error" className="text-sm text-destructive">{errors.name.message}</p>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Category</Label>
+                  <Label htmlFor="item-category" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Category</Label>
                   <select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
+                    id="item-category"
+                    {...form.register("categoryId")}
                     className="w-full h-12 rounded-xl border border-border bg-white px-3 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                    aria-describedby={errors.categoryId ? "item-category-error" : undefined}
                   >
                     <option value="">Select Category...</option>
                     {categoryOptions.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
+                  {errors.categoryId && (
+                    <p id="item-category-error" className="text-sm text-destructive">{errors.categoryId.message}</p>
+                  )}
                 </div>
 
                 <div className="p-4 rounded-xl bg-primary border border-primary flex items-center gap-3">
@@ -162,22 +188,25 @@ export const UnknownBarcodeDialog: React.FC<UnknownBarcodeDialogProps> = ({
               </div>
 
               <div className="flex gap-3">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  type="button"
+                  variant="ghost"
                   className="flex-1 rounded-xl font-bold"
-                  onClick={() => setStep("choice")}
+                  onClick={() => {
+                    setStep("choice");
+                    form.reset();
+                  }}
                 >
                   Back
                 </Button>
-                <Button 
+                <Button
+                  type="submit"
                   className="flex-[2] rounded-xl font-black italic uppercase tracking-widest bg-primary hover:bg-primary shadow-lg shadow-indigo-100"
-                  disabled={!name || !categoryId}
-                  onClick={handleCreate}
                 >
                   Save & Add
                 </Button>
               </div>
-            </div>
+            </form>
           )}
         </div>
       </DialogContent>

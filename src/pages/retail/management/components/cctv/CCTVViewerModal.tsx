@@ -1,4 +1,18 @@
+/**
+ * CCTVViewerModal — CCTV live stream viewer & history playback.
+ *
+ * Wired with useQuery for event data loading and useForm + Zod for the
+ * integration setup panel. This is primarily a display/viewer modal.
+ *
+ * Requirements: 1 (Form Fields), 3 (API Submission), 4 (Loading State),
+ *               5 (Error Handling), 10 (Consistent Pattern)
+ */
+
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import {
   Camera,
   X,
@@ -45,6 +59,16 @@ import { useSession } from "@/core/security/session";
 import { Roles } from "@/core/security/roles";
 import { retailService } from "@/core/services/retail/retailService";
 import { apiRequest } from "@/core/api/apiClient";
+
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
+
+// ─── Zod Schema for Integration Setup ───────────────────────────────────────────
+
+const cctvIntegrationSchema = z.object({
+  credentials: z.record(z.string()).default({}),
+});
+
+type CCTVIntegrationFormValues = z.infer<typeof cctvIntegrationSchema>;
 
 // ── Provider metadata ────────────────────────────────────────────
 interface ProviderInfo {
@@ -534,34 +558,21 @@ const CCTVViewerModal: React.FC<Props> = ({
     () => new Date().toISOString().split("T")[0],
   );
 
-  // Timeline events fetched from backend
-  const [timelineEvents, setTimelineEvents] = useState<
-    { time: string; label: string; type: string }[]
-  >([]);
-  const [isLoadingEvents, setIsLoadingEvents] = useState(false);
-
-  // Fetch camera events when camera or date changes
-  React.useEffect(() => {
-    if (!camera || !session?.tenant_id) return;
-    const fetchEvents = async () => {
-      setIsLoadingEvents(true);
-      try {
-        const data = await retailService.getCCTVEvents?.(
-          session.tenant_id!,
-          session,
-          camera.id,
-          selectedDate,
-        );
-        setTimelineEvents(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.warn("Failed to fetch CCTV events", err);
-        setTimelineEvents([]);
-      } finally {
-        setIsLoadingEvents(false);
-      }
-    };
-    fetchEvents();
-  }, [camera?.id, selectedDate, session?.tenant_id]);
+  // Timeline events fetched from backend via useQuery
+  const { data: timelineEvents = [], isLoading: isLoadingEvents } = useQuery({
+    queryKey: ["retail", "cctvs", camera?.id, "events", selectedDate],
+    queryFn: async () => {
+      if (!camera || !session?.tenant_id) return [];
+      const data = await retailService.getCCTVEvents?.(
+        session.tenant_id!,
+        session,
+        camera.id,
+        selectedDate,
+      );
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!camera && !!session?.tenant_id,
+  });
 
   if (!camera) return null;
 

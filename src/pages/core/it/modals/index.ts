@@ -6,3 +6,4 @@ export { EditProvisioningModal } from "./EditProvisioningModal";
 export { RegisterDeviceModal } from "./RegisterDeviceModal";
 export { HardwareRequestModal } from "./HardwareRequestModal";
 export { SLAConfigModal } from "./SLAConfigModal";
+export { IncidentReportModal } from "./IncidentReportModal";

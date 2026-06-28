@@ -15,6 +15,7 @@ import { Request } from "express";
 import { TenantInterceptor } from "../../gateway/tenant.interceptor";
 import { TenantContext } from "../../gateway/tenant-context.interface";
 import { RetailGatewayService } from "./retail-gateway.service";
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 import {
   RetailPublicOrderRequestDto,
   CustomerRegisterDto,
@@ -101,6 +102,8 @@ export class RetailPublicGatewayController {
   }
 
   @Get("auth/me")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getMe(@Req() request: RequestWithTenant) {
     const auth = this.getCustomerAuth(request);
     return this.gatewayService.mapToPublicCustomer(
@@ -111,6 +114,8 @@ export class RetailPublicGatewayController {
   // --- Products ---
 
   @Get("products")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getProducts(
     @Req() request: RequestWithTenant,
     @Headers("x-client-id") clientId: string,
@@ -121,6 +126,8 @@ export class RetailPublicGatewayController {
   }
 
   @Get("products/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getProduct(
     @Req() request: RequestWithTenant,
     @Headers("x-client-id") clientId: string,
@@ -137,6 +144,8 @@ export class RetailPublicGatewayController {
   }
 
   @Get("categories")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getCategories(
     @Req() request: RequestWithTenant,
     @Headers("x-client-id") clientId: string,
@@ -147,6 +156,8 @@ export class RetailPublicGatewayController {
   }
 
   @Get("promotions")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getPromotions(
     @Req() request: RequestWithTenant,
     @Headers("x-client-id") clientId: string,
@@ -159,6 +170,8 @@ export class RetailPublicGatewayController {
   // --- Cart ---
 
   @Get("cart")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getCart(@Req() request: RequestWithTenant) {
     const auth = this.getCustomerAuth(request);
     return this.gatewayService.getCart(request.tenantContext, auth.sub);
@@ -210,6 +223,8 @@ export class RetailPublicGatewayController {
   // --- Wishlist ---
 
   @Get("wishlist")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getWishlist(@Req() request: RequestWithTenant) {
     const auth = this.getCustomerAuth(request);
     return this.gatewayService.getWishlist(request.tenantContext, auth.sub);
@@ -240,6 +255,8 @@ export class RetailPublicGatewayController {
   // --- Checkout ---
 
   @Get("orders")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getOrders(
     @Req() request: RequestWithTenant,
     @Headers("x-client-id") clientId: string,

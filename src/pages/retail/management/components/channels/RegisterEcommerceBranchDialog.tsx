@@ -1,5 +1,19 @@
+/**
+ * RegisterEcommerceBranchDialog — E-commerce branch registration.
+ *
+ * Wired with React Hook Form + Zod + useMutation + getMutationToastHandlers.
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
 import React, { useState, useEffect } from "react";
-import { Globe, RefreshCw, Store, PlusCircle, Link2 } from "lucide-react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
+import { Globe, RefreshCw, Store, PlusCircle, Link2, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,12 +27,27 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { hrService } from "@/core/services/hr/hrService";
 import {
   ecommerceHubService,
   type RegisterEcommerceBranchResult,
 } from "@/core/services/retail/ecommerceHubService";
 import type { EcommercePlatform } from "@/core/types/retail/retail";
+
+// ─── Zod Schema ─────────────────────────────────────────────────────────────────
+
+const registerEcommerceBranchSchema = z.object({
+  name: z.string().min(1, "Storefront name is required").max(100),
+  platform: z.string().min(1, "Platform is required"),
+  domain: z.string().min(1, "Domain is required").max(200),
+  code: z.string().max(50).optional(),
+  locationId: z.string().min(1, "Anchor location is required"),
+  bindChannel: z.boolean().default(true),
+});
+
+type RegisterEcommerceBranchFormValues = z.infer<typeof registerEcommerceBranchSchema>;
 
 interface RegisterEcommerceBranchDialogProps {
   /** Called with the newly registered virtual branch after a successful registration. */
@@ -50,15 +79,67 @@ export const RegisterEcommerceBranchDialog: React.FC<
 > = ({ onSuccess, trigger }) => {
   const session = useSession();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
 
   const [locations, setLocations] = useState<
     Array<{ id: string; name: string; code: string }>
   >([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
-  const [selectedLocationId, setSelectedLocationId] = useState("");
-  const [bindChannel, setBindChannel] = useState(true);
+
+  // ─── React Hook Form + Zod ────────────────────────────────────────────────────
+  const form = useForm<RegisterEcommerceBranchFormValues>({
+    resolver: zodResolver(registerEcommerceBranchSchema),
+    defaultValues: {
+      name: "",
+      platform: "shopify",
+      domain: "",
+      code: "",
+      locationId: "",
+      bindChannel: true,
+    },
+  });
+
+  const { register, control, formState: { errors }, handleSubmit, reset } = form;
+
+  const mutation = useMutation({
+    mutationFn: async (data: RegisterEcommerceBranchFormValues) => {
+      return ecommerceHubService.registerEcommerceBranch(session, {
+        name: data.name,
+        platform: data.platform,
+        domain: data.domain,
+        locationId: data.locationId,
+        code: data.code || undefined,
+        channel: data.bindChannel
+          ? {
+              name: `${data.name} Channel`,
+              type: "OWNED",
+              integrationCategory: "PREMADE",
+            }
+          : undefined,
+      });
+    },
+    onSuccess: (branch) => {
+      toast({
+        title: "E-Commerce Branch Registered",
+        description: `${branch.name || "Branch"} is now a virtual branch in the hierarchy.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["retail", "channels"] });
+      queryClient.invalidateQueries({ queryKey: ["retail", "stores"] });
+      onSuccess?.(branch);
+      setOpen(false);
+      reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Registration Failed",
+        description: error?.message || "The system could not register the e-commerce branch. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const isRegistering = mutation.isPending;
 
   const loadFormData = React.useCallback(async () => {
     if (!session.tenant_id) return;
@@ -79,64 +160,9 @@ export const RegisterEcommerceBranchDialog: React.FC<
     }
   }, [open, session.tenant_id, loadFormData]);
 
-  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!session.tenant_id) return;
-
-    const formData = new FormData(e.currentTarget);
-    const name = (formData.get("name") as string)?.trim();
-    const platform = formData.get("platform") as string;
-    const domain = (formData.get("domain") as string)?.trim();
-    const code = (formData.get("code") as string)?.trim();
-
-    if (!name || !platform || !domain || !selectedLocationId) {
-      toast({
-        title: "Validation Error",
-        description:
-          "Name, platform, domain, and anchor location are required to register an e-commerce branch.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsRegistering(true);
-    try {
-      const branch = await ecommerceHubService.registerEcommerceBranch(
-        session,
-        {
-          name,
-          platform,
-          domain,
-          locationId: selectedLocationId,
-          code: code || undefined,
-          channel: bindChannel
-            ? {
-                name: `${name} Channel`,
-                type: "OWNED",
-                integrationCategory: "PREMADE",
-              }
-            : undefined,
-        },
-      );
-
-      toast({
-        title: "E-Commerce Branch Registered",
-        description: `${name} is now a virtual branch in the hierarchy.`,
-      });
-      onSuccess?.(branch);
-      setOpen(false);
-      setSelectedLocationId("");
-    } catch (err) {
-      toast({
-        title: "Registration Failed",
-        description:
-          "The system could not register the e-commerce branch. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsRegistering(false);
-    }
-  };
+  const onSubmit = handleSubmit((data) => {
+    mutation.mutate(data);
+  });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -168,19 +194,25 @@ export const RegisterEcommerceBranchDialog: React.FC<
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleRegister} className="px-8 pb-2 space-y-5">
+        <form onSubmit={onSubmit} className="px-8 pb-2 space-y-5">
           <div className="space-y-2">
             <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground pl-1">
               Storefront Name
             </Label>
             <input
               type="text"
-              name="name"
-              required
+              {...register("name")}
               autoFocus
+              aria-describedby={errors.name ? "ecom-name-error" : undefined}
+              aria-invalid={!!errors.name}
               className="flex h-12 w-full rounded-2xl border border-border bg-secondary/5 px-4 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-success/20 focus:border-success transition-all"
               placeholder="e.g. Online Flagship Store"
             />
+            {errors.name && (
+              <p id="ecom-name-error" className="text-[10px] text-destructive font-medium" role="alert">
+                {errors.name.message}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -189,8 +221,7 @@ export const RegisterEcommerceBranchDialog: React.FC<
                 Platform
               </Label>
               <select
-                name="platform"
-                defaultValue="shopify"
+                {...register("platform")}
                 className="w-full h-12 rounded-2xl border border-border bg-secondary/5 px-4 font-bold italic text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-success/20 focus:border-success transition-all appearance-none cursor-pointer"
               >
                 {PLATFORMS.map((p) => (
@@ -199,6 +230,11 @@ export const RegisterEcommerceBranchDialog: React.FC<
                   </option>
                 ))}
               </select>
+              {errors.platform && (
+                <p className="text-[10px] text-destructive font-medium" role="alert">
+                  {errors.platform.message}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground pl-1">
@@ -206,7 +242,7 @@ export const RegisterEcommerceBranchDialog: React.FC<
               </Label>
               <input
                 type="text"
-                name="code"
+                {...register("code")}
                 className="flex h-12 w-full rounded-2xl border border-border bg-secondary/5 px-4 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-success/20 focus:border-success transition-all"
                 placeholder="auto"
               />
@@ -219,11 +255,17 @@ export const RegisterEcommerceBranchDialog: React.FC<
             </Label>
             <input
               type="text"
-              name="domain"
-              required
+              {...register("domain")}
+              aria-describedby={errors.domain ? "ecom-domain-error" : undefined}
+              aria-invalid={!!errors.domain}
               className="flex h-12 w-full rounded-2xl border border-border bg-secondary/5 px-4 py-2 font-bold italic text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-success/20 focus:border-success transition-all"
               placeholder="e.g. shop.example.com"
             />
+            {errors.domain && (
+              <p id="ecom-domain-error" className="text-[10px] text-destructive font-medium" role="alert">
+                {errors.domain.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -231,42 +273,61 @@ export const RegisterEcommerceBranchDialog: React.FC<
               <Store className="w-3.5 h-3.5" /> Anchor Location (Hierarchy
               Parent)
             </Label>
-            <select
-              required
-              value={selectedLocationId}
-              onChange={(e) => setSelectedLocationId(e.target.value)}
-              className="w-full h-12 rounded-2xl border border-border bg-secondary/5 px-4 font-bold italic text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-success/20 focus:border-success transition-all appearance-none cursor-pointer"
-            >
-              <option value="" disabled>
-                Select anchor location...
-              </option>
-              {locations.map((loc) => (
-                <option key={loc.id} value={loc.id}>
-                  {loc.name} [{loc.code}]
-                </option>
-              ))}
-            </select>
+            <Controller
+              control={control}
+              name="locationId"
+              render={({ field }) => (
+                <select
+                  value={field.value}
+                  onChange={(e) => field.onChange(e.target.value)}
+                  aria-describedby={errors.locationId ? "ecom-location-error" : undefined}
+                  aria-invalid={!!errors.locationId}
+                  className="w-full h-12 rounded-2xl border border-border bg-secondary/5 px-4 font-bold italic text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-success/20 focus:border-success transition-all appearance-none cursor-pointer"
+                >
+                  <option value="" disabled>
+                    Select anchor location...
+                  </option>
+                  {locations.map((loc) => (
+                    <option key={loc.id} value={loc.id}>
+                      {loc.name} [{loc.code}]
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+            {errors.locationId && (
+              <p id="ecom-location-error" className="text-[10px] text-destructive font-medium" role="alert">
+                {errors.locationId.message}
+              </p>
+            )}
           </div>
 
-          <label className="flex items-center gap-2 cursor-pointer pl-1">
-            <input
-              type="checkbox"
-              checked={bindChannel}
-              onChange={(e) => setBindChannel(e.target.checked)}
-              className="w-4 h-4 rounded accent-success"
-            />
-            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-              <Link2 className="w-3.5 h-3.5" /> Bind a sales channel to this
-              branch
-            </span>
-          </label>
+          <Controller
+            control={control}
+            name="bindChannel"
+            render={({ field }) => (
+              <label className="flex items-center gap-2 cursor-pointer pl-1">
+                <input
+                  type="checkbox"
+                  checked={field.value}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                  className="w-4 h-4 rounded accent-success"
+                />
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+                  <Link2 className="w-3.5 h-3.5" /> Bind a sales channel to this
+                  branch
+                </span>
+              </label>
+            )}
+          />
 
           <DialogFooter className="pt-2 pb-8">
             <div className="flex w-full gap-4">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                disabled={isRegistering}
+                onClick={() => { reset(); setOpen(false); }}
                 className="flex-1 h-13 rounded-2xl border-border font-black italic uppercase tracking-widest text-[10px] py-4"
               >
                 Cancel
@@ -277,7 +338,7 @@ export const RegisterEcommerceBranchDialog: React.FC<
                 className="flex-[2] h-13 bg-success hover:bg-success/90 text-white font-black italic rounded-2xl uppercase tracking-[0.2em] text-[10px] py-4 group transition-all active:scale-95"
               >
                 {isRegistering ? (
-                  <RefreshCw className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <div className="flex items-center gap-2">
                     Register Virtual Branch

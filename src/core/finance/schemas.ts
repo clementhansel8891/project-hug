@@ -166,6 +166,63 @@ export const assetDisposalSchema = z.object({
 export type AssetDisposalFormData = z.infer<typeof assetDisposalSchema>;
 
 // ---------------------------------------------------------------------------
+// Asset Edit Schema
+// ---------------------------------------------------------------------------
+
+export const assetEditSchema = z.object({
+  assetId: z.string().min(1),
+  description: z.string().min(1, "Asset description is required"),
+  assetClass: assetClassEnum,
+  location: z.string().min(1, "Location is required"),
+  department: z.string().min(1, "Department is required"),
+  usefulLifeYears: z.coerce.number().int().min(1, "Useful life must be at least 1 year"),
+  residualValue: z.coerce.number().min(0, "Residual value must be >= 0").default(0),
+  depreciationMethod: depreciationMethodEnum,
+});
+
+export type AssetEditFormData = z.infer<typeof assetEditSchema>;
+
+// ---------------------------------------------------------------------------
+// Asset Transfer Schema
+// ---------------------------------------------------------------------------
+
+export const assetTransferSchema = z.object({
+  assetId: z.string().min(1),
+  destinationLocation: z.string().min(1, "Destination location is required"),
+  destinationDepartment: z.string().min(1, "Destination department is required"),
+  transferDate: z.string().min(1, "Transfer date is required"),
+  reason: z.string().min(1, "Reason is required"),
+});
+
+export type AssetTransferFormData = z.infer<typeof assetTransferSchema>;
+
+// ---------------------------------------------------------------------------
+// Asset Maintenance Schema
+// ---------------------------------------------------------------------------
+
+export const assetMaintenanceSchema = z.object({
+  assetId: z.string().min(1),
+  maintenanceType: z.enum(["PREVENTIVE", "CORRECTIVE", "INSPECTION", "OVERHAUL"]),
+  cost: z.coerce.number().min(0, "Cost must be >= 0"),
+  maintenanceDate: z.string().min(1, "Maintenance date is required"),
+  notes: z.string().optional().default(""),
+});
+
+export type AssetMaintenanceFormData = z.infer<typeof assetMaintenanceSchema>;
+
+// ---------------------------------------------------------------------------
+// Asset Import Schema
+// ---------------------------------------------------------------------------
+
+export const assetImportSchema = z.object({
+  fileContent: z.string().min(1, "File content is required"),
+  fileName: z.string().min(1, "File name is required"),
+  format: z.enum(["CSV", "XLSX"]).default("CSV"),
+});
+
+export type AssetImportFormData = z.infer<typeof assetImportSchema>;
+
+// ---------------------------------------------------------------------------
 // Depreciation Run Schema
 // ---------------------------------------------------------------------------
 
@@ -369,3 +426,59 @@ export const settlementReconcileSchema = z.object({
 });
 
 export type SettlementReconcileFormData = z.infer<typeof settlementReconcileSchema>;
+
+// ---------------------------------------------------------------------------
+// Journal Entry Post Schema
+// ---------------------------------------------------------------------------
+
+export const journalPostSchema = z.object({
+  entryId: z.string().min(1, "Entry ID is required"),
+  postingDate: z.string().min(1, "Posting date is required"),
+  notes: z.string().optional(),
+});
+
+export type JournalPostFormData = z.infer<typeof journalPostSchema>;
+
+// ---------------------------------------------------------------------------
+// Journal Entry Reverse Schema
+// ---------------------------------------------------------------------------
+
+export const journalReverseSchema = z.object({
+  entryId: z.string().min(1, "Entry ID is required"),
+  reversalDate: z.string().min(1, "Reversal date is required"),
+  reason: z.string().min(1, "Reason for reversal is required"),
+});
+
+export type JournalReverseFormData = z.infer<typeof journalReverseSchema>;
+
+// ---------------------------------------------------------------------------
+// Treasury Source Create Schema
+// ---------------------------------------------------------------------------
+
+export const treasurySourceCreateSchema = z.object({
+  name: z.string().min(1, "Source name is required"),
+  type: z.enum(["BANK", "CASH_REGISTER", "E_WALLET", "GATEWAY_SETTLEMENT", "PETTY_CASH"], {
+    required_error: "Source type is required",
+  }),
+  currency: currencyEnum.default("IDR"),
+  balance: z.coerce.number().min(0, "Balance must be >= 0").default(0),
+  provider: z.string().optional(),
+});
+
+export type TreasurySourceCreateFormData = z.infer<typeof treasurySourceCreateSchema>;
+
+// ---------------------------------------------------------------------------
+// Treasury Source Edit Schema
+// ---------------------------------------------------------------------------
+
+export const treasurySourceEditSchema = z.object({
+  sourceId: z.string().min(1, "Source ID is required"),
+  name: z.string().min(1, "Source name is required"),
+  type: z.enum(["BANK", "CASH_REGISTER", "E_WALLET", "GATEWAY_SETTLEMENT", "PETTY_CASH"], {
+    required_error: "Source type is required",
+  }),
+  currency: currencyEnum.default("IDR"),
+  provider: z.string().optional(),
+});
+
+export type TreasurySourceEditFormData = z.infer<typeof treasurySourceEditSchema>;

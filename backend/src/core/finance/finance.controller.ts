@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, Inject, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, UseInterceptors, Inject, BadRequestException } from '@nestjs/common';
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 import { getFinanceExecutionMode } from './utils/finance-safety.utils';
 import { FinanceService } from './finance.service';
 import { ChartOfAccountService } from './services/chart-of-account.service';
@@ -48,6 +49,8 @@ export class FinanceController {
 
   // --- Chart of Accounts ---
   @Get('coa')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getCoa(@TenantCtx() ctx: TenantContext) {
     return this.coaService.getHierarchy(ctx.tenant_id, ctx.company_id);
   }
@@ -72,11 +75,15 @@ export class FinanceController {
 
   // --- Fiscal Periods ---
   @Get('fiscal-years')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getFiscalYears(@TenantCtx() ctx: TenantContext) {
     return this.fiscalService.listYears(ctx.tenant_id, ctx.company_id);
   }
 
   @Get('periods')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listPeriods(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listPeriods(ctx);
   }
@@ -108,6 +115,8 @@ export class FinanceController {
 
   // --- Posting Rules ---
   @Get('posting-rules')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getRules(@TenantCtx() ctx: TenantContext) {
     return this.ruleService.listRules(ctx.tenant_id, ctx.company_id);
   }
@@ -154,6 +163,8 @@ export class FinanceController {
 
   // --- Money Sources & Petty Cash ---
   @Get('money-sources')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getMoneySources(@TenantCtx() ctx: TenantContext) {
     return this.financeService.getMoneySources(ctx);
   }
@@ -170,57 +181,79 @@ export class FinanceController {
 
   // --- Alerts, Inbox & Payments ---
   @Get('alerts')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getAlerts(@TenantCtx() ctx: TenantContext) {
     return this.financeService.getAlerts(ctx);
   }
 
   @Get('inbox')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getInbox(@TenantCtx() ctx: TenantContext) {
     return this.financeService.getInbox(ctx);
   }
 
   @Get('payments')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listPayments(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listPayments(ctx);
   }
 
   @Get('capex/budgets')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listCapexBudgets(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listCapexBudgets(ctx);
   }
 
   @Get('policies')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listPolicies(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listPolicies(ctx);
   }
 
   @Get('payables')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listPayables(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listPayables(ctx);
   }
 
   @Get('receivables')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listReceivables(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listReceivables(ctx);
   }
 
   @Get('ledger')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listJournals(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listJournals(ctx);
   }
 
   @Get('invoices')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listInvoices(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listInvoices(ctx);
   }
 
   // --- Treasury ---
   @Get('treasury/sources')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listSources(@TenantCtx() ctx: TenantContext) {
     return this.financeService.getMoneySources(ctx);
   }
 
   @Get('treasury/transfers')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listTransfers(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listTransfers(ctx);
   }
@@ -239,11 +272,15 @@ export class FinanceController {
 
   // --- Payroll ---
   @Get('payroll/entries')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getPayrollEntries(@TenantCtx() ctx: TenantContext, @Query('period') period?: string) {
     return this.financeService.getPayrollEntries(ctx, period);
   }
 
   @Get('payroll/estimate')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async estimatePayroll(@TenantCtx() ctx: TenantContext, @Query('period') period: string) {
     return this.financeService.estimatePayroll(ctx, period);
   }
@@ -256,26 +293,36 @@ export class FinanceController {
 
   // --- Assets ---
   @Get('assets')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listAssets(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listAssets(ctx);
   }
 
   @Get('assets/events')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listAssetEvents(@TenantCtx() ctx: TenantContext, @Query('assetId') assetId?: string) {
     return this.financeService.listAssetEvents(ctx, assetId);
   }
 
   @Get('assets/depreciation')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listAssetDepreciationEntries(@TenantCtx() ctx: TenantContext, @Query('assetId') assetId?: string) {
     return this.financeService.listAssetDepreciationEntries(ctx, assetId);
   }
 
   @Get('assets/:id')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getAssetById(@TenantCtx() ctx: TenantContext, @Param('id') id: string) {
     return this.financeService.getAssetById(ctx, id);
   }
 
   @Get('assets/:id/audit-pack')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getAssetAuditPack(@TenantCtx() ctx: TenantContext, @Param('id') id: string) {
     return this.financeService.getAssetAuditPack(ctx, id);
   }
@@ -337,6 +384,8 @@ export class FinanceController {
 
   // --- CAPEX Requests ---
   @Get('capex/requests')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listCapexRequests(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listCapexRequests(ctx);
   }
@@ -380,6 +429,8 @@ export class FinanceController {
 
   // --- Audit Log ---
   @Get('audit-log')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listAuditLog(@TenantCtx() ctx: TenantContext, @Query('module') module?: string, @Query('limit') limit?: string) {
     return this.financeService.listAuditLog(ctx, module, parseInt(limit || '100'));
   }
@@ -391,11 +442,15 @@ export class FinanceController {
 
   // --- Loans ---
   @Get('loans')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listLoans(@TenantCtx() ctx: TenantContext) {
     return this.financeService.listLoans(ctx);
   }
 
   @Get('loans/my')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getMyLoans(@TenantCtx() ctx: TenantContext) {
     const employeeId = await this.financeService.getEmployeeIdByUserId(ctx, ctx.user_id || '');
     if (!employeeId) return [];
@@ -411,5 +466,31 @@ export class FinanceController {
   @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.MANAGER)
   async approveLoan(@TenantCtx() ctx: TenantContext, @Param('id') id: string) {
     return this.financeService.approveLoan(ctx, id, ctx.user_id || 'SYSTEM');
+  }
+
+  // --- Payslip Templates ---
+  @Get('payslip/templates')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  async listPayslipTemplates(@TenantCtx() ctx: TenantContext) {
+    return this.financeService.listPayslipTemplates(ctx);
+  }
+
+  @Post('payslip/templates')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.MANAGER)
+  async createPayslipTemplate(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    return this.financeService.createPayslipTemplate(ctx, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Patch('payslip/templates/:id')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.MANAGER)
+  async updatePayslipTemplate(@TenantCtx() ctx: TenantContext, @Param('id') id: string, @Body() dto: any) {
+    return this.financeService.updatePayslipTemplate(ctx, id, dto, ctx.user_id || 'SYSTEM');
+  }
+
+  @Delete('payslip/templates/:id')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async deletePayslipTemplate(@TenantCtx() ctx: TenantContext, @Param('id') id: string) {
+    return this.financeService.deletePayslipTemplate(ctx, id);
   }
 }

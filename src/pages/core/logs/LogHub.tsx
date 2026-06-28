@@ -30,6 +30,7 @@ import { Search, Info, Loader2, AlertCircle, CheckCircle2, Activity, Terminal, S
 import { adminService } from "@/core/services/adminService";
 import { formatDateTime, safeText } from "@/lib/format";
 import DepartmentWorkspaceLayout from "@/components/layouts/DepartmentWorkspaceLayout";
+import { LogFilterExportModal } from "./LogFilterExportModal";
 
 const SECTIONS = [
   {
@@ -101,6 +102,7 @@ export default function LogHub({ noShell = false }: { noShell?: boolean }) {
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
   const [stuckEvents, setStuckEvents] = useState<StuckEventsStatus | null>(null);
   const [integrityStatus, setIntegrityStatus] = useState<IntegrityStatus | null>(null);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
 
   const fetchObservability = useCallback(async () => {
     try {
@@ -291,6 +293,9 @@ export default function LogHub({ noShell = false }: { noShell?: boolean }) {
           <Button type="submit">
             <Search className="h-4 w-4 mr-2" /> Search
           </Button>
+          <Button type="button" variant="outline" onClick={() => setExportModalOpen(true)}>
+            Export
+          </Button>
         </form>
 
         {loading ? (
@@ -375,6 +380,11 @@ export default function LogHub({ noShell = false }: { noShell?: boolean }) {
           </div>
         </div>
       </WorkspacePanel>
+
+      <LogFilterExportModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+      />
 
       <Sheet open={!!selectedLog} onOpenChange={(open) => !open && setSelectedLog(null)}>
         <SheetContent className="sm:max-w-xl overflow-y-auto">

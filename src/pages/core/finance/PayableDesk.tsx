@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -12,11 +15,15 @@ import { FilterBar } from "@/core/tools/FilterBar";
 import { ApprovalStatusBadge } from "@/core/tools/ApprovalStatusBadge";
 import { FeedbackAlert } from "@/core/tools/FeedbackAlert";
 import { useSession } from "@/core/security/session";
+import { apiRequest } from "@/core/api/apiClient";
+import { useToast } from "@/hooks/use-toast";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import { financeApiClient } from "@/core/services/finance/financeApiClient";
 import type { FinancePayableRow } from "@/core/services/finance/financeService";
 import { logService } from "@/core/services/finance/logService";
 import { formatNumber } from "@/lib/format";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { payableSchema, type PayableFormData } from "@/core/finance/schemas";
 import { CreatePayableModal } from "@/core/finance/FinanceModalForms";
 
 type PayableTab = "PENDING" | "APPROVED" | "PAID" | "OVERDUE";
@@ -25,16 +32,55 @@ const TABS: PayableTab[] = ["PENDING", "APPROVED", "PAID", "OVERDUE"];
 
 export default function PayableDesk() {
   const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<PayableTab>("PENDING");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [vendor, setVendor] = useState("");
-  const [amount, setAmount] = useState("0");
-  const [dueDate, setDueDate] = useState("");
   const [payables, setPayables] = useState<FinancePayableRow[]>([]);
   const [selectedItem, setSelectedItem] = useState<FinancePayableRow | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // --- React Hook Form: Create Payable ---
+  const payableForm = useForm<PayableFormData>({
+    resolver: zodResolver(payableSchema),
+    defaultValues: { vendor: "", amount: 0, dueDate: "", currency: "IDR" },
+  });
+
+  const createPayableMutation = useMutation({
+    mutationFn: (data: PayableFormData) =>
+      apiRequest("/v1/finance/payables", "POST", session, data),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["finance", "payables"]],
+      onClose: () => setDialogOpen(false),
+      form: payableForm,
+      successTitle: "Payable Created",
+      successDescription: "Accounts payable entry submitted for approval.",
+    }),
+    onSuccess: () => {
+      toast({ title: "Payable Created", description: "Accounts payable entry submitted for approval." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "payables"] });
+      payableForm.reset();
+      setDialogOpen(false);
+      refreshPayables();
+    },
+  });
+
+  const markPaidMutation = useMutation({
+    mutationFn: (id: string) =>
+      apiRequest(`/v1/finance/payables/${id}/paid`, "PATCH", session, {}),
+    onSuccess: () => {
+      toast({ title: "Paid", description: "Payable marked as paid and posted to ledger." });
+      queryClient.invalidateQueries({ queryKey: ["finance", "payables"] });
+      refreshPayables();
+    },
+    onError: (error: any) => {
+      toast({ title: "Error", description: error?.message || "Failed to mark as paid.", variant: "destructive" });
+    },
+  });
 
   const clearStatus = () => {
     setStatusMessage(null);
@@ -76,28 +122,8 @@ export default function PayableDesk() {
     return next;
   }, [filtered]);
 
-  const createPayable = async () => {
-    try {
-      await financeApiClient.createPayable(session.tenant_id, session, {
-        vendor,
-        amount: Number(amount || "0"),
-        dueDate,
-      });
-      logService.log(
-        session.tenant_id,
-        session.user_id,
-        "Created payable",
-        `${vendor} - ${amount}`,
-      );
-      setStatusMessage(`Payable for ${vendor} created successfully.`);
-      setDialogOpen(false);
-      setVendor("");
-      setAmount("0");
-      setDueDate("");
-      refreshPayables();
-    } catch (err) {
-      setErrorMessage("Failed to create payable. Technical error.");
-    }
+  const createPayable = (data: PayableFormData) => {
+    createPayableMutation.mutate(data);
   };
 
   const approvePayable = async (id: string) => {
@@ -111,15 +137,8 @@ export default function PayableDesk() {
     }
   };
 
-  const markPaid = async (id: string) => {
-    try {
-      await financeApiClient.markPaid(session.tenant_id, session, id);
-      logService.log(session.tenant_id, session.user_id, "Marked payable paid", id);
-      setStatusMessage("Payable marked as paid and posted to ledger.");
-      refreshPayables();
-    } catch (err) {
-      setErrorMessage("Failed to record payment. Ledger entry failed.");
-    }
+  const markPaid = (id: string) => {
+    markPaidMutation.mutate(id);
   };
 
   const renderTable = (items: FinancePayableRow[]) => (
@@ -232,7 +251,7 @@ export default function PayableDesk() {
         </Tabs>
       </WorkspacePanel>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => { if (!open && !createPayableMutation.isPending) { payableForm.reset(); setDialogOpen(false); } }}>
         <DialogContent className="max-w-3xl p-0 overflow-hidden" aria-describedby="payable-create-description">
           <DialogHeader className="sr-only">
             <DialogTitle>Create Payable</DialogTitle>
@@ -276,10 +295,13 @@ export default function PayableDesk() {
 
             {/* Right Form Panel */}
             <div className="p-6">
-              <div className="space-y-6">
+              <form onSubmit={payableForm.handleSubmit(createPayable)} className="space-y-6">
                 <div>
                   <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Vendor Name</label>
-                  <Input placeholder="e.g., Summit Supplies Ltd." value={vendor} onChange={(event) => setVendor(event.target.value)} />
+                  <Input placeholder="e.g., Summit Supplies Ltd." {...payableForm.register("vendor")} disabled={createPayableMutation.isPending} />
+                  {payableForm.formState.errors.vendor && (
+                    <p className="text-xs text-destructive mt-1">{payableForm.formState.errors.vendor.message}</p>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -291,10 +313,13 @@ export default function PayableDesk() {
                         className="pl-9"
                         placeholder="0"
                         type="number"
-                        value={amount}
-                        onChange={(event) => setAmount(event.target.value)}
+                        {...payableForm.register("amount", { valueAsNumber: true })}
+                        disabled={createPayableMutation.isPending}
                       />
                     </div>
+                    {payableForm.formState.errors.amount && (
+                      <p className="text-xs text-destructive mt-1">{payableForm.formState.errors.amount.message}</p>
+                    )}
                   </div>
                   <div>
                     <label className="text-xs font-semibold uppercase text-muted-foreground mb-2 block">Required Due Date</label>
@@ -303,10 +328,13 @@ export default function PayableDesk() {
                       <Input
                         className="pl-9"
                         type="date"
-                        value={dueDate}
-                        onChange={(event) => setDueDate(event.target.value)}
+                        {...payableForm.register("dueDate")}
+                        disabled={createPayableMutation.isPending}
                       />
                     </div>
+                    {payableForm.formState.errors.dueDate && (
+                      <p className="text-xs text-destructive mt-1">{payableForm.formState.errors.dueDate.message}</p>
+                    )}
                   </div>
                 </div>
 
@@ -320,10 +348,12 @@ export default function PayableDesk() {
                 </div>
 
                 <div className="flex justify-end gap-3 pt-4 border-t">
-                  <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={createPayable}>Submit for Approval</Button>
+                  <Button type="button" variant="outline" onClick={() => { payableForm.reset(); setDialogOpen(false); }} disabled={createPayableMutation.isPending}>Cancel</Button>
+                  <Button type="submit" disabled={createPayableMutation.isPending}>
+                    {createPayableMutation.isPending ? "Submitting..." : "Submit for Approval"}
+                  </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </DialogContent>

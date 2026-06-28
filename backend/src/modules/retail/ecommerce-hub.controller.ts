@@ -22,6 +22,7 @@ import {
 import { RegisterEcommerceBranchDto } from "./dto/retail.dto";
 import { TenantInterceptor } from "../../gateway/tenant.interceptor";
 import { TenantContext } from "../../gateway/tenant-context.interface";
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 
 interface RequestWithTenant extends Request {
   tenantContext: TenantContext;
@@ -66,6 +67,8 @@ export class EcommerceHubController {
   // ════════════════════════════════════════════════
 
   @Get("connectors")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listConnectors(@Req() req: RequestWithTenant) {
     const { tenant_id } = req.tenantContext;
     const data = await this.hubService.listConnectors(tenant_id);
@@ -87,6 +90,8 @@ export class EcommerceHubController {
   }
 
   @Get("connectors/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getConnector(@Req() req: RequestWithTenant, @Param("id") id: string) {
     const { tenant_id } = req.tenantContext;
     const data = await this.hubService.getConnector(tenant_id, id);
@@ -151,6 +156,8 @@ export class EcommerceHubController {
   // ════════════════════════════════════════════════
 
   @Get("channels")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listChannels(@Req() req: RequestWithTenant) {
     const { tenant_id } = req.tenantContext;
     const data = await this.hubService.listChannels(tenant_id);
@@ -175,6 +182,8 @@ export class EcommerceHubController {
   }
 
   @Get("channels/:id")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getChannel(@Req() req: RequestWithTenant, @Param("id") id: string) {
     const { tenant_id } = req.tenantContext;
     const data = await this.hubService.getChannel(tenant_id, id);
@@ -236,6 +245,8 @@ export class EcommerceHubController {
   // ── Channel Product Management ─────────────────────────────
 
   @Get("channels/:id/products")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listChannelProducts(
     @Req() req: RequestWithTenant,
     @Param("id") id: string,
@@ -262,6 +273,8 @@ export class EcommerceHubController {
   }
 
   @Get("channels/:id/categories")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async getChannelCategories(
     @Req() req: RequestWithTenant,
     @Param("id") id: string,

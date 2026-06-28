@@ -162,24 +162,13 @@ export default function BudgetPlanning() {
                                 <ArrowRight className="absolute top-4 right-4 h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
                               </div>
                             )}
-                            {isModuleActive("fnb") && (
+                            {isModuleActive("retail") && (
                               <div className="p-4 rounded-2xl border bg-muted relative group cursor-pointer hover:border-success transition-all">
-                                <BudgetProgressRow label="FnB Hub" total={1500000000} spent={920000000} color="emerald" />
+                                <BudgetProgressRow label="Retail Ops" total={1500000000} spent={920000000} color="emerald" />
                                 <ArrowRight className="absolute top-4 right-4 h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
                               </div>
                             )}
-                            {isModuleActive("clinic") && (
-                              <div className="p-4 rounded-2xl border bg-muted relative group cursor-pointer hover:border-primary transition-all">
-                                <BudgetProgressRow label="Clinic Desk" total={4200000000} spent={1200000000} color="indigo" />
-                                <ArrowRight className="absolute top-4 right-4 h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
-                              </div>
-                            )}
-                            {isModuleActive("farming") && (
-                              <div className="p-4 rounded-2xl border bg-muted relative group cursor-pointer hover:border-success transition-all">
-                                <BudgetProgressRow label="Farm Desk" total={7500000000} spent={4800000000} color="emerald" />
-                                <ArrowRight className="absolute top-4 right-4 h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
-                              </div>
-                            )}
+
                           </div>
                         </div>
                       </div>

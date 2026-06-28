@@ -39,6 +39,7 @@ import { apiRequest } from "@/core/api/apiClient";
 import { useBackgroundRefresh } from "@/core/runtime/events/useBackgroundRefresh";
 import { EmptyState } from "@/components/shared/AsyncState";
 import { safeText } from "@/lib/format";
+import { CreateShiftTemplateModal, AssignShiftStaffModal, SwapShiftModal } from "./modals";
 
 export default function RosterGrid() {
   const session = useSession();
@@ -52,6 +53,9 @@ export default function RosterGrid() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [actionOpen, setActionOpen] = useState(false);
+  const [shiftTemplateOpen, setShiftTemplateOpen] = useState(false);
+  const [assignShiftOpen, setAssignShiftOpen] = useState(false);
+  const [swapShiftOpen, setSwapShiftOpen] = useState(false);
   const [actionType, setActionType] = useState<"training" | "review" | "payroll" | "import">("training");
   const [actionEmployeeId, setActionEmployeeId] = useState("");
   const [actionProgramId, setActionProgramId] = useState("");
@@ -352,6 +356,24 @@ export default function RosterGrid() {
             }}
           >
             Export Report
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setShiftTemplateOpen(true)}
+          >
+            Create Shift Template
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setAssignShiftOpen(true)}
+          >
+            Assign Shift
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setSwapShiftOpen(true)}
+          >
+            Swap Shift
           </Button>
         </div>
       </WorkspacePanel>
@@ -932,6 +954,27 @@ export default function RosterGrid() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <CreateShiftTemplateModal
+        isOpen={shiftTemplateOpen}
+        onClose={() => setShiftTemplateOpen(false)}
+        departments={departments}
+        onSuccess={() => refresh()}
+      />
+
+      <AssignShiftStaffModal
+        isOpen={assignShiftOpen}
+        onClose={() => setAssignShiftOpen(false)}
+        employees={staff.items.map((e) => ({ id: e.id, fullName: e.fullName }))}
+        onSuccess={() => refresh()}
+      />
+
+      <SwapShiftModal
+        isOpen={swapShiftOpen}
+        onClose={() => setSwapShiftOpen(false)}
+        employees={staff.items.map((e) => ({ id: e.id, fullName: e.fullName }))}
+        onSuccess={() => refresh()}
+      />
     </div>
   );
 }

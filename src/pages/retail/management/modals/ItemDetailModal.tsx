@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -8,10 +12,13 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, TrendingUp, MapPin, Clock, Edit3, Trash2 } from "lucide-react";
+import { Package, TrendingUp, MapPin, Clock, Edit3, Trash2, Loader2 } from "lucide-react";
 import { useModuleList } from "@/hooks/useModuleQuery";
+import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 
 interface InventoryItem {
   id: string;
@@ -43,6 +50,14 @@ interface ItemDetailModalProps {
   onDelete?: (sku: string) => void;
 }
 
+// ─── Zod Schema for Delete action ───────────────────────────────────────────
+
+const deleteItemSchema = z.object({
+  sku: z.string().min(1),
+});
+
+type DeleteItemFormValues = z.infer<typeof deleteItemSchema>;
+
 export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   item,
   isOpen,
@@ -50,7 +65,38 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   if (!item) return null;
+
+  // ─── Delete Mutation ────────────────────────────────────────────────────────
+  const deleteForm = useForm<DeleteItemFormValues>({
+    resolver: zodResolver(deleteItemSchema),
+    defaultValues: { sku: item?.sku ?? "" },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      apiRequest(`/v1/retail/inventory/items/${item.id}`, "DELETE", session),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "inventory"]],
+      onClose,
+      form: deleteForm,
+      successTitle: "Item Deleted",
+      successDescription: `${item.name} has been removed from inventory.`,
+    }),
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
+    onDelete?.(item.sku);
+  };
+
+  const isPending = deleteMutation.isPending;
 
   // Fetch movements from backend, fallback to empty array
   const { data: movementsData } = useModuleList<MovementRecord>(
@@ -79,7 +125,7 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !isPending) onClose(); }}>
       <DialogContent className="max-w-4xl rounded-[2rem] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
@@ -105,17 +151,17 @@ export const ItemDetailModal: React.FC<ItemDetailModalProps> = ({
               )}
               {onDelete && (
                 <Button
-                  onClick={() => {
-                    if (confirm(`Remove ${item.name} from inventory?`)) {
-                      onDelete(item.sku);
-                      onClose();
-                    }
-                  }}
+                  onClick={handleDelete}
+                  disabled={isPending}
                   variant="outline"
                   size="sm"
                   className="h-10 px-4 rounded-xl font-black italic text-destructive border-destructive hover:bg-destructive"
                 >
-                  <Trash2 className="w-4 h-4 mr-2" />
+                  {deleteMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4 mr-2" />
+                  )}
                   Delete
                 </Button>
               )}

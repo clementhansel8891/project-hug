@@ -1,4 +1,14 @@
-import { useState, useEffect, useMemo } from "react";
+/**
+ * RetailCustomerActivity — Customer registry & activity viewer.
+ *
+ * Wired with useQuery for data loading.
+ * This is a display/viewer component with no form mutations.
+ *
+ * Requirements: 4 (Loading State), 5 (Error Handling), 10 (Consistent Pattern)
+ */
+
+import { useState, useMemo } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   User,
   ShoppingCart,
@@ -36,28 +46,20 @@ export function RetailCustomerActivity({
   onExpansionRequest?: (feature: string) => void 
 }) {
   const session = useSession();
-  const [customers, setCustomers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
-  const fetchCustomers = async () => {
-    if (!session.tenantId) return;
-    try {
-      setLoading(true);
+  // ─── useQuery for customer data ───────────────────────────────────────────────
+  const { data: customers = [], isLoading: loading } = useQuery({
+    queryKey: ["retail", "customers"],
+    queryFn: async () => {
+      if (!session.tenantId) return [];
       const data = await retailService.listCustomers(session.tenantId, session);
-      setCustomers(data);
-    } catch (err) {
-      console.error("Failed to fetch customers", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-  }, [session.tenantId]);
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!session.tenantId,
+  });
 
   const filteredCustomers = useMemo(() => {
     return (Array.isArray(customers) ? customers : []).filter(
@@ -314,28 +316,19 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
 }
 
 function OrderHistoryList({ customerId }: { customerId: string }) {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const session = useSession();
 
-  const fetchOrders = async () => {
-    if (!session.tenantId) return;
-    try {
-      setLoading(true);
+  const { data: orders = [], isLoading: loading } = useQuery({
+    queryKey: ["retail", "orders", customerId],
+    queryFn: async () => {
+      if (!session.tenantId) return [];
       const data = await retailService.listOrders(session.tenantId, session, {
         customer_id: customerId
       });
-      setOrders(data);
-    } catch (err) {
-      console.error("Failed to fetch order history", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, [customerId, session.tenantId]);
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!session.tenantId && !!customerId,
+  });
 
   if (loading) return (
     <div className="p-24 text-center space-y-6">

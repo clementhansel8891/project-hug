@@ -46,9 +46,7 @@ const PHASE_MODULES: Record<string, ProvisionOptions["modules"]> = {
   "phase1-auth": [],
   "phase2-core": [],
   "phase3-retail": ["retail"],
-  "phase4-fnb": ["fnb"],
-  "phase5-industry": ["clinic", "farming"],
-  "phase6-portal": [],
+  "phase4-portal": [],
 };
 
 const DEFAULT_PHASE = "phase1-auth";

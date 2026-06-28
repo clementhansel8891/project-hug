@@ -59,7 +59,7 @@ async function runMultiTenantTest() {
     const loginB = await api('/auth/login', 'POST', { email: userB.email, password: userB.password });
     const tokenB = loginB.data.token;
     
-    const provB = await api('/auth/company/provision', 'POST', { name: 'Tenant B Food', industry: 'FNB', country: 'Indonesia', address: 'Bali' }, tokenB);
+    const provB = await api('/auth/company/provision', 'POST', { name: 'Tenant B Corp', industry: 'RETAIL', country: 'Indonesia', address: 'Bali' }, tokenB);
     const tenantB = provB.data.data.tenant_id;
     const locB = provB.data.data.location_id;
     console.log(`✅ Tenant B Provisioned: ${tenantB} (Loc: ${locB})`);

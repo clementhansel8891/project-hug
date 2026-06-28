@@ -28,7 +28,8 @@ import { PermissionAction } from "@/modules/shared/contract";
 // ============================================================
 
 // Toggle to use demo mocks or real backend
-const USE_DEMO_MOCKS = process.env.NODE_ENV === "development" || localStorage.getItem("zenvix_demo_mode") === "true";
+// PRODUCTION: Always disabled. Only enabled when explicitly opted in via localStorage.
+const USE_DEMO_MOCKS = localStorage.getItem("zenvix_demo_mode") === "true";
 
 // ============================================================
 // STATE TYPES

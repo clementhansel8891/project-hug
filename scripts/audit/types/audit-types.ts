@@ -219,7 +219,5 @@ export const MODULE_REGISTRY: Record<string, ModuleConfig> = {
   audit:       { layer: 'core',     pagePaths: ['src/pages/core/audit/'] },
   comms:       { layer: 'core',     pagePaths: ['src/pages/core/comms/'] },
   tools:       { layer: 'core',     pagePaths: ['src/pages/core/tools/'] },
-  fnb:         { layer: 'fnb',      pagePaths: ['src/pages/fnb/'] },
-  industry:    { layer: 'industry', pagePaths: ['src/pages/industry/'] },
   portal:      { layer: 'portal',   pagePaths: ['src/pages/portal/'] },
 };

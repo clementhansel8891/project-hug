@@ -1,4 +1,8 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +25,12 @@ import {
   CheckCircle2,
   XCircle,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
+import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 import type { RetailOrder, OrderStatus } from "@/core/types/retail/retail";
 
 interface OrderDetailModalProps {
@@ -33,6 +42,21 @@ interface OrderDetailModalProps {
   onRefund?: (orderId: string, items: string[]) => void;
 }
 
+// ─── Zod Schema for Status Change action ────────────────────────────────────
+
+const statusChangeSchema = z.object({
+  newStatus: z.string().min(1, "Status is required"),
+});
+
+type StatusChangeFormValues = z.infer<typeof statusChangeSchema>;
+
+// ─── Zod Schema for Void action ─────────────────────────────────────────────
+
+const voidOrderSchema = z.object({
+  orderId: z.string().min(1),
+});
+
+type VoidOrderFormValues = z.infer<typeof voidOrderSchema>;
 
 export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   order,
@@ -42,6 +66,70 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   onVoid,
   onRefund,
 }) => {
+  const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // ─── Status Change Mutation ─────────────────────────────────────────────────
+  const statusForm = useForm<StatusChangeFormValues>({
+    resolver: zodResolver(statusChangeSchema),
+    defaultValues: { newStatus: "" },
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: (data: StatusChangeFormValues) =>
+      apiRequest(`/v1/retail/orders/${order?.id}/status`, "PATCH", session, {
+        status: data.newStatus,
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "orders"]],
+      onClose,
+      form: statusForm,
+      successTitle: "Status Updated",
+      successDescription: "Order status has been updated successfully.",
+    }),
+  });
+
+  // ─── Void Order Mutation ────────────────────────────────────────────────────
+  const voidForm = useForm<VoidOrderFormValues>({
+    resolver: zodResolver(voidOrderSchema),
+    defaultValues: { orderId: "" },
+  });
+
+  const voidMutation = useMutation({
+    mutationFn: () =>
+      apiRequest(`/v1/retail/orders/${order?.id}`, "DELETE", session),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "orders"]],
+      onClose,
+      form: voidForm,
+      successTitle: "Order Voided",
+      successDescription: "The order has been voided successfully.",
+    }),
+  });
+
+  // ─── Refund Mutation ────────────────────────────────────────────────────────
+  const refundMutation = useMutation({
+    mutationFn: () =>
+      apiRequest(`/v1/retail/orders/${order?.id}/refund`, "POST", session, {
+        items: order?.items?.map((i: any) => i.product_id) ?? [],
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "orders"]],
+      onClose,
+      form: statusForm,
+      successTitle: "Refund Initiated",
+      successDescription: "The refund has been processed successfully.",
+    }),
+  });
+
+  const isPending = statusMutation.isPending || voidMutation.isPending || refundMutation.isPending;
 
   if (!order) return null;
 
@@ -70,14 +158,22 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   };
 
   const handleStatusChange = (newStatus: OrderStatus) => {
-    if (onStatusChange) {
-      onStatusChange(order.id, newStatus);
-      onClose();
-    }
+    statusMutation.mutate({ newStatus });
+    onStatusChange?.(order.id, newStatus);
+  };
+
+  const handleVoid = () => {
+    voidMutation.mutate();
+    onVoid?.(order.id);
+  };
+
+  const handleRefund = () => {
+    refundMutation.mutate();
+    onRefund?.(order.id, (Array.isArray(order.items) ? order.items : []).map((i: any) => i.product_id));
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open && !isPending) onClose(); }}>
       <DialogContent className="max-w-3xl rounded-2xl border-none shadow-2xl max-h-[90vh] overflow-y-auto p-0 scrollbar-hide">
         <div className="relative">
           {/* Header Gradient */}
@@ -234,6 +330,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               <Button
                 variant="outline"
                 onClick={onClose}
+                disabled={isPending}
                 className="h-14 flex-1 rounded-2xl border-border font-black italic uppercase text-[10px] tracking-widest hover:bg-secondary/5"
               >
                 Cancel View
@@ -242,9 +339,14 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               {order.status === "paid" && (
                 <Button
                   onClick={() => handleStatusChange("processing")}
+                  disabled={isPending}
                   className="h-14 flex-[2] bg-primary hover:bg-primary/90 rounded-2xl font-black italic uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100"
                 >
-                  <Package className="w-4 h-4 mr-2" />
+                  {statusMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Package className="w-4 h-4 mr-2" />
+                  )}
                   Initiate Processing
                 </Button>
               )}
@@ -252,9 +354,14 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               {order.status === "processing" && (
                 <Button
                   onClick={() => handleStatusChange("ready_for_pickup")}
+                  disabled={isPending}
                   className="h-14 flex-[2] bg-warning hover:bg-warning rounded-2xl font-black italic uppercase text-[10px] tracking-widest shadow-xl shadow-amber-100"
                 >
-                  <Clock className="w-4 h-4 mr-2" />
+                  {statusMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Clock className="w-4 h-4 mr-2" />
+                  )}
                   Mark Ready for Pickup
                 </Button>
               )}
@@ -262,9 +369,14 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               {order.status === "ready_for_pickup" && (
                 <Button
                   onClick={() => handleStatusChange("shipped")}
+                  disabled={isPending}
                   className="h-14 flex-[2] bg-success hover:bg-success rounded-2xl font-black italic uppercase text-[10px] tracking-widest shadow-xl shadow-emerald-100"
                 >
-                  <Truck className="w-4 h-4 mr-2" />
+                  {statusMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Truck className="w-4 h-4 mr-2" />
+                  )}
                   Dispatch Payload
                 </Button>
               )}
@@ -272,33 +384,48 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
               {order.status === "shipped" && (
                 <Button
                   onClick={() => handleStatusChange("complete")}
+                  disabled={isPending}
                   className="h-14 flex-[2] bg-secondary hover:bg-secondary/60 rounded-2xl font-black italic uppercase text-[10px] tracking-widest shadow-xl shadow-slate-100"
                 >
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
+                  {statusMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                  )}
                   Confirm Receipt
                 </Button>
               )}
 
               {/* Advanced Actions (Void/Refund) */}
-              {(order.status === "paid" || order.status === "processing") && onVoid && (
+              {(order.status === "paid" || order.status === "processing") && (
                 <Button
                   variant="ghost"
-                  onClick={() => onVoid(order.id)}
+                  onClick={handleVoid}
+                  disabled={isPending}
                   className="h-14 w-14 rounded-2xl border border-destructive text-destructive hover:bg-destructive"
                   title="Void Order"
                 >
-                  <XCircle className="w-5 h-5" />
+                  {voidMutation.isPending ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <XCircle className="w-5 h-5" />
+                  )}
                 </Button>
               )}
 
-              {order.status === "complete" && onRefund && (
+              {order.status === "complete" && (
                 <Button
                   variant="ghost"
-                  onClick={() => onRefund(order.id, (Array.isArray(order.items) ? order.items : []).map(i => i.product_id))}
+                  onClick={handleRefund}
+                  disabled={isPending}
                   className="h-14 w-14 rounded-2xl border border-warning text-warning hover:bg-warning"
                   title="Initiate Refund"
                 >
-                  <CheckCircle2 className="w-5 h-5" />
+                  {refundMutation.isPending ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-5 h-5" />
+                  )}
                 </Button>
               )}
             </div>

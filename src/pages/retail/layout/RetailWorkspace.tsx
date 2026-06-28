@@ -84,6 +84,17 @@ const RetailWorkspace = () => {
         { id: "mgt-workflow", title: "Workflow Inbox", desc: "Approval tasks", icon: AlertCircle, route: "/m/retail/management/workflow?scope=RETAIL", color: "text-warning", bg: "bg-warning" },
       ]
     },
+    {
+      title: "Warehouse",
+      apps: [
+        { id: "wh-hub", title: "Warehouse Hub", desc: "WH operations", icon: BoxSelect, route: "/core/warehouse", color: "text-primary", bg: "bg-primary/5" },
+        { id: "wh-hierarchy", title: "Storage Zones", desc: "Location hierarchy", icon: Layout, route: "/core/warehouse/hierarchy", color: "text-primary", bg: "bg-primary/5" },
+        { id: "wh-receiving", title: "WH Receiving", desc: "Inbound goods", icon: MonitorDot, route: "/core/warehouse/receiving", color: "text-success", bg: "bg-success" },
+        { id: "wh-picking", title: "Picking", desc: "Order pick lists", icon: BoxSelect, route: "/core/warehouse/picking", color: "text-warning", bg: "bg-warning" },
+        { id: "wh-packing", title: "Packing", desc: "Pack & ship", icon: BoxSelect, route: "/core/warehouse/packing", color: "text-primary", bg: "bg-primary/5" },
+        { id: "wh-analytics", title: "Occupancy", desc: "Trends & capacity", icon: BarChart3, route: "/core/warehouse/analytics", color: "text-muted-foreground", bg: "bg-secondary/5" },
+      ]
+    },
   ];
 
   return (

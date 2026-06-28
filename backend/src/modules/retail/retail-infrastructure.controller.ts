@@ -13,6 +13,7 @@ import { Request } from "express";
 import { RetailInfrastructureService } from "./retail-infrastructure.service";
 import { TenantInterceptor } from "../../gateway/tenant.interceptor";
 import { TenantContext } from "../../gateway/tenant-context.interface";
+import { CacheInterceptor, CacheTTL } from '../../shared/cache';
 
 interface RequestWithTenant extends Request {
   tenantContext: TenantContext;
@@ -24,6 +25,8 @@ export class RetailInfrastructureController {
   constructor(private readonly infraService: RetailInfrastructureService) {}
 
   @Get("nodes")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listNodes(@Req() request: RequestWithTenant) {
     const { tenant_id } = request.tenantContext;
     return this.infraService.listGatewayNodes(tenant_id);
@@ -40,6 +43,8 @@ export class RetailInfrastructureController {
   }
 
   @Get("load-balancers")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   async listLoadBalancers(@Req() request: RequestWithTenant) {
     const { tenant_id } = request.tenantContext;
     return this.infraService.listLoadBalancers(tenant_id);

@@ -409,9 +409,7 @@ export async function provisionSyntheticOrg(
   log(`runId = ${runId}`);
 
   // Choose an industry hint from the requested modules where obvious, else the fixed default.
-  const industry = modules.some((m) => /fnb|food|restaurant/i.test(m))
-    ? "fnb"
-    : FIXED_LOCATION.industry;
+  const industry = FIXED_LOCATION.industry;
 
   // Own the browser lifecycle only if we launched it.
   const ownsBrowser = !runtime.browser;

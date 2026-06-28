@@ -163,6 +163,22 @@ export const convertLeadSchema = z.object({
 export type ConvertLeadInput = z.infer<typeof convertLeadSchema>;
 
 // ---------------------------------------------------------------------------
+// Incentive Config Schemas
+// ---------------------------------------------------------------------------
+
+export const createIncentivePlanSchema = z.object({
+  name: z.string().min(2, "Plan name must be at least 2 characters").max(200),
+  description: z.string().max(500).optional().or(z.literal("")),
+  type: z.enum(["PERCENTAGE", "FIXED", "TIERED"], { required_error: "Plan type is required" }),
+  value: z.coerce.number().min(0, "Value must be >= 0"),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().optional().or(z.literal("")),
+  isActive: z.boolean().default(true),
+});
+
+export type CreateIncentivePlanInput = z.infer<typeof createIncentivePlanSchema>;
+
+// ---------------------------------------------------------------------------
 // Calculation Utilities
 // ---------------------------------------------------------------------------
 

@@ -16,6 +16,7 @@ import { DocumentViewer } from "@/core/tools/docs/DocumentViewer";
 import type { ContractRecord, VisaRecord } from "@/core/hr/legal/contractTypes";
 import type { LegalContractHandoff } from "@/core/types/procurement/procurement";
 import { EmptyState } from "@/components/shared/AsyncState";
+import { CreateLegalContractModal } from "./modals";
 
 export default function LexBoard() {
   const session = useSession();
@@ -207,41 +208,12 @@ export default function LexBoard() {
           </div>
         </WorkspacePanel>
       </div>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Contract Template Builder</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-              <SelectTrigger className="w-[240px]">
-                <SelectValue placeholder="Select template" />
-              </SelectTrigger>
-              <SelectContent>
-                {(Array.isArray(contractTemplates) ? contractTemplates : []).map((tpl) => (
-                  <SelectItem key={tpl.id} value={tpl.id}>
-                    {tpl.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <DocumentViewer
-              title="Template Preview"
-              content={buildTemplatePreview(selectedTemplate)}
-              onSave={async () => {
-                await legalService.createContract(session.tenant_id, session, {
-                  title: "Generated Contract",
-                  type: "internal",
-                  status: "draft",
-                });
-                setVersion((prev) => prev + 1);
-                setDialogOpen(false);
-              }}
-              onPrint={() => undefined}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateLegalContractModal
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        templates={contractTemplates.map((t) => ({ id: t.id, name: t.name }))}
+        onSuccess={() => setVersion((prev) => prev + 1)}
+      />
     </div>
   );
 }

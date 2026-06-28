@@ -1,6 +1,41 @@
+/**
+ * ScheduleGrid — Shift schedule grid with inline shift assignment dialog.
+ *
+ * The inline AssignShiftDialog at the end follows the canonical wiring pattern:
+ * 1. Zod schema for validation (employeeId, startTime, endTime, role required)
+ * 2. useForm with zodResolver
+ * 3. useMutation with apiRequest
+ * 4. getMutationToastHandlers for standardized success/error
+ * 5. Loading states (isPending disables submit/cancel/fields via fieldset)
+ * 6. Accessibility: aria-describedby, aria-invalid, role="alert"
+ *
+ * Requirements: 1 (Form Fields), 2 (Validation), 3 (API Submission),
+ *               4 (Loading State), 5 (Error Handling), 6 (Success Handling),
+ *               10 (Consistent Pattern)
+ */
+
 import React, { useState, useRef, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Clock,
   ChevronLeft,
@@ -11,6 +46,7 @@ import {
   CalendarRange,
   Trash2,
   Calendar as CalendarIcon,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -28,6 +64,10 @@ import {
   endOfMonth,
   isSameDay,
 } from "date-fns";
+import { useSession } from "@/core/security/session";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/core/api/apiClient";
+import { getMutationToastHandlers } from "@/lib/modal-helpers";
 
 export interface ScheduledShift {
   id: string;
@@ -586,5 +626,267 @@ const ViewControls = ({
         </div>
       </div>
     </div>
+  );
+};
+
+// ─── Inline Shift Assignment Dialog ─────────────────────────────────────────────
+
+const assignShiftSchema = z.object({
+  employeeId: z.string().min(1, "Employee is required"),
+  startTime: z.string().min(1, "Start time is required"),
+  endTime: z.string().min(1, "End time is required"),
+  role: z.string().min(1, "Role is required"),
+}).refine(
+  (data) => data.endTime > data.startTime,
+  { message: "End time must be after start time", path: ["endTime"] }
+);
+
+export type AssignShiftFormValues = z.infer<typeof assignShiftSchema>;
+
+interface AssignShiftDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  dayOfWeek: number;
+  startHour?: number;
+  date?: Date;
+  availableStaff?: { id: string; name: string; role: string }[];
+}
+
+const SHIFT_ROLES = [
+  "Cashier",
+  "Shift Supervisor",
+  "Store Manager",
+  "Inventory Specialist",
+  "Security",
+];
+
+export const AssignShiftDialog: React.FC<AssignShiftDialogProps> = ({
+  isOpen,
+  onClose,
+  dayOfWeek,
+  startHour = 8,
+  date,
+  availableStaff = [],
+}) => {
+  const session = useSession();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const defaultStartTime = `${startHour.toString().padStart(2, "0")}:00`;
+  const defaultEndTime = `${Math.min(startHour + 8, 23).toString().padStart(2, "0")}:00`;
+
+  const form = useForm<AssignShiftFormValues>({
+    resolver: zodResolver(assignShiftSchema),
+    defaultValues: {
+      employeeId: "",
+      startTime: defaultStartTime,
+      endTime: defaultEndTime,
+      role: "",
+    },
+  });
+
+  const { register, control, formState: { errors }, handleSubmit, reset } = form;
+
+  // Reset defaults when props change
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        employeeId: "",
+        startTime: defaultStartTime,
+        endTime: defaultEndTime,
+        role: "",
+      });
+    }
+  }, [isOpen, defaultStartTime, defaultEndTime, reset]);
+
+  const mutation = useMutation({
+    mutationFn: (data: AssignShiftFormValues) =>
+      apiRequest("/v1/retail/shifts", "POST", session, {
+        employeeId: data.employeeId,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        role: data.role,
+        dayOfWeek,
+        date: date?.toISOString(),
+        status: "draft",
+      }),
+    ...getMutationToastHandlers({
+      toast,
+      queryClient,
+      keys: [["retail", "shifts"]],
+      onClose: handleClose,
+      form,
+      successTitle: "Shift Assigned",
+      successDescription: "The shift has been created successfully.",
+    }),
+  });
+
+  const isPending = mutation.isPending;
+
+  function handleClose() {
+    if (isPending) return;
+    reset();
+    onClose();
+  }
+
+  const onSubmit = handleSubmit((data) => mutation.mutate(data));
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
+      <DialogContent className="max-w-sm bg-muted border-border p-6 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] text-foreground">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-black italic tracking-tighter flex items-center gap-2">
+            <Clock className="w-5 h-5 text-primary" />
+            ASSIGN SHIFT
+          </DialogTitle>
+          {date && (
+            <div className="text-[10px] font-black text-primary uppercase tracking-widest mt-1">
+              {format(date, "EEEE, MMM d, yyyy")}
+            </div>
+          )}
+        </DialogHeader>
+
+        <form onSubmit={onSubmit} noValidate>
+          <fieldset disabled={isPending} className="space-y-4 mt-4">
+            <div>
+              <label htmlFor="assign-shift-employee" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                Employee *
+              </label>
+              <Controller
+                control={control}
+                name="employeeId"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger
+                      id="assign-shift-employee"
+                      className="w-full h-11 rounded-xl border-border text-sm font-bold"
+                      aria-describedby={errors.employeeId ? "assign-shift-employee-error" : undefined}
+                      aria-invalid={!!errors.employeeId}
+                    >
+                      <SelectValue placeholder="Select employee..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableStaff.map((s) => (
+                        <SelectItem key={s.id} value={s.id} className="font-bold text-xs">
+                          {s.name} ({s.role})
+                        </SelectItem>
+                      ))}
+                      {availableStaff.length === 0 && (
+                        <SelectItem value="__none" disabled className="text-xs text-muted-foreground">
+                          No staff available
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.employeeId && (
+                <p id="assign-shift-employee-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                  {errors.employeeId.message}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label htmlFor="assign-shift-start" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                  Start Time *
+                </label>
+                <Input
+                  id="assign-shift-start"
+                  type="time"
+                  {...register("startTime")}
+                  className="h-11 rounded-xl border-border text-sm font-bold"
+                  aria-describedby={errors.startTime ? "assign-shift-start-error" : undefined}
+                  aria-invalid={!!errors.startTime}
+                />
+                {errors.startTime && (
+                  <p id="assign-shift-start-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                    {errors.startTime.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="assign-shift-end" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                  End Time *
+                </label>
+                <Input
+                  id="assign-shift-end"
+                  type="time"
+                  {...register("endTime")}
+                  className="h-11 rounded-xl border-border text-sm font-bold"
+                  aria-describedby={errors.endTime ? "assign-shift-end-error" : undefined}
+                  aria-invalid={!!errors.endTime}
+                />
+                {errors.endTime && (
+                  <p id="assign-shift-end-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                    {errors.endTime.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="assign-shift-role" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-1">
+                Role *
+              </label>
+              <Controller
+                control={control}
+                name="role"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger
+                      id="assign-shift-role"
+                      className="w-full h-11 rounded-xl border-border text-sm font-bold"
+                      aria-describedby={errors.role ? "assign-shift-role-error" : undefined}
+                      aria-invalid={!!errors.role}
+                    >
+                      <SelectValue placeholder="Select role..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SHIFT_ROLES.map((role) => (
+                        <SelectItem key={role} value={role} className="font-bold text-xs">
+                          {role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.role && (
+                <p id="assign-shift-role-error" className="text-[10px] text-destructive font-medium mt-1" role="alert">
+                  {errors.role.message}
+                </p>
+              )}
+            </div>
+          </fieldset>
+
+          <DialogFooter className="mt-6 gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              disabled={isPending}
+              onClick={handleClose}
+              className="rounded-xl text-muted-foreground font-bold text-xs"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="flex-1 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-black italic uppercase text-[10px] tracking-widest"
+            >
+              {isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Assign Shift
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
