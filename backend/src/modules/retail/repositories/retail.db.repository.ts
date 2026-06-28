@@ -1530,8 +1530,9 @@ export class RetailDbRepository implements IRetailRepository {
   async findChannelByClientId(ctx: TenantContext,
     clientId: string,
   ): Promise<any | null> {
+    // Channel lookup is tenant-scoped only (company_id may be NULL for channels)
     const channels = await this.prisma.retail_channels.findMany({
-      where: MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+      where: { tenant_id: ctx.tenant_id },
     });
     return (
       channels.find((c: retail_channels) => {
