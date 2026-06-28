@@ -37,7 +37,7 @@ export const ComplianceHeatmap: React.FC = () => {
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Governance adherence by region</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-border">
            <FileCheck className="h-4 w-4 text-success" />
            <span className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Audited Q2 2026</span>
         </div>

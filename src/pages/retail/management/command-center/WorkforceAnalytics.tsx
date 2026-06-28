@@ -10,7 +10,7 @@ export const WorkforceAnalytics: React.FC<WorkforceAnalyticsProps> = ({
   data,
 }) => {
   return (
-    <div className="bg-white/[0.03] backdrop-blur-3xl p-6 rounded-[2rem] border border-white/5 shadow-2xl hover:bg-white/[0.05] hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
+    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-card hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-sky-500/10 rounded-full blur-[130px] -mr-[15%] -mt-[15%] pointer-events-none" />
 
       <div className="flex items-center justify-between mb-10 relative z-10">
@@ -37,11 +37,11 @@ export const WorkforceAnalytics: React.FC<WorkforceAnalyticsProps> = ({
               return (
                 <div
                   key={idx}
-                  className="group/staff cursor-default bg-white/[0.02] border border-white/5 p-6 rounded-2xl hover:border-sky-500/30 hover:bg-white/[0.04] hover:shadow-2xl transition-all duration-500 shadow-xl"
+                  className="group/staff cursor-default bg-card border border-border p-6 rounded-2xl hover:border-sky-500/30 hover:bg-card hover:shadow-2xl transition-all duration-500 shadow-xl"
                 >
                   <div className="flex justify-between items-center mb-5">
                     <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 rounded-2xl bg-secondary/50 flex items-center justify-center text-lg font-black text-muted-foreground group-hover/staff:bg-sky-600 group-hover/staff:text-foreground group-hover/staff:rotate-6 transition-all duration-500 border border-white/5 shadow-inner">
+                      <div className="w-14 h-14 rounded-2xl bg-secondary/50 flex items-center justify-center text-lg font-black text-muted-foreground group-hover/staff:bg-sky-600 group-hover/staff:text-foreground group-hover/staff:rotate-6 transition-all duration-500 border border-border shadow-inner">
                         {idx + 1}
                       </div>
                       <div className="flex flex-col">
@@ -65,7 +65,7 @@ export const WorkforceAnalytics: React.FC<WorkforceAnalyticsProps> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="relative w-full h-2 bg-secondary/40 rounded-full overflow-hidden p-[1px] border border-white/5 shadow-inner">
+                  <div className="relative w-full h-2 bg-secondary/40 rounded-full overflow-hidden p-[1px] border border-border shadow-inner">
                     <div
                       className="absolute top-0 left-0 h-full bg-sky-500 rounded-full transition-all duration-2500 ease-out shadow-[0_0_12px_rgba(14,165,233,0.6)]"
                       style={{ width: `${percentage}%` }}
@@ -79,7 +79,7 @@ export const WorkforceAnalytics: React.FC<WorkforceAnalyticsProps> = ({
 
         {/* Efficiency Tiles */}
         <div className="grid grid-cols-2 gap-8 pt-4">
-          <div className="group/tile relative bg-white/[0.02] backdrop-blur-3xl p-8 rounded-2xl border border-white/5 hover:bg-white/[0.04] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 shadow-xl overflow-hidden">
+          <div className="group/tile relative bg-card backdrop-blur-3xl p-8 rounded-2xl border border-border hover:bg-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 shadow-xl overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-sky-500/10 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <Clock className="absolute top-8 right-8 w-6 h-6 text-muted-foreground group-hover/tile:text-sky-400 transition-colors duration-500" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 italic">
@@ -92,7 +92,7 @@ export const WorkforceAnalytics: React.FC<WorkforceAnalyticsProps> = ({
               <span className="text-xl font-black text-sky-400 italic">%</span>
             </div>
             <div className="mt-6 flex items-center gap-2 relative z-10">
-              <div className="flex-1 h-2 bg-secondary/40 rounded-full overflow-hidden border border-white/5 p-[1px] shadow-inner">
+              <div className="flex-1 h-2 bg-secondary/40 rounded-full overflow-hidden border border-border p-[1px] shadow-inner">
                 <div
                   className="h-full bg-sky-400 rounded-full shadow-[0_0_10px_rgba(56,189,248,0.4)]"
                   style={{ width: `${data.shiftUtilization * 100}%` }}
@@ -101,7 +101,7 @@ export const WorkforceAnalytics: React.FC<WorkforceAnalyticsProps> = ({
             </div>
           </div>
 
-          <div className="group/tile relative bg-white/[0.02] backdrop-blur-3xl p-8 rounded-2xl border border-white/5 hover:bg-white/[0.04] hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 shadow-xl overflow-hidden">
+          <div className="group/tile relative bg-card backdrop-blur-3xl p-8 rounded-2xl border border-border hover:bg-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 shadow-xl overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-destructive/10 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <AlertCircle className="absolute top-8 right-8 w-6 h-6 text-muted-foreground group-hover/tile:text-destructive transition-colors duration-500" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 italic">

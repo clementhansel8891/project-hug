@@ -170,11 +170,11 @@ export const StockOpnameSummaryModal = ({
                 </div>
 
                 <div className="space-y-4">
-                  <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
+                  <div className="p-6 bg-white/5 rounded-2xl border border-border">
                     <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Auditor</div>
                     <div className="font-bold italic text-lg">{auditorName}</div>
                   </div>
-                  <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
+                  <div className="p-6 bg-white/5 rounded-2xl border border-border">
                     <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Location</div>
                     <div className="font-bold italic text-lg">{locationName}</div>
                   </div>
@@ -193,7 +193,7 @@ export const StockOpnameSummaryModal = ({
               </div>
             </ScrollArea>
 
-            <div className="p-10 pt-0 space-y-4 bg-muted backdrop-blur-md border-t border-white/5">
+            <div className="p-10 pt-0 space-y-4 bg-muted backdrop-blur-md border-t border-border">
               <Button
                 onClick={handleFinalCommit}
                 disabled={commitMutation.isPending}
@@ -206,14 +206,14 @@ export const StockOpnameSummaryModal = ({
                   variant="outline"
                   onClick={handleExportPDF}
                   disabled={commitMutation.isPending}
-                  className="h-12 rounded-xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
+                  className="h-12 rounded-xl bg-white/5 border-border hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
                   <FileText className="w-3 h-3" /> PDF
                 </Button>
                 <Button
                   variant="outline"
                   onClick={handleExportCSV}
                   disabled={commitMutation.isPending}
-                  className="h-12 rounded-xl bg-white/5 border-white/10 hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
+                  className="h-12 rounded-xl bg-white/5 border-border hover:bg-white/10 text-white font-bold italic text-[10px] uppercase tracking-widest gap-2">
                   <FileSpreadsheet className="w-3 h-3" /> CSV
                 </Button>
               </div>

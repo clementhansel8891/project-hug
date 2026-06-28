@@ -24,7 +24,7 @@ export const ReportTemplateCard: React.FC<ReportTemplateCardProps> = ({
         "rounded-[2rem] border-2 cursor-pointer transition-all p-6 group relative overflow-hidden h-[320px] flex flex-col justify-between backdrop-blur-xl",
         isActive
           ? "border-primary/50 bg-primary/10 shadow-[0_32px_80px_-20px_rgba(99,102,241,0.25)] ring-4 ring-primary/10"
-          : "border-white/10 bg-white/[0.04] hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1",
+          : "border-border bg-card hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1",
       )}
     >
       {/* Decorative Elements */}

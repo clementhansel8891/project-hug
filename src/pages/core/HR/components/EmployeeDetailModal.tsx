@@ -43,7 +43,7 @@ export const EmployeeDetailModal: React.FC<EmployeeDetailModalProps> = ({
         <DialogHeader className="p-8 bg-muted text-white shrink-0">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10">
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-border">
                 <User className="w-8 h-8" />
               </div>
               <div>

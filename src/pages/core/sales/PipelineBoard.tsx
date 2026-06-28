@@ -195,7 +195,7 @@ export default function PipelineBoard() {
               
               return (
                 <div key={stage} className="flex flex-col w-[350px] shrink-0 group">
-                  <div className="flex items-center justify-between p-5 mb-6 rounded-[2rem] bg-white/40 dark:bg-muted backdrop-blur-xl border border-white/20 dark:border-border/20 shadow-xl group-hover:shadow-2xl transition-all duration-500">
+                  <div className="flex items-center justify-between p-5 mb-6 rounded-[2rem] bg-white/40 dark:bg-muted backdrop-blur-xl border border-border dark:border-border/20 shadow-xl group-hover:shadow-2xl transition-all duration-500">
                      <div className="flex items-center gap-4">
                         <div className={cn("h-4 w-4 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]", STAGE_COLORS[stage])} />
                         <p className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground">{stage.replace('_', ' ')}</p>
@@ -321,7 +321,7 @@ export default function PipelineBoard() {
       {/* Footer Tactical Intelligence Overlay */}
       <div className="fixed bottom-12 right-12 flex gap-6 pointer-events-none">
          <Card className="rounded-[2.5rem] border-none shadow-2xl bg-primary text-white p-8 flex items-center gap-8 pointer-events-auto hover:scale-105 transition-transform duration-500 cursor-default">
-            <div className="h-16 w-16 rounded-[1.5rem] bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-2xl">
+            <div className="h-16 w-16 rounded-[1.5rem] bg-white/20 backdrop-blur-md flex items-center justify-center border border-border shadow-2xl">
                <TrendingUp className="h-8 w-8 text-white" />
             </div>
             <div>

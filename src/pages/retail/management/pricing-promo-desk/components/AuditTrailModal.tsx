@@ -131,12 +131,12 @@ export const AuditTrailModal: React.FC<AuditTrailModalProps> = ({
                         </div>
                       </div>
 
-                      <div className="bg-secondary/60 hover:bg-secondary/60 transition-colors p-5 rounded-xl border border-white/5 space-y-4">
+                      <div className="bg-secondary/60 hover:bg-secondary/60 transition-colors p-5 rounded-xl border border-border space-y-4">
                         <p className="text-[11px] font-medium text-muted-foreground leading-relaxed italic">
                           &ldquo;{entry.details}&rdquo;
                         </p>
 
-                        <div className="flex items-center gap-6 text-[9px] font-black uppercase tracking-widest text-muted-foreground border-t border-white/5 pt-4 mt-2">
+                        <div className="flex items-center gap-6 text-[9px] font-black uppercase tracking-widest text-muted-foreground border-t border-border pt-4 mt-2">
                           <div className="flex items-center gap-2 bg-secondary/50 px-3 py-1.5 rounded-lg">
                             <User className="w-3 h-3 text-success" />
                             <span className="text-success/80">

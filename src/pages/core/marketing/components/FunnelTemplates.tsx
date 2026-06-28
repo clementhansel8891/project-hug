@@ -109,7 +109,7 @@ export default function FunnelTemplates({ onSelect }: { onSelect: (id: string) =
                 <div className="flex items-center gap-3 overflow-hidden">
                    {(Array.isArray(template.steps) ? template.steps : []).map((step, i) => (
                       <React.Fragment key={step}>
-                         <div className="bg-white/60 dark:bg-muted px-4 py-2 rounded-xl border border-white/20 shadow-sm text-[10px] font-black uppercase tracking-tight text-muted-foreground dark:text-white italic">
+                         <div className="bg-white/60 dark:bg-muted px-4 py-2 rounded-xl border border-border shadow-sm text-[10px] font-black uppercase tracking-tight text-muted-foreground dark:text-white italic">
                             {step}
                          </div>
                          {i < template.steps.length - 1 && <ChevronRight className="h-3 w-3 shrink-0 text-primary opacity-40" />}
@@ -118,7 +118,7 @@ export default function FunnelTemplates({ onSelect }: { onSelect: (id: string) =
                 </div>
              </div>
              
-             <div className="flex items-center justify-between pt-2 border-t border-white/10">
+             <div className="flex items-center justify-between pt-2 border-t border-border">
                 <div className="flex items-center gap-3">
                    <Activity className="h-4 w-4 text-primary animate-pulse" />
                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest italic">Simulation IQ: {template.intensity}%</span>

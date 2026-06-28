@@ -265,7 +265,7 @@ export default function LeadCaptureDesk() {
         {/* Left: Intelligence Feed */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
            <Card className="flex-1 rounded-[3rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col">
-              <CardHeader className="p-10 pb-6 border-b border-white/10 dark:border-border/10 flex flex-row items-center justify-between">
+              <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/10 flex flex-row items-center justify-between">
                  <div className="space-y-1">
                     <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3 uppercase italic">
                        <Layers className="h-6 w-6 text-primary" />
@@ -291,7 +291,7 @@ export default function LeadCaptureDesk() {
                        </thead>
                        <tbody>
                           {(Array.isArray(filtered) ? filtered : []).map((lead) => (
-                            <tr key={lead.id} className="border-t border-white/10 dark:border-border/10 group hover:bg-primary transition-all">
+                            <tr key={lead.id} className="border-t border-border dark:border-border/10 group hover:bg-primary transition-all">
                                <td className="p-8">
                                   <div className="flex items-center gap-4">
                                      <Avatar className="h-14 w-14 rounded-2xl shadow-xl ring-2 ring-white/10 transition-transform duration-500 group-hover:scale-110">

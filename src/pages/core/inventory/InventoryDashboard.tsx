@@ -218,7 +218,7 @@ export default function InventoryDashboard() {
                    </div>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="space-y-4 pt-4 border-t border-border">
                    {[
                      { label: "Active Locations", value: metrics.total_locations },
                      { label: "Dept Scopes", value: metrics.total_departments },

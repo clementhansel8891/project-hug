@@ -33,7 +33,7 @@ export const SalesPipelineFunnel: React.FC<SalesPipelineFunnelProps> = ({ data: 
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Conversion from lead to closed-won</p>
           </div>
         </div>
-        <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-primary transition-all">
+        <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center border border-border group-hover:bg-primary transition-all">
           <Target className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
         </div>
       </div>
@@ -44,7 +44,7 @@ export const SalesPipelineFunnel: React.FC<SalesPipelineFunnelProps> = ({ data: 
             <div 
               style={{ width: s.width }} 
               className={cn(
-                "h-10 rounded-2xl shadow-2xl transition-all duration-500 group-hover/stage:scale-[1.03] flex items-center justify-between px-6 border border-white/10",
+                "h-10 rounded-2xl shadow-2xl transition-all duration-500 group-hover/stage:scale-[1.03] flex items-center justify-between px-6 border border-border",
                 s.color, s.glow
               )}
             >
@@ -58,7 +58,7 @@ export const SalesPipelineFunnel: React.FC<SalesPipelineFunnelProps> = ({ data: 
         ))}
       </div>
       
-      <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between opacity-50">
+      <div className="mt-8 pt-6 border-t border-border flex items-center justify-between opacity-50">
          <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-success" />
             <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Win Rate</span>

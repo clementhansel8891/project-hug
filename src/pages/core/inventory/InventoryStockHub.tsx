@@ -410,7 +410,7 @@ export default function InventoryStockHub() {
               <Button 
                 onClick={() => setIsAnalyticsOpen(true)}
                 variant="outline" 
-                className="h-14 px-6 rounded-2xl border-white/10 bg-muted backdrop-blur-md text-xs font-black uppercase tracking-widest hover:bg-muted text-muted-foreground"
+                className="h-14 px-6 rounded-2xl border-border bg-muted backdrop-blur-md text-xs font-black uppercase tracking-widest hover:bg-muted text-muted-foreground"
               >
                 <BarChart2 className="h-4 w-4 mr-2" /> Analytics
               </Button>

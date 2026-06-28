@@ -183,7 +183,7 @@ export const ReportFilterDialog: React.FC<ReportFilterDialogProps> = ({
                   Secure Endpoint
                 </span>
               </div>
-              <div className="p-4 rounded-2xl bg-secondary/40 border border-white/5">
+              <div className="p-4 rounded-2xl bg-secondary/40 border border-border">
                 <p className="text-[10px] font-bold text-muted-foreground italic uppercase">
                   Trace ID: EXT-
                   {Math.random().toString(36).substring(7).toUpperCase()}

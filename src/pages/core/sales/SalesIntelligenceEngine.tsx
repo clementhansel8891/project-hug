@@ -79,7 +79,7 @@ export default function SalesIntelligenceEngine() {
         <div className="flex flex-col items-center gap-8">
           <div className="relative h-24 w-24">
              <div className="absolute inset-0 bg-primary/20 rounded-[2.5rem] blur-2xl animate-pulse" />
-             <div className="relative h-full w-full bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 border border-white/10">
+             <div className="relative h-full w-full bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 border border-border">
                 <Brain className="h-12 w-12 text-primary-foreground" />
              </div>
           </div>
@@ -262,11 +262,11 @@ export default function SalesIntelligenceEngine() {
              </div>
 
              <div className="space-y-8">
-                <Card className="glass-card border-none shadow-2xl rounded-[3rem] p-10 bg-muted text-white relative overflow-hidden group border border-white/5">
+                <Card className="glass-card border-none shadow-2xl rounded-[3rem] p-10 bg-muted text-white relative overflow-hidden group border border-border">
                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                    <div className="relative z-10 space-y-8">
                       <div className="flex items-center gap-4">
-                         <div className="h-14 w-14 bg-primary/20 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                         <div className="h-14 w-14 bg-primary/20 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-border">
                             <Brain className="h-7 w-7 text-primary" />
                          </div>
                          <div>

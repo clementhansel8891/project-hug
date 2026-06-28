@@ -240,7 +240,7 @@ export default function ProcurementInsights() {
                    </div>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="space-y-4 pt-4 border-t border-border">
                    {[
                      { label: "Legal API", status: "Online", latency: "42ms" },
                      { label: "Inventory Hub", status: "Online", latency: "128ms" },
@@ -256,7 +256,7 @@ export default function ProcurementInsights() {
                    ))}
                 </div>
 
-                <Button className="w-full bg-white/10 hover:bg-white/20 border-white/10 text-[9px] font-black uppercase tracking-widest py-6 rounded-2xl">
+                <Button className="w-full bg-white/10 hover:bg-white/20 border-border text-[9px] font-black uppercase tracking-widest py-6 rounded-2xl">
                    View Handoff Ledger
                 </Button>
              </div>

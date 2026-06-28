@@ -108,7 +108,7 @@ export default function RetailManagement() {
           <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.15)_0%,transparent_70%)] animate-pulse" />
         </div>
 
-        <Card className="max-w-md w-full rounded-[2rem] border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl p-8 text-center space-y-10 relative overflow-hidden">
+        <Card className="max-w-md w-full rounded-[2rem] border border-border shadow-2xl bg-card backdrop-blur-3xl p-8 text-center space-y-10 relative overflow-hidden">
           <div className="mx-auto w-28 h-28 rounded-2xl bg-destructive/10 flex items-center justify-center border border-destructive/20 shadow-[0_0_50px_rgba(244,63,94,0.2)] group hover:scale-110 transition-transform duration-500">
             <Lock className="w-12 h-12 text-destructive group-hover:rotate-12 transition-transform" />
           </div>
@@ -147,7 +147,7 @@ export default function RetailManagement() {
           <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.15)_0%,transparent_70%)] animate-pulse" />
         </div>
 
-        <Card className="max-w-lg w-full rounded-[2rem] border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl p-8 text-center space-y-10 relative overflow-hidden">
+        <Card className="max-w-lg w-full rounded-[2rem] border border-border shadow-2xl bg-card backdrop-blur-3xl p-8 text-center space-y-10 relative overflow-hidden">
           <div className="mx-auto w-28 h-28 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-[0_0_50px_rgba(79,70,229,0.2)]">
             <Rocket className="w-12 h-12 text-primary" />
           </div>
@@ -176,7 +176,7 @@ export default function RetailManagement() {
               trigger={
                 <Button
                   variant="ghost"
-                  className="w-full h-16 rounded-2xl bg-white/[0.03] border border-white/5 text-foreground hover:bg-white/[0.08] font-black italic uppercase text-[12px] tracking-[0.3em] gap-4 transition-all"
+                  className="w-full h-16 rounded-2xl bg-card border border-border text-foreground hover:bg-card font-black italic uppercase text-[12px] tracking-[0.3em] gap-4 transition-all"
                   data-testid="onboarding-register-ecommerce"
                 >
                   <Globe className="w-5 h-5" /> Register E-Commerce
@@ -233,8 +233,8 @@ export default function RetailManagement() {
             />
 
             {/* Performance Visualizer & Multi-Module Hub */}
-            <Card className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-3xl shadow-2xl overflow-hidden group">
-              <CardHeader className="p-8 border-b border-white/5 flex flex-col xl:flex-row xl:items-center justify-between gap-8">
+            <Card className="rounded-2xl border border-border bg-card backdrop-blur-3xl shadow-2xl overflow-hidden group">
+              <CardHeader className="p-8 border-b border-border flex flex-col xl:flex-row xl:items-center justify-between gap-8">
                 <div className="space-y-3">
                   <div className="flex items-center gap-4">
                     <div className="p-4 rounded-2xl bg-primary text-foreground shadow-xl shadow-indigo-600/20">
@@ -248,7 +248,7 @@ export default function RetailManagement() {
                     {activeTab === 'fleet' ? 'Global multi-channel performance synchronization' : activeTab === 'customers' ? 'Identity and engagement telemetry' : 'Real-time digital storefront analytics'}
                   </p>
                 </div>
-                <div className="flex gap-3 p-3 bg-white/[0.03] backdrop-blur-3xl rounded-2xl self-start xl:self-center border border-white/5">
+                <div className="flex gap-3 p-3 bg-card backdrop-blur-3xl rounded-2xl self-start xl:self-center border border-border">
                   {[
                     { id: "fleet", label: "Fleet Matrix" },
                     { id: "customers", label: "Customer Activity" },
@@ -261,7 +261,7 @@ export default function RetailManagement() {
                       onClick={() => setActiveTab(tab.id)}
                       className={
                         activeTab === tab.id
-                          ? "bg-white/[0.08] shadow-2xl font-black italic text-[12px] uppercase h-14 px-10 rounded-xl text-foreground border border-border"
+                          ? "bg-card shadow-2xl font-black italic text-[12px] uppercase h-14 px-10 rounded-xl text-foreground border border-border"
                           : "font-black italic text-[12px] uppercase h-14 px-10 text-muted-foreground hover:text-foreground transition-all"
                       }
                     >
@@ -299,7 +299,7 @@ export default function RetailManagement() {
         </div>
 
         {/* Security / System Footer */}
-        <div className="pt-20 border-t border-white/5 flex flex-col lg:flex-row items-center justify-between gap-6 text-[11px] font-black italic text-muted-foreground uppercase tracking-[0.4em]">
+        <div className="pt-20 border-t border-border flex flex-col lg:flex-row items-center justify-between gap-6 text-[11px] font-black italic text-muted-foreground uppercase tracking-[0.4em]">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3">
               <ShieldAlert className="w-5 h-5 text-success" />

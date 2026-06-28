@@ -52,12 +52,12 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl p-0 rounded-[3rem] border-white/10 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden">
-        <DialogHeader className="p-10 bg-white/5 border-b border-white/5">
+      <DialogContent className="max-w-4xl p-0 rounded-[3rem] border-border bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden">
+        <DialogHeader className="p-10 bg-white/5 border-b border-border">
           <div className="flex items-center justify-between">
             <div>
               <DialogTitle className="flex items-center gap-5 text-3xl font-black tracking-tighter text-white uppercase italic leading-none">
-                <div className="flex h-14 w-14 items-center justify-center rounded-[1.5rem] bg-primary text-white shadow-xl shadow-indigo-600/20 border border-white/20">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[1.5rem] bg-primary text-white shadow-xl shadow-indigo-600/20 border border-border">
                   <BarChart3 className="h-7 w-7" />
                 </div>
                 Inventory Intelligence
@@ -113,7 +113,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
               <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2 px-2">
                 <PieChart className="h-3 w-3" /> Category Distribution
               </h4>
-              <div className="p-8 rounded-[2.5rem] bg-muted border border-white/5 h-64 flex items-center justify-center italic text-muted-foreground font-bold text-xs">
+              <div className="p-8 rounded-[2.5rem] bg-muted border border-border h-64 flex items-center justify-center italic text-muted-foreground font-bold text-xs">
                 Classification Matrix Visualization Pending Data Stream
               </div>
             </div>
@@ -122,7 +122,7 @@ export function InventoryAnalyticsDialog({ isOpen, onOpenChange }: InventoryAnal
               <h4 className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-2 px-2">
                 <LineChart className="h-3 w-3" /> Valuation Trend
               </h4>
-              <div className="p-8 rounded-[2.5rem] bg-muted border border-white/5 h-64 flex items-center justify-center italic text-muted-foreground font-bold text-xs">
+              <div className="p-8 rounded-[2.5rem] bg-muted border border-border h-64 flex items-center justify-center italic text-muted-foreground font-bold text-xs">
                 Financial Asset Progression Curve Rendering...
               </div>
             </div>

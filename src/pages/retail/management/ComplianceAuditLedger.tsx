@@ -123,7 +123,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
     <div className={cn("space-y-8 relative z-10", !noShell && "max-w-[1600px] mx-auto p-6")}>
       {!noShell && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <Card className="lg:col-span-3 bg-white/[0.03] border border-border shadow-2xl rounded-[2rem] overflow-hidden relative group backdrop-blur-3xl">
+          <Card className="lg:col-span-3 bg-card border border-border shadow-2xl rounded-[2rem] overflow-hidden relative group backdrop-blur-3xl">
             <div className="absolute top-0 right-0 p-6 opacity-5">
               <ShieldCheck className="w-48 h-48 text-primary" />
             </div>
@@ -146,7 +146,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
                   <div className="text-[10px] font-black uppercase text-muted-foreground tracking-widest italic">
                     Current Block Hash
                   </div>
-                  <code className="bg-black/40 px-6 py-3 rounded-2xl text-primary font-mono text-xs border border-white/5 block w-fit shadow-inner">
+                  <code className="bg-secondary px-6 py-3 rounded-2xl text-primary font-mono text-xs border border-border block w-fit shadow-inner">
                     ZVX-PROD-0x8F2DA4C7B41A9902EDC
                   </code>
                 </div>
@@ -156,7 +156,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
                   <span>{logs.length} Blocks Immutable</span>
                 </div>
               </div>
-              <div className="w-full md:w-64 bg-black/20 border border-white/5 p-8 rounded-2xl space-y-6 text-center shrink-0 backdrop-blur-sm">
+              <div className="w-full md:w-64 bg-secondary/50 border border-border p-8 rounded-2xl space-y-6 text-center shrink-0 backdrop-blur-sm">
                 <div className="text-6xl font-black italic tracking-tighter text-primary">
                   100%
                 </div>
@@ -169,7 +169,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
           </Card>
 
           <div className="space-y-6">
-            <Card className="shadow-2xl border-none bg-white/[0.03] backdrop-blur-3xl rounded-2xl overflow-hidden">
+            <Card className="shadow-2xl border-none bg-card backdrop-blur-3xl rounded-2xl overflow-hidden">
               <CardHeader className="p-8 pb-0">
                 <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">
                   Anomaly Watch
@@ -214,11 +214,11 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
       )}
 
       {/* Search & Filter Bar */}
-      <div className="flex gap-4 bg-white/[0.03] backdrop-blur-3xl rounded-2xl p-4 border border-white/5 shadow-2xl">
+      <div className="flex gap-4 bg-card backdrop-blur-3xl rounded-2xl p-4 border border-border shadow-2xl">
         <div className="relative flex-1">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
           <Input
-            className="pl-16 h-14 bg-black/20 border-none rounded-2xl text-sm font-bold italic text-foreground placeholder:text-muted-foreground focus-visible:ring-primary transition-all"
+            className="pl-16 h-14 bg-secondary/50 border-none rounded-2xl text-sm font-bold italic text-foreground placeholder:text-muted-foreground focus-visible:ring-primary transition-all"
             placeholder="Search Timestamp, Event Type, Actor ID, or Hash Signature..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -227,25 +227,25 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
         <Button 
           onClick={() => navigate("/core/compliance")}
           variant="ghost"
-          className="h-14 px-8 rounded-2xl gap-3 font-black italic border border-white/5 text-foreground hover:bg-secondary/40 uppercase text-[10px] tracking-widest"
+          className="h-14 px-8 rounded-2xl gap-3 font-black italic border border-border text-foreground hover:bg-secondary/40 uppercase text-[10px] tracking-widest"
         >
           <Calendar className="w-5 h-5 text-primary" /> Range
         </Button>
         <Button 
           onClick={() => navigate("/core/compliance")}
           variant="ghost"
-          className="h-14 px-8 rounded-2xl gap-3 font-black italic border border-white/5 text-foreground hover:bg-secondary/40 uppercase text-[10px] tracking-widest"
+          className="h-14 px-8 rounded-2xl gap-3 font-black italic border border-border text-foreground hover:bg-secondary/40 uppercase text-[10px] tracking-widest"
         >
           <Filter className="w-5 h-5 text-primary" /> Types
         </Button>
       </div>
 
       {/* Audit Log Table */}
-      <Card className="border-none bg-white/[0.02] backdrop-blur-3xl shadow-2xl rounded-[2rem] overflow-hidden border border-white/5">
-        <CardHeader className="p-6 border-b border-white/5">
+      <Card className="border-none bg-card backdrop-blur-3xl shadow-2xl rounded-[2rem] overflow-hidden border border-border">
+        <CardHeader className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-foreground border border-white/5">
+              <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center text-foreground border border-border">
                 <History className="w-6 h-6" />
               </div>
               <div>
@@ -266,7 +266,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-border">
                 {[
                   "Temporal Context",
                   "Event Typology",
@@ -367,7 +367,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
             </tbody>
           </table>
         </div>
-        <div className="p-8 bg-black/20 border-t border-white/5 flex items-center justify-between">
+        <div className="p-8 bg-secondary/50 border-t border-border flex items-center justify-between">
           <div className="text-[10px] font-black italic text-muted-foreground uppercase tracking-[0.2em]">
             {filteredLogs.length} Blocks Sequenced in Current View
           </div>
@@ -391,7 +391,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
     <div className="flex-1 flex flex-col selection:bg-primary selection:text-foreground">
 
       {/* Header */}
-      <div className="px-6 py-3 border-b border-white/5 bg-background/50 backdrop-blur-3xl shrink-0 flex items-center justify-between sticky top-0 z-50">
+      <div className="px-6 py-3 border-b border-border bg-background/50 backdrop-blur-3xl shrink-0 flex items-center justify-between sticky top-0 z-50">
         <div>
           <h1 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
             Compliance & Audit Ledger

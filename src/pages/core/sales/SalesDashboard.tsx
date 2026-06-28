@@ -123,7 +123,7 @@ export default function SalesDashboard() {
           <p className="text-muted-foreground font-medium max-w-2xl text-lg leading-relaxed italic">"The art of war is of vital importance to the State. In sales, it is the art of the deal." — Neural Strategist.</p>
         </div>
         
-        <div className="flex items-center gap-4 bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+        <div className="flex items-center gap-4 bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -176,7 +176,7 @@ export default function SalesDashboard() {
         <div className="col-span-12 lg:col-span-8 space-y-8">
           {/* Today's Priority Queue */}
           <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-            <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+            <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -205,7 +205,7 @@ export default function SalesDashboard() {
                       <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+                  <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {filteredLeads.slice(0, 6).map((item) => (
                       <tr key={item.id} className="group hover:bg-white/40 dark:hover:bg-muted transition-colors">
                         <td className="px-8 py-6">
@@ -261,7 +261,7 @@ export default function SalesDashboard() {
                   className="m-8"
                 />
               )}
-              <div className="p-8 border-t border-white/20 dark:border-border/20 text-center">
+              <div className="p-8 border-t border-border dark:border-border/20 text-center">
                  <Button variant="link" className="text-primary font-black uppercase tracking-widest text-[10px] h-auto p-0 gap-2">
                     Access Complete Lead Registry <ArrowUpRight className="h-4 w-4" />
                  </Button>
@@ -277,7 +277,7 @@ export default function SalesDashboard() {
             <div className="absolute top-0 right-0 h-40 w-40 -mr-10 -mt-10 bg-white/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" />
             <CardHeader className="p-10 pb-6">
                <div className="flex items-center gap-3 mb-4">
-                  <div className="h-10 w-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+                  <div className="h-10 w-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-border">
                      <Zap className="h-6 w-6 text-white fill-white" />
                   </div>
                   <CardTitle className="text-xl font-black tracking-tight">Neural Sales Advisor</CardTitle>
@@ -286,7 +286,7 @@ export default function SalesDashboard() {
             </CardHeader>
             <CardContent className="px-10 pb-10 space-y-6">
               {(Array.isArray(nextActions) ? nextActions : []).map((item) => (
-                <div key={item.id} className="relative p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/10 space-y-4 hover:bg-white/20 transition-all cursor-pointer">
+                <div key={item.id} className="relative p-5 rounded-3xl bg-white/10 backdrop-blur-xl border border-border space-y-4 hover:bg-white/20 transition-all cursor-pointer">
                   <div className="flex justify-between items-start">
                     <Badge className="bg-white text-primary border-none font-black text-[9px] px-2 py-0.5 rounded-full">{item.priority}</Badge>
                     <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -324,7 +324,7 @@ export default function SalesDashboard() {
 
           {/* Activity Pulse */}
           <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-            <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+            <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
                <CardTitle className="text-xl font-black tracking-tight flex items-center gap-3">
                   <BarChart3 className="h-5 w-5 text-primary" />
                   Secondary KPI Pulse
@@ -350,7 +350,7 @@ export default function SalesDashboard() {
                  </div>
                ))}
                
-               <div className="pt-6 border-t border-white/20 dark:border-border/20">
+               <div className="pt-6 border-t border-border dark:border-border/20">
                   <div className="flex items-center gap-3 text-success mb-4">
                      <TrendingUp className="h-5 w-5" />
                      <span className="text-xs font-black uppercase tracking-widest">Growth Vector: Positive</span>

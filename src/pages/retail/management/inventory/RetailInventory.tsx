@@ -79,7 +79,7 @@ export default function RetailInventory() {
         subtitle="Operational Stock Management & Receiving"
       />
 
-      <div className="p-4 bg-muted border-b border-white/5">
+      <div className="p-4 bg-muted border-b border-border">
         <InventoryFilterHub 
           search={searchTerm}
           onSearchChange={setSearchTerm}
@@ -94,7 +94,7 @@ export default function RetailInventory() {
             <div className="flex gap-3">
               <Button 
                 variant="outline" 
-                className="h-14 px-6 rounded-2xl bg-muted border-white/10 text-white font-black italic uppercase text-[10px] tracking-widest gap-2"
+                className="h-14 px-6 rounded-2xl bg-muted border-border text-white font-black italic uppercase text-[10px] tracking-widest gap-2"
                 onClick={() => setImportModalOpen(true)}
               >
                 <Plus className="w-4 h-4" />

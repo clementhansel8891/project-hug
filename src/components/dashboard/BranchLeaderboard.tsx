@@ -48,7 +48,7 @@ export const BranchLeaderboard: React.FC<BranchLeaderboardProps> = ({ data }) =>
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="rounded-2xl border border-white/10 bg-card p-4 shadow-2xl backdrop-blur-xl">
+                      <div className="rounded-2xl border border-border bg-card p-4 shadow-2xl backdrop-blur-xl">
                         <div className="flex items-center gap-2 mb-2">
                           <MapPin className="h-3 w-3 text-primary" />
                           <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{data.name}</p>

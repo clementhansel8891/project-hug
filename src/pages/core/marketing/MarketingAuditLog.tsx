@@ -156,7 +156,7 @@ export default function MarketingAuditLog() {
          </Card>
          <Card className="rounded-[3rem] border-none shadow-2xl bg-muted text-white p-10 flex items-center gap-8 group hover:shadow-slate-500/20 transition-all duration-500 relative overflow-hidden">
             <div className="absolute top-0 right-0 h-40 w-40 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20 group-hover:scale-150 transition-transform duration-1000" />
-            <div className="h-20 w-20 rounded-[1.5rem] bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-white/20 relative z-10 shadow-2xl">
+            <div className="h-20 w-20 rounded-[1.5rem] bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform duration-500 border border-border relative z-10 shadow-2xl">
                <ShieldCheck className="h-10 w-10 text-white" />
             </div>
             <div className="relative z-10 space-y-1">
@@ -169,7 +169,7 @@ export default function MarketingAuditLog() {
 
       {/* Main Audit Registry */}
       <Card className="rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group/registry">
-        <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10 flex flex-row items-center justify-between shrink-0">
+        <CardHeader className="p-12 pb-6 border-b border-border dark:border-border/10 flex flex-row items-center justify-between shrink-0">
           <div className="space-y-2">
             <CardTitle className="text-3xl font-black tracking-tighter flex items-center gap-4 uppercase italic">
               <History className="h-8 w-8 text-primary group-hover/registry:rotate-12 transition-transform duration-500" />
@@ -194,7 +194,7 @@ export default function MarketingAuditLog() {
                   <th className="px-12 py-8 text-left">Technical Context</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+              <tbody className="divide-y divide-border dark:divide-slate-800/10">
                 {(Array.isArray(filtered) ? filtered : []).map((item) => (
                   <tr key={item.id} className="group hover:bg-primary transition-all cursor-default">
                     <td className="px-12 py-10">

@@ -36,7 +36,7 @@ export const RetailShiftMatrix: React.FC<RetailShiftMatrixProps> = ({ data = [] 
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live status of cashiers and reconciliation</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-border">
            <span className="text-[10px] font-black text-foreground">{data.length}</span>
            <span className="text-[8px] font-bold text-muted-foreground ml-1 uppercase tracking-tighter">Active Shifts</span>
         </div>
@@ -44,7 +44,7 @@ export const RetailShiftMatrix: React.FC<RetailShiftMatrixProps> = ({ data = [] 
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {data.map((shift, i) => (
-          <div key={i} className="group/shift relative flex flex-col gap-6 rounded-3xl border border-white/5 bg-white/2 p-6 transition-all hover:bg-white/5 hover:border-white/10">
+          <div key={i} className="group/shift relative flex flex-col gap-6 rounded-3xl border border-border bg-white/2 p-6 transition-all hover:bg-white/5 hover:border-border">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground group-hover/shift:text-primary transition-colors">
                 <Store className="h-3.5 w-3.5" />
@@ -59,7 +59,7 @@ export const RetailShiftMatrix: React.FC<RetailShiftMatrixProps> = ({ data = [] 
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted border border-white/5 text-foreground">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted border border-border text-foreground">
                 <User className="h-6 w-6 opacity-40 group-hover/shift:opacity-100 transition-opacity" />
               </div>
               <div>
@@ -70,7 +70,7 @@ export const RetailShiftMatrix: React.FC<RetailShiftMatrixProps> = ({ data = [] 
               </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-4">
+            <div className="mt-2 flex items-center justify-between border-t border-border pt-4">
               <span className="text-[9px] font-black uppercase text-muted-foreground tracking-[0.2em] group-hover/shift:text-muted-foreground transition-colors">Reconciled</span>
               {shift.reconciled ? (
                 <div className="flex items-center gap-1.5 text-success">

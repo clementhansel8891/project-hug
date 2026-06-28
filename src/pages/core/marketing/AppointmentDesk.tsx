@@ -177,7 +177,7 @@ export default function AppointmentDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <div className="flex bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner mr-2 h-auto">
                <Button 
                   variant="ghost" 
@@ -281,7 +281,7 @@ export default function AppointmentDesk() {
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-10 overflow-hidden">
           {view === "calendar" ? (
             <Card className="flex-1 rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col min-h-[700px] group/calendar">
-              <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10 shrink-0">
+              <CardHeader className="p-12 pb-6 border-b border-border dark:border-border/10 shrink-0">
                 <div className="flex items-center justify-between">
                    <div className="space-y-2">
                       <h2 className="text-4xl font-black tracking-tighter uppercase italic leading-none">{new Date().toLocaleString('default', { month: 'long', year: 'numeric' })}</h2>
@@ -306,7 +306,7 @@ export default function AppointmentDesk() {
             </Card>
           ) : (
             <Card className="flex-1 rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group/registry">
-              <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10 shrink-0">
+              <CardHeader className="p-12 pb-6 border-b border-border dark:border-border/10 shrink-0">
                  <div className="flex items-center justify-between">
                     <div className="space-y-2">
                        <CardTitle className="text-3xl font-black tracking-tighter flex items-center gap-4 uppercase italic">
@@ -326,7 +326,7 @@ export default function AppointmentDesk() {
                     icon={CalendarIcon}
                   />
                 ) : (
-                  <div className="p-0 divide-y divide-white/5 dark:divide-slate-800/5">
+                  <div className="p-0 divide-y divide-border dark:divide-slate-800/5">
                     {(Array.isArray(appointments) ? appointments : []).map((apt) => (
                       <div key={apt.id} className="flex items-center justify-between p-10 hover:bg-primary transition-all group cursor-default">
                           <div className="flex items-center gap-8">
@@ -376,7 +376,7 @@ export default function AppointmentDesk() {
         {/* Sidebar Intelligence */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-10">
            <Card className="rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col group/horizon">
-             <CardHeader className="p-10 pb-4 border-b border-white/10 dark:border-border/10">
+             <CardHeader className="p-10 pb-4 border-b border-border dark:border-border/10">
                 <div className="flex items-center justify-between mb-2">
                    <div className="space-y-1">
                       <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground italic">Temporal Grid</p>
@@ -399,7 +399,7 @@ export default function AppointmentDesk() {
                 ) : (
                   <div className="space-y-6">
                     {todayApts.slice(0, 3).map(apt => (
-                      <div key={apt.id} className="flex gap-6 p-6 rounded-[2.5rem] bg-white/50 dark:bg-muted hover:bg-primary transition-all group/item cursor-default relative overflow-hidden border border-white/10">
+                      <div key={apt.id} className="flex gap-6 p-6 rounded-[2.5rem] bg-white/50 dark:bg-muted hover:bg-primary transition-all group/item cursor-default relative overflow-hidden border border-border">
                          <div className="absolute top-0 right-0 h-24 w-24 bg-primary rounded-full -mr-12 -mt-12 group-hover/item:scale-150 transition-transform duration-[1500ms]" />
                          <div className="h-16 w-16 shrink-0 rounded-2xl bg-primary text-white flex flex-col items-center justify-center shadow-2xl relative z-10 group-hover/item:scale-110 transition-transform">
                             <span className="text-[10px] uppercase font-black leading-none opacity-60">
@@ -438,7 +438,7 @@ export default function AppointmentDesk() {
                     <ArrowUpRight className="h-6 w-6 text-primary" />
                  </div>
                  <div className="space-y-8">
-                    <div className="flex justify-between items-end border-b border-white/5 pb-6">
+                    <div className="flex justify-between items-end border-b border-border pb-6">
                        <p className="text-sm font-black uppercase tracking-widest opacity-40 italic">Active Bookings</p>
                        <p className="text-5xl font-black tracking-tighter italic">{(Array.isArray(appointments) ? appointments : []).filter(a => a.status === 'SCHEDULED').length}</p>
                     </div>

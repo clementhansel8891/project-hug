@@ -76,8 +76,8 @@ export function RetailCustomerActivity({
   };
 
   return (
-    <Card className="rounded-2xl border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl overflow-hidden group/registry">
-      <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+    <Card className="rounded-2xl border border-border shadow-2xl bg-card backdrop-blur-3xl overflow-hidden group/registry">
+      <CardHeader className="p-8 border-b border-border bg-card">
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
           <div className="space-y-4">
             <CardTitle className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-6 text-foreground italic">
@@ -117,11 +117,11 @@ export function RetailCustomerActivity({
             <p className="text-sm font-black italic text-muted-foreground uppercase tracking-[0.4em] animate-pulse">Synchronizing Registry...</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-border">
             {(Array.isArray(filteredCustomers) ? filteredCustomers : []).map((customer) => (
               <div
                 key={customer.id}
-                className="group flex items-center justify-between p-6 hover:bg-white/[0.04] transition-all duration-500 cursor-pointer relative overflow-hidden"
+                className="group flex items-center justify-between p-6 hover:bg-card transition-all duration-500 cursor-pointer relative overflow-hidden"
                 onClick={() => handleOpenDetail(customer)}
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -155,7 +155,7 @@ export function RetailCustomerActivity({
                       </Badge>
                     </div>
                   </div>
-                  <div className="w-12 h-12 rounded-xl bg-secondary/40 border border-white/5 flex items-center justify-center group-hover:bg-primary transition-colors shadow-2xl">
+                  <div className="w-12 h-12 rounded-xl bg-secondary/40 border border-border flex items-center justify-center group-hover:bg-primary transition-colors shadow-2xl">
                     <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                   </div>
                 </div>
@@ -186,7 +186,7 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
         </DialogHeader>
         <div className="flex h-full">
           {/* Sidebar Info */}
-          <div className="w-[350px] bg-white/[0.02] border-r border-white/5 p-6 space-y-12 overflow-y-auto custom-scrollbar">
+          <div className="w-[350px] bg-card border-r border-border p-6 space-y-12 overflow-y-auto custom-scrollbar">
             <div className="space-y-6 text-center">
               <div className="w-32 h-32 rounded-2xl bg-primary mx-auto flex items-center justify-center text-3xl font-black italic shadow-[0_20px_50px_rgba(79,70,229,0.4)] text-foreground">
                 {customer.name[0]}
@@ -201,11 +201,11 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
               <div className="space-y-4">
                 <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.4em] italic">Identity Payload</p>
                 <div className="space-y-4">
-                  <div className="p-4 rounded-2xl bg-secondary/40 border border-white/5 space-y-1">
+                  <div className="p-4 rounded-2xl bg-secondary/40 border border-border space-y-1">
                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic">Email</p>
                      <p className="text-sm font-medium text-foreground truncate italic">{customer.email || "N/A"}</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-secondary/40 border border-white/5 space-y-1">
+                  <div className="p-4 rounded-2xl bg-secondary/40 border border-border space-y-1">
                      <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic">Phone</p>
                      <p className="text-sm font-medium text-foreground italic">{customer.phone || "N/A"}</p>
                   </div>
@@ -253,7 +253,7 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
           {/* Main Content Tabs */}
           <div className="flex-1 bg-transparent p-6 overflow-hidden flex flex-col">
             <Tabs defaultValue="history" className="h-full flex flex-col">
-              <TabsList className="bg-secondary/40 p-2 rounded-[2rem] w-fit mb-12 h-20 border border-white/5 backdrop-blur-3xl shadow-2xl">
+              <TabsList className="bg-secondary/40 p-2 rounded-[2rem] w-fit mb-12 h-20 border border-border backdrop-blur-3xl shadow-2xl">
                 <TabsTrigger value="history" className="rounded-2xl px-10 data-[state=active]:bg-primary data-[state=active]:text-foreground text-[11px] font-black uppercase italic tracking-[0.3em] transition-all text-muted-foreground h-full">
                   <History className="w-5 h-5 mr-3" /> History
                 </TabsTrigger>
@@ -279,7 +279,7 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
                   <CustomerWishlistView wishlist={customer.retail_wishlists} onExpansionRequest={onExpansionRequest} />
                 </TabsContent>
                 <TabsContent value="chat" className="h-full mt-0 focus-visible:ring-0">
-                  <div className="h-full flex flex-col items-center justify-center text-center space-y-10 bg-white/[0.02] rounded-[2rem] border-2 border-dashed border-white/5 group/chat overflow-hidden relative">
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-10 bg-card rounded-[2rem] border-2 border-dashed border-white/5 group/chat overflow-hidden relative">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,70,229,0.05)_0%,transparent_70%)] opacity-0 group-hover/chat:opacity-100 transition-opacity duration-1000" />
                     <div className="w-24 h-24 rounded-2xl bg-secondary/40 border border-border shadow-3xl flex items-center justify-center group-hover/chat:scale-110 group-hover/chat:rotate-6 transition-all duration-500 relative z-10">
                       <MessageSquare className="w-10 h-10 text-primary" />
@@ -341,12 +341,12 @@ function OrderHistoryList({ customerId }: { customerId: string }) {
     <ScrollArea className="h-full pr-6 custom-scrollbar">
       <div className="space-y-6">
         {orders.length === 0 ? (
-          <div className="p-10 text-center bg-secondary/40 rounded-[2rem] border border-white/5 border-dashed">
+          <div className="p-10 text-center bg-secondary/40 rounded-[2rem] border border-border border-dashed">
             <p className="text-[11px] font-black italic text-muted-foreground uppercase tracking-[0.4em]">No documented transactions</p>
           </div>
         ) : (
           (Array.isArray(orders) ? orders : []).map((order) => (
-            <div key={order.id} className="p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-primary hover:bg-white/[0.04] transition-all duration-500 space-y-6 group/order shadow-xl">
+            <div key={order.id} className="p-8 rounded-2xl bg-card border border-border hover:border-primary hover:bg-card transition-all duration-500 space-y-6 group/order shadow-xl">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] italic">Order Context</p>
@@ -356,7 +356,7 @@ function OrderHistoryList({ customerId }: { customerId: string }) {
                   {order.status}
                 </Badge>
               </div>
-              <div className="flex items-center justify-between pt-6 border-t border-white/5">
+              <div className="flex items-center justify-between pt-6 border-t border-border">
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] italic">{new Date(order.created_at).toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 <p className="text-3xl font-black italic text-foreground tracking-tighter">Rp {(order.total_amount || order.totalAmount || 0).toLocaleString()}</p>
               </div>
@@ -375,12 +375,12 @@ function CustomerCartView({ cart }: any) {
     <ScrollArea className="h-full pr-6 custom-scrollbar">
       <div className="space-y-6">
         {items.length === 0 ? (
-          <div className="p-10 text-center bg-secondary/40 rounded-[2rem] border border-white/5 border-dashed">
+          <div className="p-10 text-center bg-secondary/40 rounded-[2rem] border border-border border-dashed">
             <p className="text-[11px] font-black italic text-muted-foreground uppercase tracking-[0.4em]">Asset Staging Area Empty</p>
           </div>
         ) : (
           (Array.isArray(items) ? items : []).map((item: any) => (
-            <div key={item.id} className="flex items-center justify-between p-8 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] hover:border-primary transition-all duration-500 group/cart shadow-xl">
+            <div key={item.id} className="flex items-center justify-between p-8 bg-card border border-border rounded-2xl hover:bg-card hover:border-primary transition-all duration-500 group/cart shadow-xl">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 rounded-2xl bg-secondary/40 border border-border flex items-center justify-center shadow-2xl group-hover/cart:scale-110 transition-transform">
                   <ShoppingCart className="w-7 h-7 text-primary" />
@@ -406,12 +406,12 @@ function CustomerWishlistView({ wishlist, onExpansionRequest }: any) {
     <ScrollArea className="h-full pr-6 custom-scrollbar">
       <div className="grid grid-cols-2 gap-8">
         {items.length === 0 ? (
-          <div className="col-span-2 p-10 text-center bg-secondary/40 rounded-[2rem] border border-white/5 border-dashed">
+          <div className="col-span-2 p-10 text-center bg-secondary/40 rounded-[2rem] border border-border border-dashed">
             <p className="text-[11px] font-black italic text-muted-foreground uppercase tracking-[0.4em]">No Strategic Assets Identified</p>
           </div>
         ) : (
           (Array.isArray(items) ? items : []).map((item: any) => (
-            <div key={item.id} className="p-6 bg-white/[0.02] border border-white/5 rounded-[2rem] flex flex-col items-center text-center space-y-6 hover:bg-white/[0.04] hover:border-destructive/20 transition-all duration-500 group/wish shadow-xl">
+            <div key={item.id} className="p-6 bg-card border border-border rounded-[2rem] flex flex-col items-center text-center space-y-6 hover:bg-card hover:border-destructive/20 transition-all duration-500 group/wish shadow-xl">
               <div className="w-24 h-24 rounded-[2rem] bg-destructive/10 border border-destructive/20 flex items-center justify-center shadow-3xl group-hover/wish:scale-110 group-hover/wish:rotate-6 transition-all duration-500">
                 <Heart className="w-10 h-10 text-destructive fill-rose-400/10" />
               </div>

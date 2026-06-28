@@ -267,7 +267,7 @@ const DeveloperConsole = ({
             )}
          </div>
 
-         <div className="flex-1 bg-black/50 rounded-xl p-4 overflow-auto border border-white/5 relative group">
+         <div className="flex-1 bg-black/50 rounded-xl p-4 overflow-auto border border-border relative group">
             <Button 
               size="icon" 
               variant="ghost" 

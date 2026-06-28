@@ -36,7 +36,7 @@ export function NotificationCenter() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0 border-none shadow-3xl bg-white dark:bg-muted rounded-3xl overflow-hidden" align="end">
-        <div className="bg-muted p-6 text-white border-b border-white/5">
+        <div className="bg-muted p-6 text-white border-b border-border">
           <div className="flex justify-between items-center mb-1">
             <h3 className="font-black text-xs uppercase tracking-[0.2em] opacity-60">Intelligence Hub</h3>
             <Badge variant="outline" className="text-[9px] font-black uppercase text-primary border-primary bg-primary">

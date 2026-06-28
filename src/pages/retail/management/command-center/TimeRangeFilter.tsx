@@ -19,7 +19,7 @@ export const TimeRangeFilter: React.FC<TimeRangeFilterProps> = ({
   onChange,
 }) => {
   return (
-    <div className="flex items-center gap-3 px-4 py-1.5 bg-secondary/400 backdrop-blur-md rounded-xl border border-white/50 shadow-sm group">
+    <div className="flex items-center gap-3 px-4 py-1.5 bg-secondary/400 backdrop-blur-md rounded-xl border border-border0 shadow-sm group">
       <Calendar className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
       <div className="flex flex-col">
         <span className="text-[7px] font-black uppercase tracking-[0.2em] text-muted-foreground leading-none mb-0.5">

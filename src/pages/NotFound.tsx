@@ -14,7 +14,7 @@ const NotFound = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <GlassCard variant="morphism" className="w-full max-w-md rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl">
+      <GlassCard variant="morphism" className="w-full max-w-md rounded-3xl border border-border dark:border-white/5 shadow-2xl">
         <GlassCardContent className="flex flex-col items-center p-10 text-center">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-primary/10 text-primary">
             <Compass className="h-8 w-8" aria-hidden="true" />

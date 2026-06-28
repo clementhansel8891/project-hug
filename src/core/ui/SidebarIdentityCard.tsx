@@ -19,7 +19,7 @@ export const SidebarIdentityCard: React.FC = () => {
       <div className="relative z-10 space-y-5">
         {/* Verification Header */}
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 bg-primary rounded-xl flex items-center justify-center shadow-lg border border-white/10">
+          <div className="h-8 w-8 bg-primary rounded-xl flex items-center justify-center shadow-lg border border-border">
             <ShieldCheck className="h-5 w-5 text-white" />
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-50 italic">Node Verified</p>
@@ -39,7 +39,7 @@ export const SidebarIdentityCard: React.FC = () => {
         </div>
 
         {/* Contextual Details */}
-        <div className="space-y-3 pt-3 border-t border-white/10">
+        <div className="space-y-3 pt-3 border-t border-border">
           <div className="flex items-center gap-3">
             <Briefcase className="h-3.5 w-3.5 text-primary" />
             <div className="space-y-0.5">
@@ -66,7 +66,7 @@ export const SidebarIdentityCard: React.FC = () => {
         </div>
 
         {/* Global Access Badge */}
-        <Badge className="w-full justify-center bg-white/10 hover:bg-white/20 border-white/10 text-[9px] font-black py-1.5 rounded-xl text-white uppercase tracking-[0.2em] shadow-inner transition-colors">
+        <Badge className="w-full justify-center bg-white/10 hover:bg-white/20 border-border text-[9px] font-black py-1.5 rounded-xl text-white uppercase tracking-[0.2em] shadow-inner transition-colors">
           Security Level A-1
         </Badge>
       </div>

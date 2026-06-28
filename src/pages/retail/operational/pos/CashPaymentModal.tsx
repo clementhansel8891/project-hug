@@ -188,7 +188,7 @@ export const CashPaymentModal: React.FC<CashPaymentModalProps> = ({
         }
       }}
     >
-      <DialogOverlay className="bg-black/40 backdrop-blur-sm" />
+      <DialogOverlay className="bg-secondary backdrop-blur-sm" />
 
       <DialogContent
         className="

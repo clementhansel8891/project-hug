@@ -325,7 +325,7 @@ export default function ConnectedAccountsDesk() {
             </CardHeader>
             
             <CardContent className="p-10 pt-0 flex-1 space-y-8 relative z-10">
-              <div className="space-y-6 bg-muted dark:bg-muted p-6 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-inner">
+              <div className="space-y-6 bg-muted dark:bg-muted p-6 rounded-[2rem] border border-border dark:border-border/20 shadow-inner">
                 <div className="flex items-center justify-between">
                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                       <Clock className="h-4 w-4 text-primary" /> Token Expiry

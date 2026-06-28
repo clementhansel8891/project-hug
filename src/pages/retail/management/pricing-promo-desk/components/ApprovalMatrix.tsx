@@ -75,7 +75,7 @@ export const ApprovalMatrix: React.FC<ApprovalMatrixProps> = ({
             return (
               <div
                 key={dept}
-                className="flex flex-col items-center p-5 rounded-3xl bg-secondary/60 border border-white/5 space-y-4 hover:bg-secondary/60 transition-colors"
+                className="flex flex-col items-center p-5 rounded-3xl bg-secondary/60 border border-border space-y-4 hover:bg-secondary/60 transition-colors"
               >
                 {signature ? (
                   <CheckCircle2 className="w-8 h-8 text-success drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]" />

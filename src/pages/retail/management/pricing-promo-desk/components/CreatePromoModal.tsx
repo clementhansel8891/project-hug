@@ -110,7 +110,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
-      <DialogContent className="sm:max-w-md rounded-[2rem] p-6 border border-white/10 shadow-2xl bg-muted backdrop-blur-2xl text-foreground">
+      <DialogContent className="sm:max-w-md rounded-[2rem] p-6 border border-border shadow-2xl bg-muted backdrop-blur-2xl text-foreground">
         <DialogHeader>
           <DialogTitle className="text-xl font-black italic tracking-tighter uppercase flex items-center gap-2 text-foreground">
             <Plus className="w-5 h-5 text-primary" /> Issue Promo Proposal
@@ -126,7 +126,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
               <Input
                 id="promo-title"
                 {...register("title")}
-                className="h-12 rounded-xl border-white/10 font-bold italic bg-white/[0.03] text-foreground focus:border-primary/50 placeholder:text-muted-foreground/50"
+                className="h-12 rounded-xl border-border font-bold italic bg-card text-foreground focus:border-primary/50 placeholder:text-muted-foreground/50"
                 placeholder="e.g. End of Season Sale"
                 aria-describedby={errors.title ? "promo-title-error" : undefined}
                 aria-invalid={!!errors.title}
@@ -146,7 +146,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
                 <select
                   id="promo-type"
                   {...register("type")}
-                  className="w-full h-12 px-3 rounded-xl border border-white/10 font-bold italic bg-muted text-foreground text-sm outline-none focus:border-primary/50"
+                  className="w-full h-12 px-3 rounded-xl border border-border font-bold italic bg-muted text-foreground text-sm outline-none focus:border-primary/50"
                   aria-describedby={errors.type ? "promo-type-error" : undefined}
                   aria-invalid={!!errors.type}
                 >
@@ -171,7 +171,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
                     id="promo-value"
                     type="number"
                     {...register("value")}
-                    className="h-12 pl-10 rounded-xl border-white/10 font-black italic bg-white/[0.03] text-foreground focus:border-primary/50 placeholder:text-muted-foreground/50"
+                    className="h-12 pl-10 rounded-xl border-border font-black italic bg-card text-foreground focus:border-primary/50 placeholder:text-muted-foreground/50"
                     placeholder="0"
                     aria-describedby={errors.value ? "promo-value-error" : undefined}
                     aria-invalid={!!errors.value}
@@ -194,7 +194,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
                   id="promo-start-date"
                   type="date"
                   {...register("startDate")}
-                  className="h-12 rounded-xl border-white/10 font-bold bg-white/[0.03] text-foreground focus:border-primary/50"
+                  className="h-12 rounded-xl border-border font-bold bg-card text-foreground focus:border-primary/50"
                   aria-describedby={errors.startDate ? "promo-start-date-error" : undefined}
                   aria-invalid={!!errors.startDate}
                 />
@@ -212,7 +212,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
                   id="promo-end-date"
                   type="date"
                   {...register("endDate")}
-                  className="h-12 rounded-xl border-white/10 font-bold bg-white/[0.03] text-foreground focus:border-primary/50"
+                  className="h-12 rounded-xl border-border font-bold bg-card text-foreground focus:border-primary/50"
                   aria-describedby={errors.endDate ? "promo-end-date-error" : undefined}
                   aria-invalid={!!errors.endDate}
                 />
@@ -231,7 +231,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
               <select
                 id="promo-target"
                 {...register("target")}
-                className="w-full h-12 px-3 rounded-xl border border-white/10 font-bold italic bg-muted text-foreground text-sm outline-none focus:border-primary/50"
+                className="w-full h-12 px-3 rounded-xl border border-border font-bold italic bg-muted text-foreground text-sm outline-none focus:border-primary/50"
                 aria-describedby={errors.target ? "promo-target-error" : undefined}
                 aria-invalid={!!errors.target}
               >
@@ -252,7 +252,7 @@ export const CreatePromoModal: React.FC<CreatePromoModalProps> = ({ isOpen, onCl
               type="button"
               variant="outline"
               disabled={isPending}
-              className="flex-1 h-12 rounded-xl font-bold uppercase tracking-wider text-xs border-white/10 hover:bg-white/10 text-muted-foreground hover:text-foreground"
+              className="flex-1 h-12 rounded-xl font-bold uppercase tracking-wider text-xs border-border hover:bg-white/10 text-muted-foreground hover:text-foreground"
               onClick={handleClose}
             >
               Cancel

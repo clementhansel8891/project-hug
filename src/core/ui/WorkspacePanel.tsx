@@ -21,7 +21,7 @@ export function WorkspacePanel({
 }: WorkspacePanelProps) {
   const variantClasses = {
     default: "bg-background",
-    glass: "bg-white/80 backdrop-blur-xl border-white/20 shadow-xl",
+    glass: "bg-white/80 backdrop-blur-xl border-border shadow-xl",
     dark: "bg-muted text-muted-foreground border-border"
   };
 

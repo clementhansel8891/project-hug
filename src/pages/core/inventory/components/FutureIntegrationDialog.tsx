@@ -25,7 +25,7 @@ export function FutureIntegrationDialog({
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 via-transparent to-emerald-500/10 pointer-events-none" />
         
         <DialogHeader className="p-10 text-center relative z-10">
-          <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-primary mx-auto mb-6 shadow-2xl shadow-indigo-600/40 border border-white/20">
+          <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-primary mx-auto mb-6 shadow-2xl shadow-indigo-600/40 border border-border">
             <Truck className="h-10 w-10 text-white" />
           </div>
           <DialogTitle className="text-3xl font-black tracking-tighter uppercase italic">
@@ -42,15 +42,15 @@ export function FutureIntegrationDialog({
           </p>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-border hover:border-border transition-colors">
               <Globe className="h-5 w-5 text-primary" />
               <div className="text-xs font-bold text-muted-foreground">Global API Webhooks</div>
             </div>
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-border hover:border-border transition-colors">
               <Zap className="h-5 w-5 text-warning" />
               <div className="text-xs font-bold text-muted-foreground">Instant Rate Calculation</div>
             </div>
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-border hover:border-border transition-colors">
               <Shield className="h-5 w-5 text-success" />
               <div className="text-xs font-bold text-muted-foreground">Secure Transit Insurance</div>
             </div>
@@ -61,7 +61,7 @@ export function FutureIntegrationDialog({
           </div>
         </div>
 
-        <DialogFooter className="p-8 bg-white/5 border-t border-white/5 flex flex-col gap-3 relative z-10">
+        <DialogFooter className="p-8 bg-white/5 border-t border-border flex flex-col gap-3 relative z-10">
           <Button 
             className="w-full rounded-2xl h-14 bg-white text-muted-foreground font-black uppercase tracking-widest text-xs hover:bg-muted transition-all hover:scale-[1.02] active:scale-[0.98]"
             onClick={() => onOpenChange(false)}

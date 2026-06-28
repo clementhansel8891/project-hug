@@ -134,7 +134,7 @@ export default function Onboarding() {
       </div>
 
       <div className="mt-12 sm:mx-auto sm:w-full sm:max-w-xl z-10 px-4">
-        <GlassCard variant="morphism" className="rounded-[2.5rem] shadow-2xl border border-white/20 dark:border-white/5 overflow-hidden p-1 transition-all duration-500">
+        <GlassCard variant="morphism" className="rounded-[2.5rem] shadow-2xl border border-border dark:border-white/5 overflow-hidden p-1 transition-all duration-500">
           <div className="bg-background/40 backdrop-blur-md rounded-[2.1rem] py-10 px-6 sm:px-12">
           {/* Progress Indicator */}
           <div className="mb-10">
@@ -266,7 +266,7 @@ export default function Onboarding() {
 
                   {/* Dropdown results */}
                   {showDropdown && locationResults.length > 0 && (
-                    <div className="absolute z-50 mt-3 w-full glass-morphism rounded-2xl shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="absolute z-50 mt-3 w-full glass-morphism rounded-2xl shadow-2xl border border-border dark:border-border overflow-hidden animate-in fade-in zoom-in duration-200">
                       {(Array.isArray(locationResults) ? locationResults : []).map((r) => (
                         <button
                           key={r.place_id}

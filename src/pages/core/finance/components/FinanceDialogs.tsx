@@ -48,7 +48,7 @@ export function CreatePaymentDialog({
           {/* Left panel */}
           <div className="bg-gradient-to-b from-slate-900 to-slate-800 p-10 flex flex-col justify-between">
             <div>
-              <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center mb-6 border border-white/10">
+              <div className="h-12 w-12 rounded-2xl bg-white/10 flex items-center justify-center mb-6 border border-border">
                 <CreditCard className="w-6 h-6 text-white" />
               </div>
               <DialogTitle className="text-2xl font-black tracking-tighter text-white mb-3">
@@ -58,18 +58,18 @@ export function CreatePaymentDialog({
                 Initiate outgoing transfers to external beneficiaries, suppliers, or reimbursements.
               </p>
               <div className="mt-8 space-y-3">
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl">
+                <div className="bg-white/5 border border-border p-4 rounded-2xl">
                   <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5">Source Account</p>
                   <p className="font-bold text-white text-sm">
                     {source ? moneySources.find((s) => s.id === source)?.name : "Main Treasury"}
                   </p>
                 </div>
                 <div className="flex justify-center">
-                  <div className="bg-white/10 border border-white/10 rounded-full p-2.5">
+                  <div className="bg-white/10 border border-border rounded-full p-2.5">
                     <Send className="w-4 h-4 text-muted-foreground" />
                   </div>
                 </div>
-                <div className="bg-white/5 border border-white/10 p-4 rounded-2xl">
+                <div className="bg-white/5 border border-border p-4 rounded-2xl">
                   <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5">Authorization</p>
                   <p className="font-bold text-white text-sm flex items-center gap-2">
                     {isHighLevel

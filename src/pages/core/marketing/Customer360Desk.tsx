@@ -224,7 +224,7 @@ export default function Customer360Desk() {
         {/* Right Section: Intelligence & Lifecycle */}
         <div className="col-span-12 lg:col-span-8 overflow-hidden flex flex-col gap-10">
           {loadingProfile ? (
-            <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-white/20 dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-20 space-y-8 animate-in fade-in duration-1000">
+            <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-border dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-20 space-y-8 animate-in fade-in duration-1000">
                <div className="relative">
                   <div className="h-24 w-24 rounded-[3rem] bg-primary flex items-center justify-center shadow-2xl animate-spin duration-[3000ms]">
                      <RefreshCw className="h-12 w-12 text-white" />
@@ -269,9 +269,9 @@ export default function Customer360Desk() {
                     </div>
                   </div>
                   <div className="flex gap-4">
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-white/10 shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MessageSquare className="h-7 w-7" /></Button>
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-white/10 shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><Calendar className="h-7 w-7" /></Button>
-                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-white/10 shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MoreHorizontal className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MessageSquare className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><Calendar className="h-7 w-7" /></Button>
+                    <Button className="h-16 w-16 rounded-[1.5rem] bg-white/5 border border-border shadow-2xl hover:bg-white hover:text-muted-foreground hover:scale-110 transition-all text-white"><MoreHorizontal className="h-7 w-7" /></Button>
                   </div>
                 </div>
                 
@@ -351,7 +351,7 @@ export default function Customer360Desk() {
                                        {item.type === 'PURCHASE' && <ShoppingBag className="h-5 w-5" />}
                                        {item.type === 'LEAD_CAPTURE' && <Zap className="h-5 w-5" />}
                                      </div>
-                                     <div className="p-8 rounded-[2.5rem] bg-white dark:bg-muted shadow-xl border border-white/10 group-hover/item:shadow-2xl group-hover/item:translate-x-3 transition-all duration-500 relative overflow-hidden">
+                                     <div className="p-8 rounded-[2.5rem] bg-white dark:bg-muted shadow-xl border border-border group-hover/item:shadow-2xl group-hover/item:translate-x-3 transition-all duration-500 relative overflow-hidden">
                                         <div className="absolute top-0 right-0 h-32 w-32 bg-primary rounded-full blur-3xl -mr-16 -mt-16 group-hover/item:scale-150 transition-transform duration-1000" />
                                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10 mb-6">
                                           <div className="space-y-1">
@@ -421,7 +421,7 @@ export default function Customer360Desk() {
                         <Card className="rounded-[4rem] border-none shadow-2xl bg-muted text-white p-12 relative overflow-hidden group hover:shadow-slate-500/20 transition-all duration-700 flex flex-col justify-between">
                            <div className="absolute top-0 right-0 h-64 w-64 bg-white/5 rounded-full blur-[100px] -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-1000" />
                            <div className="relative z-10 space-y-8">
-                              <div className="h-20 w-20 rounded-[2rem] bg-white/10 backdrop-blur-xl flex items-center justify-center shadow-2xl border border-white/10 group-hover:rotate-12 transition-all duration-500">
+                              <div className="h-20 w-20 rounded-[2rem] bg-white/10 backdrop-blur-xl flex items-center justify-center shadow-2xl border border-border group-hover:rotate-12 transition-all duration-500">
                                  <Target className="h-10 w-10 text-white" />
                               </div>
                               <div className="space-y-3">
@@ -442,10 +442,10 @@ export default function Customer360Desk() {
               </Tabs>
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center rounded-[5rem] border-2 border-dashed border-white/20 dark:border-border/20 bg-white/5 dark:bg-muted grayscale opacity-20 space-y-10 animate-in fade-in duration-1000 relative overflow-hidden">
+            <div className="h-full flex flex-col items-center justify-center rounded-[5rem] border-2 border-dashed border-border dark:border-border/20 bg-white/5 dark:bg-muted grayscale opacity-20 space-y-10 animate-in fade-in duration-1000 relative overflow-hidden">
                <div className="absolute inset-0 bg-primary blur-[120px] rounded-full scale-150 animate-pulse" />
                <div className="relative z-10">
-                  <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_60px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-white/10 group">
+                  <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_60px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border group">
                      <User className="h-24 w-24 text-primary group-hover:scale-110 transition-transform duration-700" />
                   </div>
                </div>

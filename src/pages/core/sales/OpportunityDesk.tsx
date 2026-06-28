@@ -186,7 +186,7 @@ export default function OpportunityDesk() {
           <p className="text-muted-foreground font-medium max-w-2xl text-lg leading-relaxed">High-fidelity deal lifecycle execution and probability orchestration.</p>
         </div>
         
-        <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+        <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -209,7 +209,7 @@ export default function OpportunityDesk() {
 
       {/* Main Table Area */}
       <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-        <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+        <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function OpportunityDesk() {
                   <th className="px-10 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+              <tbody className="divide-y divide-border dark:divide-slate-800/10">
                 {(Array.isArray(filtered) ? filtered : []).map((op) => (
                   <tr 
                     key={op.id} 
@@ -379,7 +379,7 @@ export default function OpportunityDesk() {
             <div className="bg-primary p-12 text-white relative overflow-hidden flex flex-col justify-between">
                <div className="absolute top-0 right-0 h-64 w-64 -mr-20 -mt-20 bg-white/10 rounded-full blur-3xl" />
                <div className="space-y-8 relative z-10">
-                  <div className="h-20 w-20 rounded-[2rem] bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-xl">
+                  <div className="h-20 w-20 rounded-[2rem] bg-white/20 backdrop-blur-md flex items-center justify-center border border-border shadow-xl">
                      <Target className="h-10 w-10" />
                   </div>
                   <div>
@@ -390,7 +390,7 @@ export default function OpportunityDesk() {
                </div>
                
                <div className="pt-12 space-y-6 relative z-10">
-                  <div className="p-6 rounded-3xl bg-white/10 border border-white/10 space-y-4">
+                  <div className="p-6 rounded-3xl bg-white/10 border border-border space-y-4">
                      <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest opacity-60">
                         <span>Current Stage</span>
                         <span>{selectedOpp?.probability}%</span>

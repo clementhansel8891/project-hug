@@ -48,7 +48,7 @@ export const MovementsTab: React.FC<Props> = ({
             <Card
               key={type}
               onClick={() => onMovement(type)}
-              className="rounded-[2rem] border border-white/5 hover:border-primary shadow-xl bg-white/[0.03] p-7 cursor-pointer group transition-all hover:shadow-2xl backdrop-blur-3xl"
+              className="rounded-[2rem] border border-border hover:border-primary shadow-xl bg-card p-7 cursor-pointer group transition-all hover:shadow-2xl backdrop-blur-3xl"
             >
               <div
                 className={`w-14 h-14 rounded-2xl ${colors.bg} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}
@@ -78,8 +78,8 @@ export const MovementsTab: React.FC<Props> = ({
       </div>
 
       {/* Movement audit log */}
-      <Card className="rounded-2xl border border-white/5 shadow-xl overflow-hidden bg-white/[0.02] backdrop-blur-3xl">
-        <CardHeader className="p-7 border-b border-white/5">
+      <Card className="rounded-2xl border border-border shadow-xl overflow-hidden bg-card backdrop-blur-3xl">
+        <CardHeader className="p-7 border-b border-border">
           <CardTitle className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground italic flex items-center gap-2">
             <History className="w-4 h-4" /> Movement Audit Log
           </CardTitle>
@@ -87,7 +87,7 @@ export const MovementsTab: React.FC<Props> = ({
         <CardContent className="p-0">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/5">
+              <tr className="border-b border-border">
                 {[
                   "Time",
                   "Actor",

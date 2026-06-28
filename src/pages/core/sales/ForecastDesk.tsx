@@ -129,7 +129,7 @@ export default function ForecastDesk() {
           <p className="text-muted-foreground font-medium max-w-2xl text-lg leading-relaxed italic">"Predicting the future is easy. Creating it requires accurate telemetry."</p>
         </div>
         
-        <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+        <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -271,7 +271,7 @@ export default function ForecastDesk() {
 
       {/* Detailed Forecast Table */}
       <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-        <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+        <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -298,7 +298,7 @@ export default function ForecastDesk() {
                   <th className="px-10 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Weighted Impact</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+              <tbody className="divide-y divide-border dark:divide-slate-800/10">
                 {(Array.isArray(filtered) ? filtered : []).map((item) => (
                   <tr key={item.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
                     <td className="px-10 py-8">

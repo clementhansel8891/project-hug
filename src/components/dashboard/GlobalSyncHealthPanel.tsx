@@ -48,7 +48,7 @@ export const GlobalSyncHealthPanel: React.FC<GlobalSyncHealthPanelProps> = ({ da
         </div>
 
         <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-3 rounded-3xl bg-white/5 p-6 border border-white/5 group-hover:border-white/10 transition-colors">
+          <div className="space-y-3 rounded-3xl bg-white/5 p-6 border border-border group-hover:border-border transition-colors">
             <div className="flex items-center justify-between text-muted-foreground">
               <span className="text-[10px] font-black uppercase tracking-widest">Pending</span>
               <RefreshCcw className="h-4 w-4 animate-spin-slow text-primary" />
@@ -67,7 +67,7 @@ export const GlobalSyncHealthPanel: React.FC<GlobalSyncHealthPanelProps> = ({ da
             <p className={cn("text-4xl font-black tracking-tighter", data.failed > 0 ? "text-destructive" : "text-foreground")}>{data.failed}</p>
           </div>
 
-          <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 pt-4 border-t border-white/5">
+          <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-center justify-between gap-4 px-2 pt-4 border-t border-border">
             <div className="flex items-center gap-3">
               <div className="h-1.5 w-1.5 rounded-full bg-success shadow-[0_0_8px_rgb(16,185,129)]" />
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">

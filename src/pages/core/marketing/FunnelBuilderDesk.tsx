@@ -329,7 +329,7 @@ export default function FunnelBuilderDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest gap-3 transition-all hover:bg-white dark:hover:bg-muted">
@@ -372,7 +372,7 @@ export default function FunnelBuilderDesk() {
         {/* Left: Registry */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-6 overflow-hidden">
           <Card className="flex-1 rounded-[3rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col">
-            <CardHeader className="p-8 pb-4 border-b border-white/10 dark:border-border/10">
+            <CardHeader className="p-8 pb-4 border-b border-border dark:border-border/10">
                <div className="flex items-center justify-between">
                   <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground italic">Path Registry</p>
                   <Badge variant="outline" className="rounded-full font-black text-[9px] px-2 py-0 h-5 border-border dark:border-border text-muted-foreground uppercase tracking-widest">{funnels.length} FLOWS</Badge>
@@ -430,7 +430,7 @@ export default function FunnelBuilderDesk() {
                     <div className="absolute top-0 right-0 h-64 w-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-1000" />
                     <CardContent className="p-8 flex items-center justify-between text-white relative z-10">
                         <div className="flex items-center gap-6">
-                           <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-xl border border-white/20">
+                           <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-xl border border-border">
                               <Activity className="h-8 w-8 text-white" />
                            </div>
                            <div className="space-y-1">
@@ -503,10 +503,10 @@ export default function FunnelBuilderDesk() {
                  </Card>
               </div>
            ) : (
-              <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-white/20 dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-30 space-y-10 animate-in zoom-in duration-1000">
+              <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-border dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-30 space-y-10 animate-in zoom-in duration-1000">
                  <div className="relative">
                     <div className="absolute inset-0 bg-primary blur-3xl rounded-full scale-150 animate-pulse" />
-                    <div className="relative h-40 w-40 bg-white dark:bg-muted rounded-[2.5rem] flex items-center justify-center shadow-2xl border border-white/10">
+                    <div className="relative h-40 w-40 bg-white dark:bg-muted rounded-[2.5rem] flex items-center justify-center shadow-2xl border border-border">
                        <Layers className="h-20 w-20 text-primary" />
                     </div>
                  </div>
@@ -527,7 +527,7 @@ export default function FunnelBuilderDesk() {
         {/* Right: Insights & Analytics */}
         <div className="col-span-12 lg:col-span-3 flex flex-col gap-10 overflow-hidden">
            <Card className="rounded-[3rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col">
-              <CardHeader className="p-8 pb-4 border-b border-white/10 dark:border-border/10">
+              <CardHeader className="p-8 pb-4 border-b border-border dark:border-border/10">
                  <div className="flex items-center justify-between">
                     <CardTitle className="text-xl font-black uppercase tracking-tight flex items-center gap-3">
                        <BarChart3 className="h-6 w-6 text-primary" />
@@ -538,11 +538,11 @@ export default function FunnelBuilderDesk() {
               </CardHeader>
               <CardContent className="p-8 space-y-10">
                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-white/50 dark:bg-muted shadow-sm border border-white/10 group hover:shadow-md transition-all">
+                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-white/50 dark:bg-muted shadow-sm border border-border group hover:shadow-md transition-all">
                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic leading-none block mb-1">Global Traffic</span>
                        <p className="text-2xl font-black tracking-tighter group-hover:text-primary transition-colors">12.4k</p>
                     </div>
-                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-white/50 dark:bg-muted shadow-sm border border-white/10 group hover:shadow-md transition-all">
+                    <div className="space-y-2 p-5 rounded-[1.5rem] bg-white/50 dark:bg-muted shadow-sm border border-border group hover:shadow-md transition-all">
                        <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest italic leading-none block mb-1">Conversions</span>
                        <p className="text-2xl font-black tracking-tighter text-primary">842</p>
                     </div>

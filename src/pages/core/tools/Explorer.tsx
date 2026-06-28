@@ -987,7 +987,7 @@ export default function Explorer() {
                                       <TooltipTrigger asChild>
                                         <span className="truncate max-w-[200px] block">{file.name}</span>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-muted border-white/10 text-white font-bold italic">
+                                      <TooltipContent className="bg-muted border-border text-white font-bold italic">
                                         {file.name}
                                       </TooltipContent>
                                     </Tooltip>
@@ -1323,7 +1323,7 @@ export default function Explorer() {
                                               {file.name}
                                             </p>
                                           </TooltipTrigger>
-                                          <TooltipContent className="bg-muted border-white/10 text-white font-bold italic shadow-2xl backdrop-blur-xl">
+                                          <TooltipContent className="bg-muted border-border text-white font-bold italic shadow-2xl backdrop-blur-xl">
                                             {file.name}
                                           </TooltipContent>
                                         </Tooltip>

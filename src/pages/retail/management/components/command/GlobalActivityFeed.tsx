@@ -32,7 +32,7 @@ const FeedItem: React.FC<FeedItemProps> = ({
   priority,
   isVerified = true,
 }) => (
-  <div className="flex items-start gap-5 p-6 rounded-[2rem] bg-white/[0.03] backdrop-blur-3xl border border-white/5 hover:border-primary hover:bg-white/[0.05] transition-all duration-500 group cursor-pointer shadow-lg relative overflow-hidden">
+  <div className="flex items-start gap-5 p-6 rounded-[2rem] bg-card backdrop-blur-3xl border border-border hover:border-primary hover:bg-card transition-all duration-500 group cursor-pointer shadow-lg relative overflow-hidden">
     <div className="absolute top-0 right-0 w-16 h-16 bg-secondary/40 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
     <div
       className={cn(
@@ -88,7 +88,7 @@ const FeedItem: React.FC<FeedItemProps> = ({
       </p>
     </div>
 
-    <div className="w-10 h-10 rounded-xl bg-secondary/40 border border-white/5 flex items-center justify-center group-hover:bg-primary transition-colors self-center">
+    <div className="w-10 h-10 rounded-xl bg-secondary/40 border border-border flex items-center justify-center group-hover:bg-primary transition-colors self-center">
       <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
     </div>
   </div>
@@ -155,8 +155,8 @@ export const GlobalActivityFeed = ({
   };
 
   return (
-    <Card className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-3xl shadow-2xl overflow-hidden flex flex-col h-full group/feed">
-      <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+    <Card className="rounded-2xl border border-border bg-card backdrop-blur-3xl shadow-2xl overflow-hidden flex flex-col h-full group/feed">
+      <CardHeader className="p-8 border-b border-border bg-card">
         <div className="flex items-center justify-between">
           <div className="space-y-3">
             <CardTitle className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-6 text-foreground">
@@ -222,7 +222,7 @@ export const GlobalActivityFeed = ({
         )}
       </CardContent>
 
-      <div className="p-6 border-t border-white/5 bg-white/[0.01]">
+      <div className="p-6 border-t border-border bg-card">
         <button 
           onClick={() => onExpansionRequest("Deep Audit Virtual Vault")}
           className="w-full h-16 rounded-xl bg-primary hover:bg-primary/90 text-foreground font-black italic text-[12px] uppercase tracking-[0.3em] transition-all shadow-[0_20px_40px_rgba(79,70,229,0.3)] hover:scale-105 active:scale-95 flex items-center justify-center gap-4 italic"

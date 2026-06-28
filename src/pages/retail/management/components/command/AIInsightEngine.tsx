@@ -99,12 +99,12 @@ export const AIInsightEngine = ({
   }, [session.tenantId]);
 
   return (
-    <Card className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-3xl shadow-2xl overflow-hidden relative group">
+    <Card className="rounded-2xl border border-border bg-card backdrop-blur-3xl shadow-2xl overflow-hidden relative group">
       <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:scale-125 transition-transform duration-1000">
         <Sparkles className="w-48 h-48 text-primary" />
       </div>
 
-      <CardHeader className="p-6 border-b border-white/5 bg-white/[0.01]">
+      <CardHeader className="p-6 border-b border-border bg-card">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <CardTitle className="text-3xl font-black italic uppercase tracking-tighter flex items-center gap-4 text-foreground">
@@ -119,7 +119,7 @@ export const AIInsightEngine = ({
              <button 
               onClick={analyzeNexus}
               disabled={loading}
-              className="w-12 h-12 flex items-center justify-center bg-secondary/40 border border-white/5 rounded-xl hover:bg-white/10 transition-all"
+              className="w-12 h-12 flex items-center justify-center bg-secondary/40 border border-border rounded-xl hover:bg-white/10 transition-all"
             >
               <RefreshCw className={cn("w-4 h-4 text-muted-foreground", loading && "animate-spin")} />
             </button>
@@ -156,7 +156,7 @@ export const AIInsightEngine = ({
             <div className="absolute top-0 right-0 h-48 w-48 bg-white/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover/anomaly:scale-150 transition-transform duration-1000" />
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <div className="w-16 h-16 rounded-xl bg-white/15 backdrop-blur-xl flex items-center justify-center border border-white/20 shadow-2xl group-hover/anomaly:rotate-12 transition-transform">
+                <div className="w-16 h-16 rounded-xl bg-white/15 backdrop-blur-xl flex items-center justify-center border border-border shadow-2xl group-hover/anomaly:rotate-12 transition-transform">
                   <AlertTriangle className="w-8 h-8 text-foreground" />
                 </div>
                 <div>
@@ -181,7 +181,7 @@ export const AIInsightEngine = ({
             <div className="absolute top-0 right-0 h-48 w-48 bg-white/10 rounded-full blur-3xl -mr-24 -mt-24 group-hover/anomaly:scale-150 transition-transform duration-1000" />
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-6">
-                <div className="w-16 h-16 rounded-xl bg-white/15 backdrop-blur-xl flex items-center justify-center border border-white/20 shadow-2xl group-hover/anomaly:rotate-12 transition-transform">
+                <div className="w-16 h-16 rounded-xl bg-white/15 backdrop-blur-xl flex items-center justify-center border border-border shadow-2xl group-hover/anomaly:rotate-12 transition-transform">
                   <UserCheck className="w-8 h-8 text-success" />
                 </div>
                 <div>
@@ -222,9 +222,9 @@ export const AIInsightEngine = ({
               <div
                 key={i}
                 onClick={() => onExpansionRequest?.(`Recommendation Execution: ${rec}`)}
-                className="flex items-start gap-6 p-6 rounded-[2rem] bg-white/[0.02] border border-white/5 hover:border-primary hover:bg-white/[0.05] transition-all duration-500 group/rec cursor-pointer"
+                className="flex items-start gap-6 p-6 rounded-[2rem] bg-card border border-border hover:border-primary hover:bg-card transition-all duration-500 group/rec cursor-pointer"
               >
-                <div className="w-10 h-10 rounded-xl bg-secondary border border-white/5 flex items-center justify-center shrink-0 shadow-inner group-hover/rec:bg-primary transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center shrink-0 shadow-inner group-hover/rec:bg-primary transition-colors">
                   <ArrowUpRight className="w-5 h-5 text-primary group-hover/rec:text-foreground group-hover/rec:rotate-45 transition-all duration-500" />
                 </div>
                 <p className="text-[13px] font-medium text-muted-foreground leading-relaxed italic group-hover/rec:text-foreground transition-colors">

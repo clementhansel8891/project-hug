@@ -24,8 +24,8 @@ export const CommandCenterSidebar = ({
   return (
     <div className="space-y-10">
       {/* Inventory Health */}
-      <Card className="rounded-[2rem] border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl overflow-hidden group/inventory">
-        <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+      <Card className="rounded-[2rem] border border-border shadow-2xl bg-card backdrop-blur-3xl overflow-hidden group/inventory">
+        <CardHeader className="p-8 border-b border-border bg-card">
           <CardTitle className="text-[11px] font-black italic uppercase tracking-[0.3em] flex items-center gap-3 text-foreground italic">
             <Package className="w-5 h-5 text-warning shadow-xl" />
             Inventory Health
@@ -58,8 +58,8 @@ export const CommandCenterSidebar = ({
       </Card>
 
       {/* Core Sync Status */}
-      <Card className="rounded-[2rem] border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl overflow-hidden group/sync">
-        <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+      <Card className="rounded-[2rem] border border-border shadow-2xl bg-card backdrop-blur-3xl overflow-hidden group/sync">
+        <CardHeader className="p-8 border-b border-border bg-card">
           <CardTitle className="text-[11px] font-black italic uppercase tracking-[0.3em] flex items-center gap-3 text-primary italic">
             <Link2 className="w-5 h-5 shadow-xl" />
             Consensus Sync
@@ -86,19 +86,19 @@ export const CommandCenterSidebar = ({
       </Card>
 
       {/* Audit Ledger Snippet */}
-      <Card className="rounded-[2rem] border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl overflow-hidden group/audit">
-        <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
+      <Card className="rounded-[2rem] border border-border shadow-2xl bg-card backdrop-blur-3xl overflow-hidden group/audit">
+        <CardHeader className="p-8 border-b border-border bg-card">
           <CardTitle className="text-[11px] font-black italic uppercase tracking-[0.3em] flex items-center gap-3 text-foreground italic">
             <Fingerprint className="w-5 h-5 text-primary shadow-xl" />
             Real-time Audit
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-border">
             {recentOrders.slice(0, 5).map((order: any) => (
               <div
                 key={order.id}
-                className="p-6 hover:bg-white/[0.04] transition-all duration-500 group/item cursor-pointer relative overflow-hidden"
+                className="p-6 hover:bg-card transition-all duration-500 group/item cursor-pointer relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-2xl opacity-0 group-hover/item:opacity-100 transition-opacity" />
                 <div className="flex justify-between items-start mb-2 relative z-10">
@@ -116,10 +116,10 @@ export const CommandCenterSidebar = ({
               </div>
             ))}
           </div>
-          <div className="p-8 bg-white/[0.01] border-t border-white/5">
+          <div className="p-8 bg-card border-t border-border">
             <button 
               onClick={() => onExpansionRequest("Real-time Global Ledger")}
-              className="w-full h-14 rounded-2xl bg-secondary/40 border border-white/5 text-muted-foreground font-black italic text-[10px] uppercase tracking-[0.3em] hover:bg-white/10 hover:text-foreground transition-all flex items-center justify-center gap-3 italic"
+              className="w-full h-14 rounded-2xl bg-secondary/40 border border-border text-muted-foreground font-black italic text-[10px] uppercase tracking-[0.3em] hover:bg-white/10 hover:text-foreground transition-all flex items-center justify-center gap-3 italic"
             >
                View Full Ledger <ArrowRight className="w-4 h-4" />
             </button>

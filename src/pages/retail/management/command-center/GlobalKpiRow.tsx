@@ -147,7 +147,7 @@ export const GlobalKpiRow: React.FC<GlobalKpiRowProps> = ({ kpis }) => {
       {(Array.isArray(items) ? items : []).map((item, idx) => (
         <div
           key={idx}
-          className={`relative bg-white/[0.03] backdrop-blur-3xl p-4 rounded-xl border border-white/5 shadow-xl transition-all duration-500 ${item.border} hover:bg-white/[0.05] hover:-translate-y-0.5 cursor-default group flex flex-col justify-between min-h-[130px] overflow-hidden`}
+          className={`relative bg-card backdrop-blur-3xl p-4 rounded-xl border border-border shadow-xl transition-all duration-500 ${item.border} hover:bg-card hover:-translate-y-0.5 cursor-default group flex flex-col justify-between min-h-[130px] overflow-hidden`}
         >
           {/* Subtle Background Glow */}
           <div
@@ -156,7 +156,7 @@ export const GlobalKpiRow: React.FC<GlobalKpiRowProps> = ({ kpis }) => {
 
           <div className="flex items-center justify-between relative z-10">
             <div
-              className={`w-9 h-9 rounded-lg ${item.accent} flex items-center justify-center transition-all duration-500 group-hover:rotate-6 border border-white/5 shadow-lg`}
+              className={`w-9 h-9 rounded-lg ${item.accent} flex items-center justify-center transition-all duration-500 group-hover:rotate-6 border border-border shadow-lg`}
             >
               <item.icon className={`w-4 h-4 ${item.iconClass}`} />
             </div>

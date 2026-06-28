@@ -132,7 +132,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
           <fieldset disabled={isPending} className="space-y-6">
             {/* Read-only info cards */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-secondary/60 p-4 rounded-3xl border border-white/5 space-y-2">
+              <div className="bg-secondary/60 p-4 rounded-3xl border border-border space-y-2">
                 <div className="flex items-center gap-2 text-[10px] font-black uppercase text-muted-foreground italic">
                   <ShieldCheck className="w-3.5 h-3.5 text-success" /> Security Status
                 </div>
@@ -146,7 +146,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
                   {staff.status.toUpperCase()}
                 </Badge>
               </div>
-              <div className="bg-secondary/60 p-4 rounded-3xl border border-white/5 space-y-2">
+              <div className="bg-secondary/60 p-4 rounded-3xl border border-border space-y-2">
                 <div className="flex items-center gap-2 text-[10px] font-black uppercase text-muted-foreground italic">
                   <Building className="w-3.5 h-3.5 text-primary" /> Department
                 </div>
@@ -166,7 +166,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
                 <Input
                   id="staff-role-title"
                   {...register("roleTitle")}
-                  className="h-12 bg-secondary/60 rounded-xl border border-white/5 px-4 font-bold text-sm text-foreground"
+                  className="h-12 bg-secondary/60 rounded-xl border border-border px-4 font-bold text-sm text-foreground"
                   aria-describedby={errors.roleTitle ? "staff-role-title-error" : undefined}
                   aria-invalid={!!errors.roleTitle}
                 />
@@ -187,7 +187,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
                 <Input
                   id="staff-location"
                   {...register("location")}
-                  className="h-12 bg-secondary/60 rounded-xl border border-white/5 px-4 font-bold text-sm text-foreground"
+                  className="h-12 bg-secondary/60 rounded-xl border border-border px-4 font-bold text-sm text-foreground"
                   aria-describedby={errors.location ? "staff-location-error" : undefined}
                   aria-invalid={!!errors.location}
                 />
@@ -208,7 +208,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
                 <Input
                   id="staff-phone"
                   {...register("phone")}
-                  className="h-12 bg-secondary/60 rounded-xl border border-white/5 px-4 font-bold text-sm text-foreground"
+                  className="h-12 bg-secondary/60 rounded-xl border border-border px-4 font-bold text-sm text-foreground"
                   placeholder="+62..."
                   aria-describedby={errors.phone ? "staff-phone-error" : undefined}
                   aria-invalid={!!errors.phone}
@@ -222,7 +222,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
             </div>
 
             {/* Access sub-scopes (read-only display) */}
-            <div className="bg-secondary/60 p-5 rounded-3xl border border-white/5">
+            <div className="bg-secondary/60 p-5 rounded-3xl border border-border">
               <div className="text-[10px] font-black uppercase text-muted-foreground italic mb-3">
                 Access Sub-Scopes
               </div>

@@ -370,7 +370,7 @@ const ShiftCloseTerminal = () => {
                         </label>
                         <Textarea
                           placeholder="Provide root cause for Audit Vault..."
-                          className="min-h-[100px] border-none bg-black/20 focus:bg-black/40 p-6 rounded-2xl text-sm font-bold italic text-foreground"
+                          className="min-h-[100px] border-none bg-secondary/50 focus:bg-secondary p-6 rounded-2xl text-sm font-bold italic text-foreground"
                           value={explanation}
                           onChange={(e) => setExplanation(e.target.value)}
                         />

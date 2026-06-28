@@ -104,7 +104,7 @@ export default function SalesOverview() {
           <p className="text-muted-foreground font-medium max-w-2xl text-lg leading-relaxed italic">"Revenue is the result of strategic coordination and relentless execution."</p>
         </div>
         
-        <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+        <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
           <Button
             variant="secondary"
             className="h-14 w-14 rounded-[1.5rem] bg-primary text-white hover:bg-primary transition-all shadow-xl shadow-indigo-500/20"
@@ -378,7 +378,7 @@ function KPIItem({ title, value, trend, trendUp, description, icon: Icon, color 
 
 function HealthMetric({ label, value, detail, color, icon: Icon }: any) {
   return (
-    <div className="rounded-[2rem] bg-white/60 dark:bg-muted p-6 space-y-3 shadow-sm border border-white/20">
+    <div className="rounded-[2rem] bg-white/60 dark:bg-muted p-6 space-y-3 shadow-sm border border-border">
       <div className="flex items-center justify-between">
          <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">{label}</p>
          <Icon className={cn("h-4 w-4", color)} />

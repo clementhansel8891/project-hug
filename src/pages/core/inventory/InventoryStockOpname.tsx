@@ -578,19 +578,19 @@ export default function InventoryStockOpname() {
               </CardHeader>
               <CardContent className="p-10 pt-0 space-y-10">
                 <div className="space-y-6">
-                  <div className="bg-muted p-6 rounded-2xl border border-white/5">
+                  <div className="bg-muted p-6 rounded-2xl border border-border">
                     <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1 italic">Audit Target</div>
                     <div className="text-lg font-black text-white italic">{locations.find(l => l.id === selectedLocation)?.name}</div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-muted p-6 rounded-2xl border border-white/5">
+                    <div className="bg-muted p-6 rounded-2xl border border-border">
                       <div className="text-[9px] font-black text-success uppercase tracking-widest mb-1 italic">Total Units</div>
                       <div className="text-3xl font-black text-white italic tracking-tighter">
                         {history.reduce((a, b) => a + b.actualCount, 0)}
                       </div>
                     </div>
-                    <div className="bg-muted p-6 rounded-2xl border border-white/5">
+                    <div className="bg-muted p-6 rounded-2xl border border-border">
                       <div className="text-[9px] font-black text-destructive uppercase tracking-widest mb-1 italic">SKUs Scanned</div>
                       <div className="text-3xl font-black text-white italic tracking-tighter">{history.length}</div>
                     </div>
@@ -613,7 +613,7 @@ export default function InventoryStockOpname() {
                 <div className="flex gap-4 pt-4">
                   <Button
                     variant="outline"
-                    className="flex-1 h-16 bg-transparent border-white/10 text-muted-foreground hover:text-destructive hover:bg-destructive rounded-2xl font-black italic uppercase tracking-widest text-[10px]"
+                    className="flex-1 h-16 bg-transparent border-border text-muted-foreground hover:text-destructive hover:bg-destructive rounded-2xl font-black italic uppercase tracking-widest text-[10px]"
                     onClick={() => {
                       if (confirm("Abort current audit session? Data will not be saved.")) {
                         setActiveCycleId(null);

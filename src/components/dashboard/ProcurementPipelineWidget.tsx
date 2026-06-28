@@ -52,7 +52,7 @@ export const ProcurementPipelineWidget: React.FC<ProcurementPipelineWidgetProps>
         </div>
       </div>
 
-      <div className="mt-auto border-t border-white/5 pt-8 flex items-center justify-between relative z-10">
+      <div className="mt-auto border-t border-border pt-8 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-2">
            <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Open PO Value</span>

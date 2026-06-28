@@ -462,7 +462,7 @@ export default function OmnichannelInbox() {
                   
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/50 dark:bg-muted shadow-md hover:scale-110 transition-all border border-white/20"><MoreVertical className="h-5 w-5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl bg-white/50 dark:bg-muted shadow-md hover:scale-110 transition-all border border-border"><MoreVertical className="h-5 w-5" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-64 rounded-2xl p-2 shadow-2xl border-none">
                       <DropdownMenuLabel className="font-black text-[10px] uppercase tracking-widest opacity-50 px-3 py-2">Stream Protocol</DropdownMenuLabel>
@@ -593,7 +593,7 @@ export default function OmnichannelInbox() {
             <div className="flex-1 flex flex-col items-center justify-center p-20 animate-in zoom-in duration-1000 grayscale opacity-30 space-y-12">
               <div className="relative">
                  <div className="absolute inset-0 bg-primary blur-[100px] rounded-full scale-[3] animate-pulse" />
-                 <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-white/20">
+                 <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border">
                     <MessageSquare className="h-24 w-24 text-primary drop-shadow-2xl" />
                  </div>
               </div>

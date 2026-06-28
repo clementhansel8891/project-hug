@@ -232,7 +232,7 @@ export default function StrategyControlDesk() {
         {/* Information Callout */}
         <div className="p-10 rounded-[3rem] bg-primary text-white flex flex-col md:flex-row items-center gap-10 relative overflow-hidden group">
           <div className="absolute top-0 right-0 h-48 w-48 bg-primary rounded-full blur-[80px] -mr-24 -mt-24" />
-          <div className="h-20 w-20 rounded-[1.5rem] bg-white/10 flex items-center justify-center border border-white/10 backdrop-blur-xl group-hover:rotate-12 transition-transform duration-700">
+          <div className="h-20 w-20 rounded-[1.5rem] bg-white/10 flex items-center justify-center border border-border backdrop-blur-xl group-hover:rotate-12 transition-transform duration-700">
              <AlertCircle className="h-10 w-10 text-primary" />
           </div>
           <div className="flex-1 space-y-2">

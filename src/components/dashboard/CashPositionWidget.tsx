@@ -65,7 +65,7 @@ export const CashPositionWidget: React.FC<CashPositionWidgetProps> = ({ data: pr
           {chartData.map((item, i) => (
             <div key={i} className="flex items-center justify-between group/item">
               <div className="flex items-center gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-white/5 text-muted-foreground group-hover/item:text-foreground group-hover/item:border-white/10 transition-all">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 border border-border text-muted-foreground group-hover/item:text-foreground group-hover/item:border-border transition-all">
                   <item.icon className="h-5 w-5" />
                 </div>
                 <div>
@@ -78,7 +78,7 @@ export const CashPositionWidget: React.FC<CashPositionWidgetProps> = ({ data: pr
               <p className="text-sm font-black text-foreground">Rp {(item.value / 1000).toFixed(0)}k</p>
             </div>
           ))}
-          <div className="mt-6 border-t border-white/5 pt-6 flex items-center justify-between">
+          <div className="mt-6 border-t border-border pt-6 flex items-center justify-between">
             <div className="flex items-center gap-2">
                <TrendingUp className="h-4 w-4 text-success" />
                <span className="text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground">Est. Runway</span>

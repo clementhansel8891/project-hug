@@ -70,7 +70,7 @@ export default function AutomationLab() {
         <div className="flex flex-col items-center gap-8">
           <div className="relative h-24 w-24">
              <div className="absolute inset-0 bg-primary/20 rounded-[2.5rem] blur-2xl animate-pulse" />
-             <div className="relative h-full w-full bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 border border-white/10">
+             <div className="relative h-full w-full bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 border border-border">
                 <Zap className="h-12 w-12 text-primary-foreground" />
              </div>
           </div>
@@ -223,7 +223,7 @@ export default function AutomationLab() {
                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                    <div className="relative z-10 space-y-8">
                       <div className="flex items-center gap-4">
-                         <div className="h-14 w-14 bg-primary/20 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/10">
+                         <div className="h-14 w-14 bg-primary/20 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-border">
                             <Brain className="h-7 w-7 text-primary" />
                          </div>
                          <div>
@@ -318,7 +318,7 @@ export default function AutomationLab() {
         {activeTab === "runtime" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
              <Card className="lg:col-span-8 glass-card border-none shadow-2xl rounded-[3rem] overflow-hidden flex flex-col bg-muted text-primary font-mono">
-                <div className="p-8 border-b border-white/10 bg-black/40 flex items-center justify-between">
+                <div className="p-8 border-b border-border bg-secondary flex items-center justify-between">
                    <div className="flex items-center gap-3">
                       <Terminal className="h-5 w-5" />
                       <h3 className="text-[10px] font-black uppercase tracking-[0.3em] italic">Automation Runtime Logs</h3>

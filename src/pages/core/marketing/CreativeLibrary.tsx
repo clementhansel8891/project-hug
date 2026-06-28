@@ -224,7 +224,7 @@ export default function CreativeLibrary() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -254,7 +254,7 @@ export default function CreativeLibrary() {
       </div>
 
       {/* Strategic Intelligence Toolbar */}
-      <div className="flex flex-col lg:flex-row gap-6 items-center glass-card p-6 rounded-[2.5rem] border border-white/20 dark:border-border/20 shadow-2xl">
+      <div className="flex flex-col lg:flex-row gap-6 items-center glass-card p-6 rounded-[2.5rem] border border-border dark:border-border/20 shadow-2xl">
          <div className="flex items-center gap-4 w-full lg:w-auto">
             <DropdownMenu>
                <DropdownMenuTrigger asChild>
@@ -275,7 +275,7 @@ export default function CreativeLibrary() {
                </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="flex bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner border border-white/10">
+            <div className="flex bg-muted dark:bg-muted p-1.5 rounded-2xl shadow-inner border border-border">
                <Button 
                   variant="ghost" 
                   size="icon" 

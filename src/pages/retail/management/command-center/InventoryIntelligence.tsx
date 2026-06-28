@@ -19,7 +19,7 @@ export const InventoryIntelligence: React.FC<InventoryIntelligenceProps> = ({
   data,
 }) => {
   return (
-    <div className="bg-white/[0.03] backdrop-blur-3xl p-6 rounded-[2rem] border border-white/5 shadow-2xl hover:bg-white/[0.05] hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
+    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-card hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] -mr-[15%] -mt-[15%] pointer-events-none" />
 
       <div className="flex items-center justify-between mb-10 relative z-10">
@@ -116,9 +116,9 @@ export const InventoryIntelligence: React.FC<InventoryIntelligenceProps> = ({
             {(data.lowStockPrediction || []).map((item, idx) => (
               <div
                 key={idx}
-                className="group/item flex items-center gap-6 p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-destructive/30 hover:bg-white/[0.04] transition-all duration-500 cursor-default shadow-xl"
+                className="group/item flex items-center gap-6 p-6 rounded-2xl bg-card border border-border hover:border-destructive/30 hover:bg-card transition-all duration-500 cursor-default shadow-xl"
               >
-                <div className="min-w-[5.5rem] h-16 rounded-[1.75rem] bg-secondary/50 flex flex-col items-center justify-center text-muted-foreground group-hover/item:bg-destructive group-hover/item:text-foreground transition-all duration-500 border border-white/5 shadow-inner">
+                <div className="min-w-[5.5rem] h-16 rounded-[1.75rem] bg-secondary/50 flex flex-col items-center justify-center text-muted-foreground group-hover/item:bg-destructive group-hover/item:text-foreground transition-all duration-500 border border-border shadow-inner">
                   <span className="text-xl font-black italic leading-none mb-1 tracking-tighter">
                     {item.currentStock > 999
                       ? `${(item.currentStock / 1000).toFixed(1)}k`
@@ -136,7 +136,7 @@ export const InventoryIntelligence: React.FC<InventoryIntelligenceProps> = ({
                     <p className="text-[11px] font-black uppercase tracking-widest text-muted-foreground group-hover/item:text-destructive whitespace-nowrap italic">
                       EST DEPLETION: {item.predictedOutDate}
                     </p>
-                    <div className="h-2 flex-1 bg-secondary/40 rounded-full overflow-hidden p-[1px] border border-white/5">
+                    <div className="h-2 flex-1 bg-secondary/40 rounded-full overflow-hidden p-[1px] border border-border">
                       <div
                         className="h-full bg-destructive rounded-full shadow-[0_0_12px_rgba(244,63,94,0.6)] transition-all duration-2000 ease-out"
                         style={{

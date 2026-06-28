@@ -179,7 +179,7 @@ export default function IncentiveDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <Button
               variant="secondary"
               className="h-14 w-14 rounded-[1.5rem] bg-primary text-white hover:bg-primary transition-all shadow-xl shadow-indigo-500/20"
@@ -222,7 +222,7 @@ export default function IncentiveDesk() {
             </div>
          </Card>
          <Card className="rounded-[3rem] border-none shadow-2xl bg-primary text-white p-8 space-y-4 group hover:shadow-indigo-500/30 transition-all">
-            <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform border border-white/20">
+            <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform border border-border">
                <Zap className="h-7 w-7 text-white" />
             </div>
             <div>
@@ -246,7 +246,7 @@ export default function IncentiveDesk() {
                </CardHeader>
                <CardContent className="p-10 pt-0 space-y-6">
                   {(Array.isArray(analytics.topEarners) ? analytics.topEarners : []).map((earner: any, i: number) => (
-                    <div key={earner.employee_id} className="flex items-center justify-between p-4 rounded-3xl bg-white/80 dark:bg-muted hover:scale-[1.02] transition-transform shadow-sm border border-white/20">
+                    <div key={earner.employee_id} className="flex items-center justify-between p-4 rounded-3xl bg-white/80 dark:bg-muted hover:scale-[1.02] transition-transform shadow-sm border border-border">
                        <div className="flex items-center gap-5">
                           <div className={cn("h-12 w-12 rounded-2xl flex items-center justify-center font-black text-xs shadow-inner", i === 0 ? "bg-warning text-warning" : "bg-muted text-muted-foreground")}>
                              #{i+1}
@@ -346,7 +346,7 @@ export default function IncentiveDesk() {
                     <th className="px-10 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Action Matrix</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+                <tbody className="divide-y divide-border dark:divide-slate-800/10">
                   {(Array.isArray(plans) ? plans : []).map((plan) => (
                     <tr key={plan.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
                       <td className="px-10 py-8">
@@ -412,7 +412,7 @@ export default function IncentiveDesk() {
                     <th className="px-10 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+                <tbody className="divide-y divide-border dark:divide-slate-800/10">
                   {(Array.isArray(attributions) ? attributions : []).map((attr) => (
                     <tr key={attr.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
                       <td className="px-10 py-8">

@@ -180,7 +180,7 @@ export default function MarketingAnalytics() {
       {/* Attribution Intelligence Matrix */}
       <Card className="rounded-[4rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col">
         <Tabs defaultValue="campaigns" className="w-full flex flex-col h-full">
-           <CardHeader className="p-12 pb-6 border-b border-white/10 dark:border-border/10 shrink-0">
+           <CardHeader className="p-12 pb-6 border-b border-border dark:border-border/10 shrink-0">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 mb-4">
                  <div className="space-y-2">
                     <CardTitle className="text-3xl font-black tracking-tighter flex items-center gap-4 uppercase italic">
@@ -208,7 +208,7 @@ export default function MarketingAnalytics() {
                           <th className="px-12 py-8 text-right">Status</th>
                        </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+                    <tbody className="divide-y divide-border dark:divide-slate-800/10">
                        {(Array.isArray(filteredCampaigns) ? filteredCampaigns : []).map((item) => (
                           <tr key={item.id} className="group hover:bg-primary transition-all cursor-default">
                              <td className="px-12 py-10">
@@ -274,7 +274,7 @@ export default function MarketingAnalytics() {
                           <th className="px-12 py-8 text-right">ROI Velocity</th>
                        </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+                    <tbody className="divide-y divide-border dark:divide-slate-800/10">
                        {(Array.isArray(attribution) ? attribution : []).map((item) => (
                           <tr key={item.id} className="group hover:bg-success transition-all cursor-default">
                              <td className="px-12 py-10">

@@ -171,7 +171,7 @@ export default function NexusCommand() {
            <Card className="col-span-12 xl:col-span-4 rounded-2xl border-none shadow-2xl bg-primary/20 text-foreground p-6 relative overflow-hidden flex flex-col justify-between">
               <div className="absolute top-0 right-0 h-64 w-64 bg-primary/20 rounded-full blur-[100px] -mr-32 -mt-32" />
               <div className="space-y-6 relative z-10">
-                 <div className="h-16 w-16 rounded-3xl bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-xl">
+                 <div className="h-16 w-16 rounded-3xl bg-white/10 border border-border flex items-center justify-center backdrop-blur-xl">
                     <Rocket className="h-8 w-8 text-primary/70" />
                  </div>
                  <h3 className="text-2xl font-black italic tracking-tighter uppercase leading-none">Strategic <br /> Force Multiplier</h3>

@@ -103,7 +103,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogOverlay className="bg-background/40 backdrop-blur-md" />
-      <DialogContent className="sm:max-w-[440px] glass-morphism border-white/20 dark:border-white/5 rounded-[2.5rem] shadow-2xl p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[440px] glass-morphism border-border dark:border-white/5 rounded-[2.5rem] shadow-2xl p-0 overflow-hidden">
         {/* Progress Bar */}
         <div className="h-1.5 w-full bg-muted flex">
           <div className={`h-full bg-primary transition-all duration-500 ${step === 'EMAIL' ? 'w-1/3' : step === 'RESET' ? 'w-2/3' : 'w-full'}`} />

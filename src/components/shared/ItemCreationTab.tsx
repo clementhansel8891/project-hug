@@ -295,7 +295,7 @@ export const ItemCreationTab: React.FC<Props> = ({
           <Button
             onClick={addRow}
             variant="outline"
-            className="rounded-2xl h-12 px-6 font-black italic text-xs uppercase tracking-widest gap-2 bg-white/[0.04] border-white/15 hover:bg-white/10 text-foreground shadow-sm backdrop-blur-sm"
+            className="rounded-2xl h-12 px-6 font-black italic text-xs uppercase tracking-widest gap-2 bg-card border-white/15 hover:bg-white/10 text-foreground shadow-sm backdrop-blur-sm"
           >
             <Plus className="w-4 h-4" /> Add Another Item
           </Button>
@@ -341,7 +341,7 @@ export const ItemCreationTab: React.FC<Props> = ({
 
       {/* ── CSV Import (Secondary) ── */}
       <div className="grid md:grid-cols-2 gap-8 mt-12">
-        <Card className="rounded-[3rem] border border-white/10 shadow-sm bg-white/[0.04] backdrop-blur-xl">
+        <Card className="rounded-[3rem] border border-border shadow-sm bg-card backdrop-blur-xl">
           <CardContent className="p-10 flex flex-col items-center text-center gap-6">
             <div className="w-20 h-20 rounded-[2rem] bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
               <Upload className="w-8 h-8 text-primary" />
@@ -357,7 +357,7 @@ export const ItemCreationTab: React.FC<Props> = ({
                 <Button
                   variant="outline"
                   onClick={handleDownloadTemplate}
-                  className="rounded-2xl h-11 px-6 font-bold text-xs tracking-tight gap-2 border-white/15 bg-white/[0.04] text-foreground hover:bg-white/10"
+                  className="rounded-2xl h-11 px-6 font-bold text-xs tracking-tight gap-2 border-white/15 bg-card text-foreground hover:bg-white/10"
                 >
                   <Download className="w-4 h-4" /> Template
                 </Button>
@@ -380,7 +380,7 @@ export const ItemCreationTab: React.FC<Props> = ({
         </Card>
 
         {/* ── Bulk Image Matching (NEW) ── */}
-        <Card className="rounded-[3rem] border border-white/10 shadow-sm bg-white/[0.04] backdrop-blur-xl">
+        <Card className="rounded-[3rem] border border-border shadow-sm bg-card backdrop-blur-xl">
           <CardContent className="p-10 flex flex-col items-center text-center gap-6">
             <div className="w-20 h-20 rounded-[2rem] bg-warning border border-warning/20 flex items-center justify-center shrink-0">
               <Plus className="w-8 h-8 text-warning" />

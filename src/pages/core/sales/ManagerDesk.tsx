@@ -134,7 +134,7 @@ export default function ManagerDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -188,7 +188,7 @@ export default function ManagerDesk() {
         {/* Deal Risk Watchlist */}
         <div className="col-span-12 lg:col-span-8">
           <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-            <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+            <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -214,7 +214,7 @@ export default function ManagerDesk() {
                       <th className="px-10 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Health Index</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+                  <tbody className="divide-y divide-border dark:divide-slate-800/10">
                     {(Array.isArray(filteredOpportunities) ? filteredOpportunities : []).map((item) => (
                       <tr key={item.id} className="group hover:bg-white/60 dark:hover:bg-muted transition-all cursor-default">
                         <td className="px-10 py-8">
@@ -270,7 +270,7 @@ export default function ManagerDesk() {
         {/* Alert Queue */}
         <div className="col-span-12 lg:col-span-4 space-y-8">
            <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-              <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+              <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
                  <CardTitle className="text-xl font-black tracking-tight flex items-center gap-3">
                     <AlertCircle className="h-5 w-5 text-destructive" />
                     Critical Alert Queue

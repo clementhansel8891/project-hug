@@ -33,7 +33,7 @@ export const AuditIntegrityPanel: React.FC<AuditIntegrityPanelProps> = ({ data, 
           size="sm" 
           disabled={loading}
           onClick={onVerify}
-          className="h-10 rounded-xl bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all"
+          className="h-10 rounded-xl bg-white/5 border border-border text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-white/10 hover:text-foreground transition-all"
         >
           <RefreshCw className={cn("mr-2 h-3.5 w-3.5", loading && "animate-spin")} />
           Re-Verify
@@ -79,7 +79,7 @@ export const AuditIntegrityPanel: React.FC<AuditIntegrityPanelProps> = ({ data, 
             </div>
           </div>
 
-          <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-800/40 to-transparent p-6 border border-white/5 overflow-hidden">
+          <div className="relative rounded-[2rem] bg-gradient-to-br from-slate-800/40 to-transparent p-6 border border-border overflow-hidden">
             <div className="relative z-10 flex items-start gap-4">
               <Shield className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <p className="text-[11px] font-bold text-muted-foreground italic leading-relaxed">

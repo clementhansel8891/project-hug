@@ -77,7 +77,7 @@ export default function FinancialOperationsDesk() {
         <div className="flex flex-col items-center gap-8">
           <div className="relative h-24 w-24">
              <div className="absolute inset-0 bg-primary/20 rounded-[2.5rem] blur-2xl animate-pulse" />
-             <div className="relative h-full w-full bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 border border-white/10">
+             <div className="relative h-full w-full bg-primary rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-primary/40 border border-border">
                 <DollarSign className="h-12 w-12 text-primary-foreground" />
              </div>
           </div>
@@ -258,7 +258,7 @@ export default function FinancialOperationsDesk() {
                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                    <div className="relative z-10 space-y-8">
                       <div className="flex items-center gap-4">
-                         <div className="h-14 w-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/20">
+                         <div className="h-14 w-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-border">
                             <Zap className="h-7 w-7 text-success" />
                          </div>
                          <div>

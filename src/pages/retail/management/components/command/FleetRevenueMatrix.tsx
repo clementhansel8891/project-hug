@@ -89,7 +89,7 @@ export const FleetRevenueMatrix: React.FC<FleetRevenueMatrixProps> = ({
     <div className="space-y-10 animate-in fade-in duration-1000">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* REVENUE DISTRIBUTION */}
-        <Card className="lg:col-span-2 border-none bg-white/[0.03] backdrop-blur-3xl shadow-2xl rounded-[2rem] overflow-hidden border border-white/5 group relative">
+        <Card className="lg:col-span-2 border-none bg-card backdrop-blur-3xl shadow-2xl rounded-[2rem] overflow-hidden border border-border group relative">
           <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[120px] -mr-40 -mt-40 group-hover:bg-primary/20 transition-all duration-1000" />
           <CardContent className="p-6 relative z-10">
             <div className="flex items-center justify-between mb-12">
@@ -190,7 +190,7 @@ export const FleetRevenueMatrix: React.FC<FleetRevenueMatrixProps> = ({
 
         {/* GROWTH TERMINAL */}
         <div className="flex flex-col gap-6">
-          <Card className="border-none bg-white/[0.03] backdrop-blur-3xl shadow-2xl rounded-[2rem] p-6 flex flex-col justify-between group border border-white/5 relative overflow-hidden flex-1">
+          <Card className="border-none bg-card backdrop-blur-3xl shadow-2xl rounded-[2rem] p-6 flex flex-col justify-between group border border-border relative overflow-hidden flex-1">
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-success/5 rounded-full blur-[60px] -ml-16 -mb-16 group-hover:bg-success/10 transition-all duration-1000" />
             <div className="space-y-6 relative z-10">
               <div className="w-16 h-16 rounded-xl bg-primary/10 text-primary border border-primary flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl">

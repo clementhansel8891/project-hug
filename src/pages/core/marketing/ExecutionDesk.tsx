@@ -260,7 +260,7 @@ export default function ExecutionDesk() {
          {/* Left: Execution Matrix */}
          <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
             <Card className="flex-1 rounded-[3rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col">
-               <CardHeader className="p-10 pb-6 border-b border-white/10 dark:border-border/10 flex flex-row items-center justify-between">
+               <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/10 flex flex-row items-center justify-between">
                   <div className="space-y-1">
                      <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3 uppercase italic">
                         <Layers className="h-6 w-6 text-primary" />
@@ -285,7 +285,7 @@ export default function ExecutionDesk() {
                        </thead>
                        <tbody>
                           {(Array.isArray(filtered) ? filtered : []).map((run) => (
-                            <tr key={run.id} className="border-t border-white/10 dark:border-border/10 group hover:bg-primary transition-all">
+                            <tr key={run.id} className="border-t border-border dark:border-border/10 group hover:bg-primary transition-all">
                                <td className="p-8">
                                   <div className="flex items-center gap-4">
                                      <div className="h-12 w-12 rounded-xl bg-primary text-primary flex items-center justify-center shadow-sm">
@@ -390,7 +390,7 @@ export default function ExecutionDesk() {
             </Card>
 
             <Card className="flex-1 rounded-[3rem] border-none shadow-2xl bg-muted overflow-hidden flex flex-col group/terminal">
-               <CardHeader className="p-8 pb-4 border-b border-white/5 flex flex-row items-center justify-between bg-black/40">
+               <CardHeader className="p-8 pb-4 border-b border-border flex flex-row items-center justify-between bg-secondary">
                   <div className="flex items-center gap-3">
                      <Terminal className="h-4 w-4 text-success" />
                      <CardTitle className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground italic">

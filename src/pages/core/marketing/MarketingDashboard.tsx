@@ -225,14 +225,14 @@ export default function MarketingDashboard() {
              </div>
              <div className="flex gap-16">
                 <div className="text-center space-y-2">
-                   <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-white/10 group-hover:bg-primary transition-colors">
+                   <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-border group-hover:bg-primary transition-colors">
                       <Users className="h-10 w-10 text-white" />
                    </div>
                    <h4 className="text-4xl font-black italic">{formatNumber(metrics.moduleContributions.retail.walkInCustomers)}</h4>
                    <p className="text-[10px] font-black uppercase tracking-widest text-primary-foreground/80 italic">Store Walk-ins</p>
                 </div>
                 <div className="text-center space-y-2">
-                   <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-white/10 group-hover:bg-success transition-colors">
+                   <div className="h-20 w-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto shadow-2xl border border-border group-hover:bg-success transition-colors">
                       <ActivitySquare className="h-10 w-10 text-white" />
                    </div>
                    <h4 className="text-4xl font-black italic">{formatNumber(metrics.moduleContributions.retail.loyaltyActive)}</h4>

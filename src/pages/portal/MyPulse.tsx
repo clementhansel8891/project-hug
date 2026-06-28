@@ -250,10 +250,10 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
   const content = (
     <div className={cn("space-y-12", !noShell && "max-w-[1600px] mx-auto pb-20")}>
       {!noShell && (
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 pt-8 pb-12 border-b border-white/5 relative">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 pt-8 pb-12 border-b border-border relative">
           <div className="space-y-6 relative z-10">
             <div className="flex items-center gap-6">
-              <div className="w-20 h-20 bg-primary rounded-[2rem] flex items-center justify-center shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] border border-white/20">
+              <div className="w-20 h-20 bg-primary rounded-[2rem] flex items-center justify-center shadow-[0_0_40px_-10px_rgba(79,70,229,0.5)] border border-border">
                 <User className="w-10 h-10 text-white" />
               </div>
               <div className="space-y-1">
@@ -269,21 +269,21 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
           </div>
 
           <div className="flex items-center gap-4 relative z-10">
-             <div className="flex flex-col items-end gap-2 pr-4 border-r border-white/5 mr-2">
+             <div className="flex flex-col items-end gap-2 pr-4 border-r border-border mr-2">
                 <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Roster Status</p>
                 <Badge variant="outline" className="h-8 px-4 rounded-xl border-primary bg-primary font-black text-primary uppercase tracking-widest gap-2">
                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> ACTIVE_SESSION
                 </Badge>
              </div>
              <Button 
-                className="h-16 px-10 rounded-[1.8rem] font-black italic tracking-[0.15em] uppercase text-xs bg-primary hover:bg-primary shadow-[0_0_30px_-5px_rgba(79,70,229,0.4)] border border-white/10 gap-3 group transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="h-16 px-10 rounded-[1.8rem] font-black italic tracking-[0.15em] uppercase text-xs bg-primary hover:bg-primary shadow-[0_0_30px_-5px_rgba(79,70,229,0.4)] border border-border gap-3 group transition-all hover:scale-[1.02] active:scale-[0.98]"
                 onClick={() => setIsClockingIn(true)}
              >
                 <Play className="w-5 h-5 fill-current" /> Clock In
              </Button>
              <Button 
                 variant="outline"
-                className="h-16 px-8 rounded-[1.8rem] font-black italic tracking-[0.15em] uppercase text-[10px] border-white/10 bg-white/5 hover:bg-white/10 text-white gap-3 shadow-xl transition-all"
+                className="h-16 px-8 rounded-[1.8rem] font-black italic tracking-[0.15em] uppercase text-[10px] border-border bg-white/5 hover:bg-white/10 text-white gap-3 shadow-xl transition-all"
                 onClick={() => setIsLoanOpen(true)}
              >
                 <currencyData.icon className="w-4 h-4 text-primary" /> Loan Request
@@ -297,7 +297,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
 
       {/* Tabbed Experience */}
       <Tabs defaultValue="overview" className="space-y-12">
-        <TabsList className="bg-transparent border-b border-white/5 w-full justify-start h-auto p-0 gap-10 rounded-none overflow-x-auto no-scrollbar">
+        <TabsList className="bg-transparent border-b border-border w-full justify-start h-auto p-0 gap-10 rounded-none overflow-x-auto no-scrollbar">
           {['overview', 'attendance', 'payroll', 'leave', 'performance'].map((tab) => (
             <TabsTrigger 
               key={tab}
@@ -312,8 +312,8 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
         <TabsContent value="overview" className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {/* Duty Card */}
-              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-white/10 group hover:border-white/20 transition-all">
-                 <CardHeader className="bg-white/5 border-b border-white/5 p-8">
+              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-border group hover:border-border transition-all">
+                 <CardHeader className="bg-white/5 border-b border-border p-8">
                     <div className="flex items-center justify-between">
                        <CardTitle className="text-xl font-black italic uppercase tracking-[0.2em] text-white">Today's Duty</CardTitle>
                        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center border border-primary">
@@ -326,11 +326,11 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Shift Window</p>
                        <p className="text-4xl font-black text-white italic tracking-tighter">09:00 - 18:00</p>
                     </div>
-                    <div className="flex items-center gap-3 text-muted-foreground bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <div className="flex items-center gap-3 text-muted-foreground bg-white/5 p-4 rounded-2xl border border-border">
                        <MapPin className="w-4 h-4 text-primary" />
                        <span className="text-xs font-black uppercase tracking-widest">{record?.employee?.locationId || 'HQ_ZONE_A'}</span>
                     </div>
-                    <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+                    <div className="pt-6 border-t border-border flex items-center justify-between">
                        <Badge className="bg-primary text-primary border-primary font-black text-[9px] uppercase tracking-widest px-3 h-6">Normal Operation</Badge>
                        <span className="text-[10px] font-black text-primary uppercase tracking-widest cursor-pointer hover:text-primary transition-colors">View Schedule</span>
                     </div>
@@ -338,8 +338,8 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
               </Card>
 
               {/* Wallet Preview */}
-              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-white/10 group hover:border-white/20 transition-all">
-                 <CardHeader className="p-8 bg-white/5 border-b border-white/5">
+              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-border group hover:border-border transition-all">
+                 <CardHeader className="p-8 bg-white/5 border-b border-border">
                     <div className="flex items-center justify-between">
                        <CardTitle className="text-xl font-black italic uppercase tracking-[0.2em] text-white">Payroll Track</CardTitle>
                        <div className="w-10 h-10 rounded-xl bg-success flex items-center justify-center border border-success/20">
@@ -363,7 +363,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                     <div className="space-y-4">
                        {isRetailOrSales && (
                          <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <div className="p-4 bg-white/5 rounded-2xl border border-border">
                                <p className="text-[9px] font-black text-primary uppercase tracking-widest mb-2">Items Sold</p>
                                <p className="text-2xl font-black text-white">{formatNumber(perfSnapshot?.itemsSold, { maximumFractionDigits: 0 })}</p>
                             </div>
@@ -375,7 +375,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                        )}
 
                        <div className="flex flex-col gap-3">
-                          <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                          <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-border">
                              <div className="flex items-center gap-3 text-muted-foreground">
                                 <AlertCircle className="w-4 h-4 text-muted-foreground" />
                                 <span className="text-[10px] font-black uppercase tracking-widest">Est. Tax & Social</span>
@@ -394,7 +394,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                           )}
                        </div>
 
-                       <div className="space-y-3 pt-4 border-t border-white/5">
+                       <div className="space-y-3 pt-4 border-t border-border">
                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
                              <span className="text-muted-foreground">Cycle Progress</span>
                              <span className="text-white">75%</span>
@@ -408,7 +408,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
               {/* Compliance Signal */}
               <Card className="rounded-[2.5rem] border-primary bg-primary backdrop-blur-3xl shadow-2xl overflow-hidden border group transition-all hover:bg-primary relative">
                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary blur-[80px] pointer-events-none rounded-full" />
-                 <CardHeader className="p-8 bg-white/5 border-b border-white/5">
+                 <CardHeader className="p-8 bg-white/5 border-b border-border">
                     <div className="flex items-center justify-between">
                        <CardTitle className="text-xl font-black italic uppercase tracking-[0.2em] text-white">Compliance</CardTitle>
                        <ShieldCheck className="w-5 h-5 text-primary" />
@@ -416,7 +416,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                  </CardHeader>
                  <CardContent className="p-8 space-y-8 relative z-10">
                     <div className="flex items-center gap-5">
-                       <div className="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center border border-white/20 shadow-xl">
+                       <div className="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center border border-border shadow-xl">
                           <CheckCircle2 className="w-8 h-8 text-white" />
                        </div>
                        <div>
@@ -437,8 +437,8 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
 
            {/* Recent Activity Mini-Feed */}
            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-white/10">
-                 <CardHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between bg-white/5">
+              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-border">
+                 <CardHeader className="p-8 border-b border-border flex flex-row items-center justify-between bg-white/5">
                     <div className="space-y-1">
                        <CardTitle className="text-lg font-black italic uppercase tracking-[0.2em] text-white">Attendance Ledger</CardTitle>
                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">Last 5 verification nodes</p>
@@ -447,7 +447,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                  </CardHeader>
                  <CardContent className="p-0">
                     {(record?.attendance || []).slice(0, 5).map((entry: any, i: number) => (
-                      <div key={entry.id} className={cn("p-6 flex items-center justify-between group cursor-pointer hover:bg-white/5 transition-colors", i !== 4 && "border-b border-white/5")}>
+                      <div key={entry.id} className={cn("p-6 flex items-center justify-between group cursor-pointer hover:bg-white/5 transition-colors", i !== 4 && "border-b border-border")}>
                          <div className="flex items-center gap-4">
                             <div className={cn("w-2.5 h-2.5 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.5)]", entry.status === 'on_time' ? 'bg-success shadow-success/40' : 'bg-warning shadow-warning/40')} />
                             <div>
@@ -458,14 +458,14 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
                       </div>
                     ))}
-                    <div className="p-6 bg-white/2 text-center border-t border-white/5 group">
+                    <div className="p-6 bg-white/2 text-center border-t border-border group">
                        <span className="text-[10px] font-black text-primary uppercase tracking-widest cursor-pointer group-hover:text-primary transition-colors" onClick={() => setActiveTab('attendance')}>Access Full Attendance Telemetry</span>
                     </div>
                  </CardContent>
               </Card>
 
-              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-white/10">
-                 <CardHeader className="p-8 border-b border-white/5 flex flex-row items-center justify-between bg-white/5">
+              <Card className="rounded-[2.5rem] border-white/5 bg-muted backdrop-blur-3xl shadow-2xl overflow-hidden border border-border">
+                 <CardHeader className="p-8 border-b border-border flex flex-row items-center justify-between bg-white/5">
                     <div className="space-y-1">
                        <CardTitle className="text-lg font-black italic uppercase tracking-[0.2em] text-white">Document Vault</CardTitle>
                        <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em]">Secured Asset Discovery</p>
@@ -474,9 +474,9 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                  </CardHeader>
                  <CardContent className="p-0">
                     {docs.slice(0, 4).map((doc: any, i: number) => (
-                      <div key={doc.id} className={cn("p-6 flex items-center justify-between group hover:bg-white/5 transition-colors", i !== 3 && "border-b border-white/5")}>
+                      <div key={doc.id} className={cn("p-6 flex items-center justify-between group hover:bg-white/5 transition-colors", i !== 3 && "border-b border-border")}>
                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-muted-foreground border border-white/5 group-hover:border-white/10 group-hover:text-white transition-all">
+                            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-muted-foreground border border-border group-hover:border-border group-hover:text-white transition-all">
                                {doc.type === 'PAYSLIP' ? <Receipt className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
                             </div>
                             <div>
@@ -489,7 +489,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                          </Button>
                       </div>
                     ))}
-                    <div className="p-10 text-center border-t border-white/5">
+                    <div className="p-10 text-center border-t border-border">
                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em] italic">Telemetry Protocol Enabled • AES-256</p>
                     </div>
                  </CardContent>
@@ -671,7 +671,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                     <CardTitle className="text-lg font-black italic uppercase tracking-wider text-primary">Target Pulse</CardTitle>
                  </CardHeader>
                  <CardContent className="space-y-6">
-                    <div className="p-4 bg-white/5 rounded-2xl border border-white/10 flex items-center gap-4">
+                    <div className="p-4 bg-white/5 rounded-2xl border border-border flex items-center gap-4">
                        <Target className="w-8 h-8 text-primary" />
                        <div>
                           <p className="text-xs font-black uppercase">Quarterly Goal</p>
@@ -687,7 +687,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                        <Progress value={28} className="h-2 bg-white/10" />
                     </div>
 
-                    <div className="pt-4 border-t border-white/10">
+                    <div className="pt-4 border-t border-border">
                        <p className="text-[9px] font-bold text-muted-foreground uppercase italic tracking-widest">Your performance contribution is directly linked to the quarterly dividend pool.</p>
                     </div>
                  </CardContent>
@@ -897,14 +897,14 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
           
           <div className="p-8 pt-4 space-y-6">
             <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+                <div className="p-4 bg-white/5 rounded-2xl border border-border space-y-2">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Verification Status</p>
                   <div className="flex items-center gap-2 text-success">
                       <CheckCircle2 className="w-4 h-4" />
                       <span className="text-sm font-black italic uppercase tracking-wider">Validated</span>
                   </div>
                 </div>
-                <div className="p-4 bg-white/5 rounded-2xl border border-white/10 space-y-2">
+                <div className="p-4 bg-white/5 rounded-2xl border border-border space-y-2">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Last Sync</p>
                   <p className="text-sm font-black italic uppercase tracking-wider text-primary">2h 14m ago</p>
                 </div>
@@ -918,7 +918,7 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
                   { title: 'Data Privacy Consent', status: 'ACTIVE', date: 'Signed: 2026-02' },
                   { title: 'Health & Safety Induction', status: 'COMPLETED', date: '2026-04-12' },
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary transition-colors cursor-pointer group">
+                  <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-border hover:border-primary transition-colors cursor-pointer group">
                       <div className="flex items-center gap-3">
                         <FileCheck className="w-5 h-5 text-muted-foreground group-hover:text-primary" />
                         <div>

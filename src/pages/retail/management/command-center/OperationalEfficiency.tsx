@@ -21,7 +21,7 @@ export const OperationalEfficiency: React.FC<OperationalEfficiencyProps> = ({
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
       {/* Backlog Trend Area */}
-      <div className="xl:col-span-2 bg-white/[0.03] backdrop-blur-3xl p-5 rounded-2xl border border-white/5 shadow-2xl hover:bg-white/[0.05] hover:-translate-y-0.5 transition-all duration-700 relative overflow-hidden group">
+      <div className="xl:col-span-2 bg-card backdrop-blur-3xl p-5 rounded-2xl border border-border shadow-2xl hover:bg-card hover:-translate-y-0.5 transition-all duration-700 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-primary rounded-full blur-[130px] -mr-[15%] -mt-[15%] group-hover:bg-primary transition-all duration-1000" />
 
         <div className="flex items-center justify-between mb-6 relative z-10">
@@ -112,7 +112,7 @@ export const OperationalEfficiency: React.FC<OperationalEfficiencyProps> = ({
       </div>
 
       {/* Critical Efficiency Alerts */}
-      <div className="bg-white/[0.03] backdrop-blur-3xl p-5 rounded-2xl border border-white/5 shadow-2xl flex flex-col hover:bg-white/[0.05] hover:-translate-y-0.5 transition-all duration-700 group/efficiency">
+      <div className="bg-card backdrop-blur-3xl p-5 rounded-2xl border border-border shadow-2xl flex flex-col hover:bg-card hover:-translate-y-0.5 transition-all duration-700 group/efficiency">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">
             Efficiency Latency
@@ -124,9 +124,9 @@ export const OperationalEfficiency: React.FC<OperationalEfficiencyProps> = ({
           {(Array.isArray(data.slowestSkus) ? data.slowestSkus : []).map((sku, idx) => (
             <div
               key={idx}
-              className="group/item flex items-start gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-warning/30 hover:bg-white/[0.04] transition-all duration-500 cursor-default shadow-lg"
+              className="group/item flex items-start gap-4 p-4 rounded-xl bg-card border border-border hover:border-warning/30 hover:bg-card transition-all duration-500 cursor-default shadow-lg"
             >
-              <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:text-warning transition-all border border-white/5 shadow-inner">
+              <div className="w-12 h-12 rounded-xl bg-secondary/50 flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:text-warning transition-all border border-border shadow-inner">
                 <Clock className="w-6 h-6 opacity-40 group-hover/item:opacity-100 transition-opacity" />
               </div>
               <div className="flex-1">
@@ -141,7 +141,7 @@ export const OperationalEfficiency: React.FC<OperationalEfficiencyProps> = ({
                 <p className="text-base font-black italic text-foreground leading-tight tracking-tighter group-hover/item:text-warning transition-colors">
                   {sku.name}
                 </p>
-                <div className="mt-4 w-full bg-secondary/40 h-2 rounded-full overflow-hidden p-[1px] border border-white/5">
+                <div className="mt-4 w-full bg-secondary/40 h-2 rounded-full overflow-hidden p-[1px] border border-border">
                   <div
                     className="h-full bg-warning rounded-full shadow-[0_0_12px_rgba(245,158,11,0.6)] transition-all duration-2000 ease-out"
                     style={{

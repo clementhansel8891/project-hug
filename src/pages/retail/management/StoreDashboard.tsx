@@ -223,7 +223,7 @@ const StoreDashboard = () => {
 
             <Suspense
               fallback={
-                <div className="h-[450px] bg-secondary/40 border border-white/5 rounded-[2rem] animate-pulse" />
+                <div className="h-[450px] bg-secondary/40 border border-border rounded-[2rem] animate-pulse" />
               }
             >
               {canViewFinancials ? (
@@ -240,7 +240,7 @@ const StoreDashboard = () => {
 
             <Suspense
               fallback={
-                <div className="h-[450px] bg-secondary/40 border border-white/5 rounded-[2rem] animate-pulse" />
+                <div className="h-[450px] bg-secondary/40 border border-border rounded-[2rem] animate-pulse" />
               }
             >
               {data && <OperationalEfficiency data={data.efficiency} />}
@@ -251,13 +251,13 @@ const StoreDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Suspense
               fallback={
-                <div className="h-[350px] bg-secondary/40 border border-white/5 rounded-[2rem] animate-pulse" />
+                <div className="h-[350px] bg-secondary/40 border border-border rounded-[2rem] animate-pulse" />
               }
             >
               {canViewInventory ? (
                 data && <InventoryIntelligence data={data.inventory} />
               ) : (
-                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-white/5">
+                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-border">
                   <p className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground">
                     Inventory Stream Restricted
                   </p>
@@ -267,13 +267,13 @@ const StoreDashboard = () => {
 
             <Suspense
               fallback={
-                <div className="h-[350px] bg-secondary/40 border border-white/5 rounded-[2rem] animate-pulse" />
+                <div className="h-[350px] bg-secondary/40 border border-border rounded-[2rem] animate-pulse" />
               }
             >
               {canViewHR ? (
                 data && <WorkforceAnalytics data={data.workforce} />
               ) : (
-                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-white/5">
+                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-border">
                   <p className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground">
                     Workforce Analytics Restricted
                   </p>
@@ -283,13 +283,13 @@ const StoreDashboard = () => {
 
             <Suspense
               fallback={
-                <div className="h-[350px] bg-secondary/40 border border-white/5 rounded-[2rem] animate-pulse" />
+                <div className="h-[350px] bg-secondary/40 border border-border rounded-[2rem] animate-pulse" />
               }
             >
               {canViewDevices ? (
                 data && <InfrastructureHealth data={data.infrastructure} />
               ) : (
-                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-white/5">
+                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-border">
                   <p className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground">
                     Infrastructure Telemetry Restricted
                   </p>
@@ -299,13 +299,13 @@ const StoreDashboard = () => {
 
             <Suspense
               fallback={
-                <div className="h-[350px] bg-secondary/40 border border-white/5 rounded-[2rem] animate-pulse" />
+                <div className="h-[350px] bg-secondary/40 border border-border rounded-[2rem] animate-pulse" />
               }
             >
               {canViewRisk ? (
                 data && <RiskCompliancePanel data={data.risk} />
               ) : (
-                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-white/5">
+                <div className="h-[350px] bg-secondary/40 rounded-[2rem] flex items-center justify-center border border-border">
                   <p className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground">
                     Risk Assessment Restricted
                   </p>

@@ -149,7 +149,7 @@ export const RoleModificationModal: React.FC<RoleModificationModalProps> = ({
                 <label className="text-[10px] font-black italic uppercase tracking-widest text-muted-foreground block mb-2">
                   Target Personnel
                 </label>
-                <div className="h-12 bg-secondary/60 rounded-xl border border-white/5 flex items-center px-4 font-bold text-sm text-muted-foreground/60">
+                <div className="h-12 bg-secondary/60 rounded-xl border border-border flex items-center px-4 font-bold text-sm text-muted-foreground/60">
                   {staff.fullName} ({staff.roleTitle})
                 </div>
               </div>

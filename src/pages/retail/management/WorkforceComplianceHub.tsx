@@ -307,7 +307,7 @@ export default function WorkforceComplianceHub() {
                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                    <div className="relative z-10 space-y-8">
                       <div className="flex items-center gap-4">
-                         <div className="h-14 w-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/20">
+                         <div className="h-14 w-14 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-border">
                             <Workflow className="h-7 w-7 text-primary" />
                          </div>
                          <div>

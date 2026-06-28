@@ -124,7 +124,7 @@ export default function Customer360() {
           </div>
 
           <Card className="rounded-[3rem] border-none shadow-2xl glass-card overflow-hidden">
-            <CardHeader className="p-10 pb-6 border-b border-white/10 dark:border-border/10">
+            <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/10">
                <div className="flex items-center justify-between">
                   <div className="space-y-1">
                      <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3 uppercase italic">

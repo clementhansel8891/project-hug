@@ -378,7 +378,7 @@ function FulfillmentMetrics({ orders }: { orders: SalesOrder[] }) {
         </div>
       </GlassCard>
       <Card className="rounded-[2.5rem] border-none shadow-xl bg-primary text-white p-8 space-y-4 shadow-indigo-600/20">
-        <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+        <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-border">
           <DollarSign className="h-7 w-7" />
         </div>
         <div>

@@ -37,7 +37,7 @@ export const DeviceNetworkTable: React.FC<DeviceNetworkTableProps> = ({ data = [
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Live status of hardware nodes & IoT network</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-border">
            <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
            <span className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">{data.length} Nodes Online</span>
         </div>
@@ -58,9 +58,9 @@ export const DeviceNetworkTable: React.FC<DeviceNetworkTableProps> = ({ data = [
               const Icon = getIcon(device.type);
               return (
                 <tr key={i} className="group/row">
-                  <td className="px-4 py-4 bg-white/2 rounded-l-[1.25rem] border-y border-l border-white/5 group-hover/row:bg-white/5 transition-colors">
+                  <td className="px-4 py-4 bg-white/2 rounded-l-[1.25rem] border-y border-l border-border group-hover/row:bg-white/5 transition-colors">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-white/5 text-muted-foreground group-hover/row:text-primary group-hover/row:border-primary transition-all">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted border border-border text-muted-foreground group-hover/row:text-primary group-hover/row:border-primary transition-all">
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
@@ -87,7 +87,7 @@ export const DeviceNetworkTable: React.FC<DeviceNetworkTableProps> = ({ data = [
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-4 bg-white/2 rounded-r-[1.25rem] border-y border-r border-white/5 group-hover/row:bg-white/5 text-right transition-colors">
+                  <td className="px-4 py-4 bg-white/2 rounded-r-[1.25rem] border-y border-r border-border group-hover/row:bg-white/5 text-right transition-colors">
                     {device.battery !== undefined && (
                       <div className="flex items-center justify-end gap-2">
                         <span className={cn(

@@ -169,7 +169,7 @@ export default function NurtureStudio() {
         {/* Left: Automation Registry */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-6 overflow-hidden">
            <Card className="flex-1 rounded-[3rem] border-none shadow-2xl glass-card overflow-hidden flex flex-col">
-              <CardHeader className="p-8 pb-4 border-b border-white/10 dark:border-border/10 flex flex-row items-center justify-between">
+              <CardHeader className="p-8 pb-4 border-b border-border dark:border-border/10 flex flex-row items-center justify-between">
                  <div className="space-y-1">
                     <CardTitle className="text-xl font-black tracking-tight flex items-center gap-3 uppercase italic">
                        <Layers className="h-5 w-5 text-primary" />
@@ -257,7 +257,7 @@ export default function NurtureStudio() {
                    <div className="absolute top-0 right-0 h-64 w-64 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:scale-150 transition-transform duration-1000" />
                    <CardContent className="p-8 flex items-center justify-between text-white relative z-10">
                       <div className="flex items-center gap-6">
-                         <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-xl border border-white/20">
+                         <div className="h-16 w-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-xl border border-border">
                             <Workflow className="h-8 w-8 text-white" />
                          </div>
                          <div className="space-y-1">
@@ -380,10 +380,10 @@ export default function NurtureStudio() {
                 </Card>
              </div>
            ) : (
-             <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-white/20 dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-30 space-y-12 animate-in zoom-in duration-1000">
+             <div className="h-full flex flex-col items-center justify-center rounded-[4rem] border-2 border-dashed border-border dark:border-border/20 bg-white/10 dark:bg-muted grayscale opacity-30 space-y-12 animate-in zoom-in duration-1000">
                 <div className="relative">
                    <div className="absolute inset-0 bg-primary blur-[100px] rounded-full scale-[3] animate-pulse" />
-                   <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-white/20">
+                   <div className="h-48 w-48 rounded-[4rem] bg-white dark:bg-muted flex items-center justify-center shadow-[0_50px_100px_-20px_rgba(79,70,229,0.3)] relative z-10 border border-border">
                       <Workflow className="h-24 w-24 text-primary drop-shadow-2xl" />
                    </div>
                 </div>

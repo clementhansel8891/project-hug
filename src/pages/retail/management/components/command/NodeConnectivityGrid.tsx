@@ -38,7 +38,7 @@ const NodeRow: React.FC<NodeStatusProps> = ({
   metric,
   health,
 }) => (
-  <div className="flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] backdrop-blur-3xl border border-white/5 hover:border-primary hover:bg-white/[0.05] transition-all duration-500 group cursor-pointer shadow-lg">
+  <div className="flex items-center justify-between p-6 rounded-[2rem] bg-card backdrop-blur-3xl border border-border hover:border-primary hover:bg-card transition-all duration-500 group cursor-pointer shadow-lg">
     <div className="flex items-center gap-6">
       <div
         className={cn(
@@ -110,7 +110,7 @@ const NodeRow: React.FC<NodeStatusProps> = ({
           Efficiency
         </div>
       </div>
-      <div className="w-10 h-10 rounded-xl bg-secondary/40 border border-white/5 flex items-center justify-center group-hover:bg-primary transition-colors">
+      <div className="w-10 h-10 rounded-xl bg-secondary/40 border border-border flex items-center justify-center group-hover:bg-primary transition-colors">
         <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
       </div>
     </div>
@@ -155,8 +155,8 @@ export const NodeConnectivityGrid = ({
 
   return (
     <div className="grid grid-cols-1 gap-6">
-      <Card className="rounded-2xl border border-white/5 shadow-2xl overflow-hidden bg-white/[0.03] backdrop-blur-3xl group/grid">
-        <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01] flex flex-col xl:flex-row xl:items-center justify-between gap-8 space-y-0">
+      <Card className="rounded-2xl border border-border shadow-2xl overflow-hidden bg-card backdrop-blur-3xl group/grid">
+        <CardHeader className="p-8 border-b border-border bg-card flex flex-col xl:flex-row xl:items-center justify-between gap-8 space-y-0">
           <div>
             <CardTitle className="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-6 text-foreground">
               <div className="p-4 rounded-2xl bg-primary text-foreground shadow-2xl shadow-indigo-600/20 group-hover/grid:rotate-6 transition-transform duration-500">
@@ -171,7 +171,7 @@ export const NodeConnectivityGrid = ({
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="flex p-2 bg-white/[0.03] rounded-2xl border border-white/5">
+            <div className="flex p-2 bg-card rounded-2xl border border-border">
               <button 
                 onClick={() => setViewMode('grid')}
                 className={cn(
@@ -200,7 +200,7 @@ export const NodeConnectivityGrid = ({
             <button 
               onClick={fetchInfrastructure}
               disabled={loading}
-              className="w-16 h-16 flex items-center justify-center bg-secondary/40 border border-white/5 rounded-xl hover:bg-white/10 transition-all group/refresh shadow-xl disabled:opacity-50"
+              className="w-16 h-16 flex items-center justify-center bg-secondary/40 border border-border rounded-xl hover:bg-white/10 transition-all group/refresh shadow-xl disabled:opacity-50"
             >
               <RefreshCw className={cn("w-6 h-6 text-muted-foreground group-hover/refresh:rotate-180 transition-transform duration-700", loading && "animate-spin")} />
             </button>

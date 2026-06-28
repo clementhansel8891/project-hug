@@ -165,7 +165,7 @@ export default function QuoteDesk() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-white/20 dark:border-border/20 shadow-2xl">
+          <div className="flex items-center bg-white/50 dark:bg-muted backdrop-blur-xl p-2 rounded-[2rem] border border-border dark:border-border/20 shadow-2xl">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -260,7 +260,7 @@ export default function QuoteDesk() {
 
       {/* Quote Registry Area */}
       <GlassCard className="rounded-[3rem] border-none shadow-2xl overflow-hidden">
-        <CardHeader className="p-10 pb-6 border-b border-white/20 dark:border-border/20">
+        <CardHeader className="p-10 pb-6 border-b border-border dark:border-border/20">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
@@ -290,7 +290,7 @@ export default function QuoteDesk() {
                   <th className="px-10 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">Action Matrix</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10 dark:divide-slate-800/10">
+              <tbody className="divide-y divide-border dark:divide-slate-800/10">
                 {(Array.isArray(filtered) ? filtered : []).map((item) => (
                   <tr key={item.id} className="group hover:bg-primary dark:hover:bg-primary transition-all cursor-default">
                     <td className="px-10 py-8">
@@ -381,7 +381,7 @@ export default function QuoteDesk() {
             </div>
          </GlassCard>
          <Card className="rounded-[2.5rem] border-none shadow-xl bg-primary text-white p-8 flex items-center gap-6 shadow-indigo-600/20">
-            <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+            <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-border">
                <DollarSign className="h-7 w-7" />
             </div>
             <div>

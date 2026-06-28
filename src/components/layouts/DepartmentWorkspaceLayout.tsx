@@ -217,7 +217,7 @@ export default function DepartmentWorkspaceLayout({
             
             <div className="flex items-center justify-between flex-wrap gap-4">
                <div className="flex items-center gap-4 md:gap-8">
-                  <div className={cn("h-12 w-12 md:h-20 md:w-20 rounded-2xl md:rounded-[2.5rem] flex items-center justify-center shadow-2xl group hover:rotate-12 transition-all duration-500 border border-white/10", bgC, shadowC)}>
+                  <div className={cn("h-12 w-12 md:h-20 md:w-20 rounded-2xl md:rounded-[2.5rem] flex items-center justify-center shadow-2xl group hover:rotate-12 transition-all duration-500 border border-border", bgC, shadowC)}>
                      <HeaderIcon className="h-6 w-6 md:h-10 md:w-10 text-white" />
                   </div>
                   <div>

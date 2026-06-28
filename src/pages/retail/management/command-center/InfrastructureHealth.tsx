@@ -14,7 +14,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
   const networkLatency = data?.networkLatency ?? 45;
 
   return (
-    <div className="bg-white/[0.03] backdrop-blur-3xl p-6 rounded-[2rem] border border-white/5 shadow-2xl hover:bg-white/[0.05] hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
+    <div className="bg-card backdrop-blur-3xl p-6 rounded-[2rem] border border-border shadow-2xl hover:bg-card hover:-translate-y-1 transition-all duration-700 group h-full flex flex-col relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-info/10 rounded-full blur-[130px] -mr-[15%] -mt-[15%] pointer-events-none" />
 
       <div className="flex items-center justify-between mb-10 relative z-10">
@@ -25,7 +25,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
       </div>
 
       <div className="flex-1 space-y-8 relative z-10">
-        <div className="relative overflow-hidden p-6 rounded-2xl bg-secondary border border-white/5 shadow-3xl group/uptime">
+        <div className="relative overflow-hidden p-6 rounded-2xl bg-secondary border border-border shadow-3xl group/uptime">
           <div className="absolute top-0 right-0 w-64 h-64 bg-info/20 blur-[100px] -mr-32 -mt-32 group-hover/uptime:scale-150 transition-all duration-1000" />
           <div className="absolute bottom-[-20%] left-[-10%] w-40 h-40 bg-primary/10 blur-[80px] pointer-events-none" />
 
@@ -56,7 +56,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-8 pt-4">
-          <div className="group/metric p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-success/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
+          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-card hover:border-success/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-success/5 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <Wifi className="absolute top-8 right-8 w-6 h-6 text-muted-foreground group-hover/metric:text-success transition-colors" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 italic">
@@ -73,7 +73,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
                   ms
                 </span>
               </div>
-              <div className="mt-4 flex items-center gap-2 px-4 py-1.5 bg-black/20 rounded-xl w-fit border border-white/5 shadow-inner">
+              <div className="mt-4 flex items-center gap-2 px-4 py-1.5 bg-secondary/50 rounded-xl w-fit border border-border shadow-inner">
                 <div
                   className={`w-2 h-2 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)] ${networkLatency > 150 ? "bg-destructive shadow-[0_0_8px_rgba(244,63,94,0.8)]" : "bg-success shadow-[0_0_8px_rgba(16,185,129,0.8)]"}`}
                 />
@@ -84,7 +84,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
             </div>
           </div>
 
-          <div className="group/metric p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-primary/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
+          <div className="group/metric p-8 rounded-2xl bg-card border border-border hover:bg-card hover:border-primary/30 hover:shadow-3xl transition-all duration-500 shadow-xl relative overflow-hidden">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
             <Server className="absolute top-8 right-8 w-6 h-6 text-muted-foreground group-hover/metric:text-primary transition-colors" />
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4 italic">
@@ -99,7 +99,7 @@ export const InfrastructureHealth: React.FC<InfrastructureHealthProps> = ({
                   Nodes
                 </span>
               </div>
-              <div className="mt-4 flex items-center gap-2 px-4 py-1.5 bg-black/20 rounded-xl w-fit border border-white/5 shadow-inner">
+              <div className="mt-4 flex items-center gap-2 px-4 py-1.5 bg-secondary/50 rounded-xl w-fit border border-border shadow-inner">
                 <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground italic">
                   100% SYNCED

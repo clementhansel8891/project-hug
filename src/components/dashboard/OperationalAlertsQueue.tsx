@@ -26,7 +26,7 @@ export const OperationalAlertsQueue: React.FC<OperationalAlertsQueueProps> = ({ 
       case 'CRITICAL': return { icon: AlertCircle, color: 'text-destructive-foreground', glow: 'shadow-rose-500/20', bg: 'bg-destructive', border: 'border-destructive/20' };
       case 'HIGH': return { icon: AlertTriangle, color: 'text-warning-foreground', glow: 'shadow-amber-500/20', bg: 'bg-warning', border: 'border-warning/20' };
       case 'MEDIUM': return { icon: Info, color: 'text-primary-foreground', glow: 'shadow-blue-500/20', bg: 'bg-primary', border: 'border-primary' };
-      default: return { icon: Info, color: 'text-muted-foreground', glow: 'shadow-slate-500/10', bg: 'bg-white/5', border: 'border-white/10' };
+      default: return { icon: Info, color: 'text-muted-foreground', glow: 'shadow-slate-500/10', bg: 'bg-white/5', border: 'border-border' };
     }
   };
 
@@ -42,7 +42,7 @@ export const OperationalAlertsQueue: React.FC<OperationalAlertsQueueProps> = ({ 
             <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Critical issues requiring intervention</p>
           </div>
         </div>
-        <div className="flex h-8 w-16 items-center justify-center rounded-lg bg-white/5 border border-white/10">
+        <div className="flex h-8 w-16 items-center justify-center rounded-lg bg-white/5 border border-border">
            <span className="text-[10px] font-black text-foreground">{data.length}</span>
            <span className="text-[8px] font-bold text-muted-foreground ml-1 uppercase tracking-tighter">Live</span>
         </div>
@@ -62,7 +62,7 @@ export const OperationalAlertsQueue: React.FC<OperationalAlertsQueueProps> = ({ 
                   )}
                   onClick={() => alert.actionUrl && navigate(alert.actionUrl)}
                 >
-                  <div className={cn("mt-1 shrink-0 rounded-full p-2 bg-muted border border-white/5", style.color, style.glow)}>
+                  <div className={cn("mt-1 shrink-0 rounded-full p-2 bg-muted border border-border", style.color, style.glow)}>
                     <style.icon className="h-4 w-4" />
                   </div>
                   <div className="flex-1 space-y-1.5">

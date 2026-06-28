@@ -31,7 +31,7 @@ export const MarketingRoiChart: React.FC<MarketingRoiChartProps> = ({ data = [] 
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Spend vs Gross Sales Efficiency</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/5">
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-border">
            <TrendingUp className="h-4 w-4 text-success" />
            <span className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Growth Phase</span>
         </div>
