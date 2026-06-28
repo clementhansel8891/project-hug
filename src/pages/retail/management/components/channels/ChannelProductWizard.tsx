@@ -49,6 +49,10 @@ export const ChannelProductWizard: React.FC<Props> = ({
 
   const isHOD = [Roles.DEPT_HEAD, Roles.OWNER, Roles.SUPERADMIN, Roles.COMPANY_ADMIN].includes(session.role);
 
+  // If no categories exist, skip step 1 and go straight to products
+  const hasCategories = categories.length > 0;
+  const effectiveStep = !hasCategories && step === 1 ? 2 : step;
+
   // --- Initial Load ---
   useEffect(() => {
     const init = async () => {
@@ -172,18 +176,18 @@ export const ChannelProductWizard: React.FC<Props> = ({
   // --- Components ---
   const StepIndicator = () => (
     <div className="flex items-center gap-4 mb-8">
-      {[1, 2, 3].map((s) => (
+      {(hasCategories ? [1, 2, 3] : [2, 3]).map((s) => (
         <div key={s} className="flex items-center gap-2">
           <div className={cn(
             "w-8 h-8 rounded-full flex items-center justify-center font-black italic transition-all",
-            step === s ? "bg-secondary text-foreground scale-110 shadow-lg" : 
-            step > s ? "bg-success text-foreground" : "bg-secondary/10 text-muted-foreground"
+            effectiveStep === s ? "bg-secondary text-foreground scale-110 shadow-lg" : 
+            effectiveStep > s ? "bg-success text-foreground" : "bg-secondary/10 text-muted-foreground"
           )}>
-            {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
+            {effectiveStep > s ? <CheckCircle2 className="w-4 h-4" /> : s}
           </div>
           <span className={cn(
             "text-[10px] font-black uppercase tracking-widest",
-            step === s ? "text-foreground" : "text-muted-foreground"
+            effectiveStep === s ? "text-foreground" : "text-muted-foreground"
           )}>
             {s === 1 ? "Categories" : s === 2 ? "Items" : "Parameters"}
           </span>
@@ -210,13 +214,13 @@ export const ChannelProductWizard: React.FC<Props> = ({
         <StepIndicator />
         <div className="space-y-1">
           <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
-            {step === 1 ? "Select Channel Categories" : 
-             step === 2 ? "Refine Product Selection" : 
+            {effectiveStep === 1 ? "Select Channel Categories" : 
+             effectiveStep === 2 ? "Refine Product Selection" : 
              "Configure Sync Parameters"}
           </h2>
           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-            {step === 1 ? "Choose which product families are available for this website." : 
-             step === 2 ? "Select specific items to publish or keep private." : 
+            {effectiveStep === 1 ? "Choose which product families are available for this website." : 
+             effectiveStep === 2 ? "Select specific items to publish or keep private." : 
              "Assign stock levels and finalize warehouse assignments."}
           </p>
         </div>
@@ -224,7 +228,7 @@ export const ChannelProductWizard: React.FC<Props> = ({
 
       <div className="flex-1 overflow-y-auto p-8">
         {/* Step 1: Categories */}
-        {step === 1 && (
+        {effectiveStep === 1 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {(Array.isArray(categories) ? categories : []).map((cat) => (
               <Card 
@@ -252,7 +256,7 @@ export const ChannelProductWizard: React.FC<Props> = ({
         )}
 
         {/* Step 2: Products */}
-        {step === 2 && (
+        {effectiveStep === 2 && (
           <div className="space-y-6">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -303,7 +307,7 @@ export const ChannelProductWizard: React.FC<Props> = ({
         )}
 
         {/* Step 3: Stock Assignment */}
-        {step === 3 && (
+        {effectiveStep === 3 && (
           <div className="space-y-6">
             <div className="p-6 bg-primary/5 rounded-3xl border border-primary flex gap-4">
               <Settings2 className="w-10 h-10 text-primary" />
@@ -353,10 +357,10 @@ export const ChannelProductWizard: React.FC<Props> = ({
           className="h-14 px-8 rounded-2xl font-black italic uppercase text-xs text-muted-foreground hover:text-destructive transition-colors"
           onClick={onFinished}
         >
-          {step === 1 ? "Exit Wizard" : "Back"}
+          {effectiveStep <= 2 ? "Exit Wizard" : "Back"}
         </Button>
         <div className="flex gap-4">
-          {step > 1 && (
+          {effectiveStep > 2 && (
             <Button 
               variant="outline" 
               className="h-14 px-10 rounded-2xl font-black italic uppercase text-xs border-2 border-border"
@@ -368,14 +372,14 @@ export const ChannelProductWizard: React.FC<Props> = ({
           <Button 
             className={cn(
               "h-14 px-12 rounded-2xl font-black italic uppercase text-xs gap-3 shadow-xl",
-              step === 3 ? "bg-success hover:bg-success" : "bg-secondary hover:bg-secondary/60"
+              effectiveStep === 3 ? "bg-success hover:bg-success" : "bg-secondary hover:bg-secondary/60"
             )}
-            onClick={step === 3 ? handleFinish : () => setStep(step + 1)}
-            disabled={saving || (step === 1 && selectedCats.length === 0)}
+            onClick={effectiveStep === 3 ? handleFinish : () => setStep(step + 1)}
+            disabled={saving || (effectiveStep === 1 && selectedCats.length === 0)}
           >
             {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : 
-             step === 3 ? <CheckCircle2 className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            {saving ? "Finalizing Sync..." : step === 3 ? "Synchronize & Publish" : "Next Segment"}
+             effectiveStep === 3 ? <CheckCircle2 className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            {saving ? "Finalizing Sync..." : effectiveStep === 3 ? "Synchronize & Publish" : "Next Segment"}
           </Button>
         </div>
       </div>
