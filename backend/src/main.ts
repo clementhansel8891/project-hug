@@ -115,6 +115,8 @@ async function bootstrap() {
       "http://localhost:8080",
       "http://localhost:5173",
       "http://localhost:3000",
+      "http://localhost:3020",
+      "http://150.109.15.108:3020",
       "https://bambusilver.netlify.app",
       "https://zenvix-demo-vbeta0000001a.vercel.app",
       /\.vercel\.app$/, // Allow all vercel preview deployments

@@ -38,6 +38,16 @@ export class TenantMiddleware implements NestMiddleware {
        return next();
     }
 
+    // Bypass for public retail routes (headless ecommerce uses channel credentials, not JWT)
+    if (fullUrl.includes('/retail/public/') || fullUrl.includes('/retail/public')) {
+       return next();
+    }
+
+    // Bypass for retail events (uses EcommerceConnectorGuard, not JWT)
+    if (fullUrl.match(/\/retail\/events\b/)) {
+       return next();
+    }
+
     // Bypass for monitoring/health checks
     if (fullUrl.includes('/monitoring/') || fullUrl.includes('/v1/monitoring/')) {
        return next();
