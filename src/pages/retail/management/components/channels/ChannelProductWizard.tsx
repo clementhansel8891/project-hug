@@ -54,21 +54,51 @@ export const ChannelProductWizard: React.FC<Props> = ({
     const init = async () => {
       setLoading(true);
       try {
+        // Load categories and channel-specific products in parallel
         const [catList, channelCats, channelProds] = await Promise.all([
-          retailService.listCategories(session.tenant_id, session),
-          ecommerceHubService.getChannelCategories(session, channelId),
-          ecommerceHubService.listChannelProducts(session, channelId)
+          retailService.listCategories(session.tenant_id, session).catch(() => []),
+          ecommerceHubService.getChannelCategories(session, channelId).catch(() => []),
+          ecommerceHubService.listChannelProducts(session, channelId).catch(() => [])
         ]);
-        setCategories(catList);
-        setSelectedCats(channelCats);
+
+        setCategories(Array.isArray(catList) ? catList : []);
+        setSelectedCats(Array.isArray(channelCats) ? channelCats : []);
         
+        // If no channel-specific products, load from master inventory
+        let productList = Array.isArray(channelProds) ? channelProds : [];
+        if (productList.length === 0) {
+          try {
+            const masterData = await retailService.listInventory(session.tenant_id, session, { page: 1, pageSize: 100 });
+            const masterItems = (masterData as any)?.items || (masterData as any)?.data || (Array.isArray(masterData) ? masterData : []);
+            // Map master inventory items to channel product format
+            productList = masterItems.map((item: any) => ({
+              id: item.id,
+              name: item.name,
+              sku: item.sku,
+              category_id: item.category_id || item.categoryId || "",
+              categoryName: item.category || item.categoryName || "Uncategorized",
+              stock: item.on_hand ?? item.currentStock ?? item.stock ?? 0,
+              price: item.selling_price ?? item.base_price ?? item.sellingPrice ?? 0,
+              visible: false, // default hidden for new items
+            }));
+          } catch (e) {
+            console.warn("Could not load master inventory", e);
+          }
+        }
+        
+        setProducts(productList);
+
         // Convert array to record for easy management
         const prodMap: Record<string, { visible: boolean; stock: number }> = {};
-        channelProds.forEach((p: any) => {
-          prodMap[p.id] = { visible: p.visible, stock: p.stock_limit ?? p.stock };
+        productList.forEach((p: any) => {
+          prodMap[p.id] = { visible: p.visible ?? false, stock: p.stock_limit ?? p.stock ?? 0 };
         });
         setSelectedProds(prodMap);
-        setProducts(channelProds);
+        
+        // Auto-select all categories if none are pre-selected
+        if ((Array.isArray(channelCats) ? channelCats : []).length === 0 && catList.length > 0) {
+          setSelectedCats(catList.map((c: any) => c.id));
+        }
       } catch (err) {
         console.error("Wizard Init Failure", err);
         toast({ title: "Failed to load channel data", variant: "destructive" });
@@ -82,9 +112,11 @@ export const ChannelProductWizard: React.FC<Props> = ({
   // --- Filtering ---
   const filteredProducts = useMemo(() => {
     return (Array.isArray(products) ? products : []).filter(p => {
-      const matchCat = selectedCats.includes(p.category_id);
-      const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          p.sku.toLowerCase().includes(searchQuery.toLowerCase());
+      // If no categories selected or product has no category, show all products
+      const matchCat = selectedCats.length === 0 || !p.category_id || selectedCats.includes(p.category_id);
+      const matchSearch = !searchQuery || 
+        p.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        p.sku?.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchSearch;
     });
   }, [products, selectedCats, searchQuery]);
@@ -173,7 +205,7 @@ export const ChannelProductWizard: React.FC<Props> = ({
   }
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-background">
       <div className="p-8 border-b bg-secondary/5">
         <StepIndicator />
         <div className="space-y-1">

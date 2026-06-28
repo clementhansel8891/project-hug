@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   TrendingUp,
   DollarSign,
@@ -7,216 +7,328 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Globe,
+  RefreshCw,
+  Package,
+  Heart,
+  Activity,
+  CheckCircle2,
+  Clock,
 } from "lucide-react";
 import { useSession } from "@/core/security/session";
 import { retailService } from "@/core/services/retail/retailService";
+import { ecommerceHubService } from "@/core/services/retail/ecommerceHubService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function EcommerceAnalytics() {
   const session = useSession();
   const [analytics, setAnalytics] = useState<any>(null);
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [channels, setChannels] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedChannel, setSelectedChannel] = useState("all");
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [selectedChannel]);
-
-  const fetchAnalytics = async () => {
+  const fetchAll = useCallback(async () => {
+    if (!session.tenant_id) return;
     try {
       setLoading(true);
-      const data = await retailService.getEcommerceAnalytics(
-        session.tenant_id,
-        session,
-        selectedChannel === "all" ? undefined : selectedChannel
-      );
-      setAnalytics(data);
-    } catch (err) {
-      console.error("Failed to fetch analytics", err);
+      setError(null);
+      const [analyticsData, customersData, channelsData] = await Promise.all([
+        retailService.getEcommerceAnalytics(session.tenant_id, session).catch(() => null),
+        retailService.listCustomers(session.tenant_id, session).catch(() => []),
+        ecommerceHubService.listChannels(session).catch(() => []),
+      ]);
+      setAnalytics(analyticsData || { revenue: 0, orderCount: 0, topProducts: [] });
+      setCustomers(Array.isArray(customersData) ? customersData : []);
+      setChannels(Array.isArray(channelsData) ? channelsData : []);
+    } catch (err: any) {
+      setError(err?.message || "Failed to load analytics");
     } finally {
       setLoading(false);
     }
-  };
+  }, [session.tenant_id]);
 
-  if (loading && !analytics) return (
-    <div className="p-40 text-center space-y-6">
-       <div className="w-20 h-20 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-8 shadow-[0_0_50px_rgba(var(--primary),0.3)]" />
-       <p className="text-sm font-black italic text-muted-foreground uppercase tracking-[0.4em] animate-pulse">
-          Synchronizing Global Fleet Metrics...
-       </p>
+  useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  const activeChannels = channels.filter(c => c.status === "active");
+  const totalCustomers = customers.length;
+  const customersWithCart = customers.filter(c =>
+    c.retail_carts?.some((cart: any) => cart.retail_cart_items?.length > 0)
+  ).length;
+  const customersWithWishlist = customers.filter(c =>
+    c.retail_wishlists?.some((wl: any) => wl.retail_wishlist_items?.length > 0)
+  ).length;
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-32">
+      <div className="text-center space-y-4">
+        <RefreshCw className="w-10 h-10 text-primary animate-spin mx-auto" />
+        <p className="text-[11px] font-black text-muted-foreground uppercase tracking-widest animate-pulse">
+          Loading Analytics...
+        </p>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex items-center justify-center py-32">
+      <div className="text-center space-y-4">
+        <p className="text-sm text-destructive font-bold">{error}</p>
+        <Button onClick={fetchAll} variant="outline" className="gap-2">
+          <RefreshCw className="w-4 h-4" /> Retry
+        </Button>
+      </div>
     </div>
   );
 
   return (
-    <div className="space-y-16">
-       {/* Analytics Header */}
-       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
-         <div className="space-y-4">
-           <h2 className="text-3xl font-black italic uppercase tracking-tighter flex items-center gap-6 text-foreground italic">
-             <div className="p-4 rounded-2xl bg-primary text-foreground shadow-2xl shadow-primary/20">
-               <Globe className="w-8 h-8" />
-             </div>
-             Ecommerce Intelligence
-           </h2>
-           <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.3em] ml-[88px] italic">
-             Real-time telemetry from all connected digital storefronts
-           </p>
-         </div>
-         <Select value={selectedChannel} onValueChange={setSelectedChannel}>
-           <SelectTrigger className="w-[320px] h-16 rounded-2xl bg-secondary/40 border-border font-black uppercase italic text-[11px] tracking-[0.3em] text-foreground focus:ring-2 focus:ring-primary/50 shadow-2xl">
-             <SelectValue placeholder="All Channels" />
-           </SelectTrigger>
-           <SelectContent className="rounded-2xl bg-secondary border-border text-foreground shadow-3xl backdrop-blur-3xl">
-             <SelectItem value="all" className="font-black uppercase italic text-[10px] tracking-widest focus:bg-primary focus:text-foreground">Global Fleet View</SelectItem>
-             <SelectItem value="headless" className="font-black uppercase italic text-[10px] tracking-widest focus:bg-primary focus:text-foreground">Headless API</SelectItem>
-             <SelectItem value="shopify" className="font-black uppercase italic text-[10px] tracking-widest focus:bg-primary focus:text-foreground">Shopify Integration</SelectItem>
-           </SelectContent>
-         </Select>
-       </div>
+    <div className="space-y-8 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+            <Globe className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-black italic uppercase tracking-tighter text-foreground">
+              E-Commerce Analytics
+            </h2>
+            <p className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+              {activeChannels.length} active channel{activeChannels.length !== 1 ? "s" : ""} · tnt-3rlhko
+            </p>
+          </div>
+        </div>
+        <Button onClick={fetchAll} variant="outline" className="gap-2 h-10 px-4 rounded-xl font-black text-[10px] uppercase tracking-widest">
+          <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} /> Refresh
+        </Button>
+      </div>
 
-       {/* KPI Grid */}
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-         <StatsCard
-           title="Revenue (Gross)"
-           value={`Rp ${(analytics?.revenue || 0).toLocaleString()}`}
-           trend="+12.5%"
-           isPositive={true}
-           icon={DollarSign}
-           color="primary"
-         />
-         <StatsCard
-           title="Order Velocity"
-           value={analytics?.orderCount || 0}
-           trend="+8.2%"
-           isPositive={true}
-           icon={ShoppingCart}
-           color="accent"
-         />
-         <StatsCard
-           title="Active Sessions"
-           value="1,284"
-           trend="-2.4%"
-           isPositive={false}
-           icon={Users}
-           color="info"
-         />
-         <StatsCard
-           title="Conversion Rate"
-           value="3.82%"
-           trend="+0.5%"
-           isPositive={true}
-           icon={TrendingUp}
-           color="success"
-         />
-       </div>
+      {/* KPI Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <KpiCard
+          title="Gross Revenue"
+          value={`Rp ${(analytics?.revenue || 0).toLocaleString("id-ID")}`}
+          sub="From ecommerce orders"
+          icon={DollarSign}
+          color="text-primary bg-primary/10"
+          trend={analytics?.orderCount > 0 ? `${analytics.orderCount} orders` : "No orders yet"}
+          isPositive={analytics?.orderCount > 0}
+        />
+        <KpiCard
+          title="Total Orders"
+          value={analytics?.orderCount || 0}
+          sub="Paid & processed"
+          icon={ShoppingCart}
+          color="text-success bg-success/10"
+          trend="From storefront"
+          isPositive={true}
+        />
+        <KpiCard
+          title="Registered Customers"
+          value={totalCustomers}
+          sub="Storefront accounts"
+          icon={Users}
+          color="text-warning bg-warning/10"
+          trend={`${customersWithCart} with cart items`}
+          isPositive={totalCustomers > 0}
+        />
+        <KpiCard
+          title="Active Channels"
+          value={activeChannels.length}
+          sub="Connected storefronts"
+          icon={Activity}
+          color="text-info bg-info/10 border-info/20"
+          trend={`${channels.length} total registered`}
+          isPositive={activeChannels.length > 0}
+        />
+      </div>
 
-       {/* Secondary Intelligence Deck */}
-       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-         {/* Top Products */}
-         <Card className="lg:col-span-2 rounded-2xl border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl overflow-hidden group/products">
-           <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
-             <CardTitle className="text-3xl font-black italic uppercase tracking-tighter text-foreground italic">
-               High-Velocity Assets
-             </CardTitle>
-           </CardHeader>
-           <CardContent className="p-0">
-             <div className="divide-y divide-white/5">
-               {(analytics?.topProducts || []).map((product: any, idx: number) => (
-                 <div key={idx} className="flex items-center justify-between p-6 hover:bg-white/[0.04] transition-all duration-500 group/item relative overflow-hidden cursor-pointer">
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                   <div className="flex items-center gap-6 relative z-10">
-                     <div className="w-16 h-16 rounded-2xl bg-secondary/40 border border-border flex items-center justify-center font-black text-primary text-xl italic shadow-2xl group-hover/item:scale-110 transition-transform">
-                       {idx + 1}
-                     </div>
-                     <div>
-                       <p className="text-xl font-black italic text-foreground italic tracking-tight">{product.name}</p>
-                       <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-2 italic">SKU: PROD-{idx+100}</p>
-                     </div>
-                   </div>
-                   <div className="text-right relative z-10">
-                     <p className="text-2xl font-black italic text-foreground italic tracking-tighter">{product.count} Units</p>
-                     <p className="text-[10px] font-black text-success uppercase tracking-[0.3em] mt-2 italic">Demand Peak</p>
-                   </div>
-                 </div>
-               ))}
-             </div>
-           </CardContent>
-         </Card>
+      {/* Customer Engagement */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2 rounded-2xl border border-border bg-card shadow-sm">
+          <CardHeader className="p-6 border-b border-border">
+            <CardTitle className="text-sm font-black uppercase tracking-widest text-foreground flex items-center gap-2">
+              <Users className="w-4 h-4 text-primary" /> Customer Overview
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            {totalCustomers === 0 ? (
+              <div className="text-center py-8">
+                <Users className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                <p className="text-[11px] font-black text-muted-foreground uppercase tracking-widest">No customers registered yet</p>
+                <p className="text-xs text-muted-foreground mt-1">Customers register on the storefront at 150.109.15.108:3020</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <EngagementRow
+                  label="Total Registered"
+                  value={totalCustomers}
+                  total={totalCustomers}
+                  color="bg-primary"
+                />
+                <EngagementRow
+                  label="With Cart Items"
+                  value={customersWithCart}
+                  total={totalCustomers}
+                  color="bg-warning"
+                />
+                <EngagementRow
+                  label="With Wishlist"
+                  value={customersWithWishlist}
+                  total={totalCustomers}
+                  color="bg-success"
+                />
+                {/* Customer list preview */}
+                <div className="pt-4 border-t border-border space-y-2">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Recent Customers</p>
+                  {customers.slice(0, 5).map(c => (
+                    <div key={c.id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                      <div>
+                        <p className="text-xs font-bold text-foreground">{c.name}</p>
+                        <p className="text-[10px] text-muted-foreground">{c.email}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        {c.retail_carts?.some((cart: any) => cart.retail_cart_items?.length > 0) && (
+                          <Badge className="text-[8px] bg-warning/10 text-warning border-none">Cart</Badge>
+                        )}
+                        {c.retail_wishlists?.some((wl: any) => wl.retail_wishlist_items?.length > 0) && (
+                          <Badge className="text-[8px] bg-success/10 text-success border-none">Wishlist</Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-         {/* Channel Health */}
-         <Card className="rounded-2xl border border-white/5 shadow-2xl bg-secondary overflow-hidden group/health">
-           <CardHeader className="p-8 border-b border-white/5 bg-white/[0.01]">
-             <CardTitle className="text-3xl font-black italic uppercase tracking-tighter text-foreground italic">
-               Channel Latency
-             </CardTitle>
-           </CardHeader>
-           <CardContent className="p-8 space-y-12">
-             <HealthItem label="Headless API" status="Optimal" value="24ms" color="text-primary" dot="bg-primary/40" />
-             <HealthItem label="Shopify Webhook" status="Nominal" value="142ms" color="text-success" dot="bg-success/40" />
-             <HealthItem label="Sync Engine" status="Optimal" value="0.8s" color="text-info" dot="bg-info" />
-             
-             <div className="pt-12 mt-12 border-t border-border">
-               <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.4em] mb-6 italic">Integrity Status</p>
-               <div className="flex items-center gap-4 px-6 py-4 bg-secondary/40 rounded-2xl border border-border shadow-2xl">
-                 <div className="w-3 h-3 rounded-full bg-success animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
-                 <span className="text-[10px] font-black uppercase italic tracking-[0.2em] text-foreground">All Systems Operational</span>
-               </div>
-             </div>
-           </CardContent>
-         </Card>
-       </div>
+        {/* Channels Status */}
+        <Card className="rounded-2xl border border-border bg-card shadow-sm">
+          <CardHeader className="p-6 border-b border-border">
+            <CardTitle className="text-sm font-black uppercase tracking-widest text-foreground flex items-center gap-2">
+              <Globe className="w-4 h-4 text-primary" /> Channel Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-3">
+            {channels.length === 0 ? (
+              <div className="text-center py-6">
+                <Globe className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
+                <p className="text-[11px] font-black text-muted-foreground uppercase tracking-widest">No channels</p>
+              </div>
+            ) : (
+              channels.map(ch => (
+                <div key={ch.id} className="flex items-center justify-between p-3 rounded-xl border border-border bg-background">
+                  <div>
+                    <p className="text-xs font-bold text-foreground truncate max-w-[120px]">{ch.name}</p>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{ch.integrationCategory}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className={cn("w-2 h-2 rounded-full", ch.status === "active" ? "bg-success animate-pulse" : "bg-muted-foreground")} />
+                    <span className={cn("text-[9px] font-black uppercase tracking-widest", ch.status === "active" ? "text-success" : "text-muted-foreground")}>
+                      {ch.status}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+
+            {/* Storefront link */}
+            <div className="pt-4 border-t border-border">
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Live Storefront</p>
+              <a
+                href="http://150.109.15.108:3020"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-colors"
+              >
+                <Globe className="w-4 h-4 text-primary" />
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest">150.109.15.108:3020</span>
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Products from Analytics */}
+      {analytics?.topProducts && analytics.topProducts.length > 0 && (
+        <Card className="rounded-2xl border border-border bg-card shadow-sm">
+          <CardHeader className="p-6 border-b border-border">
+            <CardTitle className="text-sm font-black uppercase tracking-widest text-foreground flex items-center gap-2">
+              <Package className="w-4 h-4 text-primary" /> Top Selling Products (Ecommerce Orders)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="divide-y divide-border">
+              {analytics.topProducts.map((product: any, idx: number) => (
+                <div key={idx} className="flex items-center justify-between px-6 py-4 hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center font-black text-primary text-xs">
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">{product.name}</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-black text-foreground">{product.count} units sold</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* If no orders yet, show guidance */}
+      {(!analytics?.orderCount || analytics.orderCount === 0) && (
+        <Card className="rounded-2xl border border-border bg-card shadow-sm">
+          <CardContent className="p-8 text-center space-y-3">
+            <ShoppingCart className="w-10 h-10 text-muted-foreground/30 mx-auto" />
+            <p className="text-sm font-bold text-foreground">No ecommerce orders yet</p>
+            <p className="text-xs text-muted-foreground max-w-md mx-auto">
+              Orders from the Bambu Silver storefront (port 3020) will appear here once customers complete purchases.
+              The storefront is live and connected to this tenant.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
 
-function StatsCard({ title, value, trend, isPositive, icon: Icon, color }: any) {
-  const colorMap: any = {
-    primary: "text-primary bg-primary/10 border-primary/20",
-    accent: "text-accent bg-accent/10 border-accent/20",
-    info: "text-info bg-info/10 border-info/20",
-    success: "text-success bg-success/10 border-success/20",
-  };
-
+function KpiCard({ title, value, sub, icon: Icon, color, trend, isPositive }: any) {
   return (
-    <Card className="rounded-[2rem] border border-white/5 shadow-2xl bg-white/[0.03] backdrop-blur-3xl p-6 space-y-8 hover:-translate-y-2 transition-all duration-700 group relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/40 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-white/10 transition-all duration-1000" />
-      <div className="flex items-center justify-between relative z-10">
-        <div className={cn("w-16 h-16 rounded-xl flex items-center justify-center border shadow-2xl transition-all duration-500 group-hover:scale-110", colorMap[color])}>
-          <Icon className="w-8 h-8" />
+    <Card className="rounded-2xl border border-border bg-card shadow-sm p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", color)}>
+          <Icon className="w-5 h-5" />
         </div>
-        <Badge className={cn("border-none rounded-xl px-3 h-7 flex gap-2 items-center font-black text-[10px] italic tracking-widest shadow-xl", isPositive ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive')}>
-          {isPositive ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+        <Badge className={cn("text-[9px] font-black border-none rounded-lg px-2", isPositive ? "bg-success/10 text-success" : "bg-muted text-muted-foreground")}>
+          {isPositive ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
           {trend}
         </Badge>
       </div>
-      <div className="space-y-3 relative z-10">
-        <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.3em] italic">{title}</p>
-        <h3 className="text-2xl font-black italic uppercase tracking-tighter text-foreground italic">{value}</h3>
+      <div>
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{title}</p>
+        <p className="text-2xl font-black tracking-tighter text-foreground mt-1">{value}</p>
+        <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>
       </div>
     </Card>
   );
 }
 
-function HealthItem({ label, status, value, color, dot }: any) {
+function EngagementRow({ label, value, total, color }: { label: string; value: number; total: number; color: string }) {
+  const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="flex items-center justify-between group/item">
-      <div className="space-y-3">
-        <p className="text-[11px] font-black text-muted-foreground uppercase tracking-[0.3em] italic">{label}</p>
-        <div className="flex items-center gap-3">
-           <div className={cn("w-2 h-2 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.1)]", dot)} />
-           <p className="text-lg font-black italic uppercase tracking-tight text-foreground italic group-hover/item:text-primary transition-colors">{status}</p>
-        </div>
+    <div className="space-y-1.5">
+      <div className="flex justify-between items-center">
+        <span className="text-[11px] font-bold text-foreground">{label}</span>
+        <span className="text-[11px] font-black text-foreground">{value} <span className="text-muted-foreground font-medium">({pct}%)</span></span>
       </div>
-      <p className={cn("text-sm font-black italic tracking-widest italic px-4 py-1.5 bg-secondary/40 rounded-lg border border-white/5 shadow-xl", color)}>{value}</p>
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+        <div className={cn("h-full rounded-full transition-all duration-700", color)} style={{ width: `${pct}%` }} />
+      </div>
     </div>
   );
 }

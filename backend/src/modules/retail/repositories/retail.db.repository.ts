@@ -748,7 +748,8 @@ export class RetailDbRepository implements IRetailRepository {
   }
 
   async listCustomers(ctx: TenantContext, options?: { ecommerce_id?: string; q?: string }): Promise<any[]> {
-    const where: any = { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }) };
+    // Customers are tenant-scoped only (company_id may not match admin's company vs customer's company)
+    const where: any = { tenant_id: ctx.tenant_id };
     if (options?.ecommerce_id) where.ecommerce_id = options.ecommerce_id;
     if (options?.q) {
       where.OR = [

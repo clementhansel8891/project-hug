@@ -54,11 +54,11 @@ export function RetailCustomerActivity({
   const { data: customers = [], isLoading: loading } = useQuery({
     queryKey: ["retail", "customers"],
     queryFn: async () => {
-      if (!session.tenantId) return [];
-      const data = await retailService.listCustomers(session.tenantId, session);
+      if (!session.tenant_id) return [];
+      const data = await retailService.listCustomers(session.tenant_id, session);
       return Array.isArray(data) ? data : [];
     },
-    enabled: !!session.tenantId,
+    enabled: !!session.tenant_id,
   });
 
   const filteredCustomers = useMemo(() => {
