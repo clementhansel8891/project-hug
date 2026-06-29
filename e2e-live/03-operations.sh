@@ -300,6 +300,7 @@ RESP=$(api_post "/procurement/requisitions" "{
 }" "$TOKEN" "$T" "$C")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
+echo "  [debug] Requisition response ($STATUS): $(echo $BODY | head -c 300)"
 assert_status_one_of "Create requisition" "$STATUS" "200" "201"
 
 REQ_ID=$(json_nested "$BODY" "data.id")
