@@ -1005,6 +1005,12 @@ model companies {
   workflow_instances                    workflow_instances[]
   workflow_requests                     workflow_requests[]
   finance_company_groups                finance_company_groups[]                @relation("companiesTofinance_company_groups")
+  sync_operation_log                    sync_operation_log[]
+  sync_inventory_ledger                 sync_inventory_ledger[]
+  sync_conflict_log                     sync_conflict_log[]
+  sync_sessions                         sync_sessions[]
+  sync_ecommerce_reserve                sync_ecommerce_reserve[]
+  sync_reconciliation_flags             sync_reconciliation_flags[]
 
   @@index([status])
 }
@@ -3192,23 +3198,23 @@ model inventory_integration_events {
 }
 
 model void_requests {
-  id              String     @id @default(uuid())
-  tenant_id       String
-  entity_type     String     // "incomplete_item" | "abandoned_audit_cycle"
-  entity_id       String
-  reason          String
-  requested_by    String
-  status          String     @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED"
-  approved_by     String?
-  rejected_by     String?
-  approved_at     DateTime?
-  rejected_at     DateTime?
-  metadata        Json?
-  created_at      DateTime   @default(now())
-  updated_at      DateTime   @default(now())
-  companies       companies? @relation(fields: [company_id], references: [id])
-  tenants         tenants    @relation(fields: [tenant_id], references: [id])
-  company_id      String?
+  id           String     @id @default(uuid())
+  tenant_id    String
+  entity_type  String // "incomplete_item" | "abandoned_audit_cycle"
+  entity_id    String
+  reason       String
+  requested_by String
+  status       String     @default("PENDING") // "PENDING" | "APPROVED" | "REJECTED"
+  approved_by  String?
+  rejected_by  String?
+  approved_at  DateTime?
+  rejected_at  DateTime?
+  metadata     Json?
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @default(now())
+  companies    companies? @relation(fields: [company_id], references: [id])
+  tenants      tenants    @relation(fields: [tenant_id], references: [id])
+  company_id   String?
 
   @@index([tenant_id])
   @@index([entity_type, entity_id])
@@ -5447,18 +5453,18 @@ model retail_crisis_alerts {
 
 /// ─── RETAIL CRISIS: Deployment tasks ───
 model retail_deployment_tasks {
-  id              String   @id @default(uuid())
+  id              String    @id @default(uuid())
   tenant_id       String
   alert_id        String?
   title           String
   description     String?
   target_location String?
-  priority        String   @default("STANDARD")
-  status          String   @default("PENDING")
-  assigned_assets String[] @default([])
+  priority        String    @default("STANDARD")
+  status          String    @default("PENDING")
+  assigned_assets String[]  @default([])
   assigned_by     String
   completed_at    DateTime?
-  created_at      DateTime @default(now())
+  created_at      DateTime  @default(now())
 
   @@index([tenant_id])
 }
@@ -6881,6 +6887,9 @@ model finance_jv_participants {
   participant_tenant_id String
   profit_share_pct      Decimal                   @db.Decimal(20, 4)
   revenue_share_pct     Decimal                   @db.Decimal(20, 4)
+  split_confirmed       Boolean                   @default(false)
+  split_confirmed_at    DateTime?
+  split_proposed_by     String?
   cost_mappings         finance_jv_cost_mapping[]
   jv_profiles           finance_jv_profiles       @relation(fields: [jv_profile_id], references: [id])
 }
@@ -6943,12 +6952,12 @@ model finance_jv_ledger {
 
 /// ─── JV PERMISSIONS: Granular module-level access for each participant ───
 model finance_jv_permissions {
-  id             String @id @default(uuid())
+  id             String   @id @default(uuid())
   participant_id String
   /// Module key: "expenses", "procurement", "inventory", "pos", "sales", "finance_read", "finance_write"
   module         String
   /// Access level: "none", "read", "write", "manage"
-  access_level   String @default("read")
+  access_level   String   @default("read")
   created_at     DateTime @default(now())
   updated_at     DateTime @default(now())
 
@@ -6957,79 +6966,86 @@ model finance_jv_permissions {
 
 /// ─── JV EXPENSES: Costs logged by either party against the JV ───
 model finance_jv_expenses {
-  id              String   @id @default(uuid())
-  tenant_id       String
-  jv_profile_id   String
-  submitted_by    String
+  id                  String                           @id @default(uuid())
+  tenant_id           String
+  jv_profile_id       String
+  submitted_by        String
   submitter_tenant_id String
-  category_id     String?
-  description     String
-  amount          Decimal  @db.Decimal(20, 4)
-  currency        String   @default("IDR")
-  receipt_url     String?
+  category_id         String?
+  description         String
+  amount              Decimal                          @db.Decimal(20, 4)
+  currency            String                           @default("IDR")
+  receipt_url         String?
   /// Status: DRAFT, SUBMITTED, APPROVED, REJECTED, ALLOCATED
-  status          String   @default("DRAFT")
-  approved_by     String?
-  approved_at     DateTime?
-  rejection_reason String?
-  expense_date    DateTime
-  period_id       String?
+  status              String                           @default("DRAFT")
+  approved_by         String?
+  approved_at         DateTime?
+  rejection_reason    String?
+  expense_date        DateTime
+  period_id           String?
   /// Which allocation rule to use: "equal", "by_share", "custom", "category_burden"
-  split_method    String   @default("by_share")
+  split_method        String                           @default("by_share")
   /// Custom split overrides (JSON array of {participant_id, pct})
-  custom_split    Json?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now())
-  allocations     finance_jv_expense_allocations[]
+  custom_split        Json?
+  created_at          DateTime                         @default(now())
+  updated_at          DateTime                         @default(now())
+  allocations         finance_jv_expense_allocations[]
 }
 
 /// ─── JV EXPENSE ALLOCATIONS: How each expense is distributed among participants ───
 model finance_jv_expense_allocations {
-  id              String   @id @default(uuid())
-  expense_id      String
-  participant_id  String
-  tenant_id       String
-  amount          Decimal  @db.Decimal(20, 4)
-  burden_pct      Decimal  @db.Decimal(20, 4)
-  created_at      DateTime @default(now())
-  expense         finance_jv_expenses @relation(fields: [expense_id], references: [id])
+  id             String              @id @default(uuid())
+  expense_id     String
+  participant_id String
+  tenant_id      String
+  amount         Decimal             @db.Decimal(20, 4)
+  burden_pct     Decimal             @db.Decimal(20, 4)
+  created_at     DateTime            @default(now())
+  expense        finance_jv_expenses @relation(fields: [expense_id], references: [id])
 }
 
 /// ─── JV SETTLEMENTS: Periodic net settlement between parties ───
 model finance_jv_settlements {
-  id              String   @id @default(uuid())
-  tenant_id       String
-  jv_profile_id   String
-  period_start    DateTime
-  period_end      DateTime
-  /// Status: DRAFT, CONFIRMED, INVOICED, PAID, DISPUTED
-  status          String   @default("DRAFT")
-  generated_by    String
-  generated_at    DateTime @default(now())
-  confirmed_by    String?
-  confirmed_at    DateTime?
-  paid_at         DateTime?
-  payment_ref     String?
-  notes           String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now())
-  lines           finance_jv_settlement_lines[]
+  id                   String                        @id @default(uuid())
+  tenant_id            String
+  jv_profile_id        String
+  period_start         DateTime
+  period_end           DateTime
+  /// Status: DRAFT, PENDING_CONFIRM, CONFIRMED, INVOICED, PAID, DISPUTED
+  status               String                        @default("DRAFT")
+  generated_by         String
+  generated_at         DateTime                      @default(now())
+  confirmed_by         String?
+  confirmed_at         DateTime?
+  host_confirmed       Boolean                       @default(false)
+  host_confirmed_at    DateTime?
+  host_confirmed_by    String?
+  partner_confirmed    Boolean                       @default(false)
+  partner_confirmed_at DateTime?
+  partner_confirmed_by String?
+  paid_at              DateTime?
+  payment_ref          String?
+  notes                String?
+  created_at           DateTime                      @default(now())
+  updated_at           DateTime                      @default(now())
+  lines                finance_jv_settlement_lines[]
 }
 
 /// ─── JV SETTLEMENT LINES: Per-participant breakdown in a settlement ───
 model finance_jv_settlement_lines {
-  id                String   @id @default(uuid())
-  settlement_id     String
-  participant_id    String
+  id                    String                 @id @default(uuid())
+  settlement_id         String
+  participant_id        String
   participant_tenant_id String
-  revenue_allocated Decimal  @db.Decimal(20, 4)
-  cost_burden       Decimal  @db.Decimal(20, 4)
-  expenses_borne    Decimal  @db.Decimal(20, 4)
-  net_payable       Decimal  @db.Decimal(20, 4)
+  revenue_allocated     Decimal                @db.Decimal(20, 4)
+  cost_burden           Decimal                @db.Decimal(20, 4)
+  expenses_borne        Decimal                @db.Decimal(20, 4)
+  individual_expenses   Decimal                @default(0) @db.Decimal(20, 4)
+  net_payable           Decimal                @db.Decimal(20, 4)
   /// Direction: "RECEIVABLE" (host owes partner) or "PAYABLE" (partner owes host)
-  direction         String
-  created_at        DateTime @default(now())
-  settlement        finance_jv_settlements @relation(fields: [settlement_id], references: [id])
+  direction             String
+  created_at            DateTime               @default(now())
+  settlement            finance_jv_settlements @relation(fields: [settlement_id], references: [id])
 }
 
 /// ─── JV ACTIVITY LOG: Audit trail for all JV operations ───
@@ -7246,6 +7262,129 @@ model inventory_import_jobs {
   @@index([tenant_id])
   @@index([status])
   @@index([type])
+}
+
+// ============================================================
+// Offline Sync Models
+// ============================================================
+
+/// Operation log for audit and replay of offline sync operations
+model sync_operation_log {
+  id              String    @id @default(uuid())
+  tenant_id       String
+  branch_id       String
+  location_id     String
+  idempotency_key String    @db.VarChar(255)
+  sequence_number Int
+  session_id      String
+  operation_type  String    @db.VarChar(50)
+  payload         Json
+  vector_clock    Json
+  status          String    @default("received") @db.VarChar(20)
+  error_reason    String?
+  received_at     DateTime  @default(now()) @db.Timestamptz()
+  applied_at      DateTime? @db.Timestamptz()
+  created_at      DateTime  @default(now()) @db.Timestamptz()
+
+  companies             companies               @relation(fields: [tenant_id], references: [id])
+  sync_inventory_ledger sync_inventory_ledger[]
+
+  @@unique([tenant_id, idempotency_key], name: "uq_idempotency")
+  @@index([tenant_id, location_id], name: "idx_sync_op_log_tenant_location")
+  @@index([received_at], name: "idx_sync_op_log_received")
+  @@index([tenant_id, status], name: "idx_sync_op_log_status")
+}
+
+/// Inventory ledger per product per location
+model sync_inventory_ledger {
+  id                    String   @id @default(uuid())
+  tenant_id             String
+  product_id            String
+  location_id           String
+  movement_type         String   @db.VarChar(30)
+  quantity_change       Decimal  @db.Decimal(12, 4)
+  running_balance       Decimal  @db.Decimal(12, 4)
+  operation_envelope_id String?
+  vector_clock          Json
+  created_at            DateTime @default(now()) @db.Timestamptz()
+
+  companies          companies           @relation(fields: [tenant_id], references: [id])
+  operation_envelope sync_operation_log? @relation(fields: [operation_envelope_id], references: [id])
+
+  @@unique([tenant_id, product_id, location_id, operation_envelope_id], name: "uq_ledger_entry")
+  @@index([tenant_id, product_id, location_id], name: "idx_inv_ledger_product")
+}
+
+/// Conflict resolution audit trail
+model sync_conflict_log {
+  id                     String    @id @default(uuid())
+  tenant_id              String
+  record_id              String
+  record_type            String    @db.VarChar(50)
+  conflict_type          String    @db.VarChar(50)
+  source_location_id     String
+  original_values        Json
+  conflicting_values     Json
+  resolution_strategy    String    @db.VarChar(30)
+  final_values           Json
+  resolved_at            DateTime  @default(now()) @db.Timestamptz()
+  requires_manual_review Boolean   @default(false)
+  reviewed_at            DateTime? @db.Timestamptz()
+  reviewed_by            String?
+
+  companies companies @relation(fields: [tenant_id], references: [id])
+
+  @@index([tenant_id, resolved_at], name: "idx_conflict_log_tenant")
+  @@index([requires_manual_review], name: "idx_conflict_log_review")
+}
+
+/// Sync session tracking per location
+model sync_sessions {
+  id                  String    @id @default(uuid())
+  tenant_id           String
+  location_id         String
+  started_at          DateTime  @default(now()) @db.Timestamptz()
+  completed_at        DateTime? @db.Timestamptz()
+  operations_received Int       @default(0)
+  operations_applied  Int       @default(0)
+  operations_failed   Int       @default(0)
+  latency_ms          Int?
+  status              String    @default("in_progress") @db.VarChar(20)
+
+  companies companies @relation(fields: [tenant_id], references: [id])
+
+  @@index([tenant_id, location_id, started_at(sort: Desc)], name: "idx_sync_sessions_location")
+}
+
+/// Ecommerce safety stock configuration
+model sync_ecommerce_reserve {
+  id                 String   @id @default(uuid())
+  tenant_id          String
+  product_id         String
+  reserve_percentage Decimal  @default(20.00) @db.Decimal(5, 2)
+  updated_at         DateTime @default(now()) @db.Timestamptz()
+
+  companies companies @relation(fields: [tenant_id], references: [id])
+
+  @@unique([tenant_id, product_id], name: "uq_ecom_reserve")
+}
+
+/// Reconciliation flags for inventory discrepancies
+model sync_reconciliation_flags {
+  id                 String    @id @default(uuid())
+  tenant_id          String
+  product_id         String
+  affected_locations String[]
+  expected_total     Decimal   @db.Decimal(12, 4)
+  actual_total       Decimal   @db.Decimal(12, 4)
+  discrepancy        Decimal   @db.Decimal(12, 4)
+  flagged_at         DateTime  @default(now()) @db.Timestamptz()
+  resolved_at        DateTime? @db.Timestamptz()
+  resolved_by        String?
+
+  companies companies @relation(fields: [tenant_id], references: [id])
+
+  @@index([tenant_id], name: "idx_recon_flags_open")
 }
 
 enum ChatMessageType {

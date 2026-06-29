@@ -141,10 +141,15 @@ export class TenantMiddleware implements NestMiddleware {
           console.log(`[JV-MIRROR] User ${user_id} granted PARTNER access to host ${tenant_id} (role: ${jvParticipation.role})`);
           
           // Apply JV Scope to headers if not already set or override
-          const scope = jvParticipation.jv_profiles.scopes[0];
+          const scopes = jvParticipation.jv_profiles.scopes || [];
+          const scope = scopes[0];
           if (scope) {
             req.headers["x-branch-id"] = scope.branch_id || req.headers["x-branch-id"];
             req.headers["x-ecommerce-id"] = scope.ecommerce_id || req.headers["x-ecommerce-id"];
+          } else {
+            // No scopes defined — restrict to read-only to prevent unscoped writes across all branches
+            console.warn(`[JV-MIRROR] WARNING: JV Profile ${jvParticipation.jv_profile_id} has no scopes. Enforcing read-only access.`);
+            req.is_jv_read_only = true;
           }
 
           // Enrich request with JV context for downstream guards/services
@@ -154,7 +159,7 @@ export class TenantMiddleware implements NestMiddleware {
             jv_profile_id: jvParticipation.jv_profile_id,
             home_tenant_id: verifiedUser.tenant_id,
           };
-          req.is_jv_read_only = jvParticipation.role === 'NON_OPERATOR';
+          req.is_jv_read_only = req.is_jv_read_only || jvParticipation.role === 'NON_OPERATOR';
         } else {
           throw new UnauthorizedException(
             `Access Denied: No active Joint Venture participation found for user ${user_id} in tenant ${tenant_id}`,

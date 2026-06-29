@@ -15,6 +15,12 @@ export class JVAllocationService {
   /**
    * Main entry point for JV allocation hook.
    * Resolves scope, locks config, freezes snapshot, and writes shadow ledger.
+   * 
+   * Allocation logic:
+   * - If journal has metadata.net_profit → split NET PROFIT (revenue - COGS)
+   * - Otherwise fall back to splitting individual journal line amounts
+   * 
+   * This ensures the JV split is on PURE PROFIT after capital/COGS, not gross revenue.
    */
   async allocate(tenant_id: string, journalEntry: any, lines: any[], tx?: Prisma.TransactionClient): Promise<void> {
     try {
@@ -59,37 +65,86 @@ export class JVAllocationService {
         journal_id: journalEntry.id,
         config_json: {
           profile,
-          participants
+          participants,
+          metadata: journalEntry.metadata,
         }
       }, tx);
 
       // 4. Write Shadow Ledger Distribution
       const shadowEntries: any[] = [];
-      for (const line of lines) {
+
+      // Check if we have net_profit metadata (from POS with COGS calculation)
+      const netProfit = journalEntry.metadata?.net_profit;
+
+      if (netProfit !== undefined && netProfit !== null) {
+        // ─── NET PROFIT MODE ───
+        // Split the pure profit (revenue - COGS) among participants
+        // This ensures capital/cost-of-goods is excluded from the split
         for (const participant of participants) {
-          const sharePct = participant.revenue_share_pct || participant.profit_share_pct || 0;
-          const allocatedAmt = line.amount.mul(sharePct).div(100);
+          const sharePct = Number(participant.profit_share_pct || participant.revenue_share_pct || 0);
+          const allocatedAmt = (netProfit * sharePct) / 100;
+
           shadowEntries.push({
             tenant_id,
             jv_profile_id: profile.id,
             journal_id: journalEntry.id,
-            line_id: line.id,
+            line_id: `profit-${participant.id}`,
             participant_id: participant.participant_tenant_id,
-            allocated_amt: allocatedAmt,
-            side: line.side,
-            account_code: line.account_code || line.accountCode,
+            allocated_amt: new Prisma.Decimal(allocatedAmt.toFixed(4)),
+            side: 'CREDIT',
+            account_code: '4000',
             type: 'PROFIT',
-            period_id: journalEntry.period_id || journalEntry.fiscal_period_id
+            period_id: journalEntry.period_id || journalEntry.fiscal_period_id || journalEntry.finance_journal_lines?.[0]?.id
           });
+        }
+
+        // Also record the COGS as a cost entry for reporting
+        if (journalEntry.metadata?.total_cogs > 0) {
+          shadowEntries.push({
+            tenant_id,
+            jv_profile_id: profile.id,
+            journal_id: journalEntry.id,
+            line_id: `cogs-${journalEntry.id}`,
+            participant_id: tenant_id, // COGS stays with host
+            allocated_amt: new Prisma.Decimal(Number(journalEntry.metadata.total_cogs).toFixed(4)),
+            side: 'DEBIT',
+            account_code: '5000',
+            type: 'COST',
+            period_id: journalEntry.period_id || journalEntry.fiscal_period_id || journalEntry.finance_journal_lines?.[0]?.id
+          });
+        }
+      } else {
+        // ─── LEGACY LINE-BY-LINE MODE ───
+        // For journal entries without COGS metadata (non-POS sources),
+        // split each line by revenue share
+        for (const line of lines) {
+          for (const participant of participants) {
+            const sharePct = participant.revenue_share_pct || participant.profit_share_pct || 0;
+            const lineAmount = line.amount || line.debit || line.credit || 0;
+            const allocatedAmt = typeof lineAmount === 'object' && lineAmount.mul
+              ? lineAmount.mul(sharePct).div(100)
+              : new Prisma.Decimal(((Number(lineAmount) * Number(sharePct)) / 100).toFixed(4));
+
+            shadowEntries.push({
+              tenant_id,
+              jv_profile_id: profile.id,
+              journal_id: journalEntry.id,
+              line_id: line.id,
+              participant_id: participant.participant_tenant_id,
+              allocated_amt: allocatedAmt,
+              side: line.side,
+              account_code: line.account_code || line.accountCode,
+              type: 'REVENUE',
+              period_id: journalEntry.period_id || journalEntry.fiscal_period_id
+            });
+          }
         }
       }
 
       await this.jvRepo.writeLedger(shadowEntries, tx);
-      this.logger.log(`Successfully allocated JV for journal ${journalEntry.id} via profile ${profile.code}`);
+      this.logger.log(`Successfully allocated JV for journal ${journalEntry.id} via profile ${profile.code} (mode: ${netProfit !== undefined ? 'NET_PROFIT' : 'LINE_BY_LINE'})`);
     } catch (error) {
       this.logger.error(`JV Allocation Failed for journal ${journalEntry.id}: ${error.message}`, error.stack);
-      // We don't throw here to avoid blocking primary posting if JV fails?
-      // Actually, user said "Transactional Hook", so it SHOULD be part of the transaction.
       throw error; 
     }
   }

@@ -148,9 +148,22 @@ export class InventoryController {
     @Query("sortOrder") sortOrder?: "asc" | "desc",
   ) {
     const { tenant_id } = request.tenantContext;
+    
+    // JV auto-scope: when in JV context and no explicit location_id, resolve branch → location
+    let effectiveLocationId = location_id;
+    if (!effectiveLocationId && request.tenantContext.branch_id) {
+      const branchStore = await this.prisma.stores.findFirst({
+        where: { id: request.tenantContext.branch_id, tenant_id },
+        select: { location_id: true },
+      });
+      if (branchStore) {
+        effectiveLocationId = branchStore.location_id;
+      }
+    }
+    
     const data = await this.inventoryService.getItems(
       request.tenantContext, 
-      location_id,
+      effectiveLocationId,
       parseInt(page),
       parseInt(limit),
       search,
@@ -160,7 +173,7 @@ export class InventoryController {
       sortBy,
       sortOrder
     );
-    const total = await this.inventoryService.countItems(request.tenantContext, location_id, search, category_id, is_anomaly === "true");
+    const total = await this.inventoryService.countItems(request.tenantContext, effectiveLocationId, search, category_id, is_anomaly === "true");
     return { success: true, tenant_id, count: data.length, meta: { total }, data };
   }
 

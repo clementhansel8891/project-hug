@@ -941,6 +941,19 @@ export const financeService = {
     if (limit) params.set('limit', limit.toString());
     return apiRequest<any[]>(`/v1/finance/jv/activity?${params}`, "GET", session);
   },
+
+  // ─── JV Split Configuration ────────────────────────────────────────────
+  async getJVSplitStatus(session: SessionContext, profileId: string): Promise<any> {
+    return apiRequest<any>(`/v1/finance/jv/split-status?profile_id=${profileId}`, "GET", session);
+  },
+
+  async proposeJVSplit(session: SessionContext, data: { jv_profile_id: string; splits: any[] }): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/split/propose", "POST", session, data);
+  },
+
+  async confirmJVSplit(session: SessionContext, profileId: string): Promise<any> {
+    return apiRequest<any>("/v1/finance/jv/split/confirm", "POST", session, { jv_profile_id: profileId });
+  },
 };
 
 

@@ -38,6 +38,7 @@ import { InventoryService } from "../../core/inventory/inventory.service";
 import { IFinanceRepository } from "../../core/finance/repositories/finance.repository.interface";
 import { PaymentService } from "../../core/payment/payment.service";
 import { CreatePaymentTransactionDto } from "../../core/payment/dto/create-payment-transaction.dto";
+import { JVAllocationService } from "../../core/finance/services/jv-allocation.service";
 
 @Injectable()
 export class RetailService {
@@ -52,6 +53,7 @@ export class RetailService {
     private readonly eventBus: EventBusService,
     private readonly retailPrint: RetailPrintService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly jvAllocationService: JVAllocationService,
   ) {}
 
   // Stores (Physical Branches)
@@ -1566,8 +1568,14 @@ export class RetailService {
         },
       });
 
-      // 3. Create Financial Journal Entry
-      await this.financeRepository.createJournal(
+      // 3. Create Financial Journal Entry (with COGS for proper profit tracking)
+      //    COGS = sum of (unit_cost × quantity) for all items
+      const totalCOGS = order.items.reduce(
+        (sum: number, item: any) => sum + (Number(item.unit_cost || 0) * Number(item.quantity)),
+        0
+      );
+
+      const journal = await this.financeRepository.createJournal(
         ctx,
         {
           ref: order.id,
@@ -1585,10 +1593,57 @@ export class RetailService {
               credit: order.grand_total,
               description: `POS Sale Revenue`,
             },
+            // COGS entry: recognizes cost of goods sold
+            ...(totalCOGS > 0 ? [
+              {
+                accountCode: "5000", // COGS Expense
+                debit: totalCOGS,
+                credit: 0,
+                description: `COGS - Order ${order.id}`,
+              },
+              {
+                accountCode: "1200", // Inventory Asset reduction
+                debit: 0,
+                credit: totalCOGS,
+                description: `Inventory consumed - Order ${order.id}`,
+              },
+            ] : []),
           ],
         },
         tx,
       );
+
+      // 3b. JV Allocation Hook — split NET PROFIT to shadow ledger
+      //     Net Profit = Revenue - COGS (pure profit after capital cost)
+      if (journal?.finance_journal_lines) {
+        try {
+          // Enrich journal with net profit metadata for JV allocation
+          const enrichedJournal = {
+            ...journal,
+            metadata: {
+              ...(journal.metadata || {}),
+              branch_id: ctx.branch_id,
+              net_profit: Number(order.grand_total) - totalCOGS,
+              gross_revenue: Number(order.grand_total),
+              total_cogs: totalCOGS,
+            },
+          };
+          await this.jvAllocationService.allocate(
+            ctx.tenant_id,
+            enrichedJournal,
+            journal.finance_journal_lines,
+            tx,
+          );
+        } catch (jvErr: any) {
+          // Unique constraint on snapshot = journal already allocated (idempotent, safe to ignore)
+          if (jvErr?.code === 'P2002') {
+            console.debug(`[JV-ALLOC] Journal ${journal.id} already allocated (duplicate snapshot). Skipping.`);
+          } else {
+            // Log warning but don't break the POS sale
+            console.warn(`[JV-ALLOC] Allocation failed for journal ${journal.id}: ${jvErr.message}`);
+          }
+        }
+      }
 
       // 4. Update Order Status
       const updatedOrder = await tx.retail_orders.update({

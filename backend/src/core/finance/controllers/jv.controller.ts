@@ -302,7 +302,13 @@ export class JVController {
 
   @Post('settlements/confirm')
   async confirmSettlement(@TenantCtx() ctx: TenantContext, @Body() dto: ConfirmSettlementDto) {
-    return this.settlementService.confirmSettlement(ctx.tenant_id, ctx.user_id!, dto);
+    const callerTenantId = ctx.jv_home_tenant_id || ctx.tenant_id;
+    const result = await this.settlementService.confirmSettlement(ctx.tenant_id, ctx.user_id!, callerTenantId, dto);
+    await this.logActivity(ctx, '', 'SETTLEMENT_CONFIRMED', 'settlement', dto.settlement_id, {
+      host_confirmed: result.host_confirmed,
+      partner_confirmed: result.partner_confirmed,
+    });
+    return result;
   }
 
   @Post('settlements/paid')
@@ -314,6 +320,36 @@ export class JVController {
   @Post('settlements/dispute')
   async disputeSettlement(@TenantCtx() ctx: TenantContext, @Body() dto: DisputeSettlementDto) {
     return this.settlementService.disputeSettlement(ctx.tenant_id, dto);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SPLIT CONFIGURATION (Manual — both parties must agree)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  @Get('split-status')
+  async getSplitStatus(@Query('profile_id') profileId: string) {
+    if (!profileId) throw new BadRequestException('profile_id required');
+    return this.settlementService.getSplitStatus(profileId);
+  }
+
+  @Post('split/propose')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async proposeSplit(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    const result = await this.settlementService.proposeSplit(ctx.tenant_id, ctx.user_id!, dto);
+    await this.logActivity(ctx, dto.jv_profile_id, 'SPLIT_PROPOSED', 'profile', dto.jv_profile_id, {
+      splits: dto.splits,
+    });
+    return result;
+  }
+
+  @Post('split/confirm')
+  async confirmSplit(@TenantCtx() ctx: TenantContext, @Body() dto: any) {
+    const callerTenantId = ctx.jv_home_tenant_id || ctx.tenant_id;
+    const result = await this.settlementService.confirmSplit(callerTenantId, ctx.user_id!, dto);
+    await this.logActivity(ctx, dto.jv_profile_id, 'SPLIT_CONFIRMED', 'profile', dto.jv_profile_id, {
+      all_confirmed: result.all_confirmed,
+    });
+    return result;
   }
 
   // ═══════════════════════════════════════════════════════════════════════════

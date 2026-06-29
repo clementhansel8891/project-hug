@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { PageHeader } from "@/core/ui/PageHeader";
 import { WorkspacePanel } from "@/core/ui/WorkspacePanel";
 import { DataTableShell } from "@/core/tools/DataTableShell";
@@ -31,6 +32,8 @@ import {
   Shield,
   Activity,
   TrendingUp,
+  Package,
+  PieChart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -148,7 +151,19 @@ export default function JVDesk() {
         title="Joint Venture Operations"
         subtitle="Full JV lifecycle: expenses, profit-sharing, settlements, and cross-party team access management."
         primaryAction={
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Link to="/core/finance/jv/items">
+              <Button variant="outline" className="gap-2">
+                <Package className="h-4 w-4" />
+                Items
+              </Button>
+            </Link>
+            <Link to="/core/finance/jv/pnl">
+              <Button variant="outline" className="gap-2">
+                <PieChart className="h-4 w-4" />
+                P&L Report
+              </Button>
+            </Link>
             <Button variant="outline" className="gap-2" onClick={() => setInviteOpen(true)}>
               <UserPlus className="h-4 w-4" />
               Invite Partner

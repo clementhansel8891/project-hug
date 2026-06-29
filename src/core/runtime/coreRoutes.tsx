@@ -50,6 +50,8 @@ import FinanceDocs from "@/pages/core/finance/FinanceDocs";
 import Assets from "@/pages/core/finance/Assets";
 import PolicyManager from "@/pages/core/finance/PolicyManager";
 import JVDesk from "@/pages/core/finance/JVDesk";
+import JVItems from "@/pages/core/finance/JVItems";
+import JVPnLReport from "@/pages/core/finance/JVPnLReport";
 import PayslipStudio from "@/pages/core/finance/PayslipStudio";
 import { CFODashboard } from "@/pages/core/finance/CFODashboard";
 import { CFOProvider } from "@/core/finance/CFOContext";
@@ -318,6 +320,22 @@ export function buildCoreRoutes(): JSX.Element[] {
         element={
           <ProtectedRoute permission="finance.workspace.access" scope="COMPANY">
             <JVDesk />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="jv/items"
+        element={
+          <ProtectedRoute permission="finance.workspace.access" scope="COMPANY">
+            <JVItems />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="jv/pnl"
+        element={
+          <ProtectedRoute permission="finance.workspace.access" scope="COMPANY">
+            <JVPnLReport />
           </ProtectedRoute>
         }
       />
