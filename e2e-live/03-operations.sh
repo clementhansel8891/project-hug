@@ -289,6 +289,8 @@ SUPPLIER_ID=$(json_nested "$BODY" "data.id")
 
 # Create requisition (pass department UUID directly since name lookup is strict)
 echo "  [debug] Using dept_id: $FIRST_DEPT_ID for requisition"
+# createdBy needs to be a user_id that maps to an employee record
+USER_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('user_id',''))" 2>/dev/null)
 RESP=$(api_post "/procurement/requisitions" "{
   \"title\": \"E2E Silver Wire Order\",
   \"description\": \"Sterling Silver Wire 1mm for production\",
@@ -296,7 +298,8 @@ RESP=$(api_post "/procurement/requisitions" "{
   \"branchCode\": \"HQ\",
   \"amount\": 2500000,
   \"currency\": \"IDR\",
-  \"category\": \"raw_materials\"
+  \"category\": \"raw_materials\",
+  \"createdBy\": \"$EMP_ID_FROM_PHASE2\"
 }" "$TOKEN" "$T" "$C")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
