@@ -112,4 +112,14 @@ export abstract class IITRepository {
    * caller's Tenant_Scope.
    */
   abstract getRetailContributions(scope: TenantScope): Promise<any | null>;
+
+  // ==================== IT Service Management (Tickets/Incidents/SLA) ====================
+  abstract createTicket(tenant_id: string, company_id: string | undefined, data: any): Promise<any>;
+  abstract getTickets(scope: TenantScope): Promise<any[]>;
+  abstract getTicket(scope: TenantScope, ticket_id: string): Promise<any>;
+  abstract updateTicket(tenant_id: string, ticket_id: string, data: any): Promise<any>;
+  abstract createIncident(tenant_id: string, company_id: string | undefined, data: any): Promise<any>;
+  abstract getIncidents(scope: TenantScope): Promise<any[]>;
+  abstract upsertSlaConfig(tenant_id: string, company_id: string | undefined, data: any): Promise<any>;
+  abstract getSlaConfigs(scope: TenantScope): Promise<any[]>;
 }

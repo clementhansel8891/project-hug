@@ -273,4 +273,102 @@ export class ITMockRepository extends IITRepository {
     // data; Retail contributions are exercised against the live DB repository.
     return null;
   }
+
+  // ==================== IT Service Management (in-memory) ====================
+  private readonly tickets: any[] = [];
+  private readonly incidents: any[] = [];
+  private readonly slaConfigs: any[] = [];
+
+  async createTicket(tenant_id: string, company_id: string | undefined, data: any): Promise<any> {
+    const ticket = {
+      id: `tkt-${Math.random().toString(36).substr(2, 9)}`,
+      tenant_id,
+      company_id: company_id ?? null,
+      title: data.title,
+      description: data.description,
+      category: data.category,
+      impact: data.impact,
+      priority: data.priority || "Medium",
+      status: "open",
+      assignee_id: data.assigneeId || null,
+      reporter_id: data.reporterId || null,
+      escalation_level: 0,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    this.tickets.push(ticket);
+    return ticket;
+  }
+
+  async getTickets(scope: TenantScope): Promise<any[]> {
+    return this.tickets.filter((t) => t.tenant_id === scope.tenant_id);
+  }
+
+  async getTicket(scope: TenantScope, ticket_id: string): Promise<any> {
+    const ticket = this.tickets.find(
+      (t) => t.id === ticket_id && t.tenant_id === scope.tenant_id,
+    );
+    if (!ticket) throw new NotFoundException(`Ticket '${ticket_id}' was not found.`);
+    return ticket;
+  }
+
+  async updateTicket(tenant_id: string, ticket_id: string, data: any): Promise<any> {
+    const ticket = this.tickets.find(
+      (t) => t.id === ticket_id && t.tenant_id === tenant_id,
+    );
+    if (!ticket) throw new NotFoundException(`Ticket '${ticket_id}' was not found.`);
+    Object.assign(ticket, data, { updated_at: new Date() });
+    return ticket;
+  }
+
+  async createIncident(tenant_id: string, company_id: string | undefined, data: any): Promise<any> {
+    const incident = {
+      id: `inc-${Math.random().toString(36).substr(2, 9)}`,
+      tenant_id,
+      company_id: company_id ?? null,
+      title: data.title,
+      description: data.description,
+      type: data.type,
+      severity: data.severity,
+      affected_systems: data.affectedSystems,
+      discovered_at: new Date(data.discoveredAt),
+      status: "open",
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    this.incidents.push(incident);
+    return incident;
+  }
+
+  async getIncidents(scope: TenantScope): Promise<any[]> {
+    return this.incidents.filter((i) => i.tenant_id === scope.tenant_id);
+  }
+
+  async upsertSlaConfig(tenant_id: string, company_id: string | undefined, data: any): Promise<any> {
+    let cfg = this.slaConfigs.find(
+      (s) => s.tenant_id === tenant_id && s.priority === data.priority,
+    );
+    if (cfg) {
+      cfg.response_time_minutes = data.responseTimeMinutes;
+      cfg.resolution_time_minutes = data.resolutionTimeMinutes;
+      cfg.updated_at = new Date();
+    } else {
+      cfg = {
+        id: `sla-${Math.random().toString(36).substr(2, 9)}`,
+        tenant_id,
+        company_id: company_id ?? null,
+        priority: data.priority,
+        response_time_minutes: data.responseTimeMinutes,
+        resolution_time_minutes: data.resolutionTimeMinutes,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      this.slaConfigs.push(cfg);
+    }
+    return cfg;
+  }
+
+  async getSlaConfigs(scope: TenantScope): Promise<any[]> {
+    return this.slaConfigs.filter((s) => s.tenant_id === scope.tenant_id);
+  }
 }

@@ -4,6 +4,7 @@ import { IITRepository } from "./repositories/it.repository.interface";
 import { AuditService } from "../../shared/audit/audit.service";
 import { EventBusService } from "../../shared/events/event-bus.service";
 import { CreateDeviceDto, CreateDeviceEventDto } from "./dto/device.dto";
+import { assignPriority } from "./dto/ticket.dto";
 import { TenantScope } from "../../shared/scope/tenant-scope";
 import { AtomicOperationService, AtomicContext } from "../shared/atomic";
 import { AsyncRejectionService } from "../shared/async";
@@ -324,6 +325,145 @@ export class ITService {
         retail: retailContribution,
       },
     };
+  }
+
+  // ==================== IT Service Management ====================
+
+  async createTicket(scope: TenantScope, dto: any, user_id?: string) {
+    const priority =
+      dto.priority || assignPriority(dto.category, dto.impact);
+    const ticket = await this.repository.createTicket(scope.tenant_id, scope.company_id, {
+      ...dto,
+      priority,
+    });
+    if (user_id) {
+      await this.auditService.log({
+        tenant_id: scope.tenant_id,
+        user_id,
+        module: "it",
+        action: "CREATE",
+        entity_type: "TICKET",
+        entity_id: ticket.id,
+        metadata: { title: dto.title, category: dto.category, priority },
+      });
+    }
+    return ticket;
+  }
+
+  async getTickets(scope: TenantScope) {
+    return this.repository.getTickets(scope);
+  }
+
+  async getTicket(scope: TenantScope, ticket_id: string) {
+    return this.repository.getTicket(scope, ticket_id);
+  }
+
+  async updateTicket(scope: TenantScope, ticket_id: string, dto: any, user_id?: string) {
+    // Composite-key read first so a foreign-tenant ticket surfaces as 404.
+    await this.repository.getTicket(scope, ticket_id);
+    const data: any = {};
+    if (dto.status !== undefined) data.status = dto.status;
+    if (dto.priority !== undefined) data.priority = dto.priority;
+    if (dto.assigneeId !== undefined) data.assignee_id = dto.assigneeId;
+    const updated = await this.repository.updateTicket(scope.tenant_id, ticket_id, data);
+    if (user_id) {
+      await this.auditService.log({
+        tenant_id: scope.tenant_id,
+        user_id,
+        module: "it",
+        action: "UPDATE",
+        entity_type: "TICKET",
+        entity_id: ticket_id,
+        metadata: { ...data },
+      });
+    }
+    return updated;
+  }
+
+  async escalateTicket(scope: TenantScope, dto: any, user_id?: string) {
+    const ticket = await this.repository.getTicket(scope, dto.ticketId);
+    const updated = await this.repository.updateTicket(scope.tenant_id, dto.ticketId, {
+      status: "escalated",
+      priority: dto.priority,
+      escalated_to: dto.escalatedTo,
+      escalation_reason: dto.reason,
+      escalation_level: (ticket.escalation_level || 0) + 1,
+    });
+    if (user_id) {
+      await this.auditService.log({
+        tenant_id: scope.tenant_id,
+        user_id,
+        module: "it",
+        action: "ESCALATE",
+        entity_type: "TICKET",
+        entity_id: dto.ticketId,
+        metadata: { escalatedTo: dto.escalatedTo, priority: dto.priority, reason: dto.reason },
+      });
+    }
+    return updated;
+  }
+
+  async resolveTicket(scope: TenantScope, dto: any, user_id?: string) {
+    await this.repository.getTicket(scope, dto.ticketId);
+    const updated = await this.repository.updateTicket(scope.tenant_id, dto.ticketId, {
+      status: "resolved",
+      resolution_notes: dto.resolutionNotes,
+      resolution_category: dto.category,
+      resolved_by: user_id || null,
+      resolved_at: new Date(),
+    });
+    if (user_id) {
+      await this.auditService.log({
+        tenant_id: scope.tenant_id,
+        user_id,
+        module: "it",
+        action: "RESOLVE",
+        entity_type: "TICKET",
+        entity_id: dto.ticketId,
+        metadata: { category: dto.category },
+      });
+    }
+    return updated;
+  }
+
+  async createIncident(scope: TenantScope, dto: any, user_id?: string) {
+    const incident = await this.repository.createIncident(scope.tenant_id, scope.company_id, dto);
+    if (user_id) {
+      await this.auditService.log({
+        tenant_id: scope.tenant_id,
+        user_id,
+        module: "it",
+        action: "CREATE",
+        entity_type: "INCIDENT",
+        entity_id: incident.id,
+        metadata: { title: dto.title, type: dto.type, severity: dto.severity },
+      });
+    }
+    return incident;
+  }
+
+  async getIncidents(scope: TenantScope) {
+    return this.repository.getIncidents(scope);
+  }
+
+  async upsertSlaConfig(scope: TenantScope, dto: any, user_id?: string) {
+    const cfg = await this.repository.upsertSlaConfig(scope.tenant_id, scope.company_id, dto);
+    if (user_id) {
+      await this.auditService.log({
+        tenant_id: scope.tenant_id,
+        user_id,
+        module: "it",
+        action: "UPSERT",
+        entity_type: "SLA_CONFIG",
+        entity_id: cfg.id,
+        metadata: { priority: dto.priority },
+      });
+    }
+    return cfg;
+  }
+
+  async getSlaConfigs(scope: TenantScope) {
+    return this.repository.getSlaConfigs(scope);
   }
 
   /**

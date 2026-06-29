@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Req,
@@ -26,6 +27,14 @@ import { PrismaService } from "../../persistence/prisma.service";
 import { TenantScopeResolver } from "../../shared/scope/tenant-scope.resolver";
 import { CreateProvisioningRequestDto } from "./dto/create-provisioning-request.dto";
 import { CreateDeviceDto, CreateDeviceEventDto } from "./dto/device.dto";
+import {
+  CreateTicketDto,
+  UpdateTicketDto,
+  EscalateTicketDto,
+  ResolveTicketDto,
+} from "./dto/ticket.dto";
+import { CreateIncidentDto } from "./dto/incident.dto";
+import { SlaConfigDto } from "./dto/sla-config.dto";
 import { ITService } from "./it.service";
 
 interface RequestWithTenant extends Request {
@@ -310,6 +319,109 @@ export class ITController {
     const scope = await this.scopeResolver.resolve(request.tenantContext);
     const data = await this.itService.getAuditLogs(scope, request_id);
     return { success: true, count: data.length, data };
+  }
+
+  // ==================== IT Service Management: Tickets ====================
+
+  @Get("tickets")
+  async getTickets(@Req() request: RequestWithTenant) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.getTickets(scope);
+    return { success: true, count: data.length, data };
+  }
+
+  @Post("tickets")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async createTicket(
+    @Req() request: RequestWithTenant,
+    @Body() dto: CreateTicketDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.createTicket(scope, dto, request.tenantContext.user_id);
+    return { success: true, data };
+  }
+
+  // Static POST routes declared BEFORE the :id param routes so "escalate"
+  // and "resolve" are never captured as a ticket id.
+  @Post("tickets/escalate")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async escalateTicket(
+    @Req() request: RequestWithTenant,
+    @Body() dto: EscalateTicketDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.escalateTicket(scope, dto, request.tenantContext.user_id);
+    return { success: true, data };
+  }
+
+  @Post("tickets/resolve")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async resolveTicket(
+    @Req() request: RequestWithTenant,
+    @Body() dto: ResolveTicketDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.resolveTicket(scope, dto, request.tenantContext.user_id);
+    return { success: true, data };
+  }
+
+  @Get("tickets/:id")
+  async getTicket(@Req() request: RequestWithTenant, @Param("id") id: string) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.getTicket(scope, id);
+    return { success: true, data };
+  }
+
+  @Patch("tickets/:id")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async updateTicket(
+    @Req() request: RequestWithTenant,
+    @Param("id") id: string,
+    @Body() dto: UpdateTicketDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.updateTicket(scope, id, dto, request.tenantContext.user_id);
+    return { success: true, data };
+  }
+
+  // ==================== IT Service Management: Incidents ====================
+
+  @Get("incidents")
+  async getIncidents(@Req() request: RequestWithTenant) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.getIncidents(scope);
+    return { success: true, count: data.length, data };
+  }
+
+  @Post("incidents")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async createIncident(
+    @Req() request: RequestWithTenant,
+    @Body() dto: CreateIncidentDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.createIncident(scope, dto, request.tenantContext.user_id);
+    return { success: true, data };
+  }
+
+  // ==================== IT Service Management: SLA Config ====================
+
+  @Get("sla-config")
+  async getSlaConfigs(@Req() request: RequestWithTenant) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.getSlaConfigs(scope);
+    return { success: true, count: data.length, data };
+  }
+
+  @Post("sla-config")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async upsertSlaConfig(
+    @Req() request: RequestWithTenant,
+    @Body() dto: SlaConfigDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.itService.upsertSlaConfig(scope, dto, request.tenantContext.user_id);
+    return { success: true, data };
   }
 }
 

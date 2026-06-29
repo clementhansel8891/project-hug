@@ -564,4 +564,116 @@ export class ITDbRepository extends IITRepository {
       },
     };
   }
+
+  // ==================== IT Service Management ====================
+
+  async createTicket(
+    tenant_id: string,
+    company_id: string | undefined,
+    data: any,
+  ): Promise<any> {
+    return this.prisma.it_tickets.create({
+      data: {
+        tenant_id,
+        company_id: company_id ?? null,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        impact: data.impact,
+        priority: data.priority || "Medium",
+        status: "open",
+        assignee_id: data.assigneeId || null,
+        reporter_id: data.reporterId || null,
+        updated_at: new Date(),
+      },
+    });
+  }
+
+  async getTickets(scope: TenantScope): Promise<any[]> {
+    return this.prisma.it_tickets.findMany({
+      where: this.scopedWhere(scope, ["company_id"]),
+      orderBy: { created_at: "desc" },
+      take: 200,
+    });
+  }
+
+  async getTicket(scope: TenantScope, ticket_id: string): Promise<any> {
+    const ticket = await this.prisma.it_tickets.findFirst({
+      where: { id: ticket_id, ...this.scopedWhere(scope, ["company_id"]) },
+    });
+    if (!ticket) {
+      throw new NotFoundException(`Ticket '${ticket_id}' was not found.`);
+    }
+    return ticket;
+  }
+
+  async updateTicket(
+    tenant_id: string,
+    ticket_id: string,
+    data: any,
+  ): Promise<any> {
+    return this.prisma.it_tickets.update({
+      where: { id: ticket_id, tenant_id },
+      data: { ...data, updated_at: new Date() },
+    });
+  }
+
+  async createIncident(
+    tenant_id: string,
+    company_id: string | undefined,
+    data: any,
+  ): Promise<any> {
+    return this.prisma.it_incidents.create({
+      data: {
+        tenant_id,
+        company_id: company_id ?? null,
+        title: data.title,
+        description: data.description,
+        type: data.type,
+        severity: data.severity,
+        affected_systems: data.affectedSystems,
+        discovered_at: new Date(data.discoveredAt),
+        status: "open",
+        updated_at: new Date(),
+      },
+    });
+  }
+
+  async getIncidents(scope: TenantScope): Promise<any[]> {
+    return this.prisma.it_incidents.findMany({
+      where: this.scopedWhere(scope, ["company_id"]),
+      orderBy: { created_at: "desc" },
+      take: 200,
+    });
+  }
+
+  async upsertSlaConfig(
+    tenant_id: string,
+    company_id: string | undefined,
+    data: any,
+  ): Promise<any> {
+    return this.prisma.it_sla_configs.upsert({
+      where: { tenant_id_priority: { tenant_id, priority: data.priority } },
+      update: {
+        response_time_minutes: data.responseTimeMinutes,
+        resolution_time_minutes: data.resolutionTimeMinutes,
+        updated_at: new Date(),
+      },
+      create: {
+        tenant_id,
+        company_id: company_id ?? null,
+        priority: data.priority,
+        response_time_minutes: data.responseTimeMinutes,
+        resolution_time_minutes: data.resolutionTimeMinutes,
+        updated_at: new Date(),
+      },
+    });
+  }
+
+  async getSlaConfigs(scope: TenantScope): Promise<any[]> {
+    return this.prisma.it_sla_configs.findMany({
+      where: this.scopedWhere(scope, ["company_id"]),
+      orderBy: { priority: "asc" },
+    });
+  }
 }
