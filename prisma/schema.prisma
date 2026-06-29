@@ -275,6 +275,7 @@ model tenants {
   sync_anchors                           sync_anchors[]
   sys_idempotency_keys                   sys_idempotency_keys[]
   sys_outbox_events                      sys_outbox_events[]
+  sys_report_jobs                        sys_report_jobs[]
   system_logs                            system_logs[]
   tenant_settings                        tenant_settings?
   training_assignments                   training_assignments[]
@@ -1009,7 +1010,6 @@ model companies {
   sync_anchors                          sync_anchors[]
   sys_idempotency_keys                  sys_idempotency_keys[]
   sys_outbox_events                     sys_outbox_events[]
-  sys_report_jobs                       sys_report_jobs[]
   system_logs                           system_logs[]
   tenant_settings                       tenant_settings?
   training_assignments                  training_assignments[]
