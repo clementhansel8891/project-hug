@@ -60,6 +60,7 @@ run_phase() {
 run_phase "$SCRIPT_DIR/01-onboarding.sh" "Phase 1 - Onboarding"
 run_phase "$SCRIPT_DIR/02-organization.sh" "Phase 2 - Organization"
 run_phase "$SCRIPT_DIR/03-operations.sh" "Phase 3 - Operations"
+run_phase "$SCRIPT_DIR/04-extended.sh" "Phase 4 - Extended"
 
 # ─── Final Summary ────────────────────────────────────────────────────────
 echo ""
