@@ -683,7 +683,26 @@ export class InventoryService {
     // For Phase 3, we implement the two-step logic if it's a 'shipment' 
     // but for simple 'transfer' we'll stick to standardized emission.
 
-    const result = await (this.repository as any).transferStock(ctx, data);
+    // Validate that both locations exist before attempting the transfer
+    for (const locationId of [data.from_location_id, data.to_location_id]) {
+      const location = await this.prisma.locations.findFirst({
+        where: { id: locationId, tenant_id: ctx.tenant_id },
+      });
+      if (!location) {
+        throw new BadRequestException(`Location not found: ${locationId}`);
+      }
+    }
+
+    let result: any;
+    try {
+      result = await (this.repository as any).transferStock(ctx, data);
+    } catch (error: any) {
+      // Handle Prisma FK violation (P2003) as a 400 Bad Request
+      if (error?.code === 'P2003') {
+        throw new BadRequestException(`Location not found: ${data.to_location_id}`);
+      }
+      throw error;
+    }
     
     // Emit standardized events (One for OUT, one for IN if immediate)
     for (const move of result) {

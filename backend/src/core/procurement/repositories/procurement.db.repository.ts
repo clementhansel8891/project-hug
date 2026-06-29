@@ -2,6 +2,7 @@ import { TenantScope } from "../../../shared/scope/tenant-scope";
 import { MultiTenancyUtil } from "../../../shared/utils/multi-tenancy.util";
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -622,37 +623,80 @@ export class ProcurementDbRepository extends IProcurementRepository {
       requesterId = employee.id;
     }
 
-    const created = await this.prisma.procurement_requisitions.create({
-      data: {
-        id: uuidv4(),
-        updated_at: new Date(),
-        ...mapped,
-        ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
-        requester_id: requesterId,
-        category: data.category || "General",
-        currency: data.currency || "IDR",
-        budget_class: "OPEX",
-        status: "PENDING_REQUESTER_HOD",
-      },
-    });
-    return {
-      id: created.id,
-      tenant_id: created.tenant_id,
-      title: created.title,
-      description: created.description,
-      category: created.category,
-      budgetClass: created.budget_class as any,
-      requesterDept: created.department_id,
-      branchCode: created.branch_code,
-      amount: Number(created.amount),
-      currency: created.currency as any,
-      status: created.status as any,
-      approvals: {} as any,
-      contractRequired: false,
-      createdBy: created.requester_id,
-      created_at: created.created_at,
-      updated_at: created.updated_at,
-    };
+    // Resolve department_id: if requesterDept is already a UUID, use it as-is;
+    // otherwise look up the department by name within the tenant.
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    let departmentId: string | null = null;
+
+    if (data.requesterDept) {
+      if (UUID_REGEX.test(data.requesterDept)) {
+        departmentId = data.requesterDept;
+      } else {
+        const department = await this.prisma.departments.findFirst({
+          where: { tenant_id: ctx.tenant_id, name: data.requesterDept },
+          select: { id: true },
+        });
+        if (department) {
+          departmentId = department.id;
+        } else {
+          throw new BadRequestException(
+            `Department '${data.requesterDept}' not found for this tenant. ` +
+              `Provide a valid department name or UUID.`,
+          );
+        }
+      }
+    }
+
+    try {
+      const created = await this.prisma.procurement_requisitions.create({
+        data: {
+          id: uuidv4(),
+          updated_at: new Date(),
+          ...mapped,
+          ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+          requester_id: requesterId,
+          department_id: departmentId,
+          category: data.category || "General",
+          currency: data.currency || "IDR",
+          budget_class: "OPEX",
+          status: "PENDING_REQUESTER_HOD",
+        },
+      });
+      return {
+        id: created.id,
+        tenant_id: created.tenant_id,
+        title: created.title,
+        description: created.description,
+        category: created.category,
+        budgetClass: created.budget_class as any,
+        requesterDept: created.department_id,
+        branchCode: created.branch_code,
+        amount: Number(created.amount),
+        currency: created.currency as any,
+        status: created.status as any,
+        approvals: {} as any,
+        contractRequired: false,
+        createdBy: created.requester_id,
+        created_at: created.created_at,
+        updated_at: created.updated_at,
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new ConflictException(
+            `A requisition with a conflicting unique constraint already exists.`,
+          );
+        }
+        if (error.code === "P2003") {
+          const field = (error.meta?.field_name as string) || "unknown";
+          throw new BadRequestException(
+            `Foreign key constraint violated on field '${field}'. ` +
+              `Ensure referenced records exist.`,
+          );
+        }
+      }
+      throw error;
+    }
   }
 
   async approveRequesterHod(ctx: TenantScope, requisitionId: string, tx?: Prisma.TransactionClient): Promise<Requisition> {
