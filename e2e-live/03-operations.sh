@@ -112,13 +112,11 @@ subsection "3.2 HR Operations"
 # Get employee ID from Phase 2 state
 EMP_ID="$EMP_ID_FROM_PHASE2"
 
+# Clock in (requires employee_id)
 if [ -n "$EMP_ID" ] && [ "$EMP_ID" != "None" ] && [ "$EMP_ID" != "" ]; then
   echo -e "  ${GREEN}✓${NC} Using employee from Phase 2: $EMP_ID"
   PASS=$((PASS + 1))
 
-
-# Clock in (requires employee_id)
-if [ -n "$EMP_ID" ] && [ "$EMP_ID" != "None" ] && [ "$EMP_ID" != "" ]; then
   RESP=$(api_post "/hr/attendance/clock-in" "{
     \"employee_id\": \"$EMP_ID\"
   }" "$TOKEN" "$T" "$C")
