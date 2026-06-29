@@ -15,6 +15,7 @@
 import { PrismaClient } from '@prisma/client';
 import * as crypto from 'crypto';
 import { randomUUID } from 'crypto';
+import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -55,8 +56,9 @@ const PARTNER_USERS = [
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function hashPassword(password: string): string {
-  return crypto.createHash('sha256').update(password).digest('hex');
+async function hashPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -110,12 +112,13 @@ async function main() {
   const createdUsers: any[] = [];
 
   for (const userDef of PARTNER_USERS) {
+    const hashedPw = await hashPassword(userDef.password);
     const user = await prisma.users.upsert({
       where: { email: userDef.email },
-      update: {},
+      update: { password_hash: hashedPw },
       create: {
         email: userDef.email,
-        password_hash: hashPassword(userDef.password),
+        password_hash: hashedPw,
         first_name: userDef.firstName,
         last_name: userDef.lastName,
         phone: userDef.phone,
