@@ -239,6 +239,29 @@ export class HRController {
   }
 
   /**
+   * GET /hr/employees/export
+   * Export employee list to Excel
+   * NOTE: Must be defined BEFORE the :id route to avoid NestJS matching "export" as an ID.
+   */
+  @Get("employees/export")
+  async exportEmployees(
+    @Req() request: RequestWithTenant,
+    @Res() res: Response,
+  ) {
+    const { tenant_id, user_id } = request.tenantContext;
+    const buffer = await this.hrService.exportEmployees(tenant_id, user_id!);
+
+    res.set({
+      "Content-Type":
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Disposition": `attachment; filename="employees_${tenant_id}_${Date.now()}.xlsx"`,
+      "Content-Length": buffer.length,
+    });
+
+    res.end(buffer);
+  }
+
+  /**
    * GET /hr/employees/:id
    * Get a specific employee
    */
@@ -398,28 +421,6 @@ export class HRController {
       message: `Imported ${result.imported} employees`,
       errors: result.errors,
     };
-  }
-
-  /**
-   * GET /hr/employees/export
-   * Export employee list to Excel
-   */
-  @Get("employees/export")
-  async exportEmployees(
-    @Req() request: RequestWithTenant,
-    @Res() res: Response,
-  ) {
-    const { tenant_id, user_id } = request.tenantContext;
-    const buffer = await this.hrService.exportEmployees(tenant_id, user_id!);
-
-    res.set({
-      "Content-Type":
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "Content-Disposition": `attachment; filename="employees_${tenant_id}_${Date.now()}.xlsx"`,
-      "Content-Length": buffer.length,
-    });
-
-    res.end(buffer);
   }
 
   // ==================== Attendance Management ====================

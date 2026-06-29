@@ -6655,7 +6655,7 @@ model sys_report_jobs {
   last_progress_at DateTime  @default(now())
   created_at       DateTime  @default(now())
   updated_at       DateTime  @default(now())
-  companies        companies @relation(fields: [tenant_id], references: [id])
+  tenants          tenants   @relation(fields: [tenant_id], references: [id])
 
   @@index([status])
 }

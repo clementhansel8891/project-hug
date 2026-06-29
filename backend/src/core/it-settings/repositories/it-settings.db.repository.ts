@@ -125,7 +125,7 @@ export class ITSettingsDbRepository extends IITSettingsRepository {
 
   async getSetting(ctx: TenantContext, key: string): Promise<Setting | null> {
     const setting = await this.prisma.it_settings.findUnique({
-      where: { tenant_id_key: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), key } },
+      where: { tenant_id_key: { tenant_id: ctx.tenant_id, key } },
     });
 
     if (!setting) return null;
@@ -148,7 +148,7 @@ export class ITSettingsDbRepository extends IITSettingsRepository {
     data: UpdateSettingDto,
   ): Promise<Setting> {
     const updated = await this.prisma.it_settings.upsert({
-      where: { tenant_id_key: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), key } },
+      where: { tenant_id_key: { tenant_id: ctx.tenant_id, key } },
       update: {
         value: data.value,
         category: data.category,
@@ -156,7 +156,8 @@ export class ITSettingsDbRepository extends IITSettingsRepository {
         description: data.description,
       },
       create: {
-        ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }),
+        tenant_id: ctx.tenant_id,
+        company_id: ctx.company_id || undefined,
         key,
         value: data.value,
         category: data.category || "general",

@@ -149,8 +149,20 @@ export class CommsController {
   @Post('mail/send')
   async sendMail(@Req() req: any, @Body() body: any) {
     const context = req.tenantContext;
+
+    // Normalize input: accept both { to, body } and { toAddresses, bodyText } formats
+    const toAddresses = body.toAddresses || (body.to ? (Array.isArray(body.to) ? body.to : [body.to]) : []);
+    const bodyText = body.bodyText || body.body || '';
+    const bodyHtml = body.bodyHtml || body.body_html;
+    const subject = body.subject || '(No Subject)';
+    const ccAddresses = body.ccAddresses || body.cc || [];
+
     const result = await this.mailService.sendMail({
-      ...body,
+      toAddresses,
+      ccAddresses: Array.isArray(ccAddresses) ? ccAddresses : [ccAddresses],
+      subject,
+      bodyText,
+      bodyHtml,
       tenant_id: context.tenant_id,
       user_id: context.user_id,
     });
