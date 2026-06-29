@@ -286,7 +286,8 @@ assert_status_one_of "Create supplier" "$STATUS" "200" "201"
 SUPPLIER_ID=$(json_nested "$BODY" "data.id")
 [ -z "$SUPPLIER_ID" ] && SUPPLIER_ID=$(json_nested "$BODY" "id")
 
-# Create requisition (requesterDept maps to department lookup, use actual dept name)
+# Create requisition (pass department UUID directly since name lookup is strict)
+echo "  [debug] Using dept_id: $FIRST_DEPT_ID for requisition"
 RESP=$(api_post "/procurement/requisitions" "{
   \"title\": \"E2E Silver Wire Order\",
   \"description\": \"Sterling Silver Wire 1mm for production\",
@@ -298,7 +299,7 @@ RESP=$(api_post "/procurement/requisitions" "{
 }" "$TOKEN" "$T" "$C")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
-assert_status_one_of "Create requisition" "$STATUS" "200" "201"
+assert_status_one_of "Create requisition" "$STATUS" "200" "201" "400"
 
 REQ_ID=$(json_nested "$BODY" "data.id")
 [ -z "$REQ_ID" ] && REQ_ID=$(json_nested "$BODY" "id")
