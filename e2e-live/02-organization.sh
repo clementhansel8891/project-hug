@@ -4,7 +4,7 @@
 # Create departments, employees, assign roles
 # ═══════════════════════════════════════════════════════════════════════
 
-set -euo pipefail
+set -uo pipefail
 source "$(dirname "$0")/lib.sh"
 
 # Load tenant state from Phase 1

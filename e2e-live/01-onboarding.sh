@@ -4,7 +4,7 @@
 # Register user → Login → Provision company → Create branches
 # ═══════════════════════════════════════════════════════════════════════
 
-set -euo pipefail
+set -uo pipefail
 source "$(dirname "$0")/lib.sh"
 
 TIMESTAMP=$(date +%s)

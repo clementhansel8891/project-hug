@@ -25,9 +25,9 @@ NC='\033[0m'
 api_post() {
   local path="$1"
   local data="$2"
-  local token="$3"
-  local tenant="$4"
-  local company="$5"
+  local token="${3:-}"
+  local tenant="${4:-}"
+  local company="${5:-}"
 
   local headers=(-H "Content-Type: application/json")
   [ -n "$token" ] && headers+=(-H "Authorization: Bearer $token")
@@ -41,9 +41,9 @@ api_post() {
 
 api_get() {
   local path="$1"
-  local token="$2"
-  local tenant="$3"
-  local company="$4"
+  local token="${2:-}"
+  local tenant="${3:-}"
+  local company="${4:-}"
 
   local headers=()
   [ -n "$token" ] && headers+=(-H "Authorization: Bearer $token")
@@ -57,9 +57,9 @@ api_get() {
 api_put() {
   local path="$1"
   local data="$2"
-  local token="$3"
-  local tenant="$4"
-  local company="$5"
+  local token="${3:-}"
+  local tenant="${4:-}"
+  local company="${5:-}"
 
   local headers=(-H "Content-Type: application/json")
   [ -n "$token" ] && headers+=(-H "Authorization: Bearer $token")
@@ -74,9 +74,9 @@ api_put() {
 api_patch() {
   local path="$1"
   local data="$2"
-  local token="$3"
-  local tenant="$4"
-  local company="$5"
+  local token="${3:-}"
+  local tenant="${4:-}"
+  local company="${5:-}"
 
   local headers=(-H "Content-Type: application/json")
   [ -n "$token" ] && headers+=(-H "Authorization: Bearer $token")
@@ -90,9 +90,9 @@ api_patch() {
 
 api_delete() {
   local path="$1"
-  local token="$2"
-  local tenant="$3"
-  local company="$4"
+  local token="${2:-}"
+  local tenant="${3:-}"
+  local company="${4:-}"
 
   local headers=()
   [ -n "$token" ] && headers+=(-H "Authorization: Bearer $token")

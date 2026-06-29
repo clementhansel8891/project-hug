@@ -4,7 +4,7 @@
 # Each department performs its core business activities
 # ═══════════════════════════════════════════════════════════════════════
 
-set -euo pipefail
+set -uo pipefail
 source "$(dirname "$0")/lib.sh"
 
 STATE_FILE="$RESULTS_DIR/tenant-state.json"
