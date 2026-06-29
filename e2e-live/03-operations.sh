@@ -26,6 +26,11 @@ TOKEN=$(json_field "$(get_body "$RESP")" "token")
 T="$TENANT_ID"
 C="$COMPANY_ID"
 
+# Load IDs from Phase 2
+STORE_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('store_id',''))" 2>/dev/null)
+FIRST_DEPT_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('first_dept_id',''))" 2>/dev/null)
+EMP_ID_FROM_PHASE2=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('first_employee_id',''))" 2>/dev/null)
+
 section "Phase 3: Department Operations"
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -54,10 +59,20 @@ for i in 1 2 3; do
 done
 
 # Stock intake (requires item_id, location_id, quantity, unit_cost, reason)
+# Get a location ID from the store that was created in Phase 2
+LOCATION_RESP=$(api_get "/retail/stores" "$TOKEN" "$T" "$C")
+LOCATION_ID=$(python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+stores = d.get('data',[]) if isinstance(d.get('data'), list) else (d if isinstance(d, list) else [])
+print(stores[0].get('location_id','') if stores else '')
+" <<< "$(get_body "$LOCATION_RESP")" 2>/dev/null)
+[ -z "$LOCATION_ID" ] && LOCATION_ID="placeholder"
+
 if [ -n "${ITEM_IDS[0]:-}" ] && [ "${ITEM_IDS[0]}" != "None" ] && [ "${ITEM_IDS[0]}" != "" ]; then
   RESP=$(api_post "/inventory/intake" "{
     \"item_id\": \"${ITEM_IDS[0]}\",
-    \"location_id\": \"placeholder\",
+    \"location_id\": \"$LOCATION_ID\",
     \"quantity\": 100,
     \"unit_cost\": 25000,
     \"reason\": \"Initial stock from supplier PO-E2E-001\"
@@ -65,11 +80,11 @@ if [ -n "${ITEM_IDS[0]:-}" ] && [ "${ITEM_IDS[0]}" != "None" ] && [ "${ITEM_IDS[
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Stock intake for item 1" "$STATUS" "200" "201"
 
-  # Stock transfer (requires item_id, from_location_id, to_location_id, quantity, reason)
+  # Stock transfer
   RESP=$(api_post "/inventory/transfer" "{
     \"item_id\": \"${ITEM_IDS[0]}\",
-    \"from_location_id\": \"placeholder\",
-    \"to_location_id\": \"store-transfer-dest\",
+    \"from_location_id\": \"$LOCATION_ID\",
+    \"to_location_id\": \"$LOCATION_ID\",
     \"quantity\": 20,
     \"reason\": \"Transfer to retail floor\"
   }" "$TOKEN" "$T" "$C")
@@ -95,31 +110,12 @@ assert_status "View inventory movements" "200" "$STATUS"
 subsection "3.2 HR Operations"
 
 # Get employee ID from Phase 2 state
-EMP_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('first_employee_id',''))" 2>/dev/null)
+EMP_ID="$EMP_ID_FROM_PHASE2"
 
-if [ -z "$EMP_ID" ] || [ "$EMP_ID" = "None" ] || [ "$EMP_ID" = "" ]; then
-  # Create a fresh employee
-  RESP=$(api_post "/hr/employees" "{
-    \"employee_code\": \"EMP-OPS-${TIMESTAMP}\",
-    \"first_name\": \"Budi\",
-    \"last_name\": \"Operasi\",
-    \"email\": \"budi.ops.${TIMESTAMP}@testcorp.com\",
-    \"department_id\": \"${DEPT_ID:-dept-default}\",
-    \"hire_date\": \"2026-01-15\",
-    \"position\": \"Operations Staff\",
-    \"employment_type\": \"full_time\",
-    \"status\": \"active\",
-    \"base_salary\": 5000000
-  }" "$TOKEN" "$T" "$C")
-  STATUS=$(get_status "$RESP")
-  BODY=$(get_body "$RESP")
-  assert_status_one_of "Create employee" "$STATUS" "200" "201"
-  EMP_ID=$(json_nested "$BODY" "data.id")
-  [ -z "$EMP_ID" ] && EMP_ID=$(json_nested "$BODY" "id")
-else
+if [ -n "$EMP_ID" ] && [ "$EMP_ID" != "None" ] && [ "$EMP_ID" != "" ]; then
   echo -e "  ${GREEN}✓${NC} Using employee from Phase 2: $EMP_ID"
   PASS=$((PASS + 1))
-fi
+
 
 # Clock in (requires employee_id)
 if [ -n "$EMP_ID" ] && [ "$EMP_ID" != "None" ] && [ "$EMP_ID" != "" ]; then
@@ -136,10 +132,10 @@ if [ -n "$EMP_ID" ] && [ "$EMP_ID" != "None" ] && [ "$EMP_ID" != "" ]; then
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Clock out" "$STATUS" "200" "201"
 
-  # Create leave request
+  # Create leave request (uses real dept_id from Phase 2)
   RESP=$(api_post "/hr/leave-requests" "{
     \"employee_id\": \"$EMP_ID\",
-    \"department_id\": \"${DEPT_ID:-dept-default}\",
+    \"department_id\": \"$FIRST_DEPT_ID\",
     \"leave_type\": \"annual\",
     \"start_date\": \"2026-08-01\",
     \"end_date\": \"2026-08-03\",
@@ -282,12 +278,12 @@ assert_status_one_of "Create supplier" "$STATUS" "200" "201"
 SUPPLIER_ID=$(json_nested "$BODY" "data.id")
 [ -z "$SUPPLIER_ID" ] && SUPPLIER_ID=$(json_nested "$BODY" "id")
 
-# Create requisition (branchCode should match an existing store code)
+# Create requisition (use free-text branchCode and requesterDept)
 RESP=$(api_post "/procurement/requisitions" "{
   \"title\": \"E2E Silver Wire Order\",
   \"description\": \"Sterling Silver Wire 1mm for production\",
   \"requesterDept\": \"Finance\",
-  \"branchCode\": \"E2E-STORE-${TIMESTAMP}\",
+  \"branchCode\": \"HQ\",
   \"amount\": 2500000,
   \"currency\": \"IDR\",
   \"category\": \"raw_materials\"
@@ -327,23 +323,10 @@ assert_status "View finance ledger" "200" "$STATUS"
 # ═══════════════════════════════════════════════════════════════════════
 subsection "3.7 Retail POS Operations"
 
-# Create a store (use placeholder location_id to trigger auto-creation)
-RESP=$(api_post "/retail/stores" "{
-  \"name\": \"E2E Flagship Store $TIMESTAMP\",
-  \"code\": \"E2E-FS-${TIMESTAMP}\",
-  \"location_id\": \"placeholder\",
-  \"type\": \"flagship\",
-  \"address\": \"Jl. Raya Seminyak No. 88, Bali\"
-}" "$TOKEN" "$T" "$C")
-STATUS=$(get_status "$RESP")
-BODY=$(get_body "$RESP")
-assert_status_one_of "Create retail store" "$STATUS" "200" "201"
-
-STORE_ID=$(json_nested "$BODY" "data.id")
-[ -z "$STORE_ID" ] && STORE_ID=$(json_nested "$BODY" "id")
-
-# Open shift
+# Use store from Phase 2 (already created successfully)
 if [ -n "$STORE_ID" ] && [ "$STORE_ID" != "None" ] && [ "$STORE_ID" != "" ]; then
+  echo -e "  ${GREEN}✓${NC} Using store from Phase 2: $STORE_ID"
+  PASS=$((PASS + 1))
   RESP=$(api_post "/retail/shifts/open" "{
     \"store_id\": \"$STORE_ID\",
     \"terminal_id\": \"POS-01\",
