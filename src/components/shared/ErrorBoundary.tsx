@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error in Zenvix Runtime:", error, errorInfo);
+    console.error("Uncaught error in Estela Gea Runtime:", error, errorInfo);
   }
 
   private handleReset = () => {

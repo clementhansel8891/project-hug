@@ -2,7 +2,7 @@ import { PGlite } from "@electric-sql/pglite";
 import schemaSql from "./local-schema.sql?raw";
 
 /**
- * Zenvix PGLite Client
+ * Estela Gea PGLite Client
  * Provides local-first persistence using IndexedDB.
  */
 class PGLiteClient {
@@ -11,7 +11,7 @@ class PGLiteClient {
 
   public static async getInstance(): Promise<PGlite> {
     if (!this.instance) {
-      this.instance = new PGlite("idb://zenvix-local-db");
+      this.instance = new PGlite("idb://estelagea-local-db");
       await this.instance.waitReady;
     }
     return this.instance;

@@ -119,7 +119,7 @@ export const ManageConnectorDialog = ({
         const conn = await ecommerceHubService.createConnector(session, {
           name: data.channelName,
           platform: data.platform,
-          domain: `${data.channelName.toLowerCase().replace(/\s+/g, "-")}.zenvix.io`,
+          domain: `${data.channelName.toLowerCase().replace(/\s+/g, "-")}.estelagea.io`,
           branchIds,
         });
 
@@ -206,7 +206,7 @@ export const ManageConnectorDialog = ({
               </DialogTitle>
               <DialogDescription className="text-sm font-bold text-muted-foreground italic">
                 {step === "CONFIG"
-                  ? "Initialize a secure handshake between Zenvix and your external commerce storefront."
+                  ? "Initialize a secure handshake between Estela Gea and your external commerce storefront."
                   : "All secure keys have been issued. Critical data is now active in your vault."}
               </DialogDescription>
             </div>

@@ -41,8 +41,8 @@ const FRAMEWORK_CONFIGS: Record<string, FrameworkConfig> = {
         key: "apiBaseUrl",
         label: "API Base URL",
         placeholder:
-          "https://api.yourdomain.com or leave blank to use Zenvix Gateway",
-        hint: "The base URL your Vite app will call. Defaults to the Zenvix API gateway.",
+          "https://api.yourdomain.com or leave blank to use Estela Gea Gateway",
+        hint: "The base URL your Vite app will call. Defaults to the Estela Gea API gateway.",
       },
       {
         key: "corsOrigin",
@@ -51,16 +51,16 @@ const FRAMEWORK_CONFIGS: Record<string, FrameworkConfig> = {
         hint: "Comma-separated list of allowed origins. Include localhost for dev.",
       },
     ],
-    snippet: (settings, clientId) => `// vite.config.ts — Zenvix Integration
+    snippet: (settings, clientId) => `// vite.config.ts — Estela Gea Integration
 import { defineConfig } from 'vite'
 
 export default defineConfig({
   server: {
     proxy: {
-      '/api/zenvix': {
-        target: '${settings.apiBaseUrl || "https://gateway.zenvix.io"}',
+      '/api/estelagea': {
+        target: '${settings.apiBaseUrl || "https://gateway.estelagea.io"}',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\\/api\\/zenvix/, ''),
+        rewrite: (path) => path.replace(/^\\/api\\/estelagea/, ''),
         headers: {
           'x-client-id': '${clientId}',
           'x-channel-type': 'HEADLESS_VITE',
@@ -72,12 +72,12 @@ export default defineConfig({
 
 // .env
 VITE_ZENVIX_CLIENT_ID=${clientId}
-VITE_ZENVIX_API_BASE=${settings.apiBaseUrl || "https://gateway.zenvix.io"}`,
+VITE_ZENVIX_API_BASE=${settings.apiBaseUrl || "https://gateway.estelagea.io"}`,
   },
   "next-js": {
     label: "Next.js",
     description:
-      "Connect a Next.js storefront or app router project to Zenvix.",
+      "Connect a Next.js storefront or app router project to Estela Gea.",
     fields: [
       {
         key: "apiBaseUrl",
@@ -90,17 +90,17 @@ VITE_ZENVIX_API_BASE=${settings.apiBaseUrl || "https://gateway.zenvix.io"}`,
         placeholder: "https://mystore.vercel.app",
       },
     ],
-    snippet: (settings, clientId) => `// .env.local — Zenvix Integration
-NEXT_PUBLIC_ZENVIX_CLIENT_ID=${clientId}
-ZENVIX_API_BASE=${settings.apiBaseUrl || "https://gateway.zenvix.io"}
+    snippet: (settings, clientId) => `// .env.local — Estela Gea Integration
+NEXT_PUBLIC_ESTELAGEA_CLIENT_ID=${clientId}
+ESTELAGEA_API_BASE=${settings.apiBaseUrl || "https://gateway.estelagea.io"}
 
-// lib/zenvixClient.ts
-export const zenvixFetch = (path: string, init?: RequestInit) =>
-  fetch(\`\${process.env.ZENVIX_API_BASE}\${path}\`, {
+// lib/estelageaClient.ts
+export const estelageaFetch = (path: string, init?: RequestInit) =>
+  fetch(\`\${process.env.ESTELAGEA_API_BASE}\${path}\`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
-      'x-client-id': process.env.NEXT_PUBLIC_ZENVIX_CLIENT_ID!,
+      'x-client-id': process.env.NEXT_PUBLIC_ESTELAGEA_CLIENT_ID!,
       ...init?.headers,
     },
   });`,
@@ -108,7 +108,7 @@ export const zenvixFetch = (path: string, init?: RequestInit) =>
   nuxt: {
     label: "Nuxt",
     description:
-      "Connect a Nuxt 3 storefront to Zenvix via the built-in $fetch composable.",
+      "Connect a Nuxt 3 storefront to Estela Gea via the built-in $fetch composable.",
     fields: [
       {
         key: "apiBaseUrl",
@@ -121,22 +121,22 @@ export const zenvixFetch = (path: string, init?: RequestInit) =>
         placeholder: "https://mystore.netlify.app",
       },
     ],
-    snippet: (settings, clientId) => `// .env — Zenvix Integration
-ZENVIX_CLIENT_ID=${clientId}
-ZENVIX_API_BASE=${settings.apiBaseUrl || "https://gateway.zenvix.io"}
+    snippet: (settings, clientId) => `// .env — Estela Gea Integration
+ESTELAGEA_CLIENT_ID=${clientId}
+ESTELAGEA_API_BASE=${settings.apiBaseUrl || "https://gateway.estelagea.io"}
 
-// plugins/zenvix.ts
+// plugins/estelagea.ts
 export default defineNuxtPlugin(() => {
   const api = $fetch.create({
-    baseURL: useRuntimeConfig().public.zenvixApiBase,
-    headers: { 'x-client-id': useRuntimeConfig().public.zenvixClientId },
+    baseURL: useRuntimeConfig().public.estelageaApiBase,
+    headers: { 'x-client-id': useRuntimeConfig().public.estelageaClientId },
   });
-  return { provide: { zenvix: api } };
+  return { provide: { estelagea: api } };
 });`,
   },
   "react-native": {
     label: "React Native (Mobile)",
-    description: "Connect your React Native iOS/Android app to Zenvix.",
+    description: "Connect your React Native iOS/Android app to Estela Gea.",
     fields: [
       {
         key: "appBundleId",
@@ -150,25 +150,25 @@ export default defineNuxtPlugin(() => {
         placeholder: "ios, android, or both",
       },
     ],
-    snippet: (_settings, clientId) => `// zenvixConfig.ts — React Native
-export const ZENVIX_CONFIG = {
+    snippet: (_settings, clientId) => `// estelageaConfig.ts — React Native
+export const ESTELAGEA_CONFIG = {
   clientId: '${clientId}',
-  apiBase: 'https://gateway.zenvix.io',
+  apiBase: 'https://gateway.estelagea.io',
   channelType: 'HEADLESS_MOBILE',
 };
 
 // Usage in fetch calls:
-fetch(\`\${ZENVIX_CONFIG.apiBase}/products\`, {
+fetch(\`\${ESTELAGEA_CONFIG.apiBase}/products\`, {
   headers: {
-    'x-client-id': ZENVIX_CONFIG.clientId,
-    'x-channel-type': ZENVIX_CONFIG.channelType,
+    'x-client-id': ESTELAGEA_CONFIG.clientId,
+    'x-channel-type': ESTELAGEA_CONFIG.channelType,
   }
 });`,
   },
   flutter: {
     label: "Flutter (Mobile)",
     description:
-      "Connect your Flutter app to Zenvix using the Dart HTTP client.",
+      "Connect your Flutter app to Estela Gea using the Dart HTTP client.",
     fields: [
       {
         key: "packageName",
@@ -176,10 +176,10 @@ fetch(\`\${ZENVIX_CONFIG.apiBase}/products\`, {
         placeholder: "com.yourcompany.app",
       },
     ],
-    snippet: (_settings, clientId) => `// lib/services/zenvix_client.dart
-class ZenvixClient {
+    snippet: (_settings, clientId) => `// lib/services/estelagea_client.dart
+class EstelaGeaClient {
   static const String _clientId = '${clientId}';
-  static const String _baseUrl = 'https://gateway.zenvix.io';
+  static const String _baseUrl = 'https://gateway.estelagea.io';
 
   static Map<String, String> get headers => {
     'Content-Type': 'application/json',

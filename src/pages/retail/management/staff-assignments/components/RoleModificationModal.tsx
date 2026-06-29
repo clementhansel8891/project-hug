@@ -140,7 +140,7 @@ export const RoleModificationModal: React.FC<RoleModificationModalProps> = ({
               <AlertTriangle className="w-6 h-6 text-warning shrink-0" />
               <div className="text-[10px] font-bold italic text-warning uppercase leading-relaxed">
                 Warning: Elevating access scope requires an audit trail entry.
-                This action will be logged into the Zenvix Vault permanently.
+                This action will be logged into the Estela Gea Vault permanently.
               </div>
             </div>
 

@@ -40,7 +40,7 @@ const RetailOperationalGateway = () => {
   const { user, session, logout } = useAuth();
   const [isFullscreen, setIsFullscreen] = React.useState(false);
 
-  const companyName = user?.user_companies?.find(c => c.tenant_id === session?.tenant_id)?.company.name || "Zenvix Corp";
+  const companyName = user?.user_companies?.find(c => c.tenant_id === session?.tenant_id)?.company.name || "Estela Gea Corp";
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -285,7 +285,7 @@ const RetailOperationalGateway = () => {
         <div className="mt-12 py-10 border-t border-border/10 flex flex-col md:flex-row justify-between items-center gap-6 opacity-30 group/footer transition-opacity hover:opacity-100">
           <p className="text-muted-foreground font-black italic tracking-[0.4em] text-[9px] uppercase flex items-center gap-4">
              <span className="w-10 h-[1px] bg-border/20" />
-             Zenvix_Retail_Authority • GLOBAL_SYNC_V2
+             EstelaGea_Retail_Authority • GLOBAL_SYNC_V2
           </p>
           <div className="flex items-center gap-8">
              <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 italic">Integrity: VERIFIED</span>

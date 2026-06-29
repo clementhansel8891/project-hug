@@ -253,7 +253,7 @@ const ComplianceAuditLedger = ({ noShell = false }: { noShell?: boolean }) => {
                   Immutable Audit Stream
                 </CardTitle>
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.3em] mt-1">
-                  Non-Repudiable Logs backed by Zenvix Signature Hub
+                  Non-Repudiable Logs backed by Estela Gea Signature Hub
                 </p>
               </div>
             </div>

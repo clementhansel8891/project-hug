@@ -22,9 +22,9 @@ import { Badge } from "@/components/ui/badge";
 export default function WhiteLabelSettings() {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState({
-    logoUrl: "https://api.zenvix.ai/placeholder-logo.png",
+    logoUrl: "https://api.estelagea.ai/placeholder-logo.png",
     primaryColor: "#6366f1",
-    agencyName: "Zenvix Marketing Pro",
+    agencyName: "Estela Gea Marketing Pro",
     customDomain: "",
     enableWhiteLabel: true,
     removePoweredBy: false,
@@ -44,7 +44,7 @@ export default function WhiteLabelSettings() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Agency White-Labeling</h1>
-          <p className="text-muted-foreground mt-2">Personalize the Zenvix experience for your clients and sub-accounts.</p>
+          <p className="text-muted-foreground mt-2">Personalize the Estela Gea experience for your clients and sub-accounts.</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="gap-2">
@@ -180,7 +180,7 @@ export default function WhiteLabelSettings() {
                       <div className="flex flex-col gap-1">
                         <div className="flex justify-between items-center text-xs">
                           <span className="font-mono text-primary">CNAME</span>
-                          <span className="text-muted-foreground">Value: lb.zenvix.ai</span>
+                          <span className="text-muted-foreground">Value: lb.estelagea.ai</span>
                         </div>
                         <div className="h-10 bg-card dark:bg-muted border rounded flex items-center px-3 justify-between">
                           <code className="text-xs">{config.customDomain || "app.your-agency.com"}</code>
@@ -228,8 +228,8 @@ export default function WhiteLabelSettings() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <Label className="text-base">Remove "Powered by Zenvix"</Label>
-                      <p className="text-sm text-muted-foreground">Hide Zenvix branding from footer and login pages.</p>
+                      <Label className="text-base">Remove "Powered by Estela Gea"</Label>
+                      <p className="text-sm text-muted-foreground">Hide Estela Gea branding from footer and login pages.</p>
                     </div>
                     <Switch 
                       checked={config.removePoweredBy} 
@@ -282,7 +282,7 @@ export default function WhiteLabelSettings() {
                   {/* Powered By Footer */}
                   {!config.removePoweredBy && (
                     <div className="h-6 flex items-center justify-center text-[8px] text-muted-foreground border-t border-border dark:border-border">
-                      Powered by Zenvix AI
+                      Powered by Estela Gea AI
                     </div>
                   )}
                 </div>

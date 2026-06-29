@@ -124,7 +124,7 @@ export const ShiftGovernanceModal: React.FC<ShiftGovernanceModalProps> = ({
               <AlertTriangle className="w-6 h-6 text-primary shrink-0" />
               <div className="text-[10px] font-bold italic text-primary/70 uppercase leading-relaxed">
                 You are about to publish {affectedShiftsCount} shift assignments
-                to the Zenvix Core HR module. Once published, devices will enforce
+                to the Estela Gea Core HR module. Once published, devices will enforce
                 these schedules for clock-in/out protocols.
               </div>
             </div>

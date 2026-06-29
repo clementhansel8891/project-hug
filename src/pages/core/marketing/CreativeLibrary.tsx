@@ -89,7 +89,7 @@ export default function CreativeLibrary() {
       // Fallback for demo
       setAssets([
         { id: "1", name: "Summer Campaign Hero", type: "IMAGE", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800", tags: ["Summer", "Banner"], date: "2024-03-20" },
-        { id: "2", name: "Brand Intro Video", type: "VIDEO", url: "https://api.zenvix.ai/placeholder-video.mp4", tags: ["Brand", "Social"], date: "2024-03-18" },
+        { id: "2", name: "Brand Intro Video", type: "VIDEO", url: "https://api.estelagea.ai/placeholder-video.mp4", tags: ["Brand", "Social"], date: "2024-03-18" },
         { id: "3", name: "Lead Magnet Template", type: "DOCUMENT", url: "#", tags: ["Lead Gen", "PDF"], date: "2024-03-15" },
         { id: "4", name: "Facebook Ad V1", type: "IMAGE", url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=800", tags: ["Ads", "Facebook"], date: "2024-03-12" },
         { id: "5", name: "Product Showcase", type: "IMAGE", url: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800", tags: ["Catalog", "HQ"], date: "2024-03-10" },

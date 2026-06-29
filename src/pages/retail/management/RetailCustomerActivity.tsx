@@ -293,7 +293,7 @@ function CustomerDetailDialog({ isOpen, onOpenChange, customer, onExpansionReque
                         className="bg-success hover:bg-success text-foreground rounded-2xl h-20 px-14 text-[12px] font-black uppercase tracking-[0.4em] shadow-[0_20px_40px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95 gap-4 italic"
                         onClick={() => {
                           const phone = customer.phone?.replace(/[^0-9]/g, "");
-                          const text = encodeURIComponent(`Hi ${customer.name}, this is Zenvix Support. How can we help you today?`);
+                          const text = encodeURIComponent(`Hi ${customer.name}, this is Estela Gea Support. How can we help you today?`);
                           window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
                         }}
                       >

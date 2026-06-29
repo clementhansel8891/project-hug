@@ -326,7 +326,7 @@ export default function RetailManagement() {
               Access Logs
             </span>
             <span className="hover:text-foreground cursor-pointer transition-colors font-bold">
-              Zenvix OS Cloud v2.4.9
+              Estela Gea OS Cloud v2.4.9
             </span>
           </div>
         </div>

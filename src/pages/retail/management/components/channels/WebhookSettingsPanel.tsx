@@ -118,7 +118,7 @@ export const WebhookSettingsPanel: React.FC<Props> = ({
   const [enabledEvents, setEnabledEvents] = useState<Set<string>>(new Set());
 
   // Inbound — generated, read-only
-  const inboundUrl = `https://gateway.zenvix.io/webhooks/inbound/${channel.id}`;
+  const inboundUrl = `https://gateway.estelagea.io/webhooks/inbound/${channel.id}`;
   const hmacKey =
     (channel.settings as Record<string, string>)?.hmacKey ?? "••••••••••••••••";
 
@@ -211,7 +211,7 @@ export const WebhookSettingsPanel: React.FC<Props> = ({
               Inbound Webhook
             </h3>
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-              Zenvix receives events
+              Estela Gea receives events
             </p>
           </div>
         </div>
@@ -230,7 +230,7 @@ export const WebhookSettingsPanel: React.FC<Props> = ({
             </div>
             <p className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground italic">
               <Info className="w-3 h-3 shrink-0" />
-              Point your external platform to this URL to send events to Zenvix.
+              Point your external platform to this URL to send events to Estela Gea.
               All requests must be POST with JSON body.
             </p>
           </div>
@@ -263,9 +263,9 @@ export const WebhookSettingsPanel: React.FC<Props> = ({
             </div>
             <p className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground italic">
               <Info className="w-3 h-3 shrink-0" />
-              Zenvix will include an{" "}
+              Estela Gea will include an{" "}
               <code className="bg-secondary/10 px-1 rounded">
-                X-Zenvix-Signature
+                X-Estela Gea-Signature
               </code>{" "}
               header with every inbound event for HMAC-SHA256 verification.
             </p>
@@ -284,7 +284,7 @@ export const WebhookSettingsPanel: React.FC<Props> = ({
               Outbound Webhook
             </h3>
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-              Zenvix sends events to you
+              Estela Gea sends events to you
             </p>
           </div>
         </div>
@@ -297,7 +297,7 @@ export const WebhookSettingsPanel: React.FC<Props> = ({
             <Input
               value={outboundUrl}
               onChange={(e) => setOutboundUrl(e.target.value)}
-              placeholder="https://yoursystem.com/webhooks/zenvix"
+              placeholder="https://yoursystem.com/webhooks/estelagea"
               className="h-11 rounded-xl font-bold text-sm"
             />
           </div>

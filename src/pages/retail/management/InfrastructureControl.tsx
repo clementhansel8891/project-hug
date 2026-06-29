@@ -126,7 +126,7 @@ const InfrastructureControl = () => {
     <div className="space-y-6">
       <PageHeader
         title="Infrastructure Control Center"
-        subtitle="Real-time monitoring and cluster management for Zenvix Retail connectivity."
+        subtitle="Real-time monitoring and cluster management for Estela Gea Retail connectivity."
       />
 
       {isError && nodes.length === 0 && lbs.length === 0 && requests.length === 0 ? (

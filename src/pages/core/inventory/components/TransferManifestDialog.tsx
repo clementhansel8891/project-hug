@@ -180,7 +180,7 @@ export function TransferManifestDialog({
 
         <DialogFooter className="p-8 bg-muted border-t border-border flex flex-row items-center justify-between">
           <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-            Zenvix Logistics Core v2.4
+            Estela Gea Logistics Core v2.4
           </div>
           <Button 
             className="rounded-xl px-8 h-12 bg-card text-muted-foreground font-black uppercase tracking-widest text-[10px] hover:bg-muted"

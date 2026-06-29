@@ -192,7 +192,7 @@ const ShiftControl = () => {
     } catch (e) {
       toast({
         title: "Publication Failed",
-        description: `Failed to commit schedule to Zenvix Core.`,
+        description: `Failed to commit schedule to Estela Gea Core.`,
         variant: "destructive",
       });
     }

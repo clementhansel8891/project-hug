@@ -38,7 +38,7 @@ export function FutureIntegrationDialog({
 
         <div className="px-10 pb-10 space-y-6 relative z-10">
           <p className="text-muted-foreground text-sm font-medium leading-relaxed text-center italic">
-            "Automated courier dispatching and real-time fleet synchronization is currently under development in the Zenvix Labs."
+            "Automated courier dispatching and real-time fleet synchronization is currently under development in the Estela Gea Labs."
           </p>
 
           <div className="space-y-3">
@@ -69,7 +69,7 @@ export function FutureIntegrationDialog({
             Acknowledge Protocol
           </Button>
           <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest text-center">
-            Zenvix Advanced Logistics Research Division
+            Estela Gea Advanced Logistics Research Division
           </div>
         </DialogFooter>
       </DialogContent>

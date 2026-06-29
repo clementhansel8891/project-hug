@@ -47,15 +47,15 @@ const getLocalGateway = () => {
   if (retailGateway?.emitPushEvent) {
     return retailGateway;
   }
-  const gateway = (window as { Zenvix?: { RetailGateway?: { emitPushEvent?: (event: RetailGatewayPushEvent) => void } } })
-    .Zenvix?.RetailGateway;
+  const gateway = (window as { Estela Gea?: { RetailGateway?: { emitPushEvent?: (event: RetailGatewayPushEvent) => void } } })
+    .Estela Gea?.RetailGateway;
   return gateway?.emitPushEvent ? gateway : null;
 };
 
 export const emitRetailPushEvent = async (input: RetailPushInput) => {
   const event: RetailGatewayPushEvent = {
     eventId: input.eventId ?? createEventId(),
-    source: input.source ?? "zenvix-retail",
+    source: input.source ?? "estelagea-retail",
     occurredAt: input.occurredAt ?? new Date().toISOString(),
     type: input.type,
     tenantId: input.tenantId,

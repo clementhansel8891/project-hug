@@ -126,7 +126,7 @@ export const StoreGovernanceModule: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Cloud">
-                    Zenvix Commercial Cloud (ZCC)
+                    Estela Gea Commercial Cloud (ZCC)
                   </SelectItem>
                   <SelectItem value="LAN-first">
                     On-Premises Edge Auth (Offline Key)

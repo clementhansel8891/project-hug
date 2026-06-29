@@ -27,7 +27,7 @@ export async function processRetailEvent(event: RetailEvent) {
      * PAYMENT SUCCESS → ORDER CREATION
      *
      * Requirement:
-     * Ecommerce payment confirmation triggers Order creation in Zenvix.
+     * Ecommerce payment confirmation triggers Order creation in Estela Gea.
      */
     case "payment_success": {
       const payload = event.payload as PaymentSuccessPayload;

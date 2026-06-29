@@ -228,7 +228,7 @@ const SelfServiceKiosk = () => {
             </div>
             <div>
               <h1 className="text-3xl font-black italic tracking-tighter text-foreground uppercase">
-                {activeStore?.name || "Zenvix Self-Checkout"}
+                {activeStore?.name || "Estela Gea Self-Checkout"}
               </h1>
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1 italic">
                 Node Context: [KIOSK_ALPHA_9] • {activeStore?.location || "Main Terminal"}
@@ -489,7 +489,7 @@ const SelfServiceKiosk = () => {
                 </div>
 
                 <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest text-center leading-relaxed italic">
-                   Transaction is processed through the **Zenvix Fiscal Gateway**. <br />
+                   Transaction is processed through the **Estela Gea Fiscal Gateway**. <br />
                    Receipt issued on successful vault clearance.
                 </p>
               </CardContent>

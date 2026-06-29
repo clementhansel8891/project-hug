@@ -17,7 +17,7 @@ import { WorkspacePanel } from "@/core/ui/WorkspacePanel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ZENVIX_HARDWARE, ITCatalogItem } from "@/core/services/it/itProcurementBridge";
+import { ESTELAGEA_HARDWARE, ITCatalogItem } from "@/core/services/it/itProcurementBridge";
 import { EmptyState } from "@/components/shared/AsyncState";
 import { toast } from "sonner";
 import { HardwareRequestModal } from "./modals/HardwareRequestModal";
@@ -28,7 +28,7 @@ export default function TechShop() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<ITCatalogItem | null>(null);
 
-  const filteredItems = (Array.isArray(ZENVIX_HARDWARE) ? ZENVIX_HARDWARE : []).filter(item => {
+  const filteredItems = (Array.isArray(ESTELAGEA_HARDWARE) ? ESTELAGEA_HARDWARE : []).filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                          item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          item.notes.toLowerCase().includes(searchQuery.toLowerCase());
@@ -44,9 +44,9 @@ export default function TechShop() {
             <ShoppingBag className="h-3 w-3" /> Hardware Catalog
           </div>
           <h1 className="text-4xl font-black tracking-tighter uppercase italic">
-            Zenvix Tech Shop
+            Estela Gea Tech Shop
           </h1>
-          <p className="text-sm text-muted-foreground font-medium">Official hardware and provisioning hub for Zenvix infrastructure.</p>
+          <p className="text-sm text-muted-foreground font-medium">Official hardware and provisioning hub for Estela Gea infrastructure.</p>
         </div>
 
         <div className="flex items-center gap-3">

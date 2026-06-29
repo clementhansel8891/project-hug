@@ -31,7 +31,7 @@ export const GenesisGuard: React.FC<{ children: React.ReactNode }> = ({
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         <p className="text-muted-foreground font-bold italic animate-pulse uppercase tracking-widest text-xs">
-          Synchronizing Zenvix State...
+          Synchronizing Estela Gea State...
         </p>
       </div>
     );

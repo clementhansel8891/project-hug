@@ -427,7 +427,7 @@ const StockOpnameScanner = ({ noShell = false }: { noShell?: boolean }) => {
                 <div className="flex items-center gap-6 px-8 py-4 bg-secondary/50 rounded-full border border-border backdrop-blur-xl">
                   <ShieldCheck className="w-5 h-5 text-success" />
                   <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] italic">
-                    Zenvix Audit Pulse: <span className="text-success">NOMINAL</span>
+                    Estela Gea Audit Pulse: <span className="text-success">NOMINAL</span>
                   </p>
                 </div>
               </form>
@@ -593,7 +593,7 @@ const StockOpnameScanner = ({ noShell = false }: { noShell?: boolean }) => {
                    <div className="text-sm font-mono font-black text-primary">ZVX-SCAN-PRO-992</div>
                 </div>
                 <p className="text-[10px] text-muted-foreground font-bold leading-relaxed italic uppercase tracking-tight">
-                   Audit stream is end-to-end encrypted and queued for **Zenvix Global Reconciliation**.
+                   Audit stream is end-to-end encrypted and queued for **Estela Gea Global Reconciliation**.
                 </p>
              </CardContent>
           </GlassCard>

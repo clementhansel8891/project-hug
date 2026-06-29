@@ -587,7 +587,7 @@ export const retailService = {
     );
   },
 
-  // --- 4. Channel & Logic Zenvix ---
+  // --- 4. Channel & Logic Estela Gea ---
   async listChannels(
     tenantId: string,
     session: SessionContext,

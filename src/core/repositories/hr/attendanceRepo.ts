@@ -80,7 +80,7 @@ export const attendanceRepo = {
       return {
         id: "dev-mobile",
         tenantId,
-        name: "Zenvix Mobile App",
+        name: "Estela Gea Mobile App",
         type: "mobile",
         isActive: true,
       };

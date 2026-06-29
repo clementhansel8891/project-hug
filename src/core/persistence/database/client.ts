@@ -1,6 +1,6 @@
 /**
  * ============================================================
- * ZENVIX PRISMA CLIENT SINGLETON
+ * ESTELA GEA PRISMA CLIENT SINGLETON
  * 
  * Ensures only one Prisma Client instance exists across the app
  * Prevents connection pool exhaustion in development

@@ -36,7 +36,7 @@ export const RetailGlobalAdminBar = () => {
       <div className="flex items-center gap-6">
         <div className="flex items-center gap-2 text-primary">
           <ShieldCheck className="w-3.5 h-3.5" />
-          Zenvix Superadmin control
+          Estela Gea Superadmin control
         </div>
         <Separator orientation="vertical" className="h-4 bg-white/20" />
         <div className="flex items-center gap-2">

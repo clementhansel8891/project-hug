@@ -244,7 +244,7 @@ export const StaffDetailsModal: React.FC<StaffDetailsModalProps> = ({
 
             <div className="text-center pt-2">
               <div className="text-[9px] font-black uppercase tracking-widest text-muted-foreground block">
-                Zenvix Global ID: {staff.id}
+                Estela Gea Global ID: {staff.id}
               </div>
             </div>
           </fieldset>

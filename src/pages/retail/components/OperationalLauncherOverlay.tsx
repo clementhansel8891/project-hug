@@ -105,7 +105,7 @@ export const OperationalLauncherOverlay: React.FC<{
       <div className="flex justify-between items-center mb-12">
         <div>
           <h2 className="text-4xl font-black text-white italic tracking-tighter uppercase">
-            Zenvix App Launcher
+            Estela Gea App Launcher
           </h2>
           <p className="text-muted-foreground font-bold uppercase tracking-widest text-xs mt-2">
             Operational Plane • Shift: {activeShift?.id || "NO_ACTIVE_SHIFT"}

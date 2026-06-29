@@ -34,7 +34,7 @@ const RootLayoutContent = () => {
             <div className="h-full bg-primary animate-[loading_1.5s_infinite]" />
           </div>
           <div className="animate-pulse text-primary font-black italic tracking-tighter text-sm">
-            Zenvix_RETAIL_AUTHORITY_SYNCING...
+            EstelaGea_RETAIL_AUTHORITY_SYNCING...
           </div>
         </div>
         <style>{`

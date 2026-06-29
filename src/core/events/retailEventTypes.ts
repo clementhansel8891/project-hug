@@ -1,9 +1,9 @@
 // src/core/events/retailEventTypes.ts
 
 /**
- * Zenvix Retail Event Types
+ * Estela Gea Retail Event Types
  *
- * These are the ONLY allowed ecommerce → Zenvix event names.
+ * These are the ONLY allowed ecommerce → Estela Gea event names.
  * This is the contract that external ecommerce websites must follow.
  */
 

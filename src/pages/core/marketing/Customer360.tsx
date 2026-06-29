@@ -227,7 +227,7 @@ export default function Customer360() {
                    </div>
                    <div>
                       <h4 className="font-black text-lg uppercase tracking-tighter italic">Strategic AI Action</h4>
-                      <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Zenvix Intelligence Engine</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Estela Gea Intelligence Engine</p>
                    </div>
                 </div>
                 <p className="text-sm font-medium italic italic opacity-70 leading-relaxed italic">

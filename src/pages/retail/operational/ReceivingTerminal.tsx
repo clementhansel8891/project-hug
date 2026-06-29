@@ -177,7 +177,7 @@ const ReceivingTerminal = () => {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
       toast({
-        title: "Zenvix Sync Failed",
+        title: "Estela Gea Sync Failed",
         description: message,
         variant: "destructive",
       });

@@ -87,7 +87,7 @@ export default function CoreDashboard() {
              </div>
           </div>
           <div className="flex flex-col items-center gap-2">
-             <p className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground italic">ZENVIX INTELLIGENCE ENGINE</p>
+             <p className="text-[11px] font-black uppercase tracking-[0.4em] text-foreground italic">ESTELA GEA INTELLIGENCE ENGINE</p>
              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">Synchronizing Executive Telemetry...</p>
           </div>
         </div>

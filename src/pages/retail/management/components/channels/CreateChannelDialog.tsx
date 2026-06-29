@@ -83,10 +83,10 @@ const CHANNEL_TYPES = [
   {
     id: "WEBHOOK",
     label: "Webhook Bridge",
-    desc: "Forward Zenvix events to any SaaS, ERP, or CMS via webhook",
+    desc: "Forward Estela Gea events to any SaaS, ERP, or CMS via webhook",
     icon: Webhook,
     color: "emerald",
-    hint: "Zenvix will generate a signing key and a listening endpoint. Configure your target URL in the channel settings after creation.",
+    hint: "Estela Gea will generate a signing key and a listening endpoint. Configure your target URL in the channel settings after creation.",
   },
 ];
 
@@ -185,7 +185,7 @@ const PLATFORM_OPTIONS: Record<
     {
       value: "zapier",
       label: "Zapier",
-      hint: "Trigger Zaps from Zenvix events",
+      hint: "Trigger Zaps from Estela Gea events",
     },
     {
       value: "custom",

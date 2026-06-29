@@ -47,7 +47,7 @@ export async function apiRequest<T>(
   }
 
   // Support JV Mirror Mode via localStorage
-  const jvContextStr = localStorage.getItem('zenvix_jv_context');
+  const jvContextStr = localStorage.getItem('estelagea_jv_context');
   let jvContext = null;
   try {
     if (jvContextStr) jvContext = JSON.parse(jvContextStr);

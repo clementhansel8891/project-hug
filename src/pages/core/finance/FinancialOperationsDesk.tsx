@@ -332,7 +332,7 @@ export default function FinancialOperationsDesk() {
                       <div className="space-y-2">
                          <h4 className="text-2xl font-black italic tracking-tighter uppercase">Automated Collections Protocol</h4>
                          <p className="text-muted-foreground font-medium italic italic">
-                           Zenvix AI currently manages 85% of early-stage collections via smart contract triggers and automated multi-channel nurturing.
+                           Estela Gea AI currently manages 85% of early-stage collections via smart contract triggers and automated multi-channel nurturing.
                          </p>
                       </div>
                    </div>

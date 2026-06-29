@@ -116,7 +116,7 @@ const StaffAssignments = () => {
 
       toast({
         title: "Access Revoked",
-        description: "Security credentials have been purged from Zenvix Vault.",
+        description: "Security credentials have been purged from Estela Gea Vault.",
       });
     } catch {
       toast({
@@ -168,7 +168,7 @@ const StaffAssignments = () => {
   const handleProvision = () => {
     toast({
       title: "Provisioning Initialized",
-      description: "Redirecting to Zenvix HR Talent Hub for secure biometric onboarding...",
+      description: "Redirecting to Estela Gea HR Talent Hub for secure biometric onboarding...",
     });
     // Redirect to Core HR recruitment/onboarding path
     navigate("/core/hr/talent");
@@ -536,7 +536,7 @@ const StaffAssignments = () => {
                           await apiRequest("/retail/staff/reminders", "POST", session, { recipientIds });
                           toast({ 
                             title: "Reminders Broadcasted", 
-                            description: "3 personnel notified of pending biometric sync via Zenvix Push." 
+                            description: "3 personnel notified of pending biometric sync via Estela Gea Push." 
                           });
                         } catch (e) {
                           toast({ title: "Broadcast Failed", description: "Could not send reminders.", variant: "destructive" });

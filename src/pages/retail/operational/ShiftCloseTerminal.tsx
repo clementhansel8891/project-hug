@@ -120,7 +120,7 @@ const ShiftCloseTerminal = () => {
         complianceNote,
       );
 
-      toast({ title: "Shift Reconciled", description: `Node session ${(activeShift?.id || "").slice(-6).toUpperCase()} locked in Zenvix Vault.` });
+      toast({ title: "Shift Reconciled", description: `Node session ${(activeShift?.id || "").slice(-6).toUpperCase()} locked in Estela Gea Vault.` });
       setIsClosed(true);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Sync failed";
@@ -402,7 +402,7 @@ const ShiftCloseTerminal = () => {
             <div className="flex items-center gap-6 px-12 py-5 bg-secondary/40 rounded-full border border-border backdrop-blur-xl">
               <ShieldCheck className="w-6 h-6 text-success" />
               <p className="text-[10px] text-muted-foreground font-black uppercase tracking-[0.2em] italic">
-                Secure Hash will be appended to the <span className="text-foreground">Zenvix Fiscal Ledger</span>
+                Secure Hash will be appended to the <span className="text-foreground">Estela Gea Fiscal Ledger</span>
               </p>
             </div>
           </div>

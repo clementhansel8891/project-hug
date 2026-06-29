@@ -107,7 +107,7 @@ const PROVIDERS: Record<CCTVProvider, ProviderInfo> = {
       },
     ],
     notes:
-      "Enter your EZVIZ cloud account and the 6-digit verification code found on the device's sticker. Zenvix Branch Agent will fetch the stream relay automatically.",
+      "Enter your EZVIZ cloud account and the 6-digit verification code found on the device's sticker. Estela Gea Branch Agent will fetch the stream relay automatically.",
   },
   dahua: {
     label: "Dahua",
@@ -130,7 +130,7 @@ const PROVIDERS: Record<CCTVProvider, ProviderInfo> = {
       },
     ],
     notes:
-      "Dahua camera or NVR on the local network. Zenvix Branch Agent will proxy the RTSP stream to HLS for browser viewing.",
+      "Dahua camera or NVR on the local network. Estela Gea Branch Agent will proxy the RTSP stream to HLS for browser viewing.",
   },
   hikvision: {
     label: "HikVision",
@@ -176,7 +176,7 @@ const PROVIDERS: Record<CCTVProvider, ProviderInfo> = {
       },
     ],
     notes:
-      "Reolink local API integration. Camera must be on the same LAN as the Zenvix Branch Agent for streaming.",
+      "Reolink local API integration. Camera must be on the same LAN as the Estela Gea Branch Agent for streaming.",
   },
   axis: {
     label: "Axis",
@@ -199,7 +199,7 @@ const PROVIDERS: Record<CCTVProvider, ProviderInfo> = {
       },
     ],
     notes:
-      "Axis VAPIX local API. Requires Zenvix Branch Agent on the same network to proxy streams via RTSP/HLS.",
+      "Axis VAPIX local API. Requires Estela Gea Branch Agent on the same network to proxy streams via RTSP/HLS.",
   },
   custom: {
     label: "Custom",
@@ -924,7 +924,7 @@ const CCTVViewerModal: React.FC<Props> = ({
                       },
                       {
                         n: "3",
-                        t: "Zenvix Branch Agent (local) authenticates and fetches the stream URL.",
+                        t: "Estela Gea Branch Agent (local) authenticates and fetches the stream URL.",
                       },
                       {
                         n: "4",

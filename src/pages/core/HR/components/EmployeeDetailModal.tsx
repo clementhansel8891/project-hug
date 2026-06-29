@@ -103,7 +103,7 @@ export const EmployeeDetailModal: React.FC<EmployeeDetailModalProps> = ({
                        <section className="space-y-4">
                           <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] border-b pb-2">Contact Intelligence</h4>
                           <div className="space-y-3">
-                             <DataRow label="Enterprise Email" value={`${employee.id}@zenvix.corp`} />
+                             <DataRow label="Enterprise Email" value={`${employee.id}@estelagea.corp`} />
                              <DataRow label="Internal Extension" value="EXT-442" />
                              <DataRow label="Emergency Node" value="Contact Registered" />
                           </div>

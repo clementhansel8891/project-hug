@@ -121,7 +121,7 @@ export default function ReceiptStudio() {
                                {comp.config?.logoUrl && (
                                  <img src={comp.config.logoUrl} alt="Store Logo" className="max-h-16 object-contain mb-2 grayscale" />
                                )}
-                               <p className="text-sm font-bold tracking-tighter">{comp.title !== 'Store Branding' ? comp.title : 'ZENVIX BOUTIQUE'}</p>
+                               <p className="text-sm font-bold tracking-tighter">{comp.title !== 'Store Branding' ? comp.title : 'ESTELA GEA BOUTIQUE'}</p>
                                <p className="text-[9px]">District 8, Jakarta Selatan</p>
                                <p className="text-[8px]">NPWP: 01.234.567.8-901.000</p>
                             </div>
@@ -194,7 +194,7 @@ export default function ReceiptStudio() {
                          {comp.type === 'footer_text' && (
                             <div className="text-center pt-4 opacity-50">
                                <p className="text-[9px] font-bold">{comp.config?.content}</p>
-                               <p className="text-[7px] mt-2 italic">Zenvix FlowGate™ Fiscal Node</p>
+                               <p className="text-[7px] mt-2 italic">Estela Gea FlowGate™ Fiscal Node</p>
                             </div>
                          )}
                       </div>

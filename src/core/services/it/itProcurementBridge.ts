@@ -15,10 +15,10 @@ export interface ITCatalogItem {
   notes: string;
 }
 
-export const ZENVIX_HARDWARE: ITCatalogItem[] = [
+export const ESTELAGEA_HARDWARE: ITCatalogItem[] = [
   {
     id: "h-01",
-    name: "Zenvix Money Drawer (Standard)",
+    name: "Estela Gea Money Drawer (Standard)",
     sku: "ZNX-MD-01",
     category: "HARDWARE",
     description: "Heavy-duty thermal-linked money drawer with logical kick sensors.",
@@ -27,16 +27,16 @@ export const ZENVIX_HARDWARE: ITCatalogItem[] = [
   },
   {
     id: "h-02",
-    name: "Zenvix Tab (Enterprise 10\")",
+    name: "Estela Gea Tab (Enterprise 10\")",
     sku: "ZNX-TAB-10",
     category: "HARDWARE",
-    description: "Enterprise-grade 10-inch tablet pre-configured with Zenvix Mobile Shell.",
+    description: "Enterprise-grade 10-inch tablet pre-configured with Estela Gea Mobile Shell.",
     estimatedCost: 4500000,
     notes: "Standard issue for Retail Floor Staff."
   },
   {
     id: "h-03",
-    name: "Zenvix Thermal Printer (POS)",
+    name: "Estela Gea Thermal Printer (POS)",
     sku: "ZNX-TP-80",
     category: "HARDWARE",
     description: "High-speed 80mm thermal receipt printer with USB/Ethernet/BT.",
@@ -45,7 +45,7 @@ export const ZENVIX_HARDWARE: ITCatalogItem[] = [
   },
   {
     id: "h-04",
-    name: "Zenvix Display Touch Screen (22\")",
+    name: "Estela Gea Display Touch Screen (22\")",
     sku: "ZNX-TS-22",
     category: "HARDWARE",
     description: "22-inch industrial grade capacitive touch monitor for Kiosk usage.",
@@ -54,7 +54,7 @@ export const ZENVIX_HARDWARE: ITCatalogItem[] = [
   },
   {
     id: "h-05",
-    name: "Zenvix Kiosk (Elite Core)",
+    name: "Estela Gea Kiosk (Elite Core)",
     sku: "ZNX-K-01",
     category: "HARDWARE",
     description: "Standalone self-service kiosk with integrated scanner and printer.",

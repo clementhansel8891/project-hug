@@ -183,7 +183,7 @@ export default function Onboarding() {
                     type="text"
                     required
                     className="block w-full px-5 py-4 rounded-2xl border border-border bg-background/50 backdrop-blur-sm shadow-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all duration-300 font-bold"
-                    placeholder="e.g. Zenvix Corp"
+                    placeholder="e.g. Estela Gea Corp"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })

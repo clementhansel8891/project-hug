@@ -2,9 +2,9 @@ import { apiRequest } from "@/core/api/apiClient";
 import type { SessionContext } from "@/core/security/session";
 import type { ToolFileRecord, ToolFileType, ToolFolder } from "./types";
 
-export type ZenvixTool = "docs" | "sheets" | "slides" | "none";
+export type EstelaGeaTool = "docs" | "sheets" | "slides" | "none";
 
-export function getToolForFile(file: ToolFileRecord): ZenvixTool {
+export function getToolForFile(file: ToolFileRecord): EstelaGeaTool {
   const type = file.type.toLowerCase();
   if (["doc", "docx", "txt", "md", "zdoc"].includes(type)) return "docs";
   if (["xls", "xlsx", "csv", "zsheet"].includes(type)) return "sheets";
@@ -13,7 +13,7 @@ export function getToolForFile(file: ToolFileRecord): ZenvixTool {
 }
 
 /**
- * Zenvix DMS Service (Frontend)
+ * Estela Gea DMS Service (Frontend)
  * Migrated from localStorage to Backend DMS
  */
 

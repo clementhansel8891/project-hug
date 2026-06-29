@@ -13,11 +13,11 @@ const getApiBaseUrl = () => {
   if (envUrl && envUrl !== "") {
     // 🛡️ LEGACY CIRCUIT BREAKER
     // If the URL contains the legacy railway string, it's likely a misconfiguration in the hosting control panel
-    if (envUrl.includes("zenvix.up.railway.app")) {
+    if (envUrl.includes("estelagea.up.railway.app")) {
       console.warn(
         "%c[api-config] ⚠️ LEGACY URL DETECTED",
         "background: #ef4444; color: white; padding: 2px 4px; border-radius: 4px;",
-        "'zenvix.up.railway.app' is no longer in use. Please update your Vercel Project Environment Variables (VITE_API_URL) to point to your new backend or leave it empty for relative pathing."
+        "'estelagea.up.railway.app' is no longer in use. Please update your Vercel Project Environment Variables (VITE_API_URL) to point to your new backend or leave it empty for relative pathing."
       );
       
       // Force fallback to relative path in production to avoid CORS errors with the dead railway backend

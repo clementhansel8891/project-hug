@@ -446,7 +446,7 @@ export class RetailPublicGateway {
 }
 
 interface RetailWindow extends Window {
-  Zenvix?: {
+  Estela Gea?: {
     RetailGateway?: RetailPublicGateway;
   };
 }
@@ -455,10 +455,10 @@ export const retailGateway = new RetailPublicGateway();
 
 // Expose for "External Website" Simulation (Window Bridge)
 if (typeof window !== "undefined") {
-  const zenvixWindow = window as RetailWindow;
-  zenvixWindow.Zenvix = zenvixWindow.Zenvix || {};
-  zenvixWindow.Zenvix.RetailGateway = retailGateway;
+  const estelageaWindow = window as RetailWindow;
+  estelageaWindow.Estela Gea = estelageaWindow.Estela Gea || {};
+  estelageaWindow.Estela Gea.RetailGateway = retailGateway;
   console.log(
-    "🔌 Retail Public Gateway exposed at window.Zenvix.RetailGateway",
+    "🔌 Retail Public Gateway exposed at window.Estela Gea.RetailGateway",
   );
 }

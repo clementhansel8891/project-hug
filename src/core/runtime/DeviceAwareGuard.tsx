@@ -25,7 +25,7 @@ export const DeviceAwareGuard: React.FC<DeviceAwareGuardProps> = ({
 
   // In DEV_MOCK_MODE, we detect device_mode from localStorage or session
   // Default to 'desktop' which aligns with ModulePageDefinition.supportedDeviceTypes
-  const deviceMode = (localStorage.getItem("zenvix.device_mode") as any) || "desktop";
+  const deviceMode = (localStorage.getItem("estelagea.device_mode") as any) || "desktop";
 
   useEffect(() => {
     // If no specific restrictions, allow

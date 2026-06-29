@@ -262,7 +262,7 @@ export default function PayslipStudio() {
                                      <div className="w-24 h-8 bg-muted rounded border border-border" />
                                   </div>
                                   <div className="text-right">
-                                     <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Zenvix Payload Sync</p>
+                                     <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground">Estela Gea Payload Sync</p>
                                      <p className="text-[10px] font-black text-muted-foreground uppercase">HASH_2298_ARC</p>
                                   </div>
                                </div>

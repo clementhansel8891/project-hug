@@ -74,7 +74,7 @@ export default function CalculatorTool() {
                 </TabsList>
                 <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                   <Calculator className="h-3 w-3" />
-                  Zenvix Compute Core v2
+                  Estela Gea Compute Core v2
                 </div>
               </div>
 

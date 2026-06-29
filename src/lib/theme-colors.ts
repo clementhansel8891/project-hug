@@ -1,5 +1,5 @@
 /**
- * ZENVIX THEME COLOR UTILITIES
+ * ESTELA GEA THEME COLOR UTILITIES
  * 
  * Centralized color mappings to ensure consistent use of global theme variables
  * across all components. All colors MUST use HSL variables defined in src/index.css.

@@ -79,7 +79,7 @@ export function MailComposeModal({
               <FormItem>
                 <FormLabel>Recipient(s) *</FormLabel>
                 <FormControl>
-                  <Input placeholder="address@zenvix.io (comma-separated for multiple)" {...field} />
+                  <Input placeholder="address@estelagea.io (comma-separated for multiple)" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

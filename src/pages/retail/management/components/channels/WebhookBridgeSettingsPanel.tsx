@@ -221,7 +221,7 @@ export const WebhookBridgeSettingsPanel: React.FC<Props> = ({
               <Input
                 value={targetUrl}
                 onChange={(e) => setTargetUrl(e.target.value)}
-                placeholder="https://hooks.yoursaas.io/zenvix-ingest"
+                placeholder="https://hooks.yoursaas.io/estelagea-ingest"
                 className="flex-1 h-11 rounded-xl font-bold text-sm"
               />
               <Button
@@ -357,7 +357,7 @@ export const WebhookBridgeSettingsPanel: React.FC<Props> = ({
             Event Forwarding Map
           </h3>
           <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
-            Select which Zenvix events are forwarded to your SaaS
+            Select which Estela Gea events are forwarded to your SaaS
           </p>
         </div>
         <div className="rounded-2xl border border-border overflow-hidden divide-y divide-slate-50">
