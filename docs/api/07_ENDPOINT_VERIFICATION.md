@@ -120,3 +120,46 @@ swallowed). Each is a concrete ticket.
 3. **Re-probe the two 500s** with valid payloads to confirm they aren't also broken.
 4. **Functional tests** should assert these endpoints return 2xx once fixed — they
    become regression guards.
+
+---
+
+## 🟢 FIXED & VERIFIED IN PRODUCTION — IT ticketing (#1–5)
+
+The entire IT Service Management surface (5 dead endpoints) has been **built,
+deployed, and verified live**. New backend: 3 Prisma models (`it_tickets`,
+`it_incidents`, `it_sla_configs`) + tenant relations, migration
+`20260629140000_add_it_ticketing`, DTOs, repository (db + mock), service methods,
+controller routes. Commit `ce6eb517`, deployed to VPS, migration applied.
+
+| UI control | Path | Before | After (live probe) |
+|------------|------|--------|--------------------|
+| IT CreateTicketModal | POST /v1/it/tickets | 404 | **201** (priority auto-computed) |
+| IT list tickets | GET /v1/it/tickets | 404 | **200** |
+| IT update ticket | PATCH /v1/it/tickets/:id | 404 | **200** |
+| IT EscalationModal | POST /v1/it/tickets/escalate | 404 | **201** |
+| IT ResolutionModal | POST /v1/it/tickets/resolve | 404 | **201** |
+| IT IncidentReportModal | POST /v1/it/incidents | 404 | **201** |
+| IT SLAConfigModal | POST /v1/it/sla-config | 404 | **201** |
+| IT list SLA configs | GET /v1/it/sla-config | 404 | **200** |
+
+> ⚠️ Probe side-effect: created test ticket / incident / SLA-config rows in the
+> `tnt-3rlhko` demo tenant. Harmless; clean before demos.
+
+## 🔴 RE-PROBED with valid body — HR payroll-runs (#14) still broken
+
+`POST /v1/hr/payroll-runs` re-probed with a valid `{ periodStart, periodEnd }`
+body → **still HTTP 500**. The route **exists** but errors server-side, so this
+is reclassified from "re-test" to a **confirmed bug** needing investigation
+(not a missing route). `POST /v1/marketing/assets/upload` (#16) was not
+re-probed — it requires a multipart/file payload.
+
+## Updated net result
+
+| Category | Count | Verdict |
+|----------|-------|---------|
+| "Missing /v1" service strings | 8+ | NOT bugs — apiClient normalizes |
+| Routes 404 with /v1 (original real bugs) | 15 | — |
+| ↳ FIXED & verified (IT ticketing) | 5 | **resolved in prod** |
+| ↳ Still open | 10 | see `BUGS.md` "Remaining open bugs" |
+| 500-on-empty re-probed → confirmed bug | 1 (HR payroll-runs) | server error, exists |
+| Routes confirmed working | 6 | OK |

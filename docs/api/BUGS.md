@@ -40,4 +40,20 @@
 
 ## Status log
 - 2026-06: bugs confirmed via live probe.
-- IT ticketing (#1–5): backend build started — see commit.
+- IT ticketing (#1–5): **FIXED & VERIFIED IN PRODUCTION**. Built `it_tickets`,
+  `it_incidents`, `it_sla_configs` tables + migration `20260629140000_add_it_ticketing`
+  + service + controller routes. Live probe: POST /it/tickets→201 (priority
+  auto-computed), GET→200, PATCH /:id→200, escalate→201, resolve→201,
+  incidents→201, sla-config POST→201/GET→200. Commit `ce6eb517` + deploy.
+- HR payroll-runs (#14): re-probed with valid `{periodStart, periodEnd}` body →
+  still **HTTP 500**. Reclassified from VERIFY to **confirmed bug** (route exists
+  but errors). Needs server-side investigation.
+- Marketing assets/upload (#16): not re-probed (requires multipart/file).
+
+## Remaining open bugs (priority order)
+1. PayableDesk mark-paid (#9) — no backend route.
+2. HR payroll-runs 500 (#14) — exists but errors.
+3. Sales CreateOrder (#6) — repoint to close-won or add POST.
+4. HR repoints (#10–12).
+5. Marketing omnichannel (#15), talent (#13).
+6. Finance journal (#8) — design decision.
