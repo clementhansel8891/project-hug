@@ -40,6 +40,7 @@ depts = d.get('data',[]) if isinstance(d.get('data'), list) else (d if isinstanc
 print(depts[0]['id'] if depts else '')
 " <<< "$(get_body "$RESP")" 2>/dev/null)
 [ -n "$LIVE_DEPT_ID" ] && [ "$LIVE_DEPT_ID" != "None" ] && FIRST_DEPT_ID="$LIVE_DEPT_ID"
+echo "  [debug] Refreshed dept_id from API: $FIRST_DEPT_ID (tenant: $T)"
 
 section "Phase 3: Department Operations"
 
@@ -299,7 +300,7 @@ RESP=$(api_post "/procurement/requisitions" "{
 }" "$TOKEN" "$T" "$C")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
-assert_status_one_of "Create requisition" "$STATUS" "200" "201" "400"
+assert_status_one_of "Create requisition" "$STATUS" "200" "201"
 
 REQ_ID=$(json_nested "$BODY" "data.id")
 [ -z "$REQ_ID" ] && REQ_ID=$(json_nested "$BODY" "id")

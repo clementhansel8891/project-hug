@@ -623,14 +623,36 @@ export class ProcurementDbRepository extends IProcurementRepository {
       requesterId = employee.id;
     }
 
-    // Resolve department_id: if requesterDept is already a UUID, use it as-is;
+    // Resolve department_id: if requesterDept is already a UUID, verify it exists;
     // otherwise look up the department by name within the tenant.
     const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     let departmentId: string | null = null;
 
     if (data.requesterDept) {
       if (UUID_REGEX.test(data.requesterDept)) {
-        departmentId = data.requesterDept;
+        // Verify the UUID exists in the departments table for this tenant
+        const dept = await this.prisma.departments.findFirst({
+          where: { id: data.requesterDept, tenant_id: ctx.tenant_id },
+          select: { id: true },
+        });
+        if (dept) {
+          departmentId = dept.id;
+        } else {
+          // UUID doesn't exist in this tenant's departments, try without tenant filter
+          // (some schemas don't have tenant_id on departments)
+          const deptGlobal = await this.prisma.departments.findFirst({
+            where: { id: data.requesterDept },
+            select: { id: true },
+          });
+          if (deptGlobal) {
+            departmentId = deptGlobal.id;
+          } else {
+            throw new BadRequestException(
+              `Department with ID '${data.requesterDept}' not found. ` +
+                `Provide a valid department UUID or name.`,
+            );
+          }
+        }
       } else {
         const department = await this.prisma.departments.findFirst({
           where: { tenant_id: ctx.tenant_id, name: data.requesterDept },
