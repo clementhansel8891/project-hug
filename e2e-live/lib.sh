@@ -147,7 +147,7 @@ assert_status() {
   local test_name="$1"
   local expected="$2"
   local actual="$3"
-  local body="$4"
+  local body="${4:-}"
 
   if [ "$actual" = "$expected" ]; then
     echo -e "  ${GREEN}✓${NC} $test_name (${actual})"

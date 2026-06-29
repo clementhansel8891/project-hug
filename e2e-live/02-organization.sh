@@ -68,7 +68,8 @@ for EMP_DATA in "${EMPLOYEES[@]}"; do
   RESP=$(api_post "/auth/register" "{
     \"email\": \"$EMAIL\",
     \"password\": \"TestEmp2026!\",
-    \"name\": \"$NAME\"
+    \"first_name\": \"$(echo $NAME | cut -d' ' -f1)\",
+    \"last_name\": \"$(echo $NAME | cut -d' ' -f2-)\"
   }")
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Register $NAME" "$STATUS" "200" "201" "409"

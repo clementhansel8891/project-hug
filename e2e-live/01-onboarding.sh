@@ -20,7 +20,8 @@ subsection "1.1 Register new user"
 RESP=$(api_post "/auth/register" "{
   \"email\": \"$OWNER_EMAIL\",
   \"password\": \"$OWNER_PASSWORD\",
-  \"name\": \"E2E Test Owner\"
+  \"first_name\": \"E2E Test\",
+  \"last_name\": \"Owner\"
 }")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
