@@ -76,12 +76,31 @@ export class RetailGatewayService {
     clientSecret: string | undefined,
   ): Promise<PublicProductView[]> {
     const channel = await this.authenticateChannel(ctx, clientId, clientSecret);
-    const { items: products } = await this.retailService.listProducts(
-      ctx,
-      { page: 1, pageSize: 200 },
-    );
     
-    return Promise.all(products.map(async (product) => {
+    // Check if channel has specific product selections configured
+    const channelProducts = await this.prisma.retail_channel_products.findMany({
+      where: { tenant_id: ctx.tenant_id, channel_id: channel.id, visible: true },
+      include: { item_masters: true },
+    });
+    
+    let products: any[];
+    
+    if (channelProducts.length > 0) {
+      // Use channel-specific product list (from the Product Wizard)
+      products = channelProducts.map((cp: any) => ({
+        id: cp.item_masters.id,
+        name: cp.item_masters.name,
+        sku: cp.item_masters.sku,
+        base_price: cp.item_masters.selling_price || cp.item_masters.base_price,
+        category_id: cp.item_masters.category_id,
+      }));
+    } else {
+      // Fallback: return all products from master inventory (no wizard config yet)
+      const result = await this.retailService.listProducts(ctx, { page: 1, pageSize: 200 });
+      products = result.items || result;
+    }
+    
+    return Promise.all(products.map(async (product: any) => {
       const stock = await this.retailService.getChannelStockStatus(ctx, channel.id, product.id);
       return {
         id: product.id,
