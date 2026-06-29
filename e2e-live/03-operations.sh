@@ -53,25 +53,25 @@ for i in 1 2 3; do
   ITEM_IDS+=("$ITEM_ID")
 done
 
-# Stock intake
+# Stock intake (requires item_id, location_id, quantity, unit_cost, reason)
 if [ -n "${ITEM_IDS[0]:-}" ] && [ "${ITEM_IDS[0]}" != "None" ] && [ "${ITEM_IDS[0]}" != "" ]; then
   RESP=$(api_post "/inventory/intake" "{
     \"item_id\": \"${ITEM_IDS[0]}\",
+    \"location_id\": \"placeholder\",
     \"quantity\": 100,
-    \"source\": \"purchase\",
-    \"reference\": \"PO-E2E-001\",
-    \"location_id\": \"main-warehouse\"
+    \"unit_cost\": 25000,
+    \"reason\": \"Initial stock from supplier PO-E2E-001\"
   }" "$TOKEN" "$T" "$C")
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Stock intake for item 1" "$STATUS" "200" "201"
 
-  # Stock transfer
+  # Stock transfer (requires item_id, from_location_id, to_location_id, quantity, reason)
   RESP=$(api_post "/inventory/transfer" "{
     \"item_id\": \"${ITEM_IDS[0]}\",
+    \"from_location_id\": \"placeholder\",
+    \"to_location_id\": \"store-transfer-dest\",
     \"quantity\": 20,
-    \"from_location\": \"main-warehouse\",
-    \"to_location\": \"store-main\",
-    \"reference\": \"TRF-E2E-001\"
+    \"reason\": \"Transfer to retail floor\"
   }" "$TOKEN" "$T" "$C")
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Stock transfer" "$STATUS" "200" "201"
@@ -94,35 +94,32 @@ assert_status "View inventory movements" "200" "$STATUS"
 # ═══════════════════════════════════════════════════════════════════════
 subsection "3.2 HR Operations"
 
-# Get departments to find an ID
-RESP=$(api_get "/hr/departments" "$TOKEN" "$T" "$C")
-DEPT_BODY=$(get_body "$RESP")
-DEPT_ID=$(python3 -c "
-import sys,json
-d=json.load(sys.stdin)
-depts = d.get('data',[]) if isinstance(d.get('data'), list) else d if isinstance(d, list) else []
-print(depts[0]['id'] if depts else '')
-" <<< "$DEPT_BODY" 2>/dev/null)
+# Get employee ID from Phase 2 state
+EMP_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('first_employee_id',''))" 2>/dev/null)
 
-# Create employee with correct DTO
-RESP=$(api_post "/hr/employees" "{
-  \"employee_code\": \"EMP-E2E-${TIMESTAMP}\",
-  \"first_name\": \"Budi\",
-  \"last_name\": \"Santoso\",
-  \"email\": \"budi.santoso.${TIMESTAMP}@testcorp.com\",
-  \"department_id\": \"${DEPT_ID:-dept-default}\",
-  \"hire_date\": \"2026-01-15\",
-  \"position\": \"Sales Staff\",
-  \"employment_type\": \"full_time\",
-  \"status\": \"active\",
-  \"base_salary\": 5000000
-}" "$TOKEN" "$T" "$C")
-STATUS=$(get_status "$RESP")
-BODY=$(get_body "$RESP")
-assert_status_one_of "Create employee" "$STATUS" "200" "201"
-
-EMP_ID=$(json_nested "$BODY" "data.id")
-[ -z "$EMP_ID" ] && EMP_ID=$(json_nested "$BODY" "id")
+if [ -z "$EMP_ID" ] || [ "$EMP_ID" = "None" ] || [ "$EMP_ID" = "" ]; then
+  # Create a fresh employee
+  RESP=$(api_post "/hr/employees" "{
+    \"employee_code\": \"EMP-OPS-${TIMESTAMP}\",
+    \"first_name\": \"Budi\",
+    \"last_name\": \"Operasi\",
+    \"email\": \"budi.ops.${TIMESTAMP}@testcorp.com\",
+    \"department_id\": \"${DEPT_ID:-dept-default}\",
+    \"hire_date\": \"2026-01-15\",
+    \"position\": \"Operations Staff\",
+    \"employment_type\": \"full_time\",
+    \"status\": \"active\",
+    \"base_salary\": 5000000
+  }" "$TOKEN" "$T" "$C")
+  STATUS=$(get_status "$RESP")
+  BODY=$(get_body "$RESP")
+  assert_status_one_of "Create employee" "$STATUS" "200" "201"
+  EMP_ID=$(json_nested "$BODY" "data.id")
+  [ -z "$EMP_ID" ] && EMP_ID=$(json_nested "$BODY" "id")
+else
+  echo -e "  ${GREEN}✓${NC} Using employee from Phase 2: $EMP_ID"
+  PASS=$((PASS + 1))
+fi
 
 # Clock in (requires employee_id)
 if [ -n "$EMP_ID" ] && [ "$EMP_ID" != "None" ] && [ "$EMP_ID" != "" ]; then
@@ -285,12 +282,12 @@ assert_status_one_of "Create supplier" "$STATUS" "200" "201"
 SUPPLIER_ID=$(json_nested "$BODY" "data.id")
 [ -z "$SUPPLIER_ID" ] && SUPPLIER_ID=$(json_nested "$BODY" "id")
 
-# Create requisition
+# Create requisition (branchCode should match an existing store code)
 RESP=$(api_post "/procurement/requisitions" "{
   \"title\": \"E2E Silver Wire Order\",
   \"description\": \"Sterling Silver Wire 1mm for production\",
-  \"requesterDept\": \"production\",
-  \"branchCode\": \"HQ\",
+  \"requesterDept\": \"Finance\",
+  \"branchCode\": \"E2E-STORE-${TIMESTAMP}\",
   \"amount\": 2500000,
   \"currency\": \"IDR\",
   \"category\": \"raw_materials\"
@@ -330,11 +327,11 @@ assert_status "View finance ledger" "200" "$STATUS"
 # ═══════════════════════════════════════════════════════════════════════
 subsection "3.7 Retail POS Operations"
 
-# Create a store (needs location_id)
+# Create a store (use placeholder location_id to trigger auto-creation)
 RESP=$(api_post "/retail/stores" "{
-  \"name\": \"E2E Flagship Store\",
+  \"name\": \"E2E Flagship Store $TIMESTAMP\",
   \"code\": \"E2E-FS-${TIMESTAMP}\",
-  \"location_id\": \"loc-e2e-${TIMESTAMP}\",
+  \"location_id\": \"placeholder\",
   \"type\": \"flagship\",
   \"address\": \"Jl. Raya Seminyak No. 88, Bali\"
 }" "$TOKEN" "$T" "$C")

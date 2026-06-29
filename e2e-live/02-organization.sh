@@ -115,7 +115,7 @@ subsection "2.4 Create retail store"
 RESP=$(api_post "/retail/stores" "{
   \"name\": \"E2E Main Store\",
   \"code\": \"E2E-STORE-${TIMESTAMP}\",
-  \"location_id\": \"loc-e2e-${TIMESTAMP}\",
+  \"location_id\": \"placeholder\",
   \"type\": \"flagship\",
   \"address\": \"Jl. Test No. 1, Bali\"
 }" "$OWNER_TOKEN" "$TENANT_ID" "$COMPANY_ID")
