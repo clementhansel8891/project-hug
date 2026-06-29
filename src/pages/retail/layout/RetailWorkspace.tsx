@@ -112,7 +112,7 @@ const RetailWorkspace = () => {
               </Badge>
               <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                Zenvix Governance Active
+                Estela Gea Governance Active
               </span>
             </div>
             <h2 className="text-4xl font-black italic tracking-tighter mb-2">

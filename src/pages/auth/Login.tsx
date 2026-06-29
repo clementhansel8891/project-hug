@@ -69,7 +69,7 @@ export default function Login() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <h2 className="text-3xl font-black tracking-tight text-foreground mb-2">ZENVIX</h2>
+            <h2 className="text-3xl font-black tracking-tight text-foreground mb-2">ESTELA GEA</h2>
             <p className="text-muted-foreground text-xs font-bold uppercase tracking-[0.2em]">Intelligent Workspace</p>
           </div>
 
@@ -156,7 +156,7 @@ export default function Login() {
 
           <div className="mt-10 pt-8 border-t border-border/50 text-center">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-              New to Zenvix?{" "}
+              New to Estela Gea?{" "}
               <Link to="/auth/register" className="text-primary hover:text-primary/80 transition-colors ml-1">
                 Create Organization
               </Link>

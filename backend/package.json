@@ -1,8 +1,8 @@
 {
-  "name": "zenvix-backend",
+  "name": "estelagea-backend",
   "version": "1.0.4",
-  "description": "Zenvix Platform Backend - Multi-Tenant Business OS",
-  "author": "Zenvix Team",
+  "description": "Estela Gea Platform Backend - Multi-Tenant Business OS",
+  "author": "Estela Gea",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

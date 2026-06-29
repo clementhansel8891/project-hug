@@ -53,7 +53,7 @@ function AppRoutes() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted text-muted-foreground">
-        Loading Zenvix Environment...
+        Loading Estela Gea Platform...
       </div>
     );
   }

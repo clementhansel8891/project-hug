@@ -72,7 +72,7 @@ async function bootstrap() {
       return res.status(200).json({
         status: "ok",
         uptime: process.uptime(),
-        service: "zenvix-backend",
+        service: "estelagea-backend",
         mode: process.env.PERSISTENCE_MODE || "mock",
         timestamp: new Date().toISOString(),
       });
@@ -144,8 +144,8 @@ async function bootstrap() {
   console.log("║                                                        ║");
   console.log(
     process.env.PERSISTENCE_MODE === "db"
-      ? "║   🚀 Zenvix Platform Backend - DB_PERSISTENCE         ║"
-      : "║   🚀 Zenvix Platform Backend - MOCK_MODE              ║",
+      ? "║   🚀 Estela Gea Platform Backend - DB_PERSISTENCE         ║"
+      : "║   🚀 Estela Gea Platform Backend - MOCK_MODE              ║",
   );
   console.log("║                                                        ║");
   console.log("╠════════════════════════════════════════════════════════╣");
