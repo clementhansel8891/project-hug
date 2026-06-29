@@ -31,6 +31,16 @@ STORE_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('st
 FIRST_DEPT_ID=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('first_dept_id',''))" 2>/dev/null)
 EMP_ID_FROM_PHASE2=$(python3 -c "import json; print(json.load(open('$STATE_FILE')).get('first_employee_id',''))" 2>/dev/null)
 
+# Refresh department ID from live API (in case state is stale)
+RESP=$(api_get "/hr/departments" "$TOKEN" "$T" "$C")
+LIVE_DEPT_ID=$(python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+depts = d.get('data',[]) if isinstance(d.get('data'), list) else (d if isinstance(d, list) else [])
+print(depts[0]['id'] if depts else '')
+" <<< "$(get_body "$RESP")" 2>/dev/null)
+[ -n "$LIVE_DEPT_ID" ] && [ "$LIVE_DEPT_ID" != "None" ] && FIRST_DEPT_ID="$LIVE_DEPT_ID"
+
 section "Phase 3: Department Operations"
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -80,11 +90,11 @@ if [ -n "${ITEM_IDS[0]:-}" ] && [ "${ITEM_IDS[0]}" != "None" ] && [ "${ITEM_IDS[
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Stock intake for item 1" "$STATUS" "200" "201"
 
-  # Stock transfer
+  # Stock transfer (use a different to_location_id to avoid same-location error)
   RESP=$(api_post "/inventory/transfer" "{
     \"item_id\": \"${ITEM_IDS[0]}\",
     \"from_location_id\": \"$LOCATION_ID\",
-    \"to_location_id\": \"$LOCATION_ID\",
+    \"to_location_id\": \"transfer-dest-${TIMESTAMP}\",
     \"quantity\": 20,
     \"reason\": \"Transfer to retail floor\"
   }" "$TOKEN" "$T" "$C")
@@ -276,11 +286,11 @@ assert_status_one_of "Create supplier" "$STATUS" "200" "201"
 SUPPLIER_ID=$(json_nested "$BODY" "data.id")
 [ -z "$SUPPLIER_ID" ] && SUPPLIER_ID=$(json_nested "$BODY" "id")
 
-# Create requisition (use free-text branchCode and requesterDept)
+# Create requisition (requesterDept maps to department lookup, use actual dept name)
 RESP=$(api_post "/procurement/requisitions" "{
   \"title\": \"E2E Silver Wire Order\",
   \"description\": \"Sterling Silver Wire 1mm for production\",
-  \"requesterDept\": \"Finance\",
+  \"requesterDept\": \"$FIRST_DEPT_ID\",
   \"branchCode\": \"HQ\",
   \"amount\": 2500000,
   \"currency\": \"IDR\",
