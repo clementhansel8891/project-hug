@@ -34,6 +34,7 @@ import { IotModule } from "./shared/iot/iot.module";
 import { ReportingModule } from "./shared/reporting/reporting.module";
 import { SettingsModule } from "./core/settings/settings.module";
 import { IncentivesModule } from "./core/incentives/incentives.module";
+import { SyncModule } from "./support/sync/sync.module";
 
 
 import { APP_GUARD, APP_PIPE } from "@nestjs/core";
@@ -99,6 +100,7 @@ import { AppCacheModule } from "./shared/cache";
     IotModule,
     SettingsModule,
     IncentivesModule,
+    SyncModule,
   ],
   controllers: [HealthController],
   providers: [
