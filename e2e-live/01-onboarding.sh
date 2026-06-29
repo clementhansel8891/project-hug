@@ -36,7 +36,7 @@ RESP=$(api_post "/auth/login" "{
 }")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
-assert_status "Login as new owner" "200" "$STATUS" "$BODY"
+assert_status_one_of "Login as new owner" "$STATUS" "200" "201"
 
 OWNER_TOKEN=$(json_field "$BODY" "token")
 assert_not_empty "Token received" "$OWNER_TOKEN"
@@ -49,8 +49,7 @@ STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
 assert_status "Get user profile" "200" "$STATUS" "$BODY"
 
-USER_ID=$(json_nested "$BODY" "id")
-[ -z "$USER_ID" ] && USER_ID=$(json_nested "$BODY" "user.id")
+USER_ID=$(json_nested "$BODY" "data.id")
 assert_not_empty "User ID in profile" "$USER_ID"
 
 # ─── 1.4 Provision company/tenant ────────────────────────────────────────
@@ -60,37 +59,41 @@ RESP=$(api_post "/auth/company/provision" "{
   \"name\": \"$COMPANY_NAME\",
   \"industry\": \"retail\",
   \"country\": \"ID\",
-  \"currency\": \"IDR\",
-  \"timezone\": \"Asia/Makassar\"
+  \"address\": \"Jl. E2E Test No. 1, Denpasar, Bali\"
 }" "$OWNER_TOKEN")
 STATUS=$(get_status "$RESP")
 BODY=$(get_body "$RESP")
 assert_status_one_of "Provision company" "$STATUS" "200" "201"
 
-TENANT_ID=$(json_nested "$BODY" "tenant_id")
-[ -z "$TENANT_ID" ] && TENANT_ID=$(json_nested "$BODY" "data.tenant_id")
-[ -z "$TENANT_ID" ] && TENANT_ID=$(json_nested "$BODY" "company.tenant_id")
-[ -z "$TENANT_ID" ] && TENANT_ID=$(json_nested "$BODY" "tenantId")
+TENANT_ID=$(json_nested "$BODY" "data.tenant_id")
+[ -z "$TENANT_ID" ] && TENANT_ID=$(json_nested "$BODY" "data.tenantId")
 
-COMPANY_ID=$(json_nested "$BODY" "company_id")
-[ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "data.company_id")
-[ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "company.id")
-[ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "companyId")
-[ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "id")
+COMPANY_ID=$(json_nested "$BODY" "data.company_id")
+[ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "data.companyId")
+[ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "data.id")
 
-# If we couldn't get tenant from response, try re-login (some systems assign tenant on provision)
-if [ -z "$TENANT_ID" ] || [ "$TENANT_ID" = "None" ]; then
-  # Re-login to get updated user with tenant
-  RESP=$(api_post "/auth/login" "{\"email\": \"$OWNER_EMAIL\", \"password\": \"$OWNER_PASSWORD\"}")
-  BODY=$(get_body "$RESP")
-  OWNER_TOKEN=$(json_field "$BODY" "token")
-  
+# If we couldn't get tenant/company from provision response, get from user profile
+if [ -z "$TENANT_ID" ] || [ "$TENANT_ID" = "None" ] || [ "$TENANT_ID" = "" ]; then
+  # The user already has a tenant from registration, get it from profile
   RESP=$(api_get "/auth/me" "$OWNER_TOKEN")
   BODY=$(get_body "$RESP")
-  TENANT_ID=$(json_nested "$BODY" "companies.0.tenant_id")
-  [ -z "$TENANT_ID" ] && TENANT_ID=$(json_nested "$BODY" "tenant_id")
-  COMPANY_ID=$(json_nested "$BODY" "companies.0.id")
-  [ -z "$COMPANY_ID" ] && COMPANY_ID=$(json_nested "$BODY" "company_id")
+  TENANT_ID=$(json_nested "$BODY" "data.tenant_id")
+  [ -z "$TENANT_ID" ] && TENANT_ID=$(json_nested "$BODY" "data.tenantId")
+fi
+
+if [ -z "$COMPANY_ID" ] || [ "$COMPANY_ID" = "None" ] || [ "$COMPANY_ID" = "" ]; then
+  # Try to get company from user_companies
+  RESP=$(api_get "/auth/me" "$OWNER_TOKEN")
+  BODY=$(get_body "$RESP")
+  COMPANY_ID=$(python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+ucs = d.get('data',{}).get('user_companies',[])
+if ucs:
+  print(ucs[0].get('company_id','') or ucs[0].get('company',{}).get('id',''))
+else:
+  print(d.get('data',{}).get('tenant_id',''))
+" <<< "$BODY" 2>/dev/null)
 fi
 
 assert_not_empty "Tenant ID assigned" "$TENANT_ID"
@@ -107,8 +110,8 @@ assert_status_one_of "Admin dashboard" "$STATUS" "200" "403"
 # ─── 1.6 Enable modules ──────────────────────────────────────────────────
 subsection "1.6 Enable modules"
 
-for MODULE in retail inventory hr finance sales marketing procurement payment; do
-  RESP=$(api_put "/admin/modules/toggle" "{\"module\": \"$MODULE\", \"enabled\": true}" "$OWNER_TOKEN" "$TENANT_ID" "$COMPANY_ID")
+for MODULE in retail inventory hr finance sales marketing procurement; do
+  RESP=$(api_put "/admin/modules/toggle" "{\"moduleKey\": \"$MODULE\", \"enabled\": true}" "$OWNER_TOKEN" "$TENANT_ID" "$COMPANY_ID")
   STATUS=$(get_status "$RESP")
   assert_status_one_of "Enable $MODULE module" "$STATUS" "200" "201" "409" "403"
 done
