@@ -9,6 +9,7 @@ import { UpdateSettingDto } from "../dto/update-setting.dto";
 import { Device } from "../entities/device.entity";
 import { Setting } from "../entities/setting.entity";
 import { IITSettingsRepository } from "./it-settings.repository.interface";
+import { mapPrismaError } from "../../_shared/errors/prisma-error.mapper";
 
 @Injectable()
 export class ITSettingsDbRepository extends IITSettingsRepository {
@@ -147,35 +148,39 @@ export class ITSettingsDbRepository extends IITSettingsRepository {
     key: string,
     data: UpdateSettingDto,
   ): Promise<Setting> {
-    const updated = await this.prisma.it_settings.upsert({
-      where: { tenant_id_key: { tenant_id: ctx.tenant_id, key } },
-      update: {
-        value: data.value,
-        category: data.category,
-        is_public: data.isPublic,
-        description: data.description,
-      },
-      create: {
-        tenant_id: ctx.tenant_id,
-        company_id: ctx.company_id || undefined,
-        key,
-        value: data.value,
-        category: data.category || "general",
-        is_public: data.isPublic || false,
-        description: data.description,
-      },
-    });
+    try {
+      const updated = await this.prisma.it_settings.upsert({
+        where: { tenant_id_key: { tenant_id: ctx.tenant_id, key } },
+        update: {
+          value: data.value,
+          category: data.category,
+          is_public: data.isPublic,
+          description: data.description,
+        },
+        create: {
+          tenant_id: ctx.tenant_id,
+          company_id: ctx.company_id || undefined,
+          key,
+          value: data.value,
+          category: data.category || "general",
+          is_public: data.isPublic || false,
+          description: data.description,
+        },
+      });
 
-    return {
-      id: updated.id,
-      tenant_id: updated.tenant_id,
-      key: updated.key,
-      value: updated.value,
-      category: updated.category as any,
-      isPublic: updated.is_public,
-      description: updated.description || undefined,
-      created_at: updated.created_at,
-      updated_at: updated.updated_at,
-    };
+      return {
+        id: updated.id,
+        tenant_id: updated.tenant_id,
+        key: updated.key,
+        value: updated.value,
+        category: updated.category as any,
+        isPublic: updated.is_public,
+        description: updated.description || undefined,
+        created_at: updated.created_at,
+        updated_at: updated.updated_at,
+      };
+    } catch (error) {
+      mapPrismaError(error, 'ITSetting');
+    }
   }
 }

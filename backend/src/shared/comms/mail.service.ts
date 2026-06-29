@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../persistence/prisma.service';
 import { NotificationService } from './notification.service';
 import { NotificationGateway } from './notification.gateway';
+import { mapPrismaError } from '../../core/_shared/errors/prisma-error.mapper';
 
 @Injectable()
 export class MailService {
@@ -97,6 +98,14 @@ export class MailService {
     bodyText: string;
     status?: string;
   }) {
+    if (!params.toAddresses || params.toAddresses.length === 0) {
+      throw new BadRequestException('At least one recipient address is required.');
+    }
+    if (!params.subject) {
+      throw new BadRequestException('Subject is required.');
+    }
+
+    try {
     // 1. Get or Create user's sender account
     let account = await this.prisma.mail_accounts.findFirst({
       where: { tenant_id: params.tenant_id, user_id: params.user_id, deleted_at: null }
@@ -175,6 +184,9 @@ export class MailService {
     }
 
     return message;
+    } catch (error) {
+      mapPrismaError(error, 'MailSend');
+    }
   }
 
   async getMailAccounts(tenant_id: string, user_id: string) {

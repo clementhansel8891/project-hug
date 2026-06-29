@@ -3,6 +3,8 @@ import { PrismaService } from '../../persistence/prisma.service';
 import { IWarehouseRepository } from './repositories/interfaces/warehouse.repository.interface';
 import { TenantContext } from '../../gateway/tenant-context.interface';
 import { MultiTenancyUtil } from '../../shared/utils/multi-tenancy.util';
+import { mapPrismaError } from '../../core/_shared/errors/prisma-error.mapper';
+import { CreateBinDto } from './dto/create-bin.dto';
 
 @Injectable()
 export class WarehouseService {
@@ -35,13 +37,17 @@ export class WarehouseService {
     });
   }
 
-  async createBin(ctx: TenantContext, locationId: string, data: any) {
-    return (this.prisma as any).warehouse_bins.create({
-      data: MultiTenancyUtil.wrapCreate(ctx, {
-        ...data,
-        location_id: locationId,
-      }),
-    });
+  async createBin(ctx: TenantContext, locationId: string, data: CreateBinDto) {
+    try {
+      return await (this.prisma as any).warehouse_bins.create({
+        data: MultiTenancyUtil.wrapCreate(ctx, {
+          ...data,
+          location_id: locationId,
+        }),
+      });
+    } catch (error) {
+      mapPrismaError(error, 'WarehouseBin');
+    }
   }
 
   async getBinStock(ctx: TenantContext, binId: string, skip?: number, take?: number) {

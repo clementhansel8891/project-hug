@@ -8,6 +8,7 @@ import {
   UseGuards,
   Req,
   UseInterceptors,
+  BadRequestException,
 } from "@nestjs/common";
 import { Request } from "express";
 import { WarehouseService } from "./warehouse.service";
@@ -18,6 +19,7 @@ import { RolesGuard } from "../../shared/guards/roles.guard";
 import { RequiredModule } from "../../shared/decorators/required-module.decorator";
 import { PaginationPipe, PaginationParams } from "../../shared/pipes/pagination.pipe";
 import { CacheInterceptor, CacheTTL, CacheInvalidationHelper } from "../../shared/cache";
+import { CreateBinDto } from "./dto/create-bin.dto";
 
 interface RequestWithTenant extends Request {
   tenantContext: TenantContext;
@@ -60,8 +62,11 @@ export class WarehouseController {
   async createBin(
     @Req() request: RequestWithTenant,
     @Query("locationId") locationId: string,
-    @Body() data: any,
+    @Body() data: CreateBinDto,
   ) {
+    if (!locationId) {
+      throw new BadRequestException('locationId query parameter is required.');
+    }
     const ctx = request.tenantContext;
     const bin = await this.warehouseService.createBin(ctx, locationId, data);
     await this.cacheHelper.invalidateAll();

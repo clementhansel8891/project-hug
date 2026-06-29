@@ -234,6 +234,12 @@ print_summary() {
   fi
 
   # Write results to file
+  # Build errors JSON array safely using python3 (avoids sed issues with special chars)
+  local errors_json="[]"
+  if [ ${#ERRORS[@]} -gt 0 ]; then
+    errors_json=$(printf '%s\n' "${ERRORS[@]}" | python3 -c "import json,sys; print(json.dumps([l.strip() for l in sys.stdin if l.strip()]))" 2>/dev/null || echo "[]")
+  fi
+
   cat > "$RESULTS_DIR/${phase// /_}.json" << EOF
 {
   "phase": "$phase",
@@ -242,7 +248,7 @@ print_summary() {
   "fail": $FAIL,
   "skip": $SKIP,
   "total": $((PASS + FAIL + SKIP)),
-  "errors": $(python3 -c "import json; print(json.dumps([$(printf '"%s",' "${ERRORS[@]}" | sed 's/,$//'])))" 2>/dev/null || echo "[]")
+  "errors": $errors_json
 }
 EOF
 }

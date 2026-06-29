@@ -62,22 +62,27 @@ export class ReportingController {
       throw new BadRequestException('Report type and format are required.');
     }
 
-    const job = await this.jobService.createJob(
-      tenant_id,
-      user_id || 'system',
-      body.report_type,
-      body.format,
-      body.payload
-    );
+    try {
+      const job = await this.jobService.createJob(
+        tenant_id,
+        user_id || 'system',
+        body.report_type,
+        body.format,
+        body.payload
+      );
 
-    await this.cacheHelper.invalidateAll();
+      await this.cacheHelper.invalidateAll();
 
-    return { 
-      success: true, 
-      job_id: job.id, 
-      status: job.status,
-      message: 'Report generation queued successfully.' 
-    };
+      return { 
+        success: true, 
+        job_id: job.id, 
+        status: job.status,
+        message: 'Report generation queued successfully.' 
+      };
+    } catch (error) {
+      const { mapPrismaError } = await import('../../core/_shared/errors/prisma-error.mapper');
+      mapPrismaError(error, 'ReportGeneration');
+    }
   }
 
   @Get(':id/status')
