@@ -159,6 +159,9 @@ model tenants {
   it_provisioning_requests               it_provisioning_requests[]
   it_settings                            it_settings[]
   it_system_health                       it_system_health[]
+  it_tickets                             it_tickets[]
+  it_incidents                           it_incidents[]
+  it_sla_configs                         it_sla_configs[]
   item_images                            item_images[]
   item_masters                           item_masters[]
   job_requisitions                       job_requisitions[]
@@ -3390,6 +3393,69 @@ model it_system_health {
 
   @@index([tenant_id])
   @@index([company_id])
+}
+
+model it_tickets {
+  id                  String    @id @default(uuid())
+  tenant_id           String
+  company_id          String?
+  title               String
+  description         String
+  category            String
+  impact              String
+  priority            String    @default("Medium")
+  status              String    @default("open")
+  assignee_id         String?
+  reporter_id         String?
+  escalation_level    Int       @default(0)
+  escalated_to        String?
+  escalation_reason   String?
+  resolution_notes    String?
+  resolution_category String?
+  resolved_by         String?
+  resolved_at         DateTime?
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @default(now())
+  tenants             tenants   @relation(fields: [tenant_id], references: [id])
+
+  @@index([tenant_id])
+  @@index([company_id])
+  @@index([status])
+}
+
+model it_incidents {
+  id               String   @id @default(uuid())
+  tenant_id        String
+  company_id       String?
+  title            String
+  description      String
+  type             String
+  severity         String
+  affected_systems String
+  discovered_at    DateTime
+  status           String   @default("open")
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
+  tenants          tenants  @relation(fields: [tenant_id], references: [id])
+
+  @@index([tenant_id])
+  @@index([company_id])
+  @@index([severity])
+}
+
+model it_sla_configs {
+  id                      String   @id @default(uuid())
+  tenant_id               String
+  company_id              String?
+  priority                String
+  response_time_minutes   Int
+  resolution_time_minutes Int
+  created_at              DateTime @default(now())
+  updated_at              DateTime @default(now())
+  tenants                 tenants  @relation(fields: [tenant_id], references: [id])
+
+  @@unique([tenant_id, priority])
+  @@index([tenant_id])
 }
 
 model item_masters {
