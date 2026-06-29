@@ -1,5 +1,5 @@
 // @ts-nocheck — void_requests table reference pending migration sync
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException, ConflictException } from "@nestjs/common";
 import { PrismaService } from "../../../persistence/prisma.service";
 import {
   IInventoryRepository,
@@ -323,35 +323,51 @@ export class InventoryDbRepository implements IInventoryRepository {
     });
 
     if (!category) {
-      category = await this.prisma.product_categories.create({
+      try {
+        category = await this.prisma.product_categories.create({
+          data: MultiTenancyUtil.wrapCreate(ctx, {
+            id: uuidv4(),
+            updated_at: new Date(),
+            name: data.category 
+          }),
+        });
+      } catch (error) {
+        if (error?.code === 'P2002') {
+          const target = error?.meta?.target;
+          throw new ConflictException(`Record already exists: duplicate value for ${target}`);
+        }
+        throw error;
+      }
+    }
+
+    try {
+      const product = await this.prisma.item_masters.create({
         data: MultiTenancyUtil.wrapCreate(ctx, {
           id: uuidv4(),
           updated_at: new Date(),
-          name: data.category 
+          category_id: category.id,
+          name: data.name,
+          sku: data.sku,
+          barcode: data.sku,
+          description: data.description ?? null,
+          unit: data.uom ?? "unit",
+          base_price: data.base_price ?? 0,
+          tax_rate: (data as any).tax_rate ?? 0,
+          module_tags: (data as any).module_tags ?? [],
+          status: data.status || "active",
+          department_id: (data as any).department_id || null,
         }),
+        include: { product_categories: true },
       });
+
+      return this.mapToInventoryItem(product);
+    } catch (error) {
+      if (error?.code === 'P2002') {
+        const target = error?.meta?.target;
+        throw new ConflictException(`Record already exists: duplicate value for ${target}`);
+      }
+      throw error;
     }
-
-    const product = await this.prisma.item_masters.create({
-      data: MultiTenancyUtil.wrapCreate(ctx, {
-        id: uuidv4(),
-        updated_at: new Date(),
-        category_id: category.id,
-        name: data.name,
-        sku: data.sku,
-        barcode: data.sku,
-        description: data.description ?? null,
-        unit: data.uom ?? "unit",
-        base_price: data.base_price ?? 0,
-        tax_rate: (data as any).tax_rate ?? 0,
-        module_tags: (data as any).module_tags ?? [],
-        status: data.status || "active",
-        department_id: (data as any).department_id || null,
-      }),
-      include: { product_categories: true },
-    });
-
-    return this.mapToInventoryItem(product);
   }
 
   async getBalances(ctx: TenantContext,

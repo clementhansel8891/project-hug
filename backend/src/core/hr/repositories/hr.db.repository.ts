@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Injectable } from "@nestjs/common";
+import { Injectable, ConflictException } from "@nestjs/common";
 import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { PrismaService } from "../../../persistence/prisma.service";
@@ -271,26 +271,36 @@ export class HRDbRepository implements IHRRepository {
     // afterwards so the resolved scope and correct value types always win.
     const mapped = mapEmployeeFieldsToColumns(data as unknown as Record<string, unknown>);
 
-    const employee = await db.employees.create({
-      data: {
-        ...mapped,
-        id: data.id || undefined,
-        tenant_id: tenant_id,
-        company_id: company_id,
-        location_id: location_id as string,
-        user_id: user.id, // Link to the user account
-        positions: (mapped.positions as string) || "Staff",
-        employment_type: (mapped.employment_type as string) || "full_time",
-        status: (mapped.status as string) || "active",
-        base_salary: data.base_salary != null ? new Prisma.Decimal(data.base_salary.toString()) : undefined,
-        hourly_rate: data.hourly_rate != null ? new Prisma.Decimal(data.hourly_rate.toString()) : undefined,
-        hire_date: data.hire_date ? new Date(data.hire_date) : new Date(),
-        updated_at: new Date(),
-      } as Prisma.employeesUncheckedCreateInput,
-      include: { locations: true,
-        departments: true,
-      },
-    });
+    const employee = await (async () => {
+      try {
+        return await db.employees.create({
+          data: {
+            ...mapped,
+            id: data.id || undefined,
+            tenant_id: tenant_id,
+            company_id: company_id,
+            location_id: location_id as string,
+            user_id: user.id, // Link to the user account
+            positions: (mapped.positions as string) || "Staff",
+            employment_type: (mapped.employment_type as string) || "full_time",
+            status: (mapped.status as string) || "active",
+            base_salary: data.base_salary != null ? new Prisma.Decimal(data.base_salary.toString()) : undefined,
+            hourly_rate: data.hourly_rate != null ? new Prisma.Decimal(data.hourly_rate.toString()) : undefined,
+            hire_date: data.hire_date ? new Date(data.hire_date) : new Date(),
+            updated_at: new Date(),
+          } as Prisma.employeesUncheckedCreateInput,
+          include: { locations: true,
+            departments: true,
+          },
+        });
+      } catch (error) {
+        if (error?.code === 'P2002') {
+          const target = error?.meta?.target;
+          throw new ConflictException(`Record already exists: duplicate value for ${target}`);
+        }
+        throw error;
+      }
+    })();
 
     return this.mapEmployee(employee);
   }

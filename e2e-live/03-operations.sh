@@ -37,8 +37,8 @@ ITEM_IDS=()
 for i in 1 2 3; do
   RESP=$(api_post "/inventory/items" "{
     \"sku\": \"E2E-SKU-${TIMESTAMP}-${i}\",
-    \"name\": \"E2E Silver Ring Type $i\",
-    \"category\": \"FINISHED_GOOD\",
+    \"name\": \"E2E Silver Ring Type $i - $TIMESTAMP\",
+    \"category\": \"Jewelry-${TIMESTAMP}-${i}\",
     \"uom\": \"pcs\",
     \"base_price\": $((i * 50000)),
     \"selling_price\": $((i * 75000)),
