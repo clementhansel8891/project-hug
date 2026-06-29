@@ -76,13 +76,16 @@ for EMP_DATA in "${EMPLOYEES[@]}"; do
   
   # Create employee record
   RESP=$(api_post "/hr/employees" "{
-    \"name\": \"$NAME\",
+    \"employee_code\": \"EMP-${KEY}-${TIMESTAMP}\",
+    \"first_name\": \"$(echo $NAME | cut -d' ' -f1)\",
+    \"last_name\": \"$(echo $NAME | cut -d' ' -f2-)\",
     \"email\": \"$EMAIL\",
-    \"department\": \"$DEPT\",
-    \"role\": \"$ROLE\",
+    \"department_id\": \"${DEPT_IDS[0]:-dept-default}\",
+    \"hire_date\": \"2026-01-15\",
     \"position\": \"$ROLE\",
+    \"employment_type\": \"full_time\",
     \"status\": \"active\",
-    \"join_date\": \"2026-01-15\"
+    \"base_salary\": 5000000
   }" "$OWNER_TOKEN" "$TENANT_ID" "$COMPANY_ID")
   STATUS=$(get_status "$RESP")
   BODY=$(get_body "$RESP")
