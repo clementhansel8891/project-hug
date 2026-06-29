@@ -1,12 +1,14 @@
 import {
   Controller,
   Get,
+  Param,
   Query,
   Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PrismaService } from '../../persistence/prisma.service';
+import { SyncEngineService } from './sync-engine.service';
 import { TenantGuard } from '../../shared/guards/tenant.guard';
 import { PaginationPipe, PaginationParams } from '../../shared/pipes/pagination.pipe';
 import { CacheInterceptor, CacheTTL } from '../../shared/cache';
@@ -15,7 +17,10 @@ import { Request } from 'express';
 @Controller('sync')
 @UseGuards(TenantGuard)
 export class SyncController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly syncEngineService: SyncEngineService,
+  ) {}
 
   // --- Snapshot individual paginated endpoints ---
 
@@ -356,5 +361,33 @@ export class SyncController {
         stockLevels,
       },
     };
+  }
+
+  // --- Reconciliation & Health endpoints ---
+
+  /**
+   * GET /sync/reconciliation/:tenantId
+   *
+   * Exposes per-location stock levels, pending unsynced quantities, and last sync timestamps.
+   * Estimates pending quantities for locations whose last sync exceeds 2× heartbeat interval.
+   *
+   * Requirements: 7.6
+   */
+  @Get('reconciliation/:tenantId')
+  async getReconciliationReport(@Param('tenantId') tenantId: string) {
+    return this.syncEngineService.getReconciliationReport(tenantId);
+  }
+
+  /**
+   * GET /sync/health/:locationId
+   *
+   * Returns last sync timestamp, pending/failed operation counts,
+   * average sync latency (60-min rolling window).
+   *
+   * Requirements: 8.5
+   */
+  @Get('health/:locationId')
+  async getHealthMetrics(@Param('locationId') locationId: string) {
+    return this.syncEngineService.getHealthMetrics(locationId);
   }
 }

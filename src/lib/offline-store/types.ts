@@ -74,3 +74,49 @@ export interface IntegrityReport {
   recoveredEnvelopes: number;
   orphanedEntries: number;
 }
+
+/**
+ * Result of a cache read operation indicating whether the data was found
+ * and its freshness status.
+ */
+export interface CacheReadResult<T = Record<string, unknown>> {
+  /** The record data, or null if cache miss */
+  data: T | null;
+  /** Whether the result came from local (unacknowledged) modifications */
+  isLocalModification: boolean;
+  /** Whether the cached data is stale (from a previous sync cycle) */
+  isStale: boolean;
+  /** ISO timestamp of last successful cache sync, if available */
+  lastSyncTimestamp: string | null;
+}
+
+/**
+ * Metadata stored for cache sync tracking.
+ */
+export interface CacheMetadata {
+  key: string;
+  value: unknown;
+  updatedAt: string;
+}
+
+/**
+ * Options for delta sync configuration.
+ */
+export interface DeltaSyncOptions {
+  /** Fetch function that retrieves changed records since a given timestamp */
+  fetchChangedProducts?: (since: string | null) => Promise<Record<string, unknown>[]>;
+  fetchChangedPrices?: (since: string | null) => Promise<Record<string, unknown>[]>;
+  fetchChangedCustomers?: (since: string | null) => Promise<Record<string, unknown>[]>;
+}
+
+/**
+ * Result of a delta sync operation.
+ */
+export interface DeltaSyncResult {
+  productsUpdated: number;
+  pricesUpdated: number;
+  customersUpdated: number;
+  syncTimestamp: string;
+  isStale: boolean;
+  error?: string;
+}
