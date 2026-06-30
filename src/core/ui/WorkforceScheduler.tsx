@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { 
   Select, 
   SelectContent, 
@@ -17,10 +17,14 @@ import {
   ChevronLeft, 
   ChevronRight,
   MoreVertical,
-  Save
+  Save,
+  Upload,
+  Download,
+  Loader2
 } from "lucide-react";
 import { useSession } from "@/core/security/session";
 import { apiRequest } from "@/core/api/apiClient";
+import { schedulingService } from "@/core/services/hr/schedulingService";
 import { toast } from "@/hooks/use-toast";
 import { format, addDays, startOfWeek, endOfWeek, eachDayOfInterval } from "date-fns";
 
@@ -58,6 +62,8 @@ export function WorkforceScheduler({
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Generate week view
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -92,6 +98,35 @@ export function WorkforceScheduler({
   const handlePrevWeek = () => setCurrentDate(addDays(currentDate, -7));
   const handleNextWeek = () => setCurrentDate(addDays(currentDate, 7));
 
+  const handleDownloadTemplate = async () => {
+    try {
+      await schedulingService.downloadImportTemplate(session);
+    } catch (err: any) {
+      toast({ title: "Download failed", description: err?.message || "Could not download template", variant: "destructive" });
+    }
+  };
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    setIsImporting(true);
+    try {
+      const result = await schedulingService.importAssignments(session, file);
+      const failedNote = result.failed > 0
+        ? ` ${result.failed} row(s) skipped${result.errors?.[0] ? `: row ${result.errors[0].row} ${result.errors[0].message}` : ""}.`
+        : "";
+      toast({
+        title: "Schedule imported",
+        description: `${result.imported} assignment(s) created.${failedNote}`,
+      });
+    } catch (err: any) {
+      toast({ title: "Import failed", description: err?.message || "Could not import schedule", variant: "destructive" });
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between bg-muted/30 p-4 rounded-xl border border-dashed">
@@ -124,6 +159,20 @@ export function WorkforceScheduler({
             </div>
         </div>
         <div className="flex items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              className="hidden"
+              onChange={handleImportFile}
+            />
+            <Button variant="outline" size="sm" onClick={handleDownloadTemplate} title="Download .xlsx schedule template">
+                <Download className="h-4 w-4 mr-2" /> Template
+            </Button>
+            <Button variant="outline" size="sm" disabled={isImporting} onClick={() => fileInputRef.current?.click()} title="Import schedule from .xlsx/.csv">
+                {isImporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
+                {isImporting ? "Importing..." : "Import"}
+            </Button>
             <Button variant="outline" size="sm" onClick={handlePrevWeek}>
                 <ChevronLeft className="h-4 w-4" />
             </Button>
