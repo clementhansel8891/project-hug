@@ -964,10 +964,22 @@ export class RetailGatewayService {
     }
 
     if (isSalesCompletion) {
+      // Emit a completed-order event so downstream modules (sales mirror,
+      // marketing) sync. Load the real order with items/customer and expose
+      // grand_total (the listener reads order.grand_total; the column is
+      // total_amount) so the consolidated-sale mirror records real figures.
+      const orderRow = await this.prisma.retail_orders.findFirst({
+        where: { id: orderId, tenant_id: ctx.tenant_id },
+        include: {
+          retail_order_items: { include: { item_masters: true } },
+          retail_customers: true,
+        },
+      });
       this.eventEmitter.emit("retail.order.completed", {
         ctx,
-        order_id: orderId,
-        payload,
+        order: orderRow
+          ? { ...orderRow, grand_total: orderRow.total_amount }
+          : { id: orderId },
       });
     }
 

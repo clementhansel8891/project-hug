@@ -974,26 +974,54 @@ export class SalesDbRepository implements ISalesRepository {
   }
 
   async recordConsolidatedSale(ctx: TenantScope, data: any): Promise<void> {
-    await this.prisma.sales_orders.create({
-      data: {
-        id: `SALES-${data.external_id || Date.now()}`,
-        updated_at: new Date(),
-        ...MultiTenancyUtil.getScope(ctx),
-        company_id: data.company_id || null,
-        ecommerce_id: data.ecommerce_id || null,
-        opportunity_id: data.opportunity_id || "EXTERNAL_SYNC",
-        customer_name: data.customer_name || 'Retail Customer',
-        amount: data.amount,
-        currency: data.currency || 'IDR',
-        created_by: 'RETAIL_MODULE_SYNC',
-        metadata: {
-          source: data.source,
-          store_id: data.store_id, // Branch level isolation in metadata
-          location_id: data.location_id,
-          items_count: data.items?.length || 0,
+    // Non-blocking mirror of a completed retail sale into the sales module.
+    // Must never throw: it runs in an async event handler, and a failure here
+    // must not affect the originating retail order flow.
+    try {
+      // sales_orders.opportunity_id is a required FK. Retail consolidated sales
+      // are not opportunity-driven, so attach them to a stable, per-tenant
+      // synthetic "Retail Consolidated Sales" opportunity (get-or-create).
+      const syntheticOpportunityId = `OPP-RETAIL-SYNC-${ctx.tenant_id}`;
+      await this.prisma.sales_opportunities.upsert({
+        where: { id: syntheticOpportunityId },
+        update: {},
+        create: {
+          id: syntheticOpportunityId,
+          tenant_id: ctx.tenant_id,
+          company_id: data.company_id || null,
+          account_name: "Retail Consolidated Sales",
+          owner_id: "RETAIL_MODULE_SYNC",
+          owner_name: "Retail Module",
+          stage: "CLOSED_WON",
+          probability: 100,
+          amount: 0,
+          currency: data.currency || "IDR",
+          expected_close_date: new Date(),
+          updated_at: new Date(),
         },
-      },
-    });
+      });
+
+      await this.prisma.sales_orders.create({
+        data: {
+          id: `SALES-${data.external_id || Date.now()}`,
+          updated_at: new Date(),
+          tenant_id: ctx.tenant_id,
+          company_id: data.company_id || null,
+          ecommerce_id: data.ecommerce_id || null,
+          opportunity_id: syntheticOpportunityId,
+          customer_name: data.customer_name || "Retail Customer",
+          amount: data.amount ?? 0,
+          currency: data.currency || "IDR",
+          status: "CLOSED_WON",
+          created_by: "RETAIL_MODULE_SYNC",
+        },
+      });
+    } catch (err: any) {
+      // Duplicate mirror (same external_id) or transient error — log and move on.
+      console.error(
+        `[recordConsolidatedSale] skipped for order ${data?.external_id}: ${err?.message ?? err}`,
+      );
+    }
   }
 
   async getOverview(ctx: TenantScope): Promise<any> {
