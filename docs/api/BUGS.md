@@ -8,8 +8,8 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 9 | #1, #2, #3, #4, #5, #6, #7, #9, #14 |
-| ❌ **OPEN** | 7 | #8, #10, #11, #12, #13, #15, #17 |
+| ✅ **FIXED & verified in prod** | 12 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #14 |
+| ❌ **OPEN** | 4 | #8, #13, #15, #17 |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
 
@@ -31,9 +31,9 @@ Legend — **Category**:
 | 7 | ✅ FIXED | Sales | IncentiveConfigModal | POST /v1/sales/incentives/plans | BUILD-BE | Added tenant-scoped bridge route (sales ctrl, with guards) → creates plan + default GLOBAL rule via IncentivesService. Probe → 201 |
 | 8 | ❌ OPEN | Finance | LedgerCore "Create Journal Entry" | POST /v1/finance/journal-entries | REPOINT-FE | Backend is event-sourced: use POST /finance/ledger/process-event (architecture mismatch — needs design) |
 | 9 | ✅ FIXED | Finance | PayableDesk "mark paid" | PATCH /v1/finance/payables/:id/paid | BUILD-BE | Added route + service + repo: posts LIAB-AP/ASSET-CASH settlement journal, flips status to PAID atomically, idempotent. Probe → 200 PAID |
-| 10 | ❌ OPEN | HR | payroll modal | POST /v1/hr/payroll/runs | REPOINT-FE | service path /v1/hr/payroll-runs exists (see #14) — repoint modal |
-| 11 | ❌ OPEN | HR | workflow modals | POST /v1/hr/workflows | REPOINT-FE | use workflowService /v1/workflow/* sub-routes |
-| 12 | ❌ OPEN | HR | roster assign modal | POST /v1/hr/roster/assign | REPOINT-FE | use /v1/hr/scheduling/* |
+| 10 | ✅ FIXED | HR | payroll modal | POST /v1/hr/payroll/runs | REPOINT-FE | Added `payroll/runs` alias → canonical `payroll-runs` handler. Probe → 201 |
+| 11 | ✅ FIXED | HR | workflow modals | POST /v1/hr/workflows | REPOINT-FE | Added `hr/workflows` bridge → shared WorkflowService.createRequest (maker_dept=HR). Also fixed WorkflowService hardcoded-id PK bug. Probe → 201 ×2 distinct |
+| 12 | ✅ FIXED | HR | roster assign modal | POST /v1/hr/roster/assignments | REPOINT-FE | Added `hr/roster/assignments` + SchedulingService.createAssignment (location derived from employee). Probe → 201 |
 | 13 | ❌ OPEN | HR | talent modals | POST /v1/hr/talent/candidates | BUILD-BE | no recruitment write routes |
 | 14 | ✅ FIXED | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | VERIFY | camelCase/snake_case both accepted + date validation; was 500. Probe → 201 |
 | 15 | ❌ OPEN | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | BUILD-BE | no omnichannel config route |
@@ -42,12 +42,11 @@ Legend — **Category**:
 
 ## 🔧 Remaining open bugs — priority order
 
-1. **HR repoints (#10–12)** — change frontend paths to existing routes. *(next)*
-2. **HR talent (#13)** — build recruitment write routes.
-3. **Marketing omnichannel (#15)** — build config route.
-4. **Retail anomaly complete (#17)** — repoint namespace.
-5. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
-6. **Marketing asset upload (#16)** — re-probe with multipart payload.
+1. **HR talent (#13)** — build recruitment write routes. *(next)*
+2. **Marketing omnichannel (#15)** — build config route.
+3. **Retail anomaly complete (#17)** — repoint namespace.
+4. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
+5. **Marketing asset upload (#16)** — re-probe with multipart payload.
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -88,3 +87,17 @@ Legend — **Category**:
   imports IncentivesModule (no circular dep; container starts healthy). Live
   probe: POST → 201 (plan + PERCENTAGE rule value 5), missing name → 400, bad
   type → 400. Commit `c8640b71` + deploy.
+- **HR repoints (#10, #11, #12)** — *FIXED & VERIFIED IN PRODUCTION.* The HR
+  modals posted to HR-namespaced paths the backend didn't serve. Added bridge
+  routes that delegate to existing services:
+  - `POST /hr/payroll/runs` → canonical `payroll-runs` handler (201).
+  - `POST /hr/workflows` → shared `WorkflowService.createRequest` (camelCase→
+    snake_case map, maker_dept defaults to HR). **Also fixed a latent
+    hardcoded-id PK bug** in WorkflowService (`createRequest` used a literal
+    `id:'k0ctrl8m'` and the audit writes used literal ids → every 2nd request
+    threw a unique-constraint 500; now `randomUUID()`). Probe: two requests →
+    201 with distinct ids.
+  - `POST /hr/roster/assignments` → new `SchedulingService.createAssignment`
+    writing `schedule_assignments`, deriving the required `location_id` from the
+    employee. Probe → 201 (location derived), bogus employee → 400.
+  Commit `a00df408` + deploy.
