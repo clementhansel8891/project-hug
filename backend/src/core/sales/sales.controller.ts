@@ -23,6 +23,7 @@ import { UserRole } from "../../shared/roles";
 import { TenantScopeResolver } from "../../shared/scope/tenant-scope.resolver";
 import { CloseOpportunityDto } from "./dto/close-opportunity.dto";
 import { CreateOrderDto } from "./dto/create-order.dto";
+import { CreateIncentivePlanDto as CreateSalesIncentivePlanDto } from "./dto/create-incentive-plan.dto";
 import { CreateLeadDto } from "./dto/create-lead.dto";
 import { CreateOpportunityDto } from "./dto/create-opportunity.dto";
 import { CreateQuoteDto } from "./dto/create-quote.dto";
@@ -32,6 +33,7 @@ import { MoveOpportunityStageDto } from "./dto/move-opportunity-stage.dto";
 import { QuoteDecisionDto } from "./dto/quote-decision.dto";
 import { UpdateLeadStatusDto } from "./dto/update-lead-status.dto";
 import { SalesService } from "./sales.service";
+import { IncentivesService } from "../incentives/incentives.service";
 import { PrismaService } from "../../persistence/prisma.service";
 import { isModuleActive } from "../../shared/helpers/module-active.helper";
 
@@ -62,6 +64,7 @@ export class SalesController {
     private readonly salesService: SalesService,
     private readonly prisma: PrismaService,
     private readonly scopeResolver: TenantScopeResolver,
+    private readonly incentivesService: IncentivesService,
   ) {}
 
   /**
@@ -476,6 +479,54 @@ export class SalesController {
       tenant_id: scope.tenant_id,
       message: "Opportunity closed as WON and Sales Order initialized",
       data,
+    };
+  }
+
+  // Create a sales incentive plan (IncentiveConfigModal → POST incentives/plans).
+  // The modal conflates plan + reward rule, so we create the plan (tenant/company
+  // derived from the authenticated context, never client body) and a default
+  // GLOBAL rule capturing the reward type/value. Runs under the sales module's
+  // TenantGuard + RolesGuard, unlike the bare /incentives controller.
+  @Post("incentives/plans")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async createIncentivePlan(
+    @Req() request: RequestWithTenant,
+    @Body() dto: CreateSalesIncentivePlanDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+
+    const plan = await this.incentivesService.createPlan({
+      name: dto.name,
+      description: dto.description,
+      tenant_id: scope.tenant_id,
+      company_id: scope.company_id,
+      is_active: dto.isActive ?? true,
+      start_date: new Date(dto.startDate),
+      end_date: dto.endDate ? new Date(dto.endDate) : undefined,
+      conflict_strategy: "PRIORITY",
+    } as any);
+
+    // Map the modal's reward type to the rule's base_type and persist a single
+    // GLOBAL rule so the configured reward value is not lost.
+    const baseType =
+      dto.type === "FIXED"
+        ? "FIXED_AMOUNT"
+        : dto.type === "TIERED"
+          ? "SLIDING_SCALE"
+          : "PERCENTAGE";
+    await this.incentivesService.createRule({
+      plan_id: plan.id,
+      priority: 0,
+      dimension: "GLOBAL",
+      base_type: baseType,
+      value: dto.value,
+    } as any);
+
+    return {
+      success: true,
+      tenant_id: scope.tenant_id,
+      message: "Incentive plan created",
+      data: plan,
     };
   }
 
