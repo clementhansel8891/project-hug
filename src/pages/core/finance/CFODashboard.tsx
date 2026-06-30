@@ -10,7 +10,7 @@ import { financeApiClient } from "@/core/services/finance/financeApiClient";
 import { useSession } from "@/core/security/session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/core/ui/PageHeader";
-import { AlertCircle, FileCheck, ShieldAlert, Share2, MessageSquare, Activity, Filter } from "lucide-react";
+import { AlertCircle, FileCheck, ShieldAlert, Share2, MessageSquare, Activity, Filter, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useEffect } from "react";
@@ -122,6 +122,27 @@ const CFODashboardContent: React.FC = () => {
     }
   };
 
+  const handleDownloadReport = async (format: "xlsx" | "pdf") => {
+    try {
+      const blob = await financeApiClient.downloadDashboardReportFile(session, {
+        company_id: state.companyId,
+        periodId: state.periodId,
+        format,
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `finance_dashboard_${state.periodId || "latest"}.${format}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      toast({ title: "Report Downloaded", description: `Financial dashboard exported as ${format.toUpperCase()}.` });
+    } catch (err) {
+      toast({ title: "Download Failed", description: "Could not generate the report file.", variant: "destructive" });
+    }
+  };
+
   const handleDiscussReport = () => {
     const chatContext = {
       reportType: "CFO_DASHBOARD",
@@ -160,6 +181,12 @@ const CFODashboardContent: React.FC = () => {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => handleSendReport()} className="rounded-xl border-primary/20 hover:bg-primary/5">
               <Share2 size={16} className="mr-2" /> Send Report
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => handleDownloadReport("xlsx")} className="rounded-xl border-primary/20 hover:bg-primary/5">
+              <Download size={16} className="mr-2" /> Excel
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => handleDownloadReport("pdf")} className="rounded-xl border-primary/20 hover:bg-primary/5">
+              <Download size={16} className="mr-2" /> PDF
             </Button>
             <Button variant="outline" size="sm" onClick={() => handleDiscussReport()} className="rounded-xl border-primary hover:bg-primary">
               <MessageSquare size={16} className="mr-2" /> Discuss

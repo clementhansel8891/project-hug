@@ -77,4 +77,60 @@ export class RetailExportService {
 
     return header + rows;
   }
+
+  /**
+   * Real inventory export: one row per item with category, pricing, total
+   * on-hand quantity (summed across stock levels) and status. Returns a
+   * proper RFC-4180 CSV string for download.
+   */
+  async generateInventoryCsv(ctx: TenantContext) {
+    this.logger.log(`Generating Retail Inventory CSV for tenant ${ctx.tenant_id}`);
+    const items = await this.prisma.item_masters.findMany({
+      where: { ...MultiTenancyUtil.getScope(ctx, {}, { excludeBranch: true }), status: { not: "deleted" } },
+      include: { product_categories: true, stock_levels: true },
+      orderBy: { name: "asc" },
+      take: 50000,
+    });
+
+    const esc = (v: any) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+
+    const header = [
+      "SKU",
+      "Name",
+      "Category",
+      "Barcode",
+      "Unit",
+      "Base Price",
+      "Selling Price",
+      "Tax Rate",
+      "On Hand Qty",
+      "Status",
+    ];
+
+    const rows = items.map((it: any) => {
+      const qty = (it.stock_levels || []).reduce(
+        (sum: number, sl: any) => sum + Number(sl.quantity || 0),
+        0,
+      );
+      return [
+        it.sku,
+        it.name,
+        it.product_categories?.name || "",
+        it.barcode,
+        it.unit,
+        Number(it.base_price || 0).toFixed(2),
+        Number(it.selling_price || 0).toFixed(2),
+        Number(it.tax_rate || 0).toFixed(2),
+        qty,
+        it.status,
+      ]
+        .map(esc)
+        .join(",");
+    });
+
+    return [header.join(","), ...rows].join("\n") + "\n";
+  }
 }

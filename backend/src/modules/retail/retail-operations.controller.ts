@@ -1,9 +1,11 @@
-import { Controller, Post, Body, Req, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Get, Body, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Response } from 'express';
 import { TenantInterceptor } from '../../gateway/tenant.interceptor';
 import { TenantGuard } from '../../shared/guards/tenant.guard';
 import { ModuleStateGuard } from '../../core/auth/guards/module-state.guard';
 import { RequiredModule } from '../../shared/decorators/required-module.decorator';
 import { CacheInvalidationHelper } from '../../shared/cache';
+import { RetailExportService } from './retail-export.service';
 
 /**
  * Retail Operations Controller
@@ -17,7 +19,10 @@ import { CacheInvalidationHelper } from '../../shared/cache';
 @UseGuards(ModuleStateGuard, TenantGuard)
 @RequiredModule('retail')
 export class RetailOperationsController {
-  constructor(private readonly cacheHelper: CacheInvalidationHelper) {}
+  constructor(
+    private readonly cacheHelper: CacheInvalidationHelper,
+    private readonly retailExport: RetailExportService,
+  ) {}
 
   @Post('orders/archive')
   async archiveOrders(@Req() req: any, @Body() body: { orderIds?: string[] }) {
@@ -56,10 +61,23 @@ export class RetailOperationsController {
     return { success: true, tenant_id, sent: body.recipientIds?.length ?? 0, message: 'Reminders sent' };
   }
 
+  /**
+   * Real inventory export. Streams a downloadable CSV of the tenant's inventory.
+   * Kept as POST (the UI posts a format), but now returns an actual file instead
+   * of a "queued" placeholder.
+   */
   @Post('inventory/export')
-  async inventoryExport(@Req() req: any, @Body() body: { format?: string }) {
-    const { tenant_id } = req.tenantContext;
-    return { success: true, tenant_id, format: body.format || 'csv', message: 'Export queued' };
+  async inventoryExport(
+    @Req() req: any,
+    @Body() body: { format?: string },
+    @Res() res: Response,
+  ) {
+    const csv = await this.retailExport.generateInventoryCsv(req.tenantContext);
+    res.set({
+      'Content-Type': 'text/csv',
+      'Content-Disposition': `attachment; filename="retail_inventory_${req.tenantContext.tenant_id}.csv"`,
+    });
+    res.end(csv);
   }
 
   @Post('analytics/fleet-serialize')

@@ -527,6 +527,27 @@ export const financeApiClient = {
     );
   },
 
+  /**
+   * Download a real, human-readable financial dashboard report file
+   * (xlsx by default, or pdf). Returns a Blob for browser download.
+   */
+  downloadDashboardReportFile: (
+    session: SessionContext,
+    params: { company_id: string; periodId?: string; format?: "xlsx" | "pdf" },
+  ) => {
+    const qs = new URLSearchParams();
+    if (params.company_id) qs.set("company_id", params.company_id);
+    if (params.periodId) qs.set("periodId", params.periodId);
+    qs.set("format", params.format || "xlsx");
+    return apiRequest<Blob>(
+      `/finance/dashboard/export/file?${qs.toString()}`,
+      "GET",
+      session,
+      undefined,
+      { responseType: "blob" },
+    );
+  },
+
   verifyExport: (session: SessionContext, data: any, signature: string) => 
     apiRequest<{ valid: boolean }>("/v1/finance/dashboard/verify-export", "POST", session, { data, signature }),
 

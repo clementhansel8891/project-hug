@@ -2589,27 +2589,35 @@ export class HRController {
 
   /**
    * POST /hr/compliance/export
-   * Export a compliance report in the specified format.
-   * Body: { module: string; period: string; format: 'CSV'|'EXCEL'|'XML'|'PDF' }
-   * CSV/XML are returned as text; EXCEL/PDF are returned as base64.
+   * Export a compliance report as a downloadable file in the requested format
+   * (CSV / XML / XLSX / PDF), with proper Content-Type and Content-Disposition.
    */
   @Post("compliance/export")
   async exportComplianceReport(
     @Req() request: RequestWithTenant,
-    @Body() dto: { module: string; period: string; format: 'CSV' | 'EXCEL' | 'XML' | 'PDF' }
+    @Body() dto: { module: string; period: string; format: 'CSV' | 'EXCEL' | 'XML' | 'PDF' },
+    @Res() res: Response,
   ) {
     const { tenant_id } = request.tenantContext;
     const result = await this.complianceEngineService.calculate(tenant_id, dto.module, dto.period);
     const exported = this.complianceEngineService.export(dto.format, result);
-    if (dto.format === 'CSV' || dto.format === 'XML') {
-      return { success: true, tenant_id, format: dto.format, data: exported };
-    }
-    return {
-      success: true,
-      tenant_id,
-      format: dto.format,
-      data: (exported as Buffer).toString('base64'),
+
+    const fmt = (dto.format || 'CSV').toUpperCase();
+    const meta: Record<string, { ct: string; ext: string }> = {
+      CSV: { ct: 'text/csv', ext: 'csv' },
+      XML: { ct: 'application/xml', ext: 'xml' },
+      EXCEL: { ct: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ext: 'xlsx' },
+      PDF: { ct: 'application/pdf', ext: 'pdf' },
     };
+    const { ct, ext } = meta[fmt] || meta.CSV;
+    const body = Buffer.isBuffer(exported) ? exported : Buffer.from(String(exported), 'utf-8');
+
+    res.set({
+      'Content-Type': ct,
+      'Content-Disposition': `attachment; filename="compliance_${dto.module}_${dto.period}.${ext}"`,
+      'Content-Length': body.length,
+    });
+    res.end(body);
   }
 
   /**

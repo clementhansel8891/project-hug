@@ -5,7 +5,8 @@ import {
   History,
   BoxSelect,
   RefreshCw,
-  Plus
+  Plus,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -104,15 +105,23 @@ export default function RetailInventory() {
                 className="h-14 px-8 rounded-2xl bg-primary text-primary-foreground font-black italic uppercase text-xs tracking-widest gap-3 shadow-xl"
                 onClick={async () => {
                   try {
-                    await apiRequest("/retail/inventory/export", "POST", session, { format: "csv" });
-                    toast({ title: "Export Started", description: "Inventory export is being generated. You'll be notified when ready." });
+                    const blob = await apiRequest<Blob>("/retail/inventory/export", "POST", session, { format: "csv" }, { responseType: "blob" });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `inventory_export_${new Date().toISOString().slice(0, 10)}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    toast({ title: "Inventory Exported", description: "CSV downloaded to your device." });
                   } catch (e) {
-                    toast({ title: "Export Failed", description: "Could not trigger inventory export.", variant: "destructive" });
+                    toast({ title: "Export Failed", description: "Could not generate inventory export.", variant: "destructive" });
                   }
                 }}
               >
-                <Package className="w-5 h-5" />
-                Register Item
+                <Download className="w-5 h-5" />
+                Export Inventory
               </Button>
             </div>
           }

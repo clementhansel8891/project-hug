@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Req, UseGuards, ForbiddenException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Res, UseGuards, ForbiddenException, Query } from '@nestjs/common';
+import { Response } from 'express';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FinancialDashboardService } from './services/financial-dashboard.service';
 import { AuditService } from '../../shared/audit/audit.service';
 import { AuditChainService } from '../../shared/audit/audit-chain.service';
+import { ReportingService } from '../../shared/reporting/reporting.service';
 import { createHash } from 'crypto';
 
 @Controller('finance/dashboard')
@@ -12,6 +14,7 @@ export class FinancialDashboardController {
     private readonly dashboardService: FinancialDashboardService,
     private readonly audit: AuditService,
     private readonly auditChain: AuditChainService,
+    private readonly reporting: ReportingService,
   ) {}
 
   @Get('summary')
@@ -99,6 +102,62 @@ export class FinancialDashboardController {
     });
 
     return data;
+  }
+
+  /**
+   * GET /finance/dashboard/export/file
+   * Streams a real, human-readable financial dashboard report file
+   * (xlsx default, or pdf via ?format=pdf). Complements the JSON `export`
+   * endpoint (which produces the signed-snapshot envelope for verify-export).
+   */
+  @Get('export/file')
+  async exportReportFile(@Req() req: any, @Query() query: any, @Res() res: Response) {
+    const { tenant_id, user_id } = req.tenantContext;
+    const company_id = query.company_id || tenant_id;
+    this.validateCompanyAccess(req.user, company_id);
+
+    const summary = await this.dashboardService.getDashboardSummary(tenant_id, company_id, query);
+
+    const headers = ['Metric', 'Value'];
+    const rows: Array<{ metric: string; value: string }> = [];
+    const kpis = (summary as any).kpis || {};
+    for (const [k, v] of Object.entries(kpis)) {
+      rows.push({ metric: k, value: v !== null && typeof v === 'object' ? JSON.stringify(v) : String(v) });
+    }
+    rows.push({ metric: 'Health Status', value: String((summary as any).healthStatus ?? '') });
+    rows.push({ metric: 'Snapshot Sequence', value: String((summary as any).sequence ?? '') });
+    rows.push({ metric: 'Generated At', value: new Date().toISOString() });
+
+    const title = `Financial Dashboard - ${company_id}`;
+    const format = String(query.format || 'xlsx').toLowerCase();
+
+    await this.audit.log({
+      tenant_id,
+      user_id,
+      module: 'FINANCE',
+      action: 'FINANCE_EXPORT_FILE',
+      entity_type: 'FINANCE_REPORT',
+      entity_id: query.periodId || 'LATEST',
+      metadata: { format, filters: query },
+    });
+
+    if (format === 'pdf') {
+      const buf = await this.reporting.generatePdf(title, headers, rows);
+      res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="finance_dashboard_${company_id}.pdf"`,
+        'Content-Length': buf.length,
+      });
+      res.end(buf);
+    } else {
+      const buf = await this.reporting.generateExcel(title, headers, rows);
+      res.set({
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition': `attachment; filename="finance_dashboard_${company_id}.xlsx"`,
+        'Content-Length': buf.length,
+      });
+      res.end(buf);
+    }
   }
 
   @Post('verify-export')
