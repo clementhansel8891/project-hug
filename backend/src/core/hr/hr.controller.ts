@@ -413,6 +413,9 @@ export class HRController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const { tenant_id, user_id } = request.tenantContext;
+    if (!file) {
+      throw new BadRequestException("A file is required (multipart field 'file')");
+    }
     const fileType = file.originalname.endsWith(".csv") ? "csv" : "xlsx";
 
     const result = await this.hrService.importEmployees(

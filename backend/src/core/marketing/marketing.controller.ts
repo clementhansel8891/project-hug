@@ -644,6 +644,9 @@ export class MarketingController {
   ) {
     const scope = await this.scopeResolver.resolve(request.tenantContext);
     const user_id = this.requireActor(request);
+    if (!file) {
+      throw new BadRequestException("A file is required (multipart field 'file')");
+    }
     const assetData = {
       name: body.name || file.originalname,
       type: file.mimetype.startsWith("image") ? "IMAGE" : file.mimetype.startsWith("video") ? "VIDEO" : "DOCUMENT",

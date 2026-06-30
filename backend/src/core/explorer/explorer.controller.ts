@@ -12,6 +12,7 @@ import {
   UseGuards,
   Res,
   Patch,
+  BadRequestException,
 } from "@nestjs/common";
 import { Response } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -77,6 +78,9 @@ export class ExplorerController {
     @Body() dto: CreateFileDto,
   ) {
     const { tenantContext } = req;
+    if (!file) {
+      throw new BadRequestException("A file is required (multipart field 'file')");
+    }
     return this.explorerService.uploadFile(tenantContext, file, dto);
   }
 
