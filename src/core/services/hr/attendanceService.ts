@@ -26,28 +26,34 @@ export const attendanceService = {
   },
 
   async clockIn(tenantId: string, actor: SessionContext, input: {
+      employeeId: string;
       locationId: string;
       deviceId: string;
       coordinates?: { lat: number; lng: number };
       verificationMethod: AttendanceEvent["verificationMethod"];
       reason?: string;
   }) {
+    // Backend ClockInDto expects snake_case `employee_id` and `notes`
+    // (the canonical TimeAndAttendanceService maps `notes` -> clock-in reason).
+    // `employee_id` must be the employees-table id, NOT the auth user id.
     return apiRequest<AttendanceRecord>("/v1/hr/attendance/clock-in", "POST", actor, {
-      employeeId: actor.user_id,
-      reason: input.reason
+      employee_id: input.employeeId,
+      location_id: input.locationId,
+      notes: input.reason
     }, {
       locationId: input.locationId
     });
   },
 
   async clockOut(tenantId: string, actor: SessionContext, input: {
+      employeeId: string;
       locationId: string;
       deviceId: string;
       coordinates?: { lat: number; lng: number };
       verificationMethod: AttendanceEvent["verificationMethod"];
   }) {
     return apiRequest<AttendanceRecord>("/v1/hr/attendance/clock-out", "POST", actor, {
-      employeeId: actor.user_id
+      employee_id: input.employeeId
     });
   },
 

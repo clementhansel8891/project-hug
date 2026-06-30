@@ -107,6 +107,28 @@ export class TimeAndAttendanceService {
         );
       }
 
+      // 1b. Same-day record guard (Requirement 8.x / data-integrity):
+      // The schema enforces one attendance record per (tenant_id, employee_id,
+      // date). The open-record guard above only covers OPEN records; a CLOSED
+      // record from earlier the same day would otherwise reach `create()` and
+      // violate the unique constraint, surfacing to the client as an unhandled
+      // 500. Reject gracefully with a 400 instead. (Re-clock-in on the same day
+      // is not supported under the one-record-per-day model.)
+      const sameDayRecord = await tx.hr_attendance_records.findFirst({
+        where: {
+          tenant_id,
+          employee_id,
+          date: { gte: startOfDay, lte: endOfDay },
+          deleted_at: null,
+        },
+      });
+
+      if (sameDayRecord) {
+        throw new BadRequestException(
+          'Attendance for today has already been recorded for this employee. Re-clock-in on the same day is not supported.',
+        );
+      }
+
       // ──────────────────────────────────────────────
       // 2. Location & Schedule Validation (Ship or No Ship Filter)
       // ──────────────────────────────────────────────

@@ -153,10 +153,21 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
       const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       setCurrentCoords(coords);
 
+      const employeeId = record?.employee?.id;
+      const employeeLocationId = record?.employee?.locationId;
+      if (!employeeId) {
+        toast({
+          title: "Profile Not Loaded",
+          description: "Your employee profile is still syncing. Please retry in a moment.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Verify location against policy (Stubbed for now, but wired)
       const isValidLocation = await attendanceService.validateAccess(
         session.tenant_id,
-        record?.employee?.locationId || 'HQ',
+        employeeLocationId || 'HQ',
         'MY_PULSE_PORTAL',
         coords
       );
@@ -170,7 +181,8 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
       try {
         setIsSubmittingClockIn(true);
         await attendanceService.clockIn(session.tenant_id, session, {
-          locationId: record?.employee?.locationId || 'HQ',
+          employeeId,
+          locationId: employeeLocationId || session.location_id,
           deviceId: 'MY_PULSE_WEB',
           coordinates: coords,
           verificationMethod: 'gps',
@@ -186,10 +198,10 @@ export default function MyPulse({ noShell = false }: { noShell?: boolean }) {
         setClockInReason('');
         setIsLocationMismatch(false);
         loadData();
-      } catch (err) {
+      } catch (err: any) {
         toast({
           title: "Clock-In Failed",
-          description: "The attendance service is currently unreachable.",
+          description: err?.message || "The attendance service is currently unreachable.",
           variant: "destructive"
         });
       } finally {
