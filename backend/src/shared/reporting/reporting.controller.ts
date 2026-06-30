@@ -109,7 +109,7 @@ export class ReportingController {
   async downloadReport(
     @Req() request: RequestWithTenant,
     @Param('id') id: string,
-    @Res({ passthrough: true }) res: Response
+    @Res() res: Response
   ) {
     const { tenant_id, user_id, role } = request.tenantContext;
     const isPlatformAdmin = role === UserRole.SUPERADMIN;
@@ -124,15 +124,20 @@ export class ReportingController {
       throw new NotFoundException('Physical report file missing from storage.');
     }
 
-    const file = fs.createReadStream(job.file_path);
+    const fileBuffer = fs.readFileSync(job.file_path);
     const filename = path.basename(job.file_path);
-    
-    res.set({
-      'Content-Type': job.format === 'PDF' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${filename}"`,
-    });
 
-    return new StreamableFile(file);
+    // Send the file buffer directly (NOT StreamableFile): a global response
+    // interceptor wraps returned objects in JSON, which corrupts a streamed
+    // file. Writing to the raw response bypasses that transform.
+    res.set({
+      'Content-Type': job.format === 'PDF'
+        ? 'application/pdf'
+        : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length': fileBuffer.length,
+    });
+    res.end(fileBuffer);
   }
 
   @Post(':id/retry')
