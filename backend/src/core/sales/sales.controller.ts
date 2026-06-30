@@ -22,6 +22,7 @@ import { Roles } from "../../shared/decorators/roles.decorator";
 import { UserRole } from "../../shared/roles";
 import { TenantScopeResolver } from "../../shared/scope/tenant-scope.resolver";
 import { CloseOpportunityDto } from "./dto/close-opportunity.dto";
+import { CreateOrderDto } from "./dto/create-order.dto";
 import { CreateLeadDto } from "./dto/create-lead.dto";
 import { CreateOpportunityDto } from "./dto/create-opportunity.dto";
 import { CreateQuoteDto } from "./dto/create-quote.dto";
@@ -446,6 +447,36 @@ export class SalesController {
     const scope = await this.scopeResolver.resolve(request.tenantContext);
     const data = await this.salesService.getOrders(scope);
     return { success: true, tenant_id: scope.tenant_id, count: data.length, data };
+  }
+
+  // Convert a won opportunity into a sales order (CreateOrderModal → POST orders).
+  // Delegates to the atomic close-won pipeline so the opportunity is closed WON
+  // and the order is created together with audit/outbox/incentive side effects.
+  @Post("orders")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER, UserRole.MEMBER)
+  async createOrder(
+    @Req() request: RequestWithTenant,
+    @Body() dto: CreateOrderDto,
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const user_id = this.requireActor(request);
+    const data = await this.salesService.closeOpportunity(
+      scope,
+      dto.opportunityId,
+      {
+        result: "won",
+        quoteId: dto.quotationId,
+        reason: dto.notes,
+        actor_id: user_id,
+      },
+      user_id,
+    );
+    return {
+      success: true,
+      tenant_id: scope.tenant_id,
+      message: "Opportunity closed as WON and Sales Order initialized",
+      data,
+    };
   }
 
   @Get("alerts")
