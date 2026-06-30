@@ -9,7 +9,9 @@
 | State | Count | Bugs |
 |-------|-------|------|
 | ✅ **FIXED & verified in prod** | 14 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #14, #15 |
-| ❌ **OPEN** | 2 | #8, #17 |
+| 🟦 **NOT A BUG** (probe used wrong method) | 1 | #17 |
+| ⚪ **DEFERRED / DESIGN** | 2 | #8 (design decision), #16 (multipart) |
+| ❌ **OPEN** | 0 | — |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
 
@@ -38,13 +40,19 @@ Legend — **Category**:
 | 14 | ✅ FIXED | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | VERIFY | camelCase/snake_case both accepted + date validation; was 500. Probe → 201 |
 | 15 | ✅ FIXED | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | BUILD-BE | New `marketing_omnichannel_configs` table + migration + upsert route (per tenant+channel). Probe → 201, upsert no-dup, GET 200 |
 | 16 | ⚪ DEFERRED | Marketing | (asset upload service) | POST /v1/marketing/assets/upload | VERIFY | exists; returns 500 on empty probe; needs multipart/file to confirm |
-| 17 | ❌ OPEN | Retail | AnomalyCompletionDialog | POST /v1/inventory/items/:id/complete | REPOINT-FE | wrong namespace; likely /v1/retail/inventory |
+| 17 | 🟦 NOT A BUG | Retail | AnomalyCompletionDialog | PATCH /v1/inventory/items/:id/complete | — | Route exists as **PATCH** (`completeAnomalyItem`) and works. Doc-07 probe wrongly used POST → 404. Live PATCH probe → 200 (update applied). False alarm |
 
-## 🔧 Remaining open bugs — priority order
+## 🔧 Remaining items
 
-1. **Retail anomaly complete (#17)** — repoint namespace. *(next)*
-2. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
-3. **Marketing asset upload (#16)** — re-probe with multipart payload.
+1. **Finance journal (#8)** — needs a **design decision**, not a quick fix. The
+   LedgerCore "Create Journal Entry" modal calls `POST /finance/journal-entries`,
+   but the backend ledger is **event-sourced** — journals are produced by
+   `POST /finance/ledger/process-event` (which exists and validates). Options:
+   (a) repoint the modal to build a process-event payload, or (b) add a direct
+   journal-entry endpoint that bypasses event sourcing (changes the accounting
+   model). Recommend (a). Awaiting decision before implementing.
+2. **Marketing asset upload (#16)** — `POST /marketing/assets/upload` exists but
+   needs a multipart/file payload to verify; deferred (not a routing bug).
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -117,3 +125,10 @@ Legend — **Category**:
   derived from context). Migration applied on deploy. Live probe: POST → 201,
   re-save same channel → 201 (in-place update, no duplicate), GET → 200 count 1,
   missing channel → 400. Commit `78ff1372` + deploy.
+- **Retail anomaly complete (#17)** — *NOT A BUG (false alarm).* Doc-07's probe
+  tested `POST /v1/inventory/items/:id/complete` and got 404, but the frontend
+  AnomalyCompletionDialog uses **PATCH**, and `PATCH items/:id/complete`
+  (`completeAnomalyItem`) already exists and handles the exact payload (name,
+  category_id, base_price, auto-clears `is_anomaly` on category change). Live
+  PATCH probe → 200 (update applied, then restored); POST → 404 (confirms the
+  method mismatch). No code change required.
