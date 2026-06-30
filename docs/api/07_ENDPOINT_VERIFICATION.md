@@ -145,13 +145,26 @@ controller routes. Commit `ce6eb517`, deployed to VPS, migration applied.
 > ⚠️ Probe side-effect: created test ticket / incident / SLA-config rows in the
 > `tnt-3rlhko` demo tenant. Harmless; clean before demos.
 
-## 🔴 RE-PROBED with valid body — HR payroll-runs (#14) still broken
+## 🟢 FIXED & VERIFIED — HR payroll-runs (#14)
 
-`POST /v1/hr/payroll-runs` re-probed with a valid `{ periodStart, periodEnd }`
-body → **still HTTP 500**. The route **exists** but errors server-side, so this
-is reclassified from "re-test" to a **confirmed bug** needing investigation
-(not a missing route). `POST /v1/marketing/assets/upload` (#16) was not
-re-probed — it requires a multipart/file payload.
+`POST /v1/hr/payroll-runs` was returning **HTTP 500**. Root cause: the frontend
+`payrollService` sends **camelCase** (`periodStart`/`periodEnd`) while the
+controller and repository only read snake_case, so `new Date(undefined)`
+produced an Invalid Date and Prisma threw a 500. **Fixed**: controller accepts
+both casings, validates the dates up front, and returns a **400** (not 500) for
+missing / invalid / end-before-start input; repo hardened to read both casings.
+Commit `b4dbc8c4` + deploy.
+
+| Probe | Before | After (live) |
+|-------|--------|--------------|
+| camelCase `{periodStart, periodEnd}` | 500 | **201** |
+| snake_case `{period_start, period_end}` | 201 | **201** |
+| empty `{}` | 500 | **400** (clear message) |
+| invalid date | 500 | **400** |
+| end before start | (would 500/insert bad) | **400** |
+
+`POST /v1/marketing/assets/upload` (#16) was not re-probed — it requires a
+multipart/file payload.
 
 ## Updated net result
 
@@ -161,5 +174,5 @@ re-probed — it requires a multipart/file payload.
 | Routes 404 with /v1 (original real bugs) | 15 | — |
 | ↳ FIXED & verified (IT ticketing) | 5 | **resolved in prod** |
 | ↳ Still open | 10 | see `BUGS.md` "Remaining open bugs" |
-| 500-on-empty re-probed → confirmed bug | 1 (HR payroll-runs) | server error, exists |
+| 500-on-empty re-probed → fixed | 1 (HR payroll-runs) | **resolved in prod** |
 | Routes confirmed working | 6 | OK |

@@ -24,7 +24,7 @@
 | 11 | HR | workflow modals | POST /v1/hr/workflows | 404 | REPOINT-FE | use workflowService /v1/workflow/* sub-routes |
 | 12 | HR | roster assign modal | POST /v1/hr/roster/assign | 404 | REPOINT-FE | use /v1/hr/scheduling/* |
 | 13 | HR | talent modals | POST /v1/hr/talent/candidates | 404 | BUILD-BE | no recruitment write routes |
-| 14 | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | 500 | VERIFY | exists; re-probe with valid body |
+| 14 | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | ✅ FIXED | DONE | camelCase/snake_case both accepted + date validation; was 500 |
 | 15 | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | 404 | BUILD-BE | no omnichannel config route |
 | 16 | Marketing | (asset upload service) | POST /v1/marketing/assets/upload | 500 | VERIFY | exists; needs multipart |
 | 17 | Retail | AnomalyCompletionDialog | POST /v1/inventory/items/:id/complete | 404 | REPOINT-FE | wrong namespace; likely /v1/retail/inventory |
@@ -46,14 +46,18 @@
   auto-computed), GET→200, PATCH /:id→200, escalate→201, resolve→201,
   incidents→201, sla-config POST→201/GET→200. Commit `ce6eb517` + deploy.
 - HR payroll-runs (#14): re-probed with valid `{periodStart, periodEnd}` body →
-  still **HTTP 500**. Reclassified from VERIFY to **confirmed bug** (route exists
-  but errors). Needs server-side investigation.
+  still **HTTP 500**. Root cause: frontend `payrollService` sends **camelCase**
+  (`periodStart`/`periodEnd`) but the controller + repo only read snake_case, so
+  `new Date(undefined)` → Invalid Date → Prisma 500. **FIXED & VERIFIED IN
+  PRODUCTION**: controller now accepts both casings and validates dates
+  (missing/invalid/end-before-start → 400 instead of 500); repo hardened to read
+  both. Live probe: camelCase→201, snake_case→201, empty→400, invalid date→400,
+  end<start→400. Commit `b4dbc8c4` + deploy.
 - Marketing assets/upload (#16): not re-probed (requires multipart/file).
 
 ## Remaining open bugs (priority order)
 1. PayableDesk mark-paid (#9) — no backend route.
-2. HR payroll-runs 500 (#14) — exists but errors.
-3. Sales CreateOrder (#6) — repoint to close-won or add POST.
-4. HR repoints (#10–12).
-5. Marketing omnichannel (#15), talent (#13).
-6. Finance journal (#8) — design decision.
+2. Sales CreateOrder (#6) — repoint to close-won or add POST.
+3. HR repoints (#10–12).
+4. Marketing omnichannel (#15), talent (#13).
+5. Finance journal (#8) — design decision.
