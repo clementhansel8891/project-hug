@@ -8,9 +8,8 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 15 | #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15 |
+| ✅ **FIXED & verified in prod** | 16 | #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16 |
 | 🟦 **NOT A BUG** (probe used wrong method) | 1 | #17 |
-| ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | ❌ **OPEN** | 0 | — |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
@@ -39,14 +38,34 @@ Legend — **Category**:
 | 13 | ✅ FIXED | HR | talent modals | POST /v1/hr/talent/candidates | BUILD-BE | Added candidate advance/reject (+GET profile) on existing `candidates` table via HrRecruitmentService. Probe → advance 201, reject 201, terminal 400 |
 | 14 | ✅ FIXED | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | VERIFY | camelCase/snake_case both accepted + date validation; was 500. Probe → 201 |
 | 15 | ✅ FIXED | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | BUILD-BE | New `marketing_omnichannel_configs` table + migration + upsert route (per tenant+channel). Probe → 201, upsert no-dup, GET 200 |
-| 16 | ⚪ DEFERRED | Marketing | (asset upload service) | POST /v1/marketing/assets/upload | VERIFY | exists; returns 500 on empty probe; needs multipart/file to confirm |
+| 16 | ✅ FIXED | Marketing | (asset upload service) | POST /v1/marketing/assets/upload | VERIFY | Verified with a real multipart PNG → 201 (asset registered, blob stored). Added missing-file guard (was 500 on empty → now 400). Probe → 201 |
 | 17 | 🟦 NOT A BUG | Retail | AnomalyCompletionDialog | PATCH /v1/inventory/items/:id/complete | — | Route exists as **PATCH** (`completeAnomalyItem`) and works. Doc-07 probe wrongly used POST → 404. Live PATCH probe → 200 (update applied). False alarm |
 
 ## 🔧 Remaining items
 
-1. **Marketing asset upload (#16)** — `POST /marketing/assets/upload` exists but
-   needs a multipart/file payload to verify; deferred (not a routing bug, requires
-   a file fixture to exercise end-to-end).
+None — all 17 tracked rows are resolved (16 fixed + verified, 1 confirmed not-a-bug).
+
+## 📎 File-upload endpoint audit (this pass)
+
+All multipart upload endpoints were exercised live with a real PNG and an
+empty (no-file) request:
+
+| Endpoint | With file | No file | Notes |
+|----------|-----------|---------|-------|
+| POST /marketing/assets/upload | **201** | **400** | #16; added missing-file guard |
+| POST /explorer/files/upload | **201** | **400** | guard + pipe fix |
+| POST /inventory/items/:id/images | **201** | 400 (pre-existing) | fixed 500 from `cacheHelper.invalidate` (see below) |
+| POST /inventory/items/import | (CSV path) | 400 | pre-existing guard |
+| POST /hr/employees/import | (CSV path) | 400 | added missing-file guard |
+
+Two latent bugs found & fixed while auditing:
+- **inventory image upload 500** — `uploadImage`/`setPrimaryImage` called
+  `cacheHelper.invalidate(request)`, which does not exist (the method is
+  `invalidateAll()`). The image saved but the response 500'd. Fixed both.
+- **GlobalValidationPipe 500 on empty body** — a request with no body made the
+  pipe call `validate(undefined)` → "Cannot read properties of undefined". Now
+  normalizes null/undefined to `{}`, so missing-body requests get a clean 400
+  app-wide instead of a 500.
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -138,3 +157,17 @@ Legend — **Category**:
   (500) → now `BadRequestException` (400). Live probe: balanced → 201 POSTED
   (lines balanced), unbalanced → 400, single-line → 400. Commits `1e1e8676`,
   `fa3d9abb`, `4837b02a` + deploy.
+
+- **Marketing asset upload (#16)** — *FIXED & VERIFIED IN PRODUCTION.* The route
+  existed but had only been probed with an empty body (→500). Verified with a
+  real multipart PNG: `POST /marketing/assets/upload` → 201 (asset row created,
+  blob written to `storage/marketing/assets`, `url` returned). Added a
+  missing-file guard (→400). While auditing all upload endpoints, also fixed:
+  (1) `POST /inventory/items/:id/images` and `.../primary` 500'd on success
+  because they called the non-existent `cacheHelper.invalidate(request)` →
+  changed to `invalidateAll()`; (2) `GlobalValidationPipe` 500'd on any
+  bodyless request (`validate(undefined)`) → now normalizes to `{}` so missing
+  bodies return 400 app-wide; (3) added missing-file guards to
+  `/hr/employees/import` and `/explorer/files/upload`. Commits `c7f72c76`,
+  `85f24e41` + deploy. All upload endpoints probed live: with-file → 201,
+  no-file → 400.
