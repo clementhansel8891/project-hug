@@ -8,15 +8,16 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 18 | #1–#16, #18, #19 |
+| ✅ **FIXED & verified in prod** | 27 | #1–#16, #18, #19, #20–#28 |
 | 🟦 **NOT A BUG** (probe used wrong method / by design) | 1 | #17 |
 | ❌ **OPEN** | 0 | — |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
-| **Total tracked** | 19 | |
+| **Total tracked** | 28 | |
 
-> #18–#19 were found during the core-flow production verification pass
-> (schedule / departments / branch / office / login-logout / POS / attendance).
-> See the "Core-flow production verification" section at the end of this file.
+> #18–#19 found during core-flow production verification (schedule / departments
+> / branch / office / login-logout / POS / attendance).
+> #20–#28 found during the payroll ↔ attendance/leave/holiday/absence + export
+> pass. See the sections at the end of this file.
 
 Legend — **Category**:
 - **BUILD-BE** — backend route + (often) DB table does not exist; needs building.
@@ -220,3 +221,46 @@ found and fixed during this pass:
   downstream event-driven handlers (insights/automation) are not completing.
   Pre-existing, system-wide, and outside the scope of this flow verification —
   flagged for a dedicated follow-up.
+
+## 🧮 Payroll ↔ attendance/leave/holiday/absence + export pass
+
+Goal: each attendance must feed payroll (including holidays, leaves, absences),
+payroll must run and export properly, and all exports must generate real
+human-readable files. Verified live on `tnt-3rlhko` (payroll probe 14/14,
+report-builder probe PASS).
+
+| # | Status | Area | Root cause | Fix |
+|---|--------|------|-----------|-----|
+| 20 | ✅ FIXED & verified | Payroll engine | Attendance was filtered by `status:'APPROVED'`, which clock-in never writes (it sets present/late/unscheduled) — so hours/overtime/lateness always computed to **0** and attendance never reached payroll. Leaves, holidays, and absences were never queried. | `payroll-engine.service.ts` now counts every non-rejected attendance record; integrates approved `leave_requests` (paid vs unpaid by type), `hr_holidays` (paid non-working days), and infers unpaid **absence** from scheduled `hr_work_shifts` days with no attendance/leave/holiday. Per-day daily-rate deductions for absence + unpaid leave. Full day-accounting in `breakdown_json`. |
+| 21 | ✅ FIXED & verified | Payroll persistence | `calculatePayroll` used `upsert({ where:{ id: uuidv4() } })` (random id never matches → can never update, risks duplicate lines) and wrote a non-existent `total_work_hours` column → **PrismaClientValidationError 500**. The whole calculate path was broken. | Idempotent find-by-(tenant,run,employee) then update/create; dropped the invalid column. |
+| 22 | ✅ FIXED & verified | Payslip PDF | Did not show leave/holiday/absence. | Added an "Attendance & Days" section + absence and unpaid-leave deduction lines. |
+| 23 | ✅ FIXED & verified | Payroll bank file | Minimal CSV (`Employee ID,Net Pay,Status`), no employee/bank details. | Real RFC-4180 CSV: employee code/name, bank name/account (from `payroll_profiles`), payment method, net pay, currency + TOTAL trailer. |
+| 24 | ✅ FIXED & verified | Payroll register export | `GET /hr/payroll-runs/:id/export` was a one-line stub and its status check (`!== "approved"`) never matched the stored `APPROVED`, so it always 400'd. | Full per-employee CSV with day-accounting + all earnings/deductions; status check accepts approved-or-later. |
+| 25 | ✅ FIXED & verified | Generic report builder | `reporting-worker.service.ts` wrote hardcoded "Sample Report Entry" mock data into every report. | Generates from caller-supplied `payload.headers`/`rows` (or `payload.data`) — the user's real data — with a metadata fallback (never fake samples). |
+| 26 | ✅ FIXED & verified | Report download | `GET /reporting/:id/download` returned JSON, not the file: it returned a `StreamableFile` which the global response interceptor serialized, and the endpoint also had a `CacheInterceptor` that cached the stream object. The file existed on disk but never reached the client. | Removed `CacheInterceptor` from download/status; read the file and `res.end(buffer)` with proper headers (matching the working audit export). Also write EXCEL as `.xlsx` (was `.excel`). |
+| 27 | ✅ FIXED | Reporting frontend | `reportingService` called `/v1/reports/*` but the controller is `@Controller('reporting')` → every report call 404'd. | Path corrected to `/v1/reporting/*`. |
+| 28 | ✅ FIXED | Retail exports | `/retail/audit/export`, `/retail/dashboard/export`, and returns export returned a raw string (wrapped to JSON by the global interceptor → not a downloadable file); `returns/export` was also missing its `@Get` route decorator. | Stream CSV with Content-Type/Content-Disposition; added the missing route. |
+
+### Payroll model notes
+- Daily rate basis = rostered working-day count when scheduling is used, else a
+  standard monthly divisor (22). When a tenant does not roster shifts, no
+  absence is inferred and salaried base is paid in full.
+- Unpaid leave `type` values (case-insensitive): unpaid, unpaid_leave,
+  leave_without_pay, lwp, no_pay, nopay, absent. All other types are paid leave.
+- Holidays and paid leave are paid in full (no deduction); absence and unpaid
+  leave are deducted at the daily rate; lateness/overtime use an hourly rate
+  (base/160).
+
+### ⚠️ Export items intentionally left (documented, not bugs to fix here)
+- **Finance dashboard export** (`/finance/dashboard/export`) returns
+  `{ reportData, watermark+HMAC signature, exportId }` JSON by design — it pairs
+  with `/verify-export` for export-integrity verification and client-side
+  rendering, not a server-generated file. Changing it would break that flow.
+- **HR compliance export** (`/hr/compliance/export`) returns CSV/XML as a string
+  and Excel/PDF as base64 inside JSON — a deliberate envelope the frontend
+  decodes.
+- **Retail ops inventory export** (`/retail/operations/inventory/export`) is a
+  no-op "queued" stub; the UI only toasts. Left as a known stub (needs a
+  product decision + frontend download wiring).
+- Several **client-side-only** frontend "exports" build CSVs from local state
+  (e.g. ExportTool, SpreadsheetTool, StockReportTab simulation) — out of scope.
