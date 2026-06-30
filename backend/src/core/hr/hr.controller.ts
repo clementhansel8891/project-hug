@@ -1345,13 +1345,139 @@ export class HRController {
 
   /**
    * GET /hr/payroll-runs/:id/export
-   * Export journal entries for approved run
+   * Export the full payroll register for an approved run as a human-readable CSV
+   * (one row per employee, including the attendance / leave / holiday / absence
+   * day-accounting and every earning and deduction the engine computed).
    */
   @Get("payroll-runs/:id/export")
   async exportPayrollRun(
     @Req() request: RequestWithTenant,
     @Param("id") id: string,
     @Res() res: Response,
+  ) {
+    const { tenant_id, user_id } = request.tenantContext;
+    const run = await this.repository.getPayrollRunById(tenant_id, id);
+
+    const status = String((run as any)?.status || "").toLowerCase();
+    if (!run || ["", "draft", "processing", "pending"].includes(status)) {
+      res
+        .status(400)
+        .json({ success: false, message: "Run not found or not yet approved for export." });
+      return;
+    }
+
+    const [lines, employeesResult] = await Promise.all([
+      this.repository.getPayrollLines(tenant_id, id),
+      this.repository.getEmployees(tenant_id),
+    ]);
+    const empById = new Map(
+      (employeesResult.data || []).map((e: any) => [e.id, e]),
+    );
+
+    const esc = (v: any) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const num = (v: any) => Number(v || 0).toFixed(2);
+
+    const header = [
+      "Employee Code",
+      "Employee Name",
+      "Base Salary",
+      "Scheduled Days",
+      "Present Days",
+      "Paid Leave Days",
+      "Unpaid Leave Days",
+      "Holidays",
+      "Absent Days",
+      "Total Hours",
+      "Overtime Pay",
+      "Lateness Deduction",
+      "Absence Deduction",
+      "Unpaid Leave Deduction",
+      "Sales Bonus",
+      "Manual Bonus",
+      "Gross Pay",
+      "Tax",
+      "Manual Deductions",
+      "Net Pay",
+    ];
+
+    let totalGross = 0;
+    let totalNet = 0;
+    const rows = lines.map((line: any) => {
+      const b = line.breakdown_json || {};
+      const wd = b.working_days || {};
+      const att = b.attendance || {};
+      const emp = empById.get(line.employee_id);
+      totalGross += Number(line.gross_income || line.grossPay || 0);
+      totalNet += Number(line.netPay || 0);
+      return [
+        emp?.employee_code || line.employee_id,
+        emp ? `${emp.first_name || ""} ${emp.last_name || ""}`.trim() : "",
+        num(line.base_salary),
+        wd.scheduled ?? 0,
+        wd.present ?? 0,
+        wd.paid_leave ?? 0,
+        wd.unpaid_leave ?? 0,
+        wd.holidays ?? 0,
+        wd.absent ?? 0,
+        (att.total_hours ?? line.total_work_hours ?? 0),
+        num(line.overtime_pay),
+        num(att.lateness_deduction),
+        num(b.absence?.deduction),
+        num(b.leave?.unpaid_deduction),
+        num(line.sales_bonus),
+        num(line.manual_bonus),
+        num(line.gross_income || line.grossPay),
+        num(line.tax_amount),
+        num(line.deductions_total),
+        num(line.netPay),
+      ]
+        .map(esc)
+        .join(",");
+    });
+
+    const trailer = [
+      "TOTAL",
+      `${lines.length} employees`,
+      "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+      totalGross.toFixed(2),
+      "", "",
+      totalNet.toFixed(2),
+    ]
+      .map(esc)
+      .join(",");
+
+    const csv = [header.join(","), ...rows, trailer].join("\n") + "\n";
+
+    await this.auditService.log({
+      tenant_id,
+      user_id: user_id || "system",
+      module: "hr",
+      action: "EXPORT",
+      entity_type: "PAYROLL_RUN",
+      entity_id: id,
+      metadata: { lines: lines.length },
+    });
+
+    res.set({
+      "Content-Type": "text/csv",
+      "Content-Disposition": `attachment; filename="payroll_register_${id}.csv"`,
+    });
+    res.end(csv);
+  }
+
+  /**
+   * GET /hr/payroll-runs/:id/export (legacy stub — superseded above)
+   */
+  /**
+   * GET /hr/payroll-runs/:id/export (legacy stub — superseded above)
+   */
+  private async _legacyExportPayrollRun(
+    request: RequestWithTenant,
+    id: string,
+    res: Response,
   ) {
     const { tenant_id, user_id } = request.tenantContext;
     const run = await this.repository.getPayrollRunById(tenant_id, id);

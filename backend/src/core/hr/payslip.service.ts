@@ -53,6 +53,21 @@ export class PayslipService {
       doc.text(`Position: ${employee.positions}`);
       doc.moveDown();
 
+      // --- Attendance & Days ---
+      const wd = breakdown?.working_days || {};
+      doc.fontSize(12).fillColor('blue').text('Attendance & Days');
+      doc.fontSize(10).fillColor('black');
+      doc.text(`Scheduled working days: ${wd.scheduled ?? 0}`);
+      doc.text(`Days present: ${wd.present ?? 0}`);
+      doc.text(`Paid leave days: ${wd.paid_leave ?? 0}`);
+      doc.text(`Unpaid leave days: ${wd.unpaid_leave ?? 0}`);
+      doc.text(`Public holidays (paid): ${wd.holidays ?? 0}`);
+      doc.text(`Absent days (unpaid): ${wd.absent ?? 0}`);
+      if (typeof wd.daily_rate === 'number') {
+        doc.text(`Daily rate: ${wd.daily_rate.toFixed(2)} (basis ${wd.basis ?? 0} days)`);
+      }
+      doc.moveDown();
+
       // --- Earnings ---
       doc.fontSize(12).fillColor('blue').text('Earnings');
       doc.fontSize(10).fillColor('black');
@@ -75,11 +90,25 @@ export class PayslipService {
       if (breakdown?.attendance?.lateness_deduction > 0) {
         doc.text(`Lateness Deduction: ${breakdown.attendance.lateness_deduction.toFixed(2)} (${breakdown?.attendance?.lateness_minutes} mins)`);
       }
+      const absenceDeduction = breakdown?.absence?.deduction || 0;
+      const unpaidLeaveDeduction = breakdown?.leave?.unpaid_deduction || 0;
+      if (absenceDeduction > 0) {
+        doc.text(`Absence Deduction: ${absenceDeduction.toFixed(2)} (${breakdown?.absence?.days} day(s))`);
+      }
+      if (unpaidLeaveDeduction > 0) {
+        doc.text(`Unpaid Leave Deduction: ${unpaidLeaveDeduction.toFixed(2)} (${breakdown?.leave?.unpaid_days} day(s))`);
+      }
       if (line.deductions_total.toNumber() > 0) {
         doc.text(`Manual Deductions: ${line.deductions_total.toFixed(2)}`);
       }
       doc.moveDown(0.5);
-      doc.fontSize(10).font('Helvetica-Bold').text(`Total Deductions: ${(line.tax_amount.toNumber() + line.deductions_total.toNumber() + (breakdown?.attendance?.lateness_deduction || 0)).toFixed(2)}`);
+      const totalDeductions =
+        line.tax_amount.toNumber() +
+        line.deductions_total.toNumber() +
+        (breakdown?.attendance?.lateness_deduction || 0) +
+        absenceDeduction +
+        unpaidLeaveDeduction;
+      doc.fontSize(10).font('Helvetica-Bold').text(`Total Deductions: ${totalDeductions.toFixed(2)}`);
       doc.font('Helvetica').moveDown();
 
       // --- Net Pay ---

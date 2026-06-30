@@ -46,20 +46,53 @@ export class ReportingWorkerService implements OnModuleInit {
         const filename = `${job.report_type.toLowerCase()}_${job.id}.${job.format.toLowerCase()}`;
         const fullPath = path.join(this.storagePath, filename);
 
-        // Simulated data retrieval based on report type
-        // In a real scenario, this would call specialized services
-        const mockData = [
-          { id: '1', date: new Date().toISOString(), detail: 'Sample Report Entry A' },
-          { id: '2', date: new Date().toISOString(), detail: 'Sample Report Entry B' },
-        ];
-        const headers = ['ID', 'Date', 'Detail'];
+        // Resolve report content. The caller supplies the actual rows/headers to
+        // export in the job payload (`payload.headers` + `payload.rows`, or a
+        // `payload.data` array of objects). This makes the generated file the
+        // user's real data rather than a placeholder. If no data is supplied we
+        // still produce a valid, human-readable file with the report title,
+        // generation metadata and a clear "no data" marker (never fake samples).
+        const payload: any = (job as any).payload || {};
+        let headers: string[];
+        let rows: any[];
+
+        if (Array.isArray(payload.headers) && Array.isArray(payload.rows)) {
+          headers = payload.headers.map((h: any) => String(h));
+          // rows may be arrays (positional) or objects keyed by header
+          rows = payload.rows.map((r: any) => {
+            if (Array.isArray(r)) {
+              const obj: Record<string, any> = {};
+              headers.forEach((h, i) => (obj[h.toLowerCase().replace(/ /g, '_')] = r[i]));
+              return obj;
+            }
+            return r;
+          });
+        } else if (Array.isArray(payload.data) && payload.data.length > 0) {
+          headers = Object.keys(payload.data[0]).map((k) =>
+            k.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+          );
+          rows = payload.data;
+        } else {
+          headers = ['Field', 'Value'];
+          rows = [
+            { field: 'Report Type', value: job.report_type },
+            { field: 'Tenant', value: job.tenant_id },
+            { field: 'Generated At', value: new Date().toISOString() },
+            ...Object.entries(payload)
+              .filter(([, v]) => typeof v !== 'object')
+              .map(([k, v]) => ({ field: k, value: String(v) })),
+            { field: 'Note', value: 'No data rows were supplied for this report.' },
+          ];
+        }
+
+        const title = payload.title || job.report_type;
 
         await this.jobService.updateProgress(job.id, 40);
 
         if (job.format === 'PDF') {
-          buffer = await this.reportingService.generatePdf(job.report_type, headers, mockData);
+          buffer = await this.reportingService.generatePdf(title, headers, rows);
         } else {
-          buffer = await this.reportingService.generateExcel(job.report_type, headers, mockData);
+          buffer = await this.reportingService.generateExcel(title, headers, rows);
         }
 
         await this.jobService.updateProgress(job.id, 80);

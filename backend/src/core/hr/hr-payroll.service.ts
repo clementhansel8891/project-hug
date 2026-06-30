@@ -161,21 +161,72 @@ export class HrPayrollService {
   }
 
   async generateBankFile(tenant_id: string, run_id: string): Promise<string> {
-    const lines = await this.hrRepository.getPayrollLines(tenant_id, run_id);
+    const lines = await this.prisma.payroll_lines.findMany({
+      where: { tenant_id, payroll_run_id: run_id },
+      include: { employees: true },
+    });
     if (lines.length === 0) throw new BadRequestException("No payroll records found for this run");
 
-    // CSV format: Name, Bank, Account, Amount
-    // Note: In real world, we'd fetch employee bank details from the repository
-    const header = "Employee ID,Net Pay,Status\n";
-    const body = lines.map(line => `${line.employee_id},${line.netPay},READY`).join("\n");
-    
+    const employeeIds = lines.map((l) => l.employee_id);
+    const [profiles, comps] = await Promise.all([
+      this.prisma.payroll_profiles.findMany({ where: { tenant_id, employee_id: { in: employeeIds } } }),
+      this.prisma.compensations.findMany({ where: { tenant_id, employee_id: { in: employeeIds } } }),
+    ]);
+    const profileByEmp = new Map(profiles.map((p) => [p.employee_id, p]));
+    const currencyByEmp = new Map(comps.map((c) => [c.employee_id, c.currency]));
+
+    // Proper RFC-4180-style CSV: quote fields and escape embedded quotes so a
+    // bank can ingest it and a human can read it. Net pay is the disbursable
+    // amount computed by the payroll engine (after all deductions).
+    const esc = (v: any) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+
+    const header = [
+      "Employee Code",
+      "Employee Name",
+      "Bank Name",
+      "Account No",
+      "Payment Method",
+      "Net Pay",
+      "Currency",
+      "Status",
+    ];
+
+    let totalNet = 0;
+    const rows = lines.map((line: any) => {
+      const emp = line.employees;
+      const profile = profileByEmp.get(line.employee_id);
+      const net = Number(line.net_pay || 0);
+      totalNet += net;
+      return [
+        emp?.employee_code || line.employee_id,
+        emp ? `${emp.first_name || ""} ${emp.last_name || ""}`.trim() : "",
+        profile?.bank_name || "",
+        profile?.bank_account_no || "",
+        profile?.payment_method || "bank_transfer",
+        net.toFixed(2),
+        currencyByEmp.get(line.employee_id) || "USD",
+        "READY",
+      ].map(esc).join(",");
+    });
+
+    // Trailer total row for reconciliation.
+    const trailer = ["TOTAL", "", "", "", "", totalNet.toFixed(2), "", `${lines.length} employees`]
+      .map(esc)
+      .join(",");
+
+    const csv = [header.join(","), ...rows, trailer].join("\n") + "\n";
+
     await this.hrRepository.createDisbursementLog(tenant_id, {
       payrollRunId: run_id,
       status: "BANK_FILE_GENERATED",
       bankFileName: `PAYROLL_${run_id}_${Date.now()}.csv`,
+      totalAmount: totalNet,
     });
 
-    return header + body;
+    return csv;
   }
 
   async confirmDisbursement(tenant_id: string, run_id: string, user_id: string): Promise<any> {
