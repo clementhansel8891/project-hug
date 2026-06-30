@@ -8,8 +8,8 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 12 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #14 |
-| ❌ **OPEN** | 4 | #8, #13, #15, #17 |
+| ✅ **FIXED & verified in prod** | 13 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #14 |
+| ❌ **OPEN** | 3 | #8, #15, #17 |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
 
@@ -34,7 +34,7 @@ Legend — **Category**:
 | 10 | ✅ FIXED | HR | payroll modal | POST /v1/hr/payroll/runs | REPOINT-FE | Added `payroll/runs` alias → canonical `payroll-runs` handler. Probe → 201 |
 | 11 | ✅ FIXED | HR | workflow modals | POST /v1/hr/workflows | REPOINT-FE | Added `hr/workflows` bridge → shared WorkflowService.createRequest (maker_dept=HR). Also fixed WorkflowService hardcoded-id PK bug. Probe → 201 ×2 distinct |
 | 12 | ✅ FIXED | HR | roster assign modal | POST /v1/hr/roster/assignments | REPOINT-FE | Added `hr/roster/assignments` + SchedulingService.createAssignment (location derived from employee). Probe → 201 |
-| 13 | ❌ OPEN | HR | talent modals | POST /v1/hr/talent/candidates | BUILD-BE | no recruitment write routes |
+| 13 | ✅ FIXED | HR | talent modals | POST /v1/hr/talent/candidates | BUILD-BE | Added candidate advance/reject (+GET profile) on existing `candidates` table via HrRecruitmentService. Probe → advance 201, reject 201, terminal 400 |
 | 14 | ✅ FIXED | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | VERIFY | camelCase/snake_case both accepted + date validation; was 500. Probe → 201 |
 | 15 | ❌ OPEN | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | BUILD-BE | no omnichannel config route |
 | 16 | ⚪ DEFERRED | Marketing | (asset upload service) | POST /v1/marketing/assets/upload | VERIFY | exists; returns 500 on empty probe; needs multipart/file to confirm |
@@ -42,11 +42,10 @@ Legend — **Category**:
 
 ## 🔧 Remaining open bugs — priority order
 
-1. **HR talent (#13)** — build recruitment write routes. *(next)*
-2. **Marketing omnichannel (#15)** — build config route.
-3. **Retail anomaly complete (#17)** — repoint namespace.
-4. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
-5. **Marketing asset upload (#16)** — re-probe with multipart payload.
+1. **Marketing omnichannel (#15)** — build config route. *(next)*
+2. **Retail anomaly complete (#17)** — repoint namespace.
+3. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
+4. **Marketing asset upload (#16)** — re-probe with multipart payload.
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -101,3 +100,13 @@ Legend — **Category**:
     writing `schedule_assignments`, deriving the required `location_id` from the
     employee. Probe → 201 (location derived), bogus employee → 400.
   Commit `a00df408` + deploy.
+- **HR talent (#13)** — *FIXED & VERIFIED IN PRODUCTION.* The AdvanceCandidate
+  and RejectCandidate modals (`/hr/talent/candidates/advance` and `/reject`) had
+  no backend route. Added `advanceCandidate` (ordered pipeline
+  applied→screening→interview→offer→hired, terminal stages rejected with 400) and
+  `rejectCandidate` (sets status, stores reason in metadata, idempotent) to
+  `HrRecruitmentService`, plus controller routes + `GET /hr/candidates/:id`
+  profile. Existing `GET/POST /hr/candidates` and hire route were already present.
+  Live probe: GET profile → 200, advance → 201 (applied→screening), reject → 201
+  (status rejected, reason persisted), advance-after-reject → 400. Commit
+  `4b7dde55` + deploy.
