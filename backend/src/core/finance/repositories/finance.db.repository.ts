@@ -166,7 +166,7 @@ export class FinanceDbRepository extends IFinanceRepository {
     }
 
     if (!totalDebit.equals(totalCredit)) {
-      throw new Error(
+      throw new BadRequestException(
         `Unbalanced Journal Entry: Total Debit (${totalDebit}) does not equal Total Credit (${totalCredit})`,
       );
     }
