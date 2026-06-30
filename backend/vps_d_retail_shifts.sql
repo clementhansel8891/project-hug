@@ -1,1 +1,0 @@
-\d retail_shifts

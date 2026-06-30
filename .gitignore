@@ -56,3 +56,41 @@ graphify-out/
 
 # Audit tooling — generated output
 audit-results/
+
+# ── Local secrets / references (contain live credentials — never commit) ──
+vps_reference.md
+backend/.env.root_backup
+*.env.root_backup
+
+# ── Ad-hoc debug / one-off scripts & data dumps (backend root) ──
+backend/0
+backend/vps_*.sql
+backend/list_*.js
+backend/list_*.sql
+backend/check_*.js
+backend/find_*.js
+backend/search_*.js
+backend/dump_*.js
+backend/repair_*.js
+backend/debug_*.js
+backend/audit_personnel.js
+backend/cleanup_inventory.js
+backend/deep_search_ds.js
+backend/fix-image-urls.js
+backend/rename_location.js
+backend/seed_opname.cjs
+backend/view_db_counts.js
+backend/verify_guards.ps1
+backend/aggregated_opname.json
+backend/final_opname_report.json
+backend/models.json
+backend/backup_stock_levels_*.json
+backend/hr_mutations_raw.csv
+backend/test_output.txt
+
+# ── Local E2E / scratch tooling (never commit) ──
+backend/scratch/
+
+# ── Root data dumps / patches ──
+SaldoStockALL.xlsx
+*.patch
