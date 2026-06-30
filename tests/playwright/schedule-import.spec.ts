@@ -44,4 +44,26 @@ test.describe("Schedule Import UI", () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toContain(".xlsx");
   });
+
+  test("Grid renders a seeded assignment (E2E Grid Shift) for the default department", async ({ page }) => {
+    await login(page);
+    await page.goto("/core/hr/schedule", { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(2000);
+
+    // If the department switcher is present, select Executive (where the seeded
+    // employee/assignment lives) for a deterministic assertion.
+    const deptCombo = page.getByRole("combobox").first();
+    if (await deptCombo.isVisible().catch(() => false)) {
+      await deptCombo.click();
+      const exec = page.getByRole("option", { name: /Executive/i });
+      if (await exec.isVisible().catch(() => false)) {
+        await exec.click();
+      } else {
+        await page.keyboard.press("Escape");
+      }
+    }
+
+    await expect(page.getByText("E2E Grid Shift").first()).toBeVisible({ timeout: 30000 });
+    await expect(page.getByText("08:30 - 17:30").first()).toBeVisible({ timeout: 10000 });
+  });
 });
