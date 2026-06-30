@@ -8,11 +8,15 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 16 | #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15, #16 |
-| 🟦 **NOT A BUG** (probe used wrong method) | 1 | #17 |
+| ✅ **FIXED & verified in prod** | 18 | #1–#16, #18, #19 |
+| 🟦 **NOT A BUG** (probe used wrong method / by design) | 1 | #17 |
 | ❌ **OPEN** | 0 | — |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
-| **Total tracked** | 17 | |
+| **Total tracked** | 19 | |
+
+> #18–#19 were found during the core-flow production verification pass
+> (schedule / departments / branch / office / login-logout / POS / attendance).
+> See the "Core-flow production verification" section at the end of this file.
 
 Legend — **Category**:
 - **BUILD-BE** — backend route + (often) DB table does not exist; needs building.
@@ -171,3 +175,48 @@ Two latent bugs found & fixed while auditing:
   `/hr/employees/import` and `/explorer/files/upload`. Commits `c7f72c76`,
   `85f24e41` + deploy. All upload endpoints probed live: with-file → 201,
   no-file → 400.
+
+## 🔎 Core-flow production verification (real employees, tenant `tnt-3rlhko`)
+
+End-to-end live verification of the operational flows requested: schedule,
+departments, branch, office, login/logout, POS open/close, and attendance.
+Result: **16/16 checks pass** (`tmp` probe, since removed). Two real bugs were
+found and fixed during this pass:
+
+| # | Status | Module | Flow | Root cause | Fix |
+|---|--------|--------|------|-----------|-----|
+| 18 | ✅ FIXED & verified | HR | Employee self-service clock-in/out (MyPulse) | Frontend `attendanceService` sent camelCase `employeeId` + `reason` and used the **auth `user_id`** as the identifier. Backend `ClockInDto` expects snake_case `employee_id` + `notes`, and the canonical service looks up the **employees-table id** (≠ user id). With validation whitelisting, `employee_id` arrived empty → real employees could never clock in. | `attendanceService.clockIn/clockOut` now send `employee_id` (the real `record.employee.id`), `location_id`, and `notes`; `MyPulse` passes the resolved employee id and surfaces backend error detail. |
+| 19 | ✅ FIXED & verified | HR | Same-day re-clock-in | After clock-out, a second clock-in the **same day** tried to `create` a second `hr_attendance_records` row, violating the `(tenant_id, employee_id, date)` unique constraint → unhandled **P2002 → 500**. | `TimeAndAttendanceService.clock_in` adds a same-day record guard returning a clear **400** ("attendance already recorded for today; re-clock-in same day not supported"), matching the one-record-per-day model. |
+
+**Verified working (no change needed):**
+- **Login** — `POST /v1/auth/login` → 200 (token returned).
+- **Logout** — core auth is **stateless JWT**; logout discards the token
+  client-side (`AuthContext`/`identity context`). There is no server logout
+  route by design, so the earlier `POST /auth/logout` 404 is expected, not a
+  bug. (`/auth/me` confirms the held token stays valid until discarded.)
+- **Departments** — `GET/POST /v1/hr/departments` → 200/201, correctly scoped
+  to the active tenant (no cross-tenant leak).
+- **Branch / Office** — `GET/POST /v1/settings/locations` → 200/201 for both
+  `branch` and `office` types.
+- **Schedule** — `GET /v1/hr/scheduling/shifts`, `/assignments`, and
+  `/assignments/template` (xlsx) → 200.
+- **POS open/close** — `POST /v1/retail/shifts/open` → 201,
+  `PUT /v1/retail/shifts/:id/close` → 200.
+- **Attendance guards** — open double-clock-in → 400; same-day re-clock-in →
+  400 (#19 fix); clock-in → 201; clock-out → 201.
+
+### ⚠️ Reliability observations (not blocking the flows above)
+
+- **Prisma connection-pool exhaustion** — production logs showed recurring
+  `P2024` ("Timed out fetching a new connection from the connection pool",
+  default limit ~9) from concurrent cron jobs + a heavy
+  `retail/public/products?pageSize=10000` query, intermittently turning valid
+  requests into 500s under load. Mitigated by adding
+  `connection_limit=25&pool_timeout=20` to `DATABASE_URL`.
+- **Event-delivery handler failures** — every domain event publish logs
+  `event_deliveries.update() … Record to update not found` /
+  `INITIAL_DELIVERY_TRIGGER_FAILED: Cannot read properties of null`. This does
+  **not** fail the HTTP request (clock-in still returns 201) but means
+  downstream event-driven handlers (insights/automation) are not completing.
+  Pre-existing, system-wide, and outside the scope of this flow verification —
+  flagged for a dedicated follow-up.
