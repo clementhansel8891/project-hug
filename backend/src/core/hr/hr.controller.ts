@@ -77,6 +77,7 @@ import { TenantInterceptor } from "../../gateway/tenant.interceptor";
 import { TimeAndAttendanceService } from "./time/time.service";
 import { WorkflowService } from "../../shared/workflow/workflow.service";
 import { SchedulingService } from "./scheduling.service";
+import { HrRecruitmentService } from "./hr-recruitment.service";
 
 interface RequestWithTenant extends Request {
   tenantContext: TenantContext;
@@ -139,6 +140,7 @@ export class HRController {
     private readonly timeService: TimeAndAttendanceService,
     private readonly workflowService: WorkflowService,
     private readonly schedulingService: SchedulingService,
+    private readonly recruitmentService: HrRecruitmentService,
   ) {}
   // ==================== Overview (Module-Aware) ====================
 
@@ -1295,6 +1297,46 @@ export class HRController {
       },
       user_id || "system",
     );
+    return { success: true, tenant_id, data };
+  }
+
+  // ==================== Talent / Candidates (frontend `/hr/candidates/:id`, `/hr/talent/*`) ====================
+
+  /** GET /hr/candidates/:id — candidate profile (recruitmentService.getCandidateProfile). */
+  @Get("candidates/:id")
+  async getCandidate(
+    @Req() request: RequestWithTenant,
+    @Param("id") id: string,
+  ) {
+    const { tenant_id } = request.tenantContext;
+    const data = await this.repository.getCandidateById(tenant_id, id);
+    if (!data) throw new BadRequestException("Candidate not found");
+    return { success: true, tenant_id, data };
+  }
+
+  /** POST /hr/talent/candidates/advance — move candidate to next stage. */
+  @Post("talent/candidates/advance")
+  async advanceCandidate(
+    @Req() request: RequestWithTenant,
+    @Body() body: { candidateId?: string; notes?: string },
+  ) {
+    const { tenant_id, user_id } = request.tenantContext;
+    if (!body.candidateId) throw new BadRequestException("candidateId is required");
+    const data = await this.recruitmentService.advanceCandidate(tenant_id, body.candidateId, body.notes, user_id || "system");
+    return { success: true, tenant_id, data };
+  }
+
+  /** POST /hr/talent/candidates/reject — reject candidate with reason. */
+  @Post("talent/candidates/reject")
+  async rejectCandidate(
+    @Req() request: RequestWithTenant,
+    @Body() body: { candidateId?: string; reason?: string },
+  ) {
+    const { tenant_id, user_id } = request.tenantContext;
+    if (!body.candidateId || !body.reason) {
+      throw new BadRequestException("candidateId and reason are required");
+    }
+    const data = await this.recruitmentService.rejectCandidate(tenant_id, body.candidateId, body.reason, user_id || "system");
     return { success: true, tenant_id, data };
   }
 

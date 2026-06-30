@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "../../persistence/prisma.service";
 import { IHRRepository } from "./repositories/hr.repository.interface";
 import { AuditService } from "../../shared/audit/audit.service";
@@ -36,6 +36,88 @@ export class HrRecruitmentService {
 
   async getCandidates(tenant_id: string, status?: string): Promise<Candidate[]> {
     return this.hrRepository.getCandidates(tenant_id, status);
+  }
+
+  /** Ordered recruitment pipeline used by `advanceCandidate`. */
+  private static readonly PIPELINE = [
+    "sourcing",
+    "applied",
+    "screening",
+    "interview",
+    "offer",
+    "hired",
+  ];
+
+  /**
+   * Advance a candidate to the next pipeline stage (AdvanceCandidateModal).
+   * Rejects advancing a terminal (hired/rejected) candidate with a 400.
+   */
+  async advanceCandidate(tenant_id: string, candidateId: string, notes?: string, user_id?: string) {
+    const candidate = await this.prisma.candidates.findFirst({
+      where: { id: candidateId, tenant_id, deleted_at: null },
+    });
+    if (!candidate) {
+      throw new NotFoundException("Candidate not found");
+    }
+    const current = String(candidate.status || "applied").toLowerCase();
+    if (current === "rejected" || current === "hired") {
+      throw new BadRequestException(`Candidate is already ${current}; cannot advance`);
+    }
+    const idx = HrRecruitmentService.PIPELINE.indexOf(current);
+    const next = idx >= 0 && idx < HrRecruitmentService.PIPELINE.length - 1
+      ? HrRecruitmentService.PIPELINE[idx + 1]
+      : "offer";
+
+    const event_reference_id = `EVT-HR-CAND-ADV-${Date.now()}`;
+    return this.prisma.$transaction(async (tx: any) => {
+      const updated = await tx.candidates.update({
+        where: { id: candidateId },
+        data: {
+          status: next,
+          metadata: { ...((candidate.metadata as any) || {}), lastAdvanceNotes: notes },
+          updated_at: new Date(),
+        },
+      });
+      await this.auditService.log({
+        tenant_id, user_id: user_id || "SYSTEM", module: "HR", action: "ADVANCE_CANDIDATE",
+        entity_type: "CANDIDATE", entity_id: candidateId, after_state: updated, event_reference_id,
+        metadata: { from: current, to: next, notes },
+      }, tx);
+      return updated;
+    });
+  }
+
+  /**
+   * Reject a candidate's application (RejectCandidateModal), recording the
+   * reason. Idempotent: an already-rejected candidate is returned unchanged.
+   */
+  async rejectCandidate(tenant_id: string, candidateId: string, reason: string, user_id?: string) {
+    const candidate = await this.prisma.candidates.findFirst({
+      where: { id: candidateId, tenant_id, deleted_at: null },
+    });
+    if (!candidate) {
+      throw new NotFoundException("Candidate not found");
+    }
+    if (String(candidate.status).toLowerCase() === "rejected") {
+      return candidate;
+    }
+    const event_reference_id = `EVT-HR-CAND-REJ-${Date.now()}`;
+    return this.prisma.$transaction(async (tx: any) => {
+      const updated = await tx.candidates.update({
+        where: { id: candidateId },
+        data: {
+          status: "rejected",
+          metadata: { ...((candidate.metadata as any) || {}), rejectionReason: reason },
+          updated_at: new Date(),
+        },
+      });
+      await this.auditService.log({
+        tenant_id, user_id: user_id || "SYSTEM", module: "HR", action: "REJECT_CANDIDATE",
+        entity_type: "CANDIDATE", entity_id: candidateId, after_state: updated, event_reference_id,
+        metadata: { reason },
+      }, tx);
+      return updated;
+    });
   }
 
   async createCandidate(tenant_id: string, data: any, user_id?: string): Promise<Candidate> {
