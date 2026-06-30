@@ -264,4 +264,48 @@ export class OmnichannelService {
 
     this.logger.log(`Inbound message from ${from} processed successfully`);
   }
+
+  /**
+   * Upsert the routing/automation config for a channel (OmnichannelConfigModal).
+   * Keyed by (tenant_id, channel); re-saving the same channel updates in place.
+   */
+  async saveConfig(
+    ctx: TenantContext,
+    data: {
+      channel: string;
+      autoReply?: boolean;
+      autoReplyMessage?: string;
+      assignTo?: string;
+      maxConcurrentChats?: number;
+      businessHoursOnly?: boolean;
+    },
+  ) {
+    const payload = {
+      auto_reply: data.autoReply ?? false,
+      auto_reply_message: data.autoReplyMessage ?? null,
+      assign_to: data.assignTo ?? "MANUAL",
+      max_concurrent_chats: data.maxConcurrentChats ?? 10,
+      business_hours_only: data.businessHoursOnly ?? true,
+      updated_at: new Date(),
+    };
+    return this.prisma.marketing_omnichannel_configs.upsert({
+      where: { tenant_id_channel: { tenant_id: ctx.tenant_id, channel: data.channel } },
+      update: payload,
+      create: {
+        id: uuidv4(),
+        tenant_id: ctx.tenant_id,
+        company_id: ctx.company_id ?? null,
+        channel: data.channel,
+        ...payload,
+      },
+    });
+  }
+
+  /** List all channel configs for the tenant. */
+  async getConfigs(ctx: TenantContext) {
+    return this.prisma.marketing_omnichannel_configs.findMany({
+      where: MultiTenancyUtil.getScope(ctx),
+      orderBy: { channel: "asc" },
+    });
+  }
 }

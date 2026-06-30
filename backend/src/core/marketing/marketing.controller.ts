@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  BadRequestException,
   Get,
   Param,
   Post,
@@ -542,6 +543,27 @@ export class MarketingController {
   @Get("channels/status")
   async getChannelStatus() {
     return { success: true, data: this.omnichannel.getChannelStatus() };
+  }
+
+  @Post("omnichannel/config")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async saveOmnichannelConfig(
+    @Req() request: RequestWithTenant,
+    @Body() body: { channel?: string; autoReply?: boolean; autoReplyMessage?: string; assignTo?: string; maxConcurrentChats?: number; businessHoursOnly?: boolean },
+  ) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    if (!body.channel) {
+      throw new BadRequestException("channel is required");
+    }
+    const data = await this.omnichannel.saveConfig(request.tenantContext, body as any);
+    return { success: true, tenant_id: scope.tenant_id, data };
+  }
+
+  @Get("omnichannel/config")
+  async getOmnichannelConfig(@Req() request: RequestWithTenant) {
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    const data = await this.omnichannel.getConfigs(request.tenantContext);
+    return { success: true, tenant_id: scope.tenant_id, count: data.length, data };
   }
 
   // --- Growth Engine: Funnels ---

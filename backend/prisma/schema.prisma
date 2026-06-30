@@ -185,6 +185,7 @@ model tenants {
   marketing_funnels                      marketing_funnels[]
   marketing_leads                        marketing_leads[]
   marketing_omnichannel_messages         marketing_omnichannel_messages[]
+  marketing_omnichannel_configs          marketing_omnichannel_configs[]
   marketing_sync_logs                    marketing_sync_logs[]
   marketing_workflows                    marketing_workflows[]
   module_license_logs                    module_license_logs[]
@@ -6732,6 +6733,24 @@ model marketing_omnichannel_messages {
   @@index([tenant_id, company_id])
   @@index([branch_id])
   @@index([ecommerce_id])
+}
+
+model marketing_omnichannel_configs {
+  id                   String   @id @default(uuid())
+  tenant_id            String
+  company_id           String?
+  channel              String
+  auto_reply           Boolean  @default(false)
+  auto_reply_message   String?
+  assign_to            String   @default("MANUAL")
+  max_concurrent_chats Int      @default(10)
+  business_hours_only  Boolean  @default(true)
+  created_at           DateTime @default(now())
+  updated_at           DateTime @default(now())
+  tenants              tenants  @relation(fields: [tenant_id], references: [id])
+
+  @@unique([tenant_id, channel])
+  @@index([tenant_id])
 }
 
 model marketing_automation_rules {
