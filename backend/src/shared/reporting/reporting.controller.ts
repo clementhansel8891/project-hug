@@ -86,8 +86,6 @@ export class ReportingController {
   }
 
   @Get(':id/status')
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(30)
   async getStatus(
     @Req() request: RequestWithTenant,
     @Param('id') id: string
@@ -108,8 +106,6 @@ export class ReportingController {
   }
 
   @Get(':id/download')
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(30)
   async downloadReport(
     @Req() request: RequestWithTenant,
     @Param('id') id: string,

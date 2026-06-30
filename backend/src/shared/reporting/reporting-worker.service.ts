@@ -43,7 +43,8 @@ export class ReportingWorkerService implements OnModuleInit {
         await this.jobService.updateProgress(job.id, 10, 'PROCESSING');
         
         let buffer: Buffer;
-        const filename = `${job.report_type.toLowerCase()}_${job.id}.${job.format.toLowerCase()}`;
+        const ext = job.format.toUpperCase() === 'PDF' ? 'pdf' : 'xlsx';
+        const filename = `${job.report_type.toLowerCase()}_${job.id}.${ext}`;
         const fullPath = path.join(this.storagePath, filename);
 
         // Resolve report content. The caller supplies the actual rows/headers to
