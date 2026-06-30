@@ -8,11 +8,11 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 27 | #1–#16, #18, #19, #20–#28 |
+| ✅ **FIXED & verified in prod** | 30 | #1–#16, #18, #19, #20–#31 |
 | 🟦 **NOT A BUG** (probe used wrong method / by design) | 1 | #17 |
 | ❌ **OPEN** | 0 | — |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
-| **Total tracked** | 28 | |
+| **Total tracked** | 31 | |
 
 > #18–#19 found during core-flow production verification (schedule / departments
 > / branch / office / login-logout / POS / attendance).
@@ -251,16 +251,20 @@ report-builder probe PASS).
   leave are deducted at the daily rate; lateness/overtime use an hourly rate
   (base/160).
 
-### ⚠️ Export items intentionally left (documented, not bugs to fix here)
-- **Finance dashboard export** (`/finance/dashboard/export`) returns
-  `{ reportData, watermark+HMAC signature, exportId }` JSON by design — it pairs
-  with `/verify-export` for export-integrity verification and client-side
-  rendering, not a server-generated file. Changing it would break that flow.
-- **HR compliance export** (`/hr/compliance/export`) returns CSV/XML as a string
-  and Excel/PDF as base64 inside JSON — a deliberate envelope the frontend
-  decodes.
-- **Retail ops inventory export** (`/retail/operations/inventory/export`) is a
-  no-op "queued" stub; the UI only toasts. Left as a known stub (needs a
-  product decision + frontend download wiring).
+### ✅ Follow-up: the previously-deferred export paths now produce real files
+
+| # | Status | Area | Fix |
+|---|--------|------|-----|
+| 29 | ✅ FIXED & verified | Retail inventory export | `/retail/operations` `POST inventory/export` was a no-op "queued" stub. Added `RetailExportService.generateInventoryCsv` (SKU, name, category, barcode, unit, base/selling price, tax, on-hand qty, status) and stream it as a real CSV. Frontend button now downloads the blob and is relabelled **Export Inventory** (it was mislabelled "Register Item"). |
+| 30 | ✅ FIXED & verified | HR compliance export | `/hr/compliance/export` returned CSV/XML as JSON strings and Excel/PDF as base64 JSON. Now streams a proper file (csv → text/csv, xml → application/xml, EXCEL → xlsx, PDF → application/pdf) with `Content-Disposition`. |
+| 31 | ✅ FIXED & verified | Finance dashboard export | Added `GET /finance/dashboard/export/file` (xlsx default / pdf) that builds a real human-readable report from the dashboard KPIs via the global `ReportingService`. The existing signed-JSON `POST export` (paired with `verify-export`) is left intact. CFODashboard gains Excel + PDF download buttons. |
+
+Verified live (probe 4/4): retail inventory CSV (proper header), compliance CSV
+(file, not JSON), finance dashboard xlsx (PK, ~6.6 KB) and pdf (%PDF).
+
+### ⚠️ Export items still intentionally left
+- The finance dashboard's original `POST /finance/dashboard/export` keeps its
+  signed-JSON envelope (paired with `/verify-export`) — only a *new* file
+  endpoint was added alongside it.
 - Several **client-side-only** frontend "exports" build CSVs from local state
   (e.g. ExportTool, SpreadsheetTool, StockReportTab simulation) — out of scope.
