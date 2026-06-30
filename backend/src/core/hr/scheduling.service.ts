@@ -492,6 +492,25 @@ export class SchedulingService {
   }
 
   /**
+   * Parse a date cell (Excel Date object or text like YYYY-MM-DD) into a clean
+   * UTC date-only value, dropping any time component so assignments carry a
+   * stable calendar date regardless of source formatting/timezone.
+   */
+  private parseImportDate(value: any): Date | null {
+    if (value === null || value === undefined || value === "") return null;
+    let d: Date;
+    if (value instanceof Date) {
+      d = value;
+    } else {
+      const s = this.cellToString(value);
+      if (!s) return null;
+      d = new Date(s);
+    }
+    if (Number.isNaN(d.getTime())) return null;
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  }
+
+  /**
    * Bulk-import schedule assignments from a parsed xlsx/csv file. Each row binds
    * an employee (by code or email) to a shift (by name) on a date, at a location
    * (by name, or the employee's own location if omitted). Valid rows are written;
@@ -578,8 +597,8 @@ export class SchedulingService {
         location_id = loc.id;
       }
 
-      const effective = new Date(dateRaw);
-      if (!dateRaw || Number.isNaN(effective.getTime())) {
+      const effective = this.parseImportDate(r.date);
+      if (!effective) {
         errors.push({ row: rowNum, message: `Invalid date '${dateRaw}' (use YYYY-MM-DD)` });
         continue;
       }

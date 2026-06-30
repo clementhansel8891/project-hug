@@ -80,6 +80,47 @@ export const schedulingService = {
     return Array.isArray(data) ? data : [];
   },
 
+  /**
+   * Download the schedule-assignment import template (.xlsx) and trigger a
+   * browser save. Columns: Employee Code, Employee Email, Shift Name, Date,
+   * Location Name.
+   */
+  async downloadImportTemplate(session: SessionContext): Promise<void> {
+    const blob = await apiRequest<Blob>(
+      "/v1/hr/scheduling/assignments/template",
+      "GET",
+      session,
+      undefined,
+      { responseType: "blob" },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "schedule_import_template.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
+
+  /**
+   * Bulk-import schedule assignments from an .xlsx/.csv file. Returns the import
+   * summary `{ imported, failed, errors[] }`.
+   */
+  async importAssignments(
+    session: SessionContext,
+    file: File,
+  ): Promise<{ success: boolean; imported: number; failed: number; errors: Array<{ row: number; message: string }> }> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return apiRequest(
+      "/v1/hr/scheduling/assignments/import",
+      "POST",
+      session,
+      formData,
+    );
+  },
+
   async getDailySchedule(
     tenantId: string,
     employeeId: string,

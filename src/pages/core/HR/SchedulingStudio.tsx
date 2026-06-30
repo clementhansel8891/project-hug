@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useSession } from "@/core/security/session";
 import { schedulingService } from "@/core/services/hr/schedulingService";
 import { staffService } from "@/core/services/hr/staffService";
@@ -6,6 +6,7 @@ import { type Employee } from "@/core/types/hr/employee";
 import { PageHeader } from "@/core/ui/PageHeader";
 import { WorkspacePanel } from "@/core/ui/WorkspacePanel";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,8 @@ import {
   Plus,
   Loader2,
   Filter,
+  Upload,
+  Download,
 } from "lucide-react";
 import {
   Dialog,
@@ -41,9 +44,12 @@ import { ShiftOverrideModal } from "./modals";
 
 export default function SchedulingStudio() {
   const session = useSession();
+  const { toast } = useToast();
   const [viewDate, setViewDate] = useState(new Date());
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isImporting, setIsImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isBypassMode, setIsBypassMode] = useState(false);
   const [selectedCell, setSelectedCell] = useState<{ employeeId: string; date: string } | null>(null);
   const [isOverrideOpen, setIsOverrideOpen] = useState(false);
@@ -99,6 +105,38 @@ export default function SchedulingStudio() {
   const handleNextWeek = () => setViewDate((prev) => addDays(prev, 7));
   const handleToday = () => setViewDate(new Date());
 
+  const handleDownloadTemplate = async () => {
+    try {
+      await schedulingService.downloadImportTemplate(session);
+    } catch (err: any) {
+      toast({ title: "Download failed", description: err?.message || "Could not download template", variant: "destructive" });
+    }
+  };
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      e.target.value = ""; // allow re-selecting the same file later
+      setIsImporting(true);
+      try {
+        const result = await schedulingService.importAssignments(session, file);
+        const failedNote = result.failed > 0
+          ? ` ${result.failed} row(s) skipped${result.errors?.[0] ? `: row ${result.errors[0].row} ${result.errors[0].message}` : ""}.`
+          : "";
+        toast({
+          title: "Schedule imported",
+          description: `${result.imported} assignment(s) created.${failedNote}`,
+          variant: result.failed > 0 ? "default" : "default",
+        });
+        loadData();
+      } catch (err: any) {
+        toast({ title: "Import failed", description: err?.message || "Could not import schedule", variant: "destructive" });
+      } finally {
+        setIsImporting(false);
+      }
+    }
+  };
+
   const handleCellClick = (employeeId: string, date: Date) => {
     setSelectedCell({ employeeId, date: format(date, "yyyy-MM-dd") });
     if (isBypassMode) {
@@ -135,6 +173,29 @@ export default function SchedulingStudio() {
         subtitle="Manage workforce rosters with high-density visualization and emergency override protocols."
         primaryAction={
           <div className="flex items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              className="hidden"
+              onChange={handleImportFile}
+            />
+            <ZenTooltip content="Download the .xlsx template (Employee Code/Email, Shift Name, Date, Location Name).">
+              <Button variant="outline" onClick={handleDownloadTemplate}>
+                <Download className="w-4 h-4 mr-2" />
+                Template
+              </Button>
+            </ZenTooltip>
+            <ZenTooltip content="Bulk-assign employees to shifts from an .xlsx/.csv file.">
+              <Button
+                variant="outline"
+                disabled={isImporting}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {isImporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                {isImporting ? "Importing..." : "Import Schedule"}
+              </Button>
+            </ZenTooltip>
             <ZenTooltip content="Enable instant manager-authorized shift changes bypassing standard workflow.">
               <Button
                 variant={isBypassMode ? "destructive" : "outline"}
