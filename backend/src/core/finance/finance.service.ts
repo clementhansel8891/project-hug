@@ -101,6 +101,20 @@ export class FinanceService {
     return this.financeRepository.listPayables(ctx);
   }
 
+  async markPayablePaid(ctx: TenantContext, id: string) {
+    const result = await this.financeRepository.markPayablePaid(ctx, id);
+    await this.auditService.log({
+      tenant_id: ctx.tenant_id,
+      user_id: ctx.user_id || "system",
+      module: "finance",
+      action: "UPDATE",
+      entity_type: "PAYABLE",
+      entity_id: id,
+      metadata: { status: "PAID" },
+    });
+    return result;
+  }
+
   async listJournals(ctx: TenantContext) {
     // Standardizing on 'ledger' as the repository method for journals
     return this.financeRepository.getLedger(ctx);

@@ -222,6 +222,15 @@ export class FinanceController {
     return this.financeService.listPayables(ctx);
   }
 
+  // Mark a payable as paid (PayableDesk "Mark Paid" button → PATCH .../paid).
+  // Posts the settlement journal and flips status to PAID atomically.
+  @Patch('payables/:id/paid')
+  @Roles(UserRole.ADMIN, UserRole.OWNER)
+  async markPayablePaid(@TenantCtx() ctx: TenantContext, @Param('id') id: string) {
+    const data = await this.financeService.markPayablePaid(ctx, id);
+    return { success: true, data };
+  }
+
   @Get('receivables')
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(30)

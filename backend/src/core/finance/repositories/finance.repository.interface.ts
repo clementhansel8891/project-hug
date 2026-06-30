@@ -175,6 +175,10 @@ export abstract class IFinanceRepository {
     updates: Partial<PayableBill>,
     tx?: Prisma.TransactionClient,
   ): Promise<PayableBill | null>;
+  abstract markPayablePaid(
+    ctx: TenantContext,
+    id: string,
+  ): Promise<PayableBill>;
 
   // Payments
   abstract listPayments(ctx: TenantContext): Promise<FinancePaymentRow[]>;

@@ -496,6 +496,21 @@ export class FinanceMockRepository extends IFinanceRepository {
     return this.payableBills[idx];
   }
 
+  async markPayablePaid(ctx: TenantContext, id: string): Promise<PayableBill> {
+    const idx = this.payableBills.findIndex((i) => i.id === id);
+    if (idx === -1) throw new Error(`Payable ${id} not found`);
+    this.payableBills[idx] = { ...this.payableBills[idx], status: "PAID" as any };
+    const viewIdx = this.payables.findIndex((i) => i.id === id);
+    if (viewIdx !== -1) {
+      this.payables[viewIdx] = {
+        ...this.payables[viewIdx],
+        status: "PAID" as any,
+        updated_at: new Date().toISOString(),
+      };
+    }
+    return this.payableBills[idx];
+  }
+
   // Payments
   async listPayments(ctx: TenantContext): Promise<FinancePaymentRow[]> {
     const tenant_id = ctx.tenant_id;

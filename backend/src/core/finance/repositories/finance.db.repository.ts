@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { PrismaService } from "../../../persistence/prisma.service";
@@ -860,6 +860,69 @@ export class FinanceDbRepository extends IFinanceRepository {
       dueDate: created.due_date.toISOString(),
       status: created.status as any,
     };
+  }
+
+  /**
+   * Mark a payable as PAID and post the settlement journal atomically.
+   * Mirrors createPayable's account coding: createPayable credits LIAB-AP
+   * (raising the liability); settlement debits LIAB-AP (clearing it) against
+   * ASSET-CASH. Idempotent-ish: a payable already PAID is returned unchanged
+   * without double-posting.
+   */
+  async markPayablePaid(ctx: TenantContext, id: string): Promise<PayableBill> {
+    return this.prisma.$transaction(async (tx) => {
+      const bill = await tx.payables.findFirst({
+        where: { id, tenant_id: ctx.tenant_id },
+      });
+      if (!bill) {
+        throw new NotFoundException(`Payable ${id} not found`);
+      }
+      if (bill.status === "PAID") {
+        return {
+          id: bill.id,
+          vendor: bill.vendor_name,
+          amount: bill.amount,
+          dueDate: bill.due_date.toISOString(),
+          status: bill.status as any,
+        };
+      }
+
+      await this.validateAndCreateJournal(
+        ctx,
+        {
+          ref: `PAYPD-${bill.id.substring(0, 8)}`,
+          description: `Payment of bill to ${bill.vendor_name}`,
+          lines: [
+            {
+              accountCode: "LIAB-AP",
+              debit: Number(bill.amount),
+              credit: 0,
+              description: "Accounts Payable settlement",
+            },
+            {
+              accountCode: "ASSET-CASH",
+              debit: 0,
+              credit: Number(bill.amount),
+              description: `Cash paid to ${bill.vendor_name}`,
+            },
+          ],
+        } as any,
+        tx,
+      );
+
+      const updated = await tx.payables.update({
+        where: { id: bill.id },
+        data: { status: "PAID", updated_at: new Date() },
+      });
+
+      return {
+        id: updated.id,
+        vendor: updated.vendor_name,
+        amount: updated.amount,
+        dueDate: updated.due_date.toISOString(),
+        status: updated.status as any,
+      };
+    });
   }
 
   // Payroll
