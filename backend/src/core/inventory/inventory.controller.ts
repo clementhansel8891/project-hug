@@ -208,7 +208,7 @@ export class InventoryController {
       file,
       request.tenantContext.user_id || "system",
     );
-    await this.cacheHelper.invalidate(request);
+    await this.cacheHelper.invalidateAll();
     return {
       success: true,
       data: {
@@ -247,7 +247,7 @@ export class InventoryController {
       imageId,
       request.tenantContext.user_id || "system",
     );
-    await this.cacheHelper.invalidate(request);
+    await this.cacheHelper.invalidateAll();
     return {
       success: true,
       message: "Primary image updated",

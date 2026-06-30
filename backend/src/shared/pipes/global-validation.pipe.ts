@@ -30,9 +30,15 @@ export class GlobalValidationPipe implements PipeTransform {
       return value;
     }
 
+    // A missing body/value (e.g. a request with no JSON body, or a multipart
+    // request with only a file and no fields) arrives as undefined/null.
+    // class-validator throws on a non-object, so normalize to an empty object:
+    // required-field constraints then surface as a clean 400 instead of a 500.
+    const toCheck = value === undefined || value === null ? {} : value;
+
     try {
       // Transform plain object to class instance
-      const object = plainToInstance(metatype, value, {
+      const object = plainToInstance(metatype, toCheck, {
         enableImplicitConversion: true,
       });
 
