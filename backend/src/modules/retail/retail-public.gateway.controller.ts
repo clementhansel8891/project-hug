@@ -9,6 +9,7 @@ import {
   Body,
   UseInterceptors,
   Param,
+  Query,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
@@ -24,6 +25,7 @@ import {
   CartItemDto,
   UpdateCartItemDto,
   WishlistItemDto,
+  OrderTransitionDto,
 } from "./dto/public-gateway.dto";
 import * as jwt from "jsonwebtoken";
 
@@ -120,9 +122,16 @@ export class RetailPublicGatewayController {
     @Req() request: RequestWithTenant,
     @Headers("x-client-id") clientId: string,
     @Headers("x-client-secret") clientSecret: string,
+    @Query("pageSize") pageSize?: string,
   ) {
     const { tenant_id } = request.tenantContext;
-    return this.gatewayService.getProducts(request.tenantContext, clientId, clientSecret);
+    const size = pageSize ? Math.max(1, parseInt(pageSize, 10) || 200) : 200;
+    return this.gatewayService.getProducts(
+      request.tenantContext,
+      clientId,
+      clientSecret,
+      size,
+    );
   }
 
   @Get("products/:id")
@@ -220,6 +229,12 @@ export class RetailPublicGatewayController {
     return this.gatewayService.clearCart(request.tenantContext, auth.sub);
   }
 
+  @Post("cart/clear")
+  async clearCartAlias(@Req() request: RequestWithTenant) {
+    const auth = this.getCustomerAuth(request);
+    return this.gatewayService.clearCart(request.tenantContext, auth.sub);
+  }
+
   // --- Wishlist ---
 
   @Get("wishlist")
@@ -287,6 +302,66 @@ export class RetailPublicGatewayController {
     );
   }
 
+  // --- Order lifecycle (storefront WhatsApp flow) ---
+
+  @Get("orders/:id/status")
+  async getOrderStatus(
+    @Req() request: RequestWithTenant,
+    @Headers("x-client-id") clientId: string,
+    @Headers("x-client-secret") clientSecret: string,
+    @Param("id") orderId: string,
+  ) {
+    return this.gatewayService.getOrderStatus(
+      request.tenantContext,
+      clientId,
+      clientSecret,
+      orderId,
+    );
+  }
+
+  @Post("orders/:id/transitions")
+  async recordOrderTransition(
+    @Req() request: RequestWithTenant,
+    @Headers("x-client-id") clientId: string,
+    @Headers("x-client-secret") clientSecret: string,
+    @Param("id") orderId: string,
+    @Body() body: OrderTransitionDto,
+  ) {
+    return this.gatewayService.recordTransition(
+      request.tenantContext,
+      clientId,
+      clientSecret,
+      orderId,
+      body,
+    );
+  }
+
+  @Post("events/orders")
+  async recordOrderLifecycleEvent(
+    @Req() request: RequestWithTenant,
+    @Headers("x-client-id") clientId: string,
+    @Headers("x-client-secret") clientSecret: string,
+    @Body() payload: any,
+  ) {
+    return this.gatewayService.recordOrderLifecycleEvent(
+      request.tenantContext,
+      clientId,
+      clientSecret,
+      payload,
+    );
+  }
+
+  @Post("checkout")
+  async checkout(@Req() request: RequestWithTenant, @Body() body: any) {
+    const auth = this.getCustomerAuth(request);
+    return this.gatewayService.checkout(
+      request.tenantContext,
+      auth.sub,
+      body ?? {},
+      auth.connectorId,
+    );
+  }
+
   @Post("chat/webhook")
   async handleExternalChatWebhook(
     @Req() request: RequestWithTenant,
@@ -334,6 +409,7 @@ export class RetailPublicGatewayController {
       const payload = jwt.verify(token, AUTH_JWT_SECRET) as {
         sub: string;
         tenant_id: string;
+        connectorId?: string;
       };
       return payload;
     } catch (e) {

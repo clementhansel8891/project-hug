@@ -9,16 +9,12 @@ import { RetailController } from "./retail.controller";
 import { RetailInfrastructureController } from "./retail-infrastructure.controller";
 import { RetailOperationsController } from "./retail-operations.controller";
 import { RetailPublicGatewayController } from "./retail-public.gateway.controller";
-import { RetailPublicAuthController } from "./retail-public-auth.controller";
-import { RetailPublicCustomerController } from "./retail-public-customer.controller";
 import { RetailEventsController } from "./retail-events.controller";
 import { RetailGovernanceController } from "./retail-governance.controller";
 import { EcommerceHubController } from "./ecommerce-hub.controller";
 import { RetailService } from "./retail.service";
 import { RetailInfrastructureService } from "./retail-infrastructure.service";
 import { RetailGatewayService } from "./retail-gateway.service";
-import { RetailPublicAuthService } from "./retail-public-auth.service";
-import { RetailPublicCustomerService } from "./retail-public-customer.service";
 import { RetailEventsService } from "./retail-events.service";
 import { EcommerceHubService } from "./ecommerce-hub.service";
 import { RetailPrintService } from "./retail-print.service";
@@ -30,8 +26,6 @@ import { IRetailInfrastructureRepository } from "./repositories/retail-infrastru
 import { RetailInfrastructureDbRepository } from "./repositories/retail-infrastructure.db.repository";
 import { IEcommerceHubRepository } from "./repositories/ecommerce-hub.repository.interface";
 import { EcommerceHubDbRepository } from "./repositories/ecommerce-hub.db.repository";
-import { ChannelCredentialsGuard } from "./guards/channel-credentials.guard";
-import { CustomerAuthGuard } from "./guards/customer-auth.guard";
 import { EcommerceConnectorGuard } from "./guards/ecommerce-connector.guard";
 import { AuditModule } from "../../shared/audit/audit.module";
 import { RetailSeeder } from "./seeders/retail.seeder";
@@ -62,8 +56,6 @@ import { CommsModule } from "../../shared/comms/comms.module";
     RetailOperationsController,
     RetailGovernanceController,
     RetailPublicGatewayController,
-    RetailPublicAuthController,
-    RetailPublicCustomerController,
     RetailEventsController,
     EcommerceHubController,
   ],
@@ -71,11 +63,7 @@ import { CommsModule } from "../../shared/comms/comms.module";
     RetailService,
     RetailInfrastructureService,
     RetailGatewayService,
-    RetailPublicAuthService,
-    RetailPublicCustomerService,
     RetailEventsService,
-    ChannelCredentialsGuard,
-    CustomerAuthGuard,
     EcommerceConnectorGuard,
     EcommerceHubService,
     RetailPrintService,

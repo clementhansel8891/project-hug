@@ -260,6 +260,134 @@ export class SyncController {
     };
   }
 
+  // --- Retail storefront mirror: customers & orders ---
+
+  @Get('snapshot/retail-customers')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  async getSnapshotRetailCustomers(
+    @Req() req: Request,
+    @Query(PaginationPipe) pagination: PaginationParams,
+  ) {
+    const tenant_id = req.headers['x-tenant-id'] as string;
+    const skip = (pagination.page - 1) * pagination.pageSize;
+
+    const where = { tenant_id, ecommerce_id: { not: null } };
+    const [data, totalCount] = await Promise.all([
+      this.prisma.retail_customers.findMany({
+        where,
+        skip,
+        take: pagination.pageSize,
+        orderBy: { updated_at: 'asc' },
+      }),
+      this.prisma.retail_customers.count({ where }),
+    ]);
+
+    return {
+      data,
+      totalCount,
+      currentPage: pagination.page,
+      pageSize: pagination.pageSize,
+      totalPages: Math.ceil(totalCount / pagination.pageSize),
+    };
+  }
+
+  @Get('delta/retail-customers')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  async getDeltaRetailCustomers(
+    @Req() req: Request,
+    @Query(PaginationPipe) pagination: PaginationParams,
+    @Query('since') since?: string,
+  ) {
+    const tenant_id = req.headers['x-tenant-id'] as string;
+    const anchorDate = since ? new Date(since) : new Date(0);
+    const skip = (pagination.page - 1) * pagination.pageSize;
+
+    const where = { tenant_id, ecommerce_id: { not: null }, updated_at: { gt: anchorDate } };
+    const [data, totalCount] = await Promise.all([
+      this.prisma.retail_customers.findMany({
+        where,
+        skip,
+        take: pagination.pageSize,
+        orderBy: { updated_at: 'asc' },
+      }),
+      this.prisma.retail_customers.count({ where }),
+    ]);
+
+    return {
+      data,
+      totalCount,
+      currentPage: pagination.page,
+      pageSize: pagination.pageSize,
+      totalPages: Math.ceil(totalCount / pagination.pageSize),
+    };
+  }
+
+  @Get('snapshot/retail-orders')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  async getSnapshotRetailOrders(
+    @Req() req: Request,
+    @Query(PaginationPipe) pagination: PaginationParams,
+  ) {
+    const tenant_id = req.headers['x-tenant-id'] as string;
+    const skip = (pagination.page - 1) * pagination.pageSize;
+
+    const where = { tenant_id, ecommerce_id: { not: null } };
+    const [data, totalCount] = await Promise.all([
+      this.prisma.retail_orders.findMany({
+        where,
+        skip,
+        take: pagination.pageSize,
+        orderBy: { updated_at: 'asc' },
+        include: { retail_order_items: true },
+      }),
+      this.prisma.retail_orders.count({ where }),
+    ]);
+
+    return {
+      data,
+      totalCount,
+      currentPage: pagination.page,
+      pageSize: pagination.pageSize,
+      totalPages: Math.ceil(totalCount / pagination.pageSize),
+    };
+  }
+
+  @Get('delta/retail-orders')
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  async getDeltaRetailOrders(
+    @Req() req: Request,
+    @Query(PaginationPipe) pagination: PaginationParams,
+    @Query('since') since?: string,
+  ) {
+    const tenant_id = req.headers['x-tenant-id'] as string;
+    const anchorDate = since ? new Date(since) : new Date(0);
+    const skip = (pagination.page - 1) * pagination.pageSize;
+
+    const where = { tenant_id, ecommerce_id: { not: null }, updated_at: { gt: anchorDate } };
+    const [data, totalCount] = await Promise.all([
+      this.prisma.retail_orders.findMany({
+        where,
+        skip,
+        take: pagination.pageSize,
+        orderBy: { updated_at: 'asc' },
+        include: { retail_order_items: true },
+      }),
+      this.prisma.retail_orders.count({ where }),
+    ]);
+
+    return {
+      data,
+      totalCount,
+      currentPage: pagination.page,
+      pageSize: pagination.pageSize,
+      totalPages: Math.ceil(totalCount / pagination.pageSize),
+    };
+  }
+
   // --- Legacy consolidated endpoints (backward-compatible, paginated internally) ---
 
   @Get('snapshot')

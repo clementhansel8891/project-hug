@@ -4,6 +4,7 @@ import {
   NotFoundException,
   ForbiddenException,
   ConflictException,
+  BadRequestException,
 } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../persistence/prisma.service";
@@ -18,11 +19,19 @@ import {
   UpdateCartItemDto,
   WishlistItemDto,
 } from "./dto/public-gateway.dto";
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes, randomUUID } from "crypto";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 import { ChatService } from "../../shared/comms/chat.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import {
+  ORDER_ENTITY_TYPE,
+  ORDER_EVENT_IMPLIED_STAGE,
+  ORDER_STAGE_ACTION,
+  ZenvixOrderStage,
+  isValidStage,
+  mapInternalStatusToStage,
+} from "./order-lifecycle.constants";
 
 const AUTH_JWT_SECRET =
   process.env.RETAIL_AUTH_JWT_SECRET ||
@@ -39,6 +48,10 @@ export interface PublicProductView {
   stock_levels: "IN_STOCK" | "LOW_STOCK" | "OUT_OF_STOCK";
   category: string;
   maxQuantity: number;
+  images: string[];
+  tags: string[];
+  material: string | null;
+  style: string | null;
 }
 
 @Injectable()
@@ -74,7 +87,8 @@ export class RetailGatewayService {
     ctx: TenantContext,
     clientId: string | undefined,
     clientSecret: string | undefined,
-  ): Promise<PublicProductView[]> {
+    pageSize = 200,
+  ): Promise<{ products: PublicProductView[] }> {
     const channel = await this.authenticateChannel(ctx, clientId, clientSecret);
     
     // Check if channel has specific product selections configured
@@ -96,12 +110,21 @@ export class RetailGatewayService {
       }));
     } else {
       // Fallback: return all products from master inventory (no wizard config yet)
-      const result = await this.retailService.listProducts(ctx, { page: 1, pageSize: 200 });
+      const result = await this.retailService.listProducts(ctx, { page: 1, pageSize });
       products = result.items || result;
     }
-    
-    return Promise.all(products.map(async (product: any) => {
+
+    // Enrich with media/merchandising fields the storefront expects (images,
+    // tags, material, style). listProducts()/mapProduct() drops these, so read
+    // them straight from item_masters in a single query.
+    const enrichment = await this.loadProductEnrichment(
+      ctx,
+      products.map((p: any) => p.id),
+    );
+
+    const mapped = await Promise.all(products.map(async (product: any) => {
       const stock = await this.retailService.getChannelStockStatus(ctx, channel.id, product.id);
+      const extra = enrichment.get(product.id);
       return {
         id: product.id,
         name: product.name,
@@ -110,8 +133,76 @@ export class RetailGatewayService {
         stock_levels: stock.status as any,
         category: product.category_id,
         maxQuantity: Number(stock.available),
+        images: extra?.images ?? [],
+        tags: extra?.tags ?? [],
+        material: extra?.material ?? null,
+        style: extra?.style ?? null,
       };
     }));
+
+    return { products: mapped };
+  }
+
+  /**
+   * Load merchandising fields (images, tags, material, style) for a set of
+   * product ids directly from item_masters in one query.
+   */
+  private async loadProductEnrichment(
+    ctx: TenantContext,
+    productIds: string[],
+  ): Promise<
+    Map<string, { images: string[]; tags: string[]; material: string | null; style: string | null }>
+  > {
+    const map = new Map<
+      string,
+      { images: string[]; tags: string[]; material: string | null; style: string | null }
+    >();
+    const ids = Array.from(new Set(productIds.filter(Boolean)));
+    if (ids.length === 0) return map;
+
+    const masters = await this.prisma.item_masters.findMany({
+      where: { tenant_id: ctx.tenant_id, id: { in: ids } },
+      select: {
+        id: true,
+        image_url: true,
+        module_tags: true,
+        metadata: true,
+        item_images: {
+          select: { url: true, is_primary: true, order: true },
+        },
+      },
+    });
+
+    for (const m of masters) {
+      const images = this.buildImageUrls(m);
+      const meta = (m.metadata as any) ?? {};
+      map.set(m.id, {
+        images,
+        tags: Array.isArray(m.module_tags) ? m.module_tags : [],
+        material: meta.material ?? null,
+        style: meta.style ?? null,
+      });
+    }
+    return map;
+  }
+
+  /** Build an ordered image URL list (primary first), matching mapProduct's /api prefixing. */
+  private buildImageUrls(master: {
+    image_url?: string | null;
+    item_images?: { url: string; is_primary: boolean; order: number }[];
+  }): string[] {
+    const prefix = (url: string) => (url.startsWith("/api") ? url : `/api${url}`);
+    const imgs = [...(master.item_images ?? [])].sort((a, b) => {
+      if (a.is_primary !== b.is_primary) return a.is_primary ? -1 : 1;
+      return (a.order ?? 0) - (b.order ?? 0);
+    });
+    if (imgs.length > 0) {
+      return imgs.map((i) => prefix(i.url));
+    }
+    if (master.image_url) {
+      return [`/api/v1/inventory/images/${master.image_url}`];
+    }
+    return [];
   }
 
   async getProductById(
@@ -220,6 +311,7 @@ export class RetailGatewayService {
       email: data.email,
       phone: data.phone,
       password_hash,
+      ecommerce_id: scope.id,
     });
 
     const tokens = await this.issueTokens(customer, scope, resolvedCtx);
@@ -445,7 +537,7 @@ export class RetailGatewayService {
     clientSecret: string | undefined,
     payload: RetailPublicOrderRequestDto,
   ) {
-    await this.authenticateChannel(ctx, clientId, clientSecret);
+    const channel = await this.authenticateChannel(ctx, clientId, clientSecret);
     const resolvedCtx = await this.resolveCompanyCtx(ctx);
     
     // Find a system employee to act as cashier for public orders
@@ -467,7 +559,8 @@ export class RetailGatewayService {
       } else {
         const newCust = await this.retailService.createCustomer(resolvedCtx, {
           email: payload.customer.email,
-          name: payload.customer.name || payload.customer.email
+          name: payload.customer.name || payload.customer.email,
+          ecommerce_id: channel.id,
         });
         customerId = newCust.id;
       }
@@ -539,6 +632,31 @@ export class RetailGatewayService {
       );
     }
 
+    // Record the initial workflow stage so GET /orders/:id/status returns a
+    // valid ZENVIX stage immediately, and capture the storefront correlation
+    // ids (channel_record_id / external_reference) on the order audit trail.
+    const initialStage: ZenvixOrderStage =
+      payload.payment_status === "PAID" ? "PAYMENT_CONFIRMED" : "SUBMITTED";
+    const channelRecordId = payload.channel_record_id ?? null;
+    const externalReference =
+      payload.external_reference ?? payload.externalReference ?? null;
+    await this.writeOrderStageMarker(
+      resolvedCtx,
+      order.id,
+      initialStage,
+      "order.created",
+      {
+        channel_record_id: channelRecordId,
+        external_reference: externalReference,
+        payment_status: payload.payment_status,
+      },
+      {
+        channel_record_id: channelRecordId,
+        external_reference: externalReference,
+        ecommerce_id: channel.id,
+      },
+    );
+
     return {
       order_id: order.id,
       status: order.status === "reserved" ? "RESERVED" : "RECEIVED",
@@ -577,6 +695,95 @@ export class RetailGatewayService {
     return orders.map((o) => this.mapOrderResponse(o));
   }
 
+  /**
+   * POST /checkout — convert the customer's current cart into an order.
+   * (Kept for storefront compatibility; the canonical order path is POST /orders.)
+   */
+  async checkout(
+    ctx: TenantContext,
+    customer_id: string,
+    payload: {
+      payment_status?: string;
+      payment_method?: string;
+    },
+    ecommerceId?: string,
+  ) {
+    const rCtx = await this.resolveCompanyCtx(ctx);
+
+    const cart = await this.retailService.getCart(rCtx, customer_id);
+    const cartItems = (cart?.retail_cart_items || cart?.items || []) as any[];
+    if (!cart || cartItems.length === 0) {
+      throw new BadRequestException("Cart is empty");
+    }
+
+    const stores = await this.retailService.listStores(rCtx);
+    const store = stores[0];
+    if (!store) {
+      throw new NotFoundException("No fulfillment store configured for this tenant.");
+    }
+
+    const orderItems = cartItems.map((item: any) => ({
+      product_id: item.product_id,
+      quantity: String(item.quantity),
+      unit_price: String(item.unit_price),
+    }));
+
+    const subtotal = orderItems.reduce(
+      (sum: number, item: any) =>
+        sum + Number(item.unit_price) * Number(item.quantity),
+      0,
+    );
+
+    const paymentStatus = String(payload?.payment_status ?? "PENDING");
+    const paymentMethod = this.normalizePaymentMethod(payload?.payment_method);
+
+    const order = await this.retailService.createOrder(
+      rCtx,
+      store.location_id,
+      {
+        store_id: store.id,
+        terminal_id: "api-gateway",
+        customer_id,
+        items: orderItems,
+        payment_method: paymentMethod,
+        grand_total: String(subtotal),
+      },
+      customer_id,
+    );
+
+    if (paymentStatus === "PAID") {
+      const tax = await this.retailService.calculateTax(rCtx, order.id);
+      await this.retailService.processPayment(
+        rCtx,
+        order.id,
+        {
+          amount: (order.grand_total as unknown as Prisma.Decimal).add(tax),
+          method: paymentMethod,
+        },
+        customer_id,
+      );
+    }
+
+    await this.retailService.clearCart(rCtx, cart.id);
+
+    const initialStage: ZenvixOrderStage =
+      paymentStatus === "PAID" ? "PAYMENT_CONFIRMED" : "SUBMITTED";
+    await this.writeOrderStageMarker(
+      rCtx,
+      order.id,
+      initialStage,
+      "checkout",
+      { payment_status: paymentStatus },
+      ecommerceId ? { ecommerce_id: ecommerceId } : {},
+    );
+
+    return {
+      order_id: order.id,
+      status: order.status === "reserved" ? "RESERVED" : "RECEIVED",
+      totals: { subtotal: Number(order.subtotal ?? subtotal) },
+    };
+  }
+
   // --- Events ---
 
   async logEvent(
@@ -613,6 +820,198 @@ export class RetailGatewayService {
         count: 1,
       },
     };
+  }
+
+  // --- Order lifecycle (storefront WhatsApp flow) ---
+
+  /**
+   * GET /orders/:id/status — returns the current ZENVIX workflow stage.
+   * Reads the latest recorded stage marker; falls back to mapping the internal
+   * order status when no marker exists yet.
+   */
+  async getOrderStatus(
+    ctx: TenantContext,
+    clientId: string | undefined,
+    clientSecret: string | undefined,
+    orderId: string,
+  ): Promise<{ status: ZenvixOrderStage }> {
+    await this.authenticateChannel(ctx, clientId, clientSecret);
+
+    const orderRow = await this.prisma.retail_orders.findFirst({
+      where: { id: orderId, tenant_id: ctx.tenant_id },
+      select: { status: true, workflow_stage: true },
+    });
+    if (!orderRow) throw new NotFoundException("Order not found");
+
+    const status = isValidStage(orderRow.workflow_stage)
+      ? orderRow.workflow_stage
+      : mapInternalStatusToStage(orderRow.status);
+
+    return { status };
+  }
+
+  /**
+   * POST /orders/:id/transitions — records a stage transition
+   * ({ from_stage, to_stage, timestamp }) and advances the current stage.
+   */
+  async recordTransition(
+    ctx: TenantContext,
+    clientId: string | undefined,
+    clientSecret: string | undefined,
+    orderId: string,
+    body: { from_stage?: string; to_stage?: string; timestamp?: string },
+  ) {
+    await this.authenticateChannel(ctx, clientId, clientSecret);
+
+    const { from_stage, to_stage, timestamp } = body ?? {};
+    if (!isValidStage(to_stage)) {
+      throw new BadRequestException(
+        `to_stage must be one of the valid ZENVIX stages`,
+      );
+    }
+    if (from_stage && !isValidStage(from_stage)) {
+      throw new BadRequestException(`from_stage is not a valid ZENVIX stage`);
+    }
+
+    const exists = await this.prisma.retail_orders.findFirst({
+      where: { id: orderId, tenant_id: ctx.tenant_id },
+      select: { id: true },
+    });
+    if (!exists) throw new NotFoundException("Order not found");
+
+    await this.writeOrderStageMarker(ctx, orderId, to_stage, "transition", {
+      from_stage: from_stage ?? null,
+      to_stage,
+      timestamp: timestamp ?? new Date().toISOString(),
+    });
+
+    return { success: true, order_id: orderId, stage: to_stage };
+  }
+
+  /**
+   * POST /events/orders — order lifecycle events (quotation / payment /
+   * sales.completion / audit.*). Persisted for analytics + audit; stage-implying
+   * events also advance the polled status. `sales.completion` is idempotent per
+   * order_id (DB unique constraint on idempotency_key is the safety net).
+   */
+  async recordOrderLifecycleEvent(
+    ctx: TenantContext,
+    clientId: string | undefined,
+    clientSecret: string | undefined,
+    payload: any,
+  ) {
+    await this.authenticateChannel(ctx, clientId, clientSecret);
+
+    const eventType: string | undefined = payload?.event_type;
+    const orderId: string | undefined = payload?.order_id;
+    if (!eventType || !orderId || !payload?.timestamp) {
+      throw new BadRequestException(
+        "event_type, order_id and timestamp are required",
+      );
+    }
+
+    const isSalesCompletion = eventType === "sales.completion";
+    const idempotencyKey = isSalesCompletion
+      ? `sales.completion:${orderId}`
+      : undefined;
+
+    // Idempotency guard for sales.completion (client guards once per order; this
+    // is the server-side safety net the storefront contract requires).
+    if (isSalesCompletion) {
+      const existing = await this.prisma.audit_logs.findFirst({
+        where: {
+          tenant_id: ctx.tenant_id,
+          entity_type: ORDER_ENTITY_TYPE,
+          entity_id: orderId,
+          action: "sales.completion",
+        },
+      });
+      if (existing) {
+        return { success: true, deduped: true, order_id: orderId };
+      }
+    }
+
+    try {
+      await this.prisma.audit_logs.create({
+        data: {
+          id: randomUUID(),
+          tenant_id: ctx.tenant_id,
+          module: "retail",
+          action: eventType,
+          entity_type: ORDER_ENTITY_TYPE,
+          entity_id: orderId,
+          user_id: payload?.actor?.id ?? "storefront",
+          changes: payload as any,
+          metadata: { timestamp: payload.timestamp } as any,
+          idempotency_key: idempotencyKey,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      });
+    } catch (err: any) {
+      // Unique-constraint race on (tenant_id, idempotency_key) → already recorded.
+      if (err?.code === "P2002" && isSalesCompletion) {
+        return { success: true, deduped: true, order_id: orderId };
+      }
+      throw err;
+    }
+
+    const impliedStage = ORDER_EVENT_IMPLIED_STAGE[eventType];
+    if (impliedStage) {
+      await this.writeOrderStageMarker(ctx, orderId, impliedStage, eventType, {
+        timestamp: payload.timestamp,
+      });
+    }
+
+    if (isSalesCompletion) {
+      this.eventEmitter.emit("retail.order.completed", {
+        ctx,
+        order_id: orderId,
+        payload,
+      });
+    }
+
+    return {
+      success: true,
+      order_id: orderId,
+      event_type: eventType,
+      ...(impliedStage ? { stage: impliedStage } : {}),
+    };
+  }
+
+  /** Persist the current workflow stage on the order row (source of truth for
+   * status + delta sync) and append an immutable audit entry for stage history. */
+  private async writeOrderStageMarker(
+    ctx: TenantContext,
+    orderId: string,
+    stage: ZenvixOrderStage,
+    source: string,
+    extra: Record<string, any> = {},
+    orderFields: Record<string, any> = {},
+  ): Promise<void> {
+    // 1. Update the order row. updated_at is bumped explicitly (the column is
+    //    not @updatedAt) so /sync/delta/retail-orders surfaces the change.
+    await this.prisma.retail_orders.updateMany({
+      where: { id: orderId, tenant_id: ctx.tenant_id },
+      data: { workflow_stage: stage, updated_at: new Date(), ...orderFields },
+    });
+
+    // 2. Append an immutable stage-history entry.
+    await this.prisma.audit_logs.create({
+      data: {
+        id: randomUUID(),
+        tenant_id: ctx.tenant_id,
+        module: "retail",
+        action: ORDER_STAGE_ACTION,
+        entity_type: ORDER_ENTITY_TYPE,
+        entity_id: orderId,
+        user_id: "storefront",
+        changes: extra as any,
+        metadata: { stage, source } as any,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+    });
   }
 
   // --- Helpers ---
@@ -731,27 +1130,49 @@ export class RetailGatewayService {
 
   private mapCartResponse(cart: any) {
     const rawItems = cart.retail_cart_items || cart.items || [];
-    const items = rawItems.map((item: any) => ({
-      id: item.id,
-      product_id: item.product_id,
-      sku: item.item_masters?.sku || item.product?.sku,
-      name: item.item_masters?.name || item.product?.name,
-      quantity: Number(item.quantity),
-      unit_price: Number(item.unit_price),
-      totalPrice: Number(item.unit_price) * Number(item.quantity),
-    }));
+    const items = rawItems.map((item: any) => {
+      const master = item.item_masters || item.product || {};
+      const unitPrice = Number(item.unit_price);
+      const quantity = Number(item.quantity);
+      const lineTotal = unitPrice * quantity;
+      const image = master.image_url
+        ? (String(master.image_url).startsWith("/api")
+            ? master.image_url
+            : `/api/v1/inventory/images/${master.image_url}`)
+        : null;
+      return {
+        id: item.id,
+        productId: item.product_id,
+        product_id: item.product_id,
+        productTitle: master.name ?? null,
+        productImage: image,
+        sku: master.sku ?? null,
+        name: master.name ?? null,
+        price: unitPrice,
+        unit_price: unitPrice,
+        quantity,
+        subtotal: lineTotal,
+        totalPrice: lineTotal,
+      };
+    });
 
-    const subtotal = items.reduce(
-      (sum: number, item: any) => sum + item.totalPrice,
+    const total = items.reduce(
+      (sum: number, item: any) => sum + item.subtotal,
+      0,
+    );
+    const itemCount = items.reduce(
+      (sum: number, item: any) => sum + item.quantity,
       0,
     );
 
     return {
       id: cart.id,
       items,
-      subtotal,
+      subtotal: total,
       tax: 0,
-      total: subtotal,
+      total,
+      currency: cart.currency || "IDR",
+      itemCount,
     };
   }
 

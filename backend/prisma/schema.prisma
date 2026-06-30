@@ -5248,6 +5248,7 @@ model retail_customers {
   @@unique([tenant_id, phone])
   @@index([tenant_id])
   @@index([company_id])
+  @@index([tenant_id, updated_at])
 }
 
 model retail_gateway_nodes {
@@ -5342,6 +5343,9 @@ model retail_orders {
   commission_amount  Decimal?             @db.Decimal(15, 2)
   currency           String               @default("IDR")
   shift_id           String?
+  workflow_stage     String?              @default("SUBMITTED")
+  channel_record_id  String?
+  external_reference String?
   retail_order_items retail_order_items[]
   employees          employees?           @relation(fields: [cashier_id], references: [id])
   companies          companies?           @relation(fields: [company_id], references: [id])
@@ -5356,6 +5360,7 @@ model retail_orders {
   @@index([store_id])
   @@index([tenant_id])
   @@index([company_id])
+  @@index([tenant_id, updated_at])
 }
 
 model retail_promotions {

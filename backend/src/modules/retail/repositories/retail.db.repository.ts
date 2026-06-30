@@ -2524,6 +2524,7 @@ export class RetailDbRepository implements IRetailRepository {
         name: data.name,
         email: data.email,
         phone: data.phone,
+        ecommerce_id: data.ecommerce_id ?? undefined,
         retail_customer_auth: data.password_hash
           ? {
               create: {

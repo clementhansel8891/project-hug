@@ -121,6 +121,15 @@ export class RetailPublicOrderRequestDto {
   @IsString()
   externalReference?: string;
 
+  // Snake-case aliases sent by the storefront contract.
+  @IsOptional()
+  @IsString()
+  external_reference?: string;
+
+  @IsOptional()
+  @IsString()
+  channel_record_id?: string;
+
   @IsOptional()
   @ValidateNested()
   @Type(() => PublicCustomerDto)
@@ -225,3 +234,24 @@ export class WishlistItemDto {
   @IsString()
   sku?: string;
 }
+
+// --- Order lifecycle DTOs (storefront WhatsApp flow) ---
+
+export class OrderTransitionDto {
+  @IsOptional()
+  @IsString()
+  from_stage?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  to_stage: string;
+
+  @IsOptional()
+  @IsString()
+  timestamp?: string;
+}
+
+// Note: order lifecycle events (POST /events/orders) carry event-type-specific
+// payloads (delivery_cost, total, items, customer, trace_id, actor, metadata,
+// …). They are received as a raw body (`any`) so the global whitelist pipe does
+// not strip those fields, and validated in the service.
