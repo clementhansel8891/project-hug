@@ -59,7 +59,7 @@ export function WorkforceScheduler({
 }: WorkforceSchedulerProps) {
   const session = useSession();
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [shifts, setShifts] = useState<Shift[]>([]);
+  const [assignments, setAssignments] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [isImporting, setIsImporting] = useState(false);
@@ -70,30 +70,44 @@ export function WorkforceScheduler({
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
   const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await apiRequest<{ data?: Employee[] } | Employee[]>(`/v1/hr/employees?departmentId=${departmentId}`, "GET", session);
-        const data = Array.isArray(response) ? response : (response?.data || []);
-        setEmployees(data);
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [empResponse, assignmentRows] = await Promise.all([
+        apiRequest<{ data?: Employee[] } | Employee[]>(`/v1/hr/employees?departmentId=${departmentId}`, "GET", session),
+        apiRequest<any[]>(`/v1/hr/scheduling/assignments`, "GET", session).catch(() => []),
+      ]);
+      const emps = Array.isArray(empResponse) ? empResponse : (empResponse?.data || []);
+      setEmployees(emps);
+      setAssignments(Array.isArray(assignmentRows) ? assignmentRows : []);
+    } catch (err: unknown) {
+      console.error("Failed to load workforce data", err);
+      const errMsg = err instanceof Error ? err.message : "Failed to load team data.";
+      toast({
+        title: "Synchronization Error",
+        description: errMsg,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Fetch shifts for the selected week
-        // Note: Real implementation would query WorkShifts
-      } catch (err: unknown) {
-        console.error("Failed to load workforce data", err);
-        const errMsg = err instanceof Error ? err.message : "Failed to load team data.";
-        toast({
-          title: "Synchronization Error",
-          description: errMsg,
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+  useEffect(() => {
+    loadData();
   }, [departmentId, session]);
+
+  // Index assignments by employee + calendar date for O(1) cell lookup.
+  // effective_date is stored UTC-midnight, so its ISO date slice is the intended
+  // calendar day, matched against each grid day's yyyy-MM-dd.
+  const assignmentByCell = new Map<string, any>();
+  for (const a of assignments) {
+    const empId = a.employee_id ?? a.employeeId;
+    const raw = a.effective_date ?? a.effectiveDate;
+    if (!empId || !raw) continue;
+    const dateKey = typeof raw === "string" ? raw.slice(0, 10) : new Date(raw).toISOString().slice(0, 10);
+    assignmentByCell.set(`${empId}|${dateKey}`, a);
+  }
 
   const handlePrevWeek = () => setCurrentDate(addDays(currentDate, -7));
   const handleNextWeek = () => setCurrentDate(addDays(currentDate, 7));
@@ -120,6 +134,7 @@ export function WorkforceScheduler({
         title: "Schedule imported",
         description: `${result.imported} assignment(s) created.${failedNote}`,
       });
+      await loadData();
     } catch (err: any) {
       toast({ title: "Import failed", description: err?.message || "Could not import schedule", variant: "destructive" });
     } finally {
@@ -230,25 +245,32 @@ export function WorkforceScheduler({
                                         </div>
                                     </div>
                                 </td>
-                                {(Array.isArray(days) ? days : []).map(day => (
-                                    <td key={day.toString()} className="p-2 h-20 group relative">
-                                        {/* Mock Shift Card */}
-                                        <div className="h-full w-full rounded-lg bg-success border border-success/20 p-2 text-[10px] flex flex-col justify-between group-hover:bg-success cursor-pointer transition-all">
+                                {(Array.isArray(days) ? days : []).map(day => {
+                                    const dateStr = format(day, "yyyy-MM-dd");
+                                    const assignment = assignmentByCell.get(`${emp.id}|${dateStr}`);
+                                    const shift = assignment?.shifts ?? assignment?.shift;
+                                    const locationName = assignment?.locations?.name ?? assignment?.location?.name;
+                                    return (
+                                      <td key={day.toString()} className="p-2 h-20 group relative">
+                                        {shift ? (
+                                          <div className="h-full w-full rounded-lg bg-success/15 border border-success/30 p-2 text-[10px] flex flex-col justify-between cursor-pointer transition-all hover:bg-success/25" title={locationName ? `Location: ${locationName}` : undefined}>
                                             <div className="flex justify-between items-start">
-                                                <span className="font-bold text-success">Morning</span>
-                                                <Clock className="h-3 w-3 text-success opacity-0 group-hover:opacity-100" />
+                                                <span className="font-bold text-success truncate">{shift.name}</span>
+                                                <Clock className="h-3 w-3 text-success opacity-0 group-hover:opacity-100 shrink-0" />
                                             </div>
-                                            <span className="text-success font-medium font-mono">08:00 - 16:00</span>
-                                        </div>
-                                        
-                                        {/* Action Overlay */}
-                                        <div className="absolute inset-0 flex items-center justify-center bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    </td>
-                                ))}
+                                            <span className="text-success font-medium font-mono">{shift.start_time} - {shift.end_time}</span>
+                                            {locationName && (
+                                              <span className="text-[9px] text-muted-foreground truncate">{locationName}</span>
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <div className="h-full w-full rounded-lg border border-dashed border-muted-foreground/15 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                              <Plus className="h-4 w-4 text-muted-foreground" />
+                                          </div>
+                                        )}
+                                      </td>
+                                    );
+                                })}
                             </tr>
                         ))
                     )}
