@@ -13,6 +13,7 @@ import {
   Res,
   UseInterceptors,
   UseGuards,
+  BadRequestException,
 } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import { Request, Response } from "express";
@@ -1167,26 +1168,48 @@ export class HRController {
   @Post("payroll-runs")
   async createPayrollRun(
     @Req() request: RequestWithTenant,
-    @Body() body: { period_start: string; period_end: string },
+    @Body() body: { period_start?: string; period_end?: string; periodStart?: string; periodEnd?: string },
   ) {
     const { tenant_id, user_id } = request.tenantContext;
-    
-    const run = await this.repository.createPayrollRun(tenant_id, body);
-    
-    await this.auditService.log({ 
-      tenant_id, 
-      user_id: user_id || "system", 
-      module: "hr", 
-      action: "CREATE", 
-      entity_type: "PAYROLL_RUN", 
-      entity_id: run.id, 
-      metadata: { period_start: body.period_start, period_end: body.period_end } 
+
+    // Accept both snake_case (period_start) and camelCase (periodStart). The
+    // frontend payrollService sends camelCase, so normalize here and validate
+    // up front to return a 400 instead of a Prisma 500 on Invalid Date.
+    const periodStart = body.period_start ?? body.periodStart;
+    const periodEnd = body.period_end ?? body.periodEnd;
+
+    if (!periodStart || !periodEnd) {
+      throw new BadRequestException("period_start and period_end are required");
+    }
+
+    const startDate = new Date(periodStart);
+    const endDate = new Date(periodEnd);
+    if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) {
+      throw new BadRequestException("period_start and period_end must be valid dates");
+    }
+    if (endDate < startDate) {
+      throw new BadRequestException("period_end must be on or after period_start");
+    }
+
+    const run = await this.repository.createPayrollRun(tenant_id, {
+      period_start: periodStart,
+      period_end: periodEnd,
     });
 
-    return { 
-      success: true, 
-      tenant_id, 
-      data: run 
+    await this.auditService.log({
+      tenant_id,
+      user_id: user_id || "system",
+      module: "hr",
+      action: "CREATE",
+      entity_type: "PAYROLL_RUN",
+      entity_id: run.id,
+      metadata: { period_start: periodStart, period_end: periodEnd },
+    });
+
+    return {
+      success: true,
+      tenant_id,
+      data: run
     };
   }
 

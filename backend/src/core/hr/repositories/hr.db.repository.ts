@@ -2603,6 +2603,11 @@ export class HRDbRepository implements IHRRepository {
   }
 
   async createPayrollRun(tenant_id: string, data: any): Promise<PayrollRun> {
+    // Accept both snake_case and camelCase period fields defensively so any
+    // caller (controller, command handler) lands valid dates rather than
+    // producing `new Date(undefined)` → Invalid Date → Prisma 500.
+    const periodStartRaw = data.period_start ?? data.periodStart;
+    const periodEndRaw = data.period_end ?? data.periodEnd;
     // Resolve the run's base currency from the owning company's registration
     // rather than defaulting to a hardcoded literal (Req 1.2). Prefer an
     // explicitly supplied currency, then the company's currency; the trailing
@@ -2620,8 +2625,8 @@ export class HRDbRepository implements IHRRepository {
       data: {
         id: uuidv4(),
         tenant_id: tenant_id,
-        period_start: new Date(data.period_start),
-        period_end: new Date(data.period_end),
+        period_start: new Date(periodStartRaw),
+        period_end: new Date(periodEndRaw),
         base_currency: data.baseCurrency ?? company?.currency ?? "USD",
         status: data.status ?? "DRAFT",
         name: data.name ?? undefined,
