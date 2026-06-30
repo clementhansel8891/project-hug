@@ -19,7 +19,7 @@
 | 6 | Sales | CreateOrderModal | POST /v1/sales/orders | 404 | BUILD-BE or REPOINT | Sales orders come from close-won; either add POST or repoint modal to close-won flow |
 | 7 | Sales | IncentiveConfigModal | POST /v1/sales/incentives/plans | 404 | VERIFY/BUILD | incentivesService targets this; confirm controller |
 | 8 | Finance | LedgerCore "Create Journal Entry" | POST /v1/finance/journal-entries | 404 | REPOINT-FE | Backend is event-sourced: use POST /finance/ledger/process-event (architecture mismatch — needs design) |
-| 9 | Finance | PayableDesk "mark paid" | PATCH /v1/finance/payables/:id/paid | 404 | BUILD-BE | No mark-paid route exists (neither variant) |
+| 9 | Finance | PayableDesk "mark paid" | PATCH /v1/finance/payables/:id/paid | ✅ FIXED | DONE | Added route + service + repo: posts LIAB-AP/ASSET-CASH settlement journal, flips status to PAID atomically, idempotent |
 | 10 | HR | payroll modal | POST /v1/hr/payroll/runs | 404 | REPOINT-FE | service path /v1/hr/payroll-runs exists (see #14) |
 | 11 | HR | workflow modals | POST /v1/hr/workflows | 404 | REPOINT-FE | use workflowService /v1/workflow/* sub-routes |
 | 12 | HR | roster assign modal | POST /v1/hr/roster/assign | 404 | REPOINT-FE | use /v1/hr/scheduling/* |
@@ -31,8 +31,8 @@
 
 ## Priority order (by user impact × effort)
 
-1. **IT ticketing (#1–5)** — entire ITSM UI dead; 3 tables + routes. **IN PROGRESS.**
-2. **PayableDesk mark-paid (#9)** — finance AP can't mark invoices paid; small route.
+1. **IT ticketing (#1–5)** — entire ITSM UI dead; 3 tables + routes. **DONE.**
+2. **PayableDesk mark-paid (#9)** — finance AP can't mark invoices paid. **DONE.**
 3. **Sales CreateOrder (#6)** — repoint to close-won or add POST.
 4. **HR repoints (#10–12)** — change frontend paths to existing routes.
 5. **Marketing omnichannel (#15)**, **talent (#13)** — lower traffic.
@@ -54,10 +54,16 @@
   both. Live probe: camelCase→201, snake_case→201, empty→400, invalid date→400,
   end<start→400. Commit `b4dbc8c4` + deploy.
 - Marketing assets/upload (#16): not re-probed (requires multipart/file).
+- PayableDesk mark-paid (#9): **FIXED & VERIFIED IN PRODUCTION**. Added
+  `PATCH /finance/payables/:id/paid` (controller + service + repo + mock). Marks
+  the payable PAID and posts the settlement journal (debit LIAB-AP / credit
+  ASSET-CASH) atomically; idempotent (re-calling a PAID bill returns 200 without
+  double-posting); unknown id → 404. Live probe: insert→mark-paid→200 PAID, DB
+  status=PAID, journal `PAYPD-*` POSTED, second call no new journal. Commit
+  `6af5874a` + deploy.
 
 ## Remaining open bugs (priority order)
-1. PayableDesk mark-paid (#9) — no backend route.
-2. Sales CreateOrder (#6) — repoint to close-won or add POST.
-3. HR repoints (#10–12).
-4. Marketing omnichannel (#15), talent (#13).
-5. Finance journal (#8) — design decision.
+1. Sales CreateOrder (#6) — repoint to close-won or add POST.
+2. HR repoints (#10–12).
+3. Marketing omnichannel (#15), talent (#13).
+4. Finance journal (#8) — design decision.
