@@ -8,9 +8,9 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 14 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #14, #15 |
+| ✅ **FIXED & verified in prod** | 15 | #1, #2, #3, #4, #5, #6, #7, #8, #9, #10, #11, #12, #13, #14, #15 |
 | 🟦 **NOT A BUG** (probe used wrong method) | 1 | #17 |
-| ⚪ **DEFERRED / DESIGN** | 2 | #8 (design decision), #16 (multipart) |
+| ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | ❌ **OPEN** | 0 | — |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
@@ -31,7 +31,7 @@ Legend — **Category**:
 | 5 | ✅ FIXED | IT | SLAConfigModal | POST /v1/it/sla-config | BUILD-BE | Built `it_sla_configs` table + routes. Probe → 201/200 |
 | 6 | ✅ FIXED | Sales | CreateOrderModal | POST /v1/sales/orders | BUILD-BE | Added POST route delegating to atomic close-won: closes opportunity WON + creates order + audit/outbox/incentive. Probe → 201 |
 | 7 | ✅ FIXED | Sales | IncentiveConfigModal | POST /v1/sales/incentives/plans | BUILD-BE | Added tenant-scoped bridge route (sales ctrl, with guards) → creates plan + default GLOBAL rule via IncentivesService. Probe → 201 |
-| 8 | ❌ OPEN | Finance | LedgerCore "Create Journal Entry" | POST /v1/finance/journal-entries | REPOINT-FE | Backend is event-sourced: use POST /finance/ledger/process-event (architecture mismatch — needs design) |
+| 8 | ✅ FIXED | Finance | LedgerCore "Create Journal Entry" | POST /v1/finance/journal-entries | BUILD-BE | Added route → canonical `createJournal`/validate-and-post (balanced double-entry, resolves GL accounts, binds OPEN period). Also fixed DTO toString-transform bug + unbalanced→400. Probe → 201 POSTED, unbalanced 400, single-line 400 |
 | 9 | ✅ FIXED | Finance | PayableDesk "mark paid" | PATCH /v1/finance/payables/:id/paid | BUILD-BE | Added route + service + repo: posts LIAB-AP/ASSET-CASH settlement journal, flips status to PAID atomically, idempotent. Probe → 200 PAID |
 | 10 | ✅ FIXED | HR | payroll modal | POST /v1/hr/payroll/runs | REPOINT-FE | Added `payroll/runs` alias → canonical `payroll-runs` handler. Probe → 201 |
 | 11 | ✅ FIXED | HR | workflow modals | POST /v1/hr/workflows | REPOINT-FE | Added `hr/workflows` bridge → shared WorkflowService.createRequest (maker_dept=HR). Also fixed WorkflowService hardcoded-id PK bug. Probe → 201 ×2 distinct |
@@ -44,15 +44,9 @@ Legend — **Category**:
 
 ## 🔧 Remaining items
 
-1. **Finance journal (#8)** — needs a **design decision**, not a quick fix. The
-   LedgerCore "Create Journal Entry" modal calls `POST /finance/journal-entries`,
-   but the backend ledger is **event-sourced** — journals are produced by
-   `POST /finance/ledger/process-event` (which exists and validates). Options:
-   (a) repoint the modal to build a process-event payload, or (b) add a direct
-   journal-entry endpoint that bypasses event sourcing (changes the accounting
-   model). Recommend (a). Awaiting decision before implementing.
-2. **Marketing asset upload (#16)** — `POST /marketing/assets/upload` exists but
-   needs a multipart/file payload to verify; deferred (not a routing bug).
+1. **Marketing asset upload (#16)** — `POST /marketing/assets/upload` exists but
+   needs a multipart/file payload to verify; deferred (not a routing bug, requires
+   a file fixture to exercise end-to-end).
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -132,3 +126,15 @@ Legend — **Category**:
   category_id, base_price, auto-clears `is_anomaly` on category change). Live
   PATCH probe → 200 (update applied, then restored); POST → 404 (confirms the
   method mismatch). No code change required.
+- **Finance journal (#8)** — *FIXED & VERIFIED IN PRODUCTION.* The LedgerCore
+  "Create Journal Entry" modal posted to `/finance/journal-entries` (404). Rather
+  than bypassing the accounting model, added a route that delegates to the
+  existing `FinanceService.createJournal` → `validateAndCreateJournal` — the same
+  canonical balanced double-entry posting routine used by payables/mark-paid
+  (resolves/creates GL accounts by code, binds an OPEN fiscal period, posts as
+  POSTED). The modal payload already matches `CreateJournalDto`. Two latent bugs
+  surfaced and fixed: (1) the DTO's `@Transform(toString)` on debit/credit broke
+  `@IsNumber` at the HTTP boundary; (2) unbalanced entries threw a plain Error
+  (500) → now `BadRequestException` (400). Live probe: balanced → 201 POSTED
+  (lines balanced), unbalanced → 400, single-line → 400. Commits `1e1e8676`,
+  `fa3d9abb`, `4837b02a` + deploy.
