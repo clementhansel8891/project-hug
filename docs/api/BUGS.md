@@ -8,8 +8,8 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 8 | #1, #2, #3, #4, #5, #6, #9, #14 |
-| ❌ **OPEN** | 8 | #7, #8, #10, #11, #12, #13, #15, #17 |
+| ✅ **FIXED & verified in prod** | 9 | #1, #2, #3, #4, #5, #6, #7, #9, #14 |
+| ❌ **OPEN** | 7 | #8, #10, #11, #12, #13, #15, #17 |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
 
@@ -28,7 +28,7 @@ Legend — **Category**:
 | 4 | ✅ FIXED | IT | ResolutionModal | POST /v1/it/tickets/resolve | BUILD-BE | Ticket resolve route. Probe → 201 |
 | 5 | ✅ FIXED | IT | SLAConfigModal | POST /v1/it/sla-config | BUILD-BE | Built `it_sla_configs` table + routes. Probe → 201/200 |
 | 6 | ✅ FIXED | Sales | CreateOrderModal | POST /v1/sales/orders | BUILD-BE | Added POST route delegating to atomic close-won: closes opportunity WON + creates order + audit/outbox/incentive. Probe → 201 |
-| 7 | ❌ OPEN | Sales | IncentiveConfigModal | POST /v1/sales/incentives/plans | VERIFY/BUILD | incentivesService targets this; confirm controller |
+| 7 | ✅ FIXED | Sales | IncentiveConfigModal | POST /v1/sales/incentives/plans | BUILD-BE | Added tenant-scoped bridge route (sales ctrl, with guards) → creates plan + default GLOBAL rule via IncentivesService. Probe → 201 |
 | 8 | ❌ OPEN | Finance | LedgerCore "Create Journal Entry" | POST /v1/finance/journal-entries | REPOINT-FE | Backend is event-sourced: use POST /finance/ledger/process-event (architecture mismatch — needs design) |
 | 9 | ✅ FIXED | Finance | PayableDesk "mark paid" | PATCH /v1/finance/payables/:id/paid | BUILD-BE | Added route + service + repo: posts LIAB-AP/ASSET-CASH settlement journal, flips status to PAID atomically, idempotent. Probe → 200 PAID |
 | 10 | ❌ OPEN | HR | payroll modal | POST /v1/hr/payroll/runs | REPOINT-FE | service path /v1/hr/payroll-runs exists (see #14) — repoint modal |
@@ -42,13 +42,12 @@ Legend — **Category**:
 
 ## 🔧 Remaining open bugs — priority order
 
-1. **Sales IncentiveConfig (#7)** — confirm/build incentives plans route. *(next)*
-2. **HR repoints (#10–12)** — change frontend paths to existing routes.
-3. **HR talent (#13)** — build recruitment write routes.
-4. **Marketing omnichannel (#15)** — build config route.
-5. **Retail anomaly complete (#17)** — repoint namespace.
-6. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
-7. **Marketing asset upload (#16)** — re-probe with multipart payload.
+1. **HR repoints (#10–12)** — change frontend paths to existing routes. *(next)*
+2. **HR talent (#13)** — build recruitment write routes.
+3. **Marketing omnichannel (#15)** — build config route.
+4. **Retail anomaly complete (#17)** — repoint namespace.
+5. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
+6. **Marketing asset upload (#16)** — re-probe with multipart payload.
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -79,3 +78,13 @@ Legend — **Category**:
   required; `paymentTerms`/`notes` accepted (not persisted — no columns).
   Live probe: create opp → POST orders → 201 (order DRAFT, opp CLOSED_WON),
   missing field → 400, bogus id → 404. Commit `e9eeaf3e` + deploy.
+- **Sales IncentiveConfig (#7)** — *FIXED & VERIFIED IN PRODUCTION.* The
+  IncentiveConfigModal posted to `/v1/sales/incentives/plans` (404) and sent no
+  tenant_id; the bare `/incentives` controller also lacks tenant guards. Added a
+  tenant-scoped bridge route `POST /sales/incentives/plans` on the sales
+  controller (TenantGuard + RolesGuard) that derives tenant/company from context
+  and creates the plan + a default GLOBAL `sales_incentive_rules` row (mapping the
+  modal's reward type→base_type, value) via `IncentivesService`. SalesModule now
+  imports IncentivesModule (no circular dep; container starts healthy). Live
+  probe: POST → 201 (plan + PERCENTAGE rule value 5), missing name → 400, bad
+  type → 400. Commit `c8640b71` + deploy.
