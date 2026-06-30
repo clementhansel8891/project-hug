@@ -8,7 +8,7 @@ import {
   Min,
   ArrayMinSize,
 } from "class-validator";
-import { Type, Transform } from "class-transformer";
+import { Type } from "class-transformer";
 
 export class JournalLineDto {
   @IsString()
@@ -16,17 +16,15 @@ export class JournalLineDto {
   accountCode: string;
 
   @IsString()
-  @IsNotEmpty()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsNumber()
   @Min(0)
-  @Transform(({ value }) => value?.toString())
   debit: number;
 
   @IsNumber()
   @Min(0)
-  @Transform(({ value }) => value?.toString())
   credit: number;
 }
 
