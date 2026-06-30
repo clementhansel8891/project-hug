@@ -75,6 +75,8 @@ import { LaborCostService } from "./labor-cost.service";
 import { TenantContext } from "../../gateway/tenant-context.interface";
 import { TenantInterceptor } from "../../gateway/tenant.interceptor";
 import { TimeAndAttendanceService } from "./time/time.service";
+import { WorkflowService } from "../../shared/workflow/workflow.service";
+import { SchedulingService } from "./scheduling.service";
 
 interface RequestWithTenant extends Request {
   tenantContext: TenantContext;
@@ -135,6 +137,8 @@ export class HRController {
     private readonly hrPayrollService: HrPayrollService,
     private readonly scopeResolver: TenantScopeResolver,
     private readonly timeService: TimeAndAttendanceService,
+    private readonly workflowService: WorkflowService,
+    private readonly schedulingService: SchedulingService,
   ) {}
   // ==================== Overview (Module-Aware) ====================
 
@@ -1211,6 +1215,87 @@ export class HRController {
       tenant_id,
       data: run
     };
+  }
+
+
+  /**
+   * POST /hr/payroll/runs  (alias)
+   * The CreatePayrollRunModal posts to the slashed path; delegate to the
+   * canonical `payroll-runs` handler so both spellings work.
+   */
+  @Post("payroll/runs")
+  async createPayrollRunAlias(
+    @Req() request: RequestWithTenant,
+    @Body() body: { period_start?: string; period_end?: string; periodStart?: string; periodEnd?: string },
+  ) {
+    return this.createPayrollRun(request, body);
+  }
+
+  /**
+   * POST /hr/workflows
+   * The HR FlowGate modals (CreateWorkflowRequestModal, CreateFlowRouteModal)
+   * post here with camelCase. Bridge to the canonical shared WorkflowService
+   * (the `/workflow/request` route), defaulting the maker department to HR.
+   */
+  @Post("workflows")
+  async createWorkflowRequest(
+    @Req() request: RequestWithTenant,
+    @Body()
+    body: {
+      entityType?: string;
+      entityId?: string;
+      makerDept?: string;
+      destinationDept?: string;
+      notes?: string;
+      metadata?: any;
+    },
+  ) {
+    const { tenant_id, user_id } = request.tenantContext;
+    if (!body.entityType || !body.entityId || !body.destinationDept) {
+      throw new BadRequestException(
+        "entityType, entityId and destinationDept are required",
+      );
+    }
+    const data = await this.workflowService.createRequest({
+      tenant_id,
+      entity_type: body.entityType,
+      entity_id: body.entityId,
+      maker_dept: body.makerDept || "HR",
+      destination_dept: body.destinationDept,
+      requested_by: user_id || "system",
+      notes: body.notes,
+      metadata: body.metadata,
+    });
+    return { success: true, tenant_id, data };
+  }
+
+  /**
+   * POST /hr/roster/assignments
+   * The AssignShiftStaffModal posts here with camelCase. Bridge to the
+   * scheduling service, which derives the required location from the employee.
+   */
+  @Post("roster/assignments")
+  async createRosterAssignment(
+    @Req() request: RequestWithTenant,
+    @Body() body: { employeeId?: string; shiftTemplateId?: string; date?: string; notes?: string },
+  ) {
+    const { tenant_id, user_id } = request.tenantContext;
+    if (!body.employeeId || !body.shiftTemplateId || !body.date) {
+      throw new BadRequestException(
+        "employeeId, shiftTemplateId and date are required",
+      );
+    }
+    const data = await this.schedulingService.createAssignment(
+      tenant_id,
+      {
+        employee_id: body.employeeId,
+        shift_id: body.shiftTemplateId,
+        effective_date: body.date,
+        notes: body.notes,
+      },
+      user_id || "system",
+    );
+    return { success: true, tenant_id, data };
   }
 
 

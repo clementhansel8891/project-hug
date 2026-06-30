@@ -404,4 +404,58 @@ export class SchedulingService {
       },
     });
   }
+
+  /**
+   * Assign an employee to a shift on a given date (the roster "Assign Staff to
+   * Shift" action). `schedule_assignments.location_id` is required and the modal
+   * does not supply one, so it is derived from the employee's own location.
+   */
+  async createAssignment(
+    tenant_id: string,
+    data: { employee_id: string; shift_id: string; effective_date: string; notes?: string },
+    user_id: string,
+  ) {
+    const employee = await this.prisma.employees.findFirst({
+      where: { id: data.employee_id, tenant_id },
+    });
+    if (!employee) throw new BadRequestException("Employee not found for this tenant");
+
+    const shift = await this.prisma.shifts.findFirst({
+      where: { id: data.shift_id, tenant_id, deleted_at: null },
+    });
+    if (!shift) throw new BadRequestException("Shift not found for this tenant");
+
+    const effective = new Date(data.effective_date);
+    if (Number.isNaN(effective.getTime())) {
+      throw new BadRequestException("effective_date must be a valid date");
+    }
+
+    const event_reference_id = `EVT-HR-ASSIGN-NEW-${Date.now()}`;
+    return this.prisma.$transaction(async (tx: any) => {
+      const assignment = await tx.schedule_assignments.create({
+        data: {
+          tenant_id,
+          employee_id: data.employee_id,
+          shift_id: data.shift_id,
+          location_id: employee.location_id,
+          company_id: employee.company_id ?? undefined,
+          effective_date: effective,
+          updated_at: new Date(),
+        },
+      });
+
+      await this.auditService.log({
+        tenant_id,
+        user_id,
+        module: "HR",
+        action: "CREATE",
+        entity_type: "SCHEDULE_ASSIGNMENT",
+        entity_id: assignment.id,
+        after_state: assignment,
+        event_reference_id,
+      }, tx);
+
+      return assignment;
+    });
+  }
 }

@@ -238,4 +238,24 @@ export class HrSchedulingController {
       employee_id,
     );
   }
+
+  @Post("assignments")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async createAssignment(
+    @Req() request: RequestWithTenant,
+    @Body() data: { employeeId?: string; shiftTemplateId?: string; shift_id?: string; date?: string; effective_date?: string; notes?: string },
+  ) {
+    const user_id = request.tenantContext.user_id ?? "system";
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    return this.schedulingService.createAssignment(
+      scope.tenant_id,
+      {
+        employee_id: data.employeeId ?? "",
+        shift_id: data.shiftTemplateId ?? data.shift_id ?? "",
+        effective_date: data.date ?? data.effective_date ?? "",
+        notes: data.notes,
+      },
+      user_id,
+    );
+  }
 }

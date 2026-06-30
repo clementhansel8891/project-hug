@@ -1,4 +1,5 @@
 import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { PrismaService } from '../../persistence/prisma.service';
 import { EventBusService } from '../events/event-bus.service';
 import { PaginationParams } from '../pipes/pagination.pipe';
@@ -26,7 +27,7 @@ export class WorkflowService {
   }) {
     const request = await this.prisma.workflow_requests.create({
       data: {
-        id: 'k0ctrl8m',
+        id: randomUUID(),
         updated_at: new Date(),
         tenant_id: params.tenant_id,
         entity_type: params.entity_type,
@@ -73,7 +74,7 @@ export class WorkflowService {
     // Audit Log entry
     await this.prisma.workflow_audit_entries.create({
       data: {
-        id: 'n35ogdd9',
+        id: randomUUID(),
         updated_at: new Date(),
         tenant_id,
         workflow_id: id,
@@ -116,7 +117,7 @@ export class WorkflowService {
 
     await this.prisma.workflow_audit_entries.create({
       data: {
-        id: '78l3xc8k',
+        id: randomUUID(),
         updated_at: new Date(),
         tenant_id,
         workflow_id: id,
