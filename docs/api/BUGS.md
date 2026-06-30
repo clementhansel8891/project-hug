@@ -8,8 +8,8 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 7 | #1, #2, #3, #4, #5, #9, #14 |
-| ❌ **OPEN** | 9 | #6, #7, #8, #10, #11, #12, #13, #15, #17 |
+| ✅ **FIXED & verified in prod** | 8 | #1, #2, #3, #4, #5, #6, #9, #14 |
+| ❌ **OPEN** | 8 | #7, #8, #10, #11, #12, #13, #15, #17 |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
 
@@ -27,7 +27,7 @@ Legend — **Category**:
 | 3 | ✅ FIXED | IT | EscalationModal | POST /v1/it/tickets/escalate | BUILD-BE | Ticket escalate route. Probe → 201 |
 | 4 | ✅ FIXED | IT | ResolutionModal | POST /v1/it/tickets/resolve | BUILD-BE | Ticket resolve route. Probe → 201 |
 | 5 | ✅ FIXED | IT | SLAConfigModal | POST /v1/it/sla-config | BUILD-BE | Built `it_sla_configs` table + routes. Probe → 201/200 |
-| 6 | ❌ OPEN | Sales | CreateOrderModal | POST /v1/sales/orders | BUILD-BE or REPOINT | Sales orders come from close-won; either add POST or repoint modal to close-won flow |
+| 6 | ✅ FIXED | Sales | CreateOrderModal | POST /v1/sales/orders | BUILD-BE | Added POST route delegating to atomic close-won: closes opportunity WON + creates order + audit/outbox/incentive. Probe → 201 |
 | 7 | ❌ OPEN | Sales | IncentiveConfigModal | POST /v1/sales/incentives/plans | VERIFY/BUILD | incentivesService targets this; confirm controller |
 | 8 | ❌ OPEN | Finance | LedgerCore "Create Journal Entry" | POST /v1/finance/journal-entries | REPOINT-FE | Backend is event-sourced: use POST /finance/ledger/process-event (architecture mismatch — needs design) |
 | 9 | ✅ FIXED | Finance | PayableDesk "mark paid" | PATCH /v1/finance/payables/:id/paid | BUILD-BE | Added route + service + repo: posts LIAB-AP/ASSET-CASH settlement journal, flips status to PAID atomically, idempotent. Probe → 200 PAID |
@@ -42,14 +42,13 @@ Legend — **Category**:
 
 ## 🔧 Remaining open bugs — priority order
 
-1. **Sales CreateOrder (#6)** — repoint to close-won or add POST. *(next)*
-2. **Sales IncentiveConfig (#7)** — confirm/build incentives plans route.
-3. **HR repoints (#10–12)** — change frontend paths to existing routes.
-4. **HR talent (#13)** — build recruitment write routes.
-5. **Marketing omnichannel (#15)** — build config route.
-6. **Retail anomaly complete (#17)** — repoint namespace.
-7. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
-8. **Marketing asset upload (#16)** — re-probe with multipart payload.
+1. **Sales IncentiveConfig (#7)** — confirm/build incentives plans route. *(next)*
+2. **HR repoints (#10–12)** — change frontend paths to existing routes.
+3. **HR talent (#13)** — build recruitment write routes.
+4. **Marketing omnichannel (#15)** — build config route.
+5. **Retail anomaly complete (#17)** — repoint namespace.
+6. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
+7. **Marketing asset upload (#16)** — re-probe with multipart payload.
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -72,3 +71,11 @@ Legend — **Category**:
   double-posting); unknown id → 404. Live probe: insert→mark-paid→200 PAID, DB
   status=PAID, journal `PAYPD-*` POSTED, second call no new journal. Commit
   `6af5874a` + deploy.
+- **Sales CreateOrder (#6)** — *FIXED & VERIFIED IN PRODUCTION.* Added
+  `POST /sales/orders` (+ `CreateOrderDto`). The modal converts a won opportunity
+  into a fulfillment order, so the route delegates to the existing atomic
+  close-won pipeline: closes the opportunity as WON and creates the `sales_orders`
+  row together with audit / outbox / incentive-engine events. `opportunityId`
+  required; `paymentTerms`/`notes` accepted (not persisted — no columns).
+  Live probe: create opp → POST orders → 201 (order DRAFT, opp CLOSED_WON),
+  missing field → 400, bogus id → 404. Commit `e9eeaf3e` + deploy.
