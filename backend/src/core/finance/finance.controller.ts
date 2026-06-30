@@ -9,6 +9,7 @@ import { LedgerPostingService } from './services/ledger-posting.service';
 import { JournalReversalService } from './services/journal-reversal.service';
 import { PeriodClosingService } from './services/period-closing.service';
 import { CreateCOADto, UpdateCOADto } from './dto/coa.dto';
+import { CreateJournalDto } from './dto/create-journal.dto';
 import { UpdateFiscalPeriodDto } from './dto/fiscal.dto';
 import { CreatePostingRuleDto } from './dto/posting-rule.dto';
 import { TenantGuard } from '../../shared/guards/tenant.guard';
@@ -159,6 +160,18 @@ export class FinanceController {
       body.reason || 'Manual reversal',
       ctx.user_id || 'SYSTEM'
     );
+  }
+
+  // LedgerCore "Create Journal Entry" dialog → POST journal-entries.
+  // Posts a balanced double-entry journal through the canonical
+  // validate-and-post routine (same path used by payables/mark-paid). The DTO
+  // enforces >= 2 lines; the routine resolves/creates GL accounts by code,
+  // binds an OPEN fiscal period, and rejects an unbalanced entry.
+  @Post('journal-entries')
+  @Roles(UserRole.ADMIN, UserRole.OWNER, UserRole.SUPERADMIN)
+  async createJournalEntry(@TenantCtx() ctx: TenantContext, @Body() dto: CreateJournalDto) {
+    const data = await this.financeService.createJournal(ctx, dto);
+    return { success: true, tenant_id: ctx.tenant_id, data };
   }
 
   // --- Money Sources & Petty Cash ---
