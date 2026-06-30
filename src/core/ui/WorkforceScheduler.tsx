@@ -60,6 +60,8 @@ export function WorkforceScheduler({
   const session = useSession();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [assignments, setAssignments] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<{ id: string; name: string }[]>([]);
+  const [selectedDept, setSelectedDept] = useState<string>("");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [isImporting, setIsImporting] = useState(false);
@@ -70,11 +72,36 @@ export function WorkforceScheduler({
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
   const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
+  // Resolve real departments once. The `departmentId` prop is often a code
+  // (e.g. "HR") that does not match the uuid `department_id` employees carry, so
+  // resolve to a real department id: prefer the prop if it's a known id, else
+  // the first real department.
+  useEffect(() => {
+    const loadDepartments = async () => {
+      try {
+        const resp = await apiRequest<{ data?: any[] } | any[]>("/v1/hr/departments", "GET", session);
+        const list = Array.isArray(resp) ? resp : (resp?.data || []);
+        const norm = list.map((d: any) => ({ id: d.id, name: d.name }));
+        setDepartments(norm);
+        setSelectedDept((prev) => {
+          if (prev && norm.some((d) => d.id === prev)) return prev;
+          if (departmentId && norm.some((d) => d.id === departmentId)) return departmentId;
+          return norm[0]?.id ?? "";
+        });
+      } catch {
+        // Fall back to the provided departmentId if the lookup fails.
+        setSelectedDept(departmentId);
+      }
+    };
+    loadDepartments();
+  }, [session]);
+
   const loadData = async () => {
+    if (!selectedDept) return;
     setLoading(true);
     try {
       const [empResponse, assignmentRows] = await Promise.all([
-        apiRequest<{ data?: Employee[] } | Employee[]>(`/v1/hr/employees?departmentId=${departmentId}`, "GET", session),
+        apiRequest<{ data?: Employee[] } | Employee[]>(`/v1/hr/employees?departmentId=${selectedDept}`, "GET", session),
         apiRequest<any[]>(`/v1/hr/scheduling/assignments`, "GET", session).catch(() => []),
       ]);
       const emps = Array.isArray(empResponse) ? empResponse : (empResponse?.data || []);
@@ -95,7 +122,7 @@ export function WorkforceScheduler({
 
   useEffect(() => {
     loadData();
-  }, [departmentId, session]);
+  }, [selectedDept, session]);
 
   // Index assignments by employee + calendar date for O(1) cell lookup.
   // effective_date is stored UTC-midnight, so its ISO date slice is the intended
@@ -154,19 +181,14 @@ export function WorkforceScheduler({
                 <div className="flex items-center gap-2 mt-1">
                   <p className="text-xs text-muted-foreground whitespace-nowrap">Week of {format(weekStart, "MMMM dd, yyyy")}</p>
                   {isHR && (
-                    <Select value={departmentId} onValueChange={onDepartmentChange}>
-                      <SelectTrigger className="h-6 text-[9px] font-black uppercase tracking-widest bg-muted border-white/5 text-primary w-[140px] rounded-lg hover:bg-muted">
+                    <Select value={selectedDept} onValueChange={(val) => { setSelectedDept(val); onDepartmentChange?.(val); }}>
+                      <SelectTrigger className="h-6 text-[9px] font-black uppercase tracking-widest bg-muted border-white/5 text-primary w-[180px] rounded-lg hover:bg-muted">
                         <SelectValue placeholder="Switch Department" />
                       </SelectTrigger>
                       <SelectContent className="bg-muted border-white/5">
-                        <SelectItem value="HR">HR & Legal</SelectItem>
-                        <SelectItem value="FINANCE">Finance</SelectItem>
-                        <SelectItem value="IT">IT & Tech</SelectItem>
-                        <SelectItem value="MARKETING">Marketing</SelectItem>
-                        <SelectItem value="SALES">Sales</SelectItem>
-                        <SelectItem value="PROCUREMENT">Procurement</SelectItem>
-                        <SelectItem value="INVENTORY">Inventory</SelectItem>
-                        <SelectItem value="RETAIL">Retail Ops</SelectItem>
+                        {departments.map((d) => (
+                          <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   )}
