@@ -4,6 +4,9 @@ import { IHRRepository } from "./repositories/hr.repository.interface";
 import { AuditService } from "../../shared/audit/audit.service";
 import { EventBusService } from "../../shared/events/event-bus.service";
 import { LoggerService } from "../../shared/logger/logger.service";
+import { FileProcessingService } from "../../shared/file-processing/file-processing.service";
+import { ImportScheduleRowDto } from "./dto/import-schedule.dto";
+import { randomUUID } from "crypto";
 import { BadRequestException, ConflictException } from "./utils/hr-prisma.errors";
 import { mapWorkShiftFieldsToColumns } from "./utils/field-mapping";
 import {
@@ -24,6 +27,7 @@ export class SchedulingService {
     private readonly auditService: AuditService,
     private readonly eventBus: EventBusService,
     private readonly loggerService: LoggerService,
+    private readonly fileProcessingService: FileProcessingService,
   ) {}
 
   async createWorkSchedule(tenant_id: string, data: any, user_id: string) {
@@ -457,5 +461,155 @@ export class SchedulingService {
 
       return assignment;
     });
+  }
+
+  /** Column definitions for the schedule-assignment import template/parse. */
+  static readonly ASSIGNMENT_IMPORT_COLUMNS = [
+    { header: "Employee Code", key: "employee_code", width: 20 },
+    { header: "Employee Email", key: "employee_email", width: 28 },
+    { header: "Shift Name", key: "shift_name", width: 22 },
+    { header: "Date", key: "date", width: 16 },
+    { header: "Location Name", key: "location_name", width: 24 },
+  ];
+
+  /** Generate the (empty) xlsx import template buffer for schedule assignments. */
+  async generateAssignmentTemplate(): Promise<Buffer> {
+    return this.fileProcessingService.generateExcel(
+      [],
+      SchedulingService.ASSIGNMENT_IMPORT_COLUMNS,
+    );
+  }
+
+  private cellToString(value: any): string {
+    if (value === null || value === undefined) return "";
+    // ExcelJS rich-text / hyperlink / formula cells expose `.text`/`.result`.
+    if (typeof value === "object") {
+      if (typeof value.text === "string") return value.text.trim();
+      if (value.result !== undefined) return String(value.result).trim();
+      if (value instanceof Date) return value.toISOString();
+    }
+    return String(value).trim();
+  }
+
+  /**
+   * Bulk-import schedule assignments from a parsed xlsx/csv file. Each row binds
+   * an employee (by code or email) to a shift (by name) on a date, at a location
+   * (by name, or the employee's own location if omitted). Valid rows are written;
+   * invalid rows are skipped and reported with a row number and reason, so a
+   * partially-correct file still imports its good rows.
+   */
+  async importAssignments(
+    tenant_id: string,
+    fileBuffer: Buffer,
+    filename: string,
+    user_id: string,
+  ): Promise<{ imported: number; failed: number; errors: Array<{ row: number; message: string }> }> {
+    const isCsv = (filename || "").toLowerCase().endsWith(".csv");
+    const parsed = isCsv
+      ? await this.fileProcessingService.parseCsv(fileBuffer, ImportScheduleRowDto)
+      : await this.fileProcessingService.parseExcel(fileBuffer, ImportScheduleRowDto);
+    const rows = parsed.data as ImportScheduleRowDto[];
+
+    if (!rows || rows.length === 0) {
+      throw new BadRequestException(
+        "No data rows found. Download the template and fill at least one row.",
+      );
+    }
+
+    // Pre-load lookup maps (scoped to tenant) to avoid per-row queries.
+    const [employees, shifts, locations] = await Promise.all([
+      this.prisma.employees.findMany({
+        where: { tenant_id, deleted_at: null },
+        select: { id: true, employee_code: true, email: true, location_id: true, company_id: true },
+      }),
+      this.prisma.shifts.findMany({
+        where: { tenant_id, deleted_at: null },
+        select: { id: true, name: true },
+      }),
+      this.prisma.locations.findMany({
+        where: { tenant_id },
+        select: { id: true, name: true },
+      }),
+    ]);
+
+    const empByCode = new Map(employees.filter((e) => e.employee_code).map((e) => [e.employee_code!.toLowerCase(), e]));
+    const empByEmail = new Map(employees.filter((e) => e.email).map((e) => [e.email.toLowerCase(), e]));
+    const shiftByName = new Map(shifts.map((s) => [s.name.toLowerCase(), s]));
+    const locByName = new Map(locations.map((l) => [l.name.toLowerCase(), l]));
+
+    const errors: Array<{ row: number; message: string }> = [];
+    const toCreate: any[] = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      const rowNum = i + 2; // header is row 1
+      const r = rows[i];
+      const code = this.cellToString(r.employee_code);
+      const email = this.cellToString(r.employee_email);
+      const shiftName = this.cellToString(r.shift_name);
+      const dateRaw = this.cellToString(r.date);
+      const locName = this.cellToString(r.location_name);
+
+      // Skip fully-blank rows silently (trailing empty template rows).
+      if (!code && !email && !shiftName && !dateRaw && !locName) continue;
+
+      const employee = code
+        ? empByCode.get(code.toLowerCase())
+        : email
+          ? empByEmail.get(email.toLowerCase())
+          : undefined;
+      if (!employee) {
+        errors.push({ row: rowNum, message: `Employee not found (code='${code}', email='${email}')` });
+        continue;
+      }
+
+      const shift = shiftName ? shiftByName.get(shiftName.toLowerCase()) : undefined;
+      if (!shift) {
+        errors.push({ row: rowNum, message: `Shift '${shiftName}' not found` });
+        continue;
+      }
+
+      let location_id = employee.location_id;
+      if (locName) {
+        const loc = locByName.get(locName.toLowerCase());
+        if (!loc) {
+          errors.push({ row: rowNum, message: `Location '${locName}' not found` });
+          continue;
+        }
+        location_id = loc.id;
+      }
+
+      const effective = new Date(dateRaw);
+      if (!dateRaw || Number.isNaN(effective.getTime())) {
+        errors.push({ row: rowNum, message: `Invalid date '${dateRaw}' (use YYYY-MM-DD)` });
+        continue;
+      }
+
+      toCreate.push({
+        id: randomUUID(),
+        tenant_id,
+        employee_id: employee.id,
+        shift_id: shift.id,
+        location_id,
+        company_id: employee.company_id ?? undefined,
+        effective_date: effective,
+        updated_at: new Date(),
+      });
+    }
+
+    if (toCreate.length > 0) {
+      await this.prisma.schedule_assignments.createMany({ data: toCreate });
+      await this.auditService.log({
+        tenant_id,
+        user_id,
+        module: "HR",
+        action: "IMPORT",
+        entity_type: "SCHEDULE_ASSIGNMENT",
+        entity_id: `batch-${Date.now()}`,
+        after_state: { imported: toCreate.length },
+        event_reference_id: `EVT-HR-ASSIGN-IMPORT-${Date.now()}`,
+      });
+    }
+
+    return { imported: toCreate.length, failed: errors.length, errors };
   }
 }

@@ -8,9 +8,13 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  UploadedFile,
   Req,
+  Res,
+  BadRequestException,
 } from "@nestjs/common";
-import { Request } from "express";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Request, Response } from "express";
 import { SchedulingService } from "../scheduling.service";
 import { Roles } from "../../../shared/decorators/roles.decorator";
 import { RolesGuard } from "../../../shared/guards/roles.guard";
@@ -257,5 +261,47 @@ export class HrSchedulingController {
       },
       user_id,
     );
+  }
+
+  // --- Bulk schedule import (xlsx/csv) ---
+
+  @Get("assignments/template")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  async downloadAssignmentTemplate(
+    @Req() request: RequestWithTenant,
+    @Res() res: Response,
+  ) {
+    await this.scopeResolver.resolve(request.tenantContext);
+    const buffer = await this.schedulingService.generateAssignmentTemplate();
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=schedule_import_template.xlsx",
+    );
+    res.send(buffer);
+  }
+
+  @Post("assignments/import")
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseInterceptors(FileInterceptor("file"))
+  async importAssignments(
+    @Req() request: RequestWithTenant,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const user_id = request.tenantContext.user_id ?? "system";
+    const scope = await this.scopeResolver.resolve(request.tenantContext);
+    if (!file) {
+      throw new BadRequestException("A file is required (multipart field 'file')");
+    }
+    const result = await this.schedulingService.importAssignments(
+      scope.tenant_id,
+      file.buffer,
+      file.originalname,
+      user_id,
+    );
+    return { success: true, tenant_id: scope.tenant_id, ...result };
   }
 }
