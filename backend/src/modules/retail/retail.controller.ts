@@ -16,9 +16,10 @@ import {
   HttpStatus,
   Patch,
   Headers,
+  Res,
   BadRequestException,
 } from "@nestjs/common";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { RetailService } from "./retail.service";
 import { RetailSeeder } from "./seeders/retail.seeder";
 import { AuditService } from "../../shared/audit/audit.service";
@@ -1350,28 +1351,37 @@ export class RetailController {
     );
     return this.respond(request.tenantContext, result);
   }
-  @HttpCode(HttpStatus.OK)
-  async exportReturns(@Req() request: RequestWithTenant) {
+
+  @Get("returns/export")
+  async exportReturns(@Req() request: RequestWithTenant, @Res() res: Response) {
      const { tenant_id } = request.tenantContext;
-     if (!tenant_id || tenant_id === 'mock') throw new Error("Invalid tenant context for export");
+     if (!tenant_id || tenant_id === 'mock') throw new BadRequestException("Invalid tenant context for export");
      const csv = await this.retailExport.generateReturnCsv(request.tenantContext);
-     return csv;
+     res.set({
+       "Content-Type": "text/csv",
+       "Content-Disposition": `attachment; filename="retail_returns_${tenant_id}.csv"`,
+     });
+     res.end(csv);
   }
 
   @Get("audit/export")
-  @HttpCode(HttpStatus.OK)
-  async exportAudit(@Req() request: RequestWithTenant) {
-     const { tenant_id } = request.tenantContext;
+  async exportAudit(@Req() request: RequestWithTenant, @Res() res: Response) {
      const csv = await this.retailExport.generateAuditCsv(request.tenantContext);
-     return csv;
+     res.set({
+       "Content-Type": "text/csv",
+       "Content-Disposition": `attachment; filename="retail_audit_${request.tenantContext.tenant_id}.csv"`,
+     });
+     res.end(csv);
   }
 
   @Get("dashboard/export")
-  @HttpCode(HttpStatus.OK)
-  async exportDashboard(@Req() request: RequestWithTenant) {
-     const { tenant_id } = request.tenantContext;
+  async exportDashboard(@Req() request: RequestWithTenant, @Res() res: Response) {
      const csv = await this.retailExport.generateDashboardKpiCsv(request.tenantContext);
-     return csv;
+     res.set({
+       "Content-Type": "text/csv",
+       "Content-Disposition": `attachment; filename="retail_dashboard_${request.tenantContext.tenant_id}.csv"`,
+     });
+     res.end(csv);
   }
 
   @Get("orders/:id/print")
