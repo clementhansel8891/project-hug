@@ -8,8 +8,8 @@
 
 | State | Count | Bugs |
 |-------|-------|------|
-| ✅ **FIXED & verified in prod** | 13 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #14 |
-| ❌ **OPEN** | 3 | #8, #15, #17 |
+| ✅ **FIXED & verified in prod** | 14 | #1, #2, #3, #4, #5, #6, #7, #9, #10, #11, #12, #13, #14, #15 |
+| ❌ **OPEN** | 2 | #8, #17 |
 | ⚪ **DEFERRED** (needs multipart/file to test) | 1 | #16 |
 | **Total tracked** | 17 | |
 
@@ -36,16 +36,15 @@ Legend — **Category**:
 | 12 | ✅ FIXED | HR | roster assign modal | POST /v1/hr/roster/assignments | REPOINT-FE | Added `hr/roster/assignments` + SchedulingService.createAssignment (location derived from employee). Probe → 201 |
 | 13 | ✅ FIXED | HR | talent modals | POST /v1/hr/talent/candidates | BUILD-BE | Added candidate advance/reject (+GET profile) on existing `candidates` table via HrRecruitmentService. Probe → advance 201, reject 201, terminal 400 |
 | 14 | ✅ FIXED | HR | (payroll-runs service) | POST /v1/hr/payroll-runs | VERIFY | camelCase/snake_case both accepted + date validation; was 500. Probe → 201 |
-| 15 | ❌ OPEN | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | BUILD-BE | no omnichannel config route |
+| 15 | ✅ FIXED | Marketing | OmnichannelConfigModal | POST /v1/marketing/omnichannel/config | BUILD-BE | New `marketing_omnichannel_configs` table + migration + upsert route (per tenant+channel). Probe → 201, upsert no-dup, GET 200 |
 | 16 | ⚪ DEFERRED | Marketing | (asset upload service) | POST /v1/marketing/assets/upload | VERIFY | exists; returns 500 on empty probe; needs multipart/file to confirm |
 | 17 | ❌ OPEN | Retail | AnomalyCompletionDialog | POST /v1/inventory/items/:id/complete | REPOINT-FE | wrong namespace; likely /v1/retail/inventory |
 
 ## 🔧 Remaining open bugs — priority order
 
-1. **Marketing omnichannel (#15)** — build config route. *(next)*
-2. **Retail anomaly complete (#17)** — repoint namespace.
-3. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
-4. **Marketing asset upload (#16)** — re-probe with multipart payload.
+1. **Retail anomaly complete (#17)** — repoint namespace. *(next)*
+2. **Finance journal (#8)** — needs design decision (event-sourced vs direct).
+3. **Marketing asset upload (#16)** — re-probe with multipart payload.
 
 ## 📝 Resolution log (fixed bugs)
 
@@ -110,3 +109,11 @@ Legend — **Category**:
   Live probe: GET profile → 200, advance → 201 (applied→screening), reject → 201
   (status rejected, reason persisted), advance-after-reject → 400. Commit
   `4b7dde55` + deploy.
+- **Marketing omnichannel (#15)** — *FIXED & VERIFIED IN PRODUCTION.* The
+  OmnichannelConfigModal posted to a non-existent route. Added a new
+  `marketing_omnichannel_configs` table (migration `20260630000000_add_omnichannel_configs`,
+  unique per tenant+channel) + `OmnichannelService.saveConfig` (upsert) /
+  `getConfigs`, and routes `POST/GET /marketing/omnichannel/config` (tenant
+  derived from context). Migration applied on deploy. Live probe: POST → 201,
+  re-save same channel → 201 (in-place update, no duplicate), GET → 200 count 1,
+  missing channel → 400. Commit `78ff1372` + deploy.
