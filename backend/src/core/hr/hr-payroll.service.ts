@@ -56,46 +56,44 @@ export class HrPayrollService {
       const checksumData = `${tenant_id}:${employee_id}:${breakdown.net_pay}:${Date.now()}`;
       const checksum = createHash("sha256").update(checksumData).digest("hex");
 
-      // 4. Upsert Payroll Line
-      const payrollLine = await tx.payroll_lines.upsert({
-        where: {
-          id: uuidv4(), // Since we don't have a unique constraint on tenant+run+employee in the model provided, we'd normally seek first
-        },
-        create: {
-          id: uuidv4(),
-          tenant_id,
-          payroll_run_id: payrollRun.id,
-          employee_id,
-          base_salary: new Prisma.Decimal(breakdown.base_salary.toFixed(2)),
-          total_work_hours: breakdown.attendance.total_hours,
-          overtime_pay: new Prisma.Decimal(breakdown.attendance.overtime_pay.toFixed(2)),
-          sales_bonus: new Prisma.Decimal(breakdown.sales_bonus.toFixed(2)),
-          manual_bonus: new Prisma.Decimal(breakdown.manual_adjustments.bonuses.toFixed(2)),
-          gross_income: new Prisma.Decimal(breakdown.gross_income.toFixed(2)),
-          gross_pay: new Prisma.Decimal(breakdown.gross_income.toFixed(2)), // Mapping gross_income to gross_pay for legacy
-          net_pay: new Prisma.Decimal(breakdown.net_pay.toFixed(2)),
-          tax_amount: new Prisma.Decimal(breakdown.tax.amount.toFixed(2)),
-          adjustments: new Prisma.Decimal(breakdown.manual_adjustments.bonuses - breakdown.manual_adjustments.deductions),
-          deductions_total: new Prisma.Decimal(breakdown.manual_adjustments.deductions.toFixed(2)),
-          breakdown_json: breakdown as any,
-          checksum,
-        },
-        update: {
-          base_salary: new Prisma.Decimal(breakdown.base_salary.toFixed(2)),
-          total_work_hours: breakdown.attendance.total_hours,
-          overtime_pay: new Prisma.Decimal(breakdown.attendance.overtime_pay.toFixed(2)),
-          sales_bonus: new Prisma.Decimal(breakdown.sales_bonus.toFixed(2)),
-          manual_bonus: new Prisma.Decimal(breakdown.manual_adjustments.bonuses.toFixed(2)),
-          gross_income: new Prisma.Decimal(breakdown.gross_income.toFixed(2)),
-          gross_pay: new Prisma.Decimal(breakdown.gross_income.toFixed(2)),
-          net_pay: new Prisma.Decimal(breakdown.net_pay.toFixed(2)),
-          tax_amount: new Prisma.Decimal(breakdown.tax.amount.toFixed(2)),
-          adjustments: new Prisma.Decimal(breakdown.manual_adjustments.bonuses - breakdown.manual_adjustments.deductions),
-          deductions_total: new Prisma.Decimal(breakdown.manual_adjustments.deductions.toFixed(2)),
-          breakdown_json: breakdown as any,
-          checksum,
-        }
+      // 4. Persist the payroll line idempotently. There is no DB unique
+      //    constraint on (tenant_id, payroll_run_id, employee_id), so find the
+      //    existing line for this employee+run and update it, otherwise create.
+      //    (The previous `upsert({ where: { id: uuidv4() } })` always generated a
+      //    fresh id that never matched — so it could never update and risked
+      //    duplicate lines on re-calculation — and it also wrote a non-existent
+      //    `total_work_hours` column, which threw a Prisma validation 500.)
+      const lineData = {
+        base_salary: new Prisma.Decimal(breakdown.base_salary.toFixed(2)),
+        overtime_pay: new Prisma.Decimal(breakdown.attendance.overtime_pay.toFixed(2)),
+        sales_bonus: new Prisma.Decimal(breakdown.sales_bonus.toFixed(2)),
+        manual_bonus: new Prisma.Decimal(breakdown.manual_adjustments.bonuses.toFixed(2)),
+        gross_income: new Prisma.Decimal(breakdown.gross_income.toFixed(2)),
+        gross_pay: new Prisma.Decimal(breakdown.gross_income.toFixed(2)), // legacy mirror
+        net_pay: new Prisma.Decimal(breakdown.net_pay.toFixed(2)),
+        tax_amount: new Prisma.Decimal(breakdown.tax.amount.toFixed(2)),
+        adjustments: new Prisma.Decimal(breakdown.manual_adjustments.bonuses - breakdown.manual_adjustments.deductions),
+        deductions_total: new Prisma.Decimal(breakdown.manual_adjustments.deductions.toFixed(2)),
+        breakdown_json: breakdown as any,
+        checksum,
+      };
+
+      const existingLine = await tx.payroll_lines.findFirst({
+        where: { tenant_id, payroll_run_id: payrollRun.id, employee_id },
+        select: { id: true },
       });
+
+      const payrollLine = existingLine
+        ? await tx.payroll_lines.update({ where: { id: existingLine.id }, data: lineData })
+        : await tx.payroll_lines.create({
+            data: {
+              id: uuidv4(),
+              tenant_id,
+              payroll_run_id: payrollRun.id,
+              employee_id,
+              ...lineData,
+            },
+          });
 
       await this.auditService.log({
         tenant_id, user_id: user_id || "SYSTEM", module: "HR", action: "CALCULATE_PAYROLL", entity_type: "PAYROLL_LINE", entity_id: payrollLine.id, after_state: payrollLine, event_reference_id, metadata: { period, breakdown },
