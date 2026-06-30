@@ -774,13 +774,12 @@ export class HRController {
 
   @Get("departments")
   async getDepartments(@Req() request: RequestWithTenant) {
-    const { tenant_id, role } = request.tenantContext;
-
-    const departments =
-      role === "SUPERADMIN"
-        ? await this.hrService.getGlobalDepartments()
-        : await this.hrService.getDepartments(tenant_id);
-
+    const { tenant_id } = request.tenantContext;
+    // Always scope to the active tenant. The previous SUPERADMIN branch returned
+    // departments across ALL tenants, which leaked cross-tenant data into this
+    // tenant-scoped endpoint and broke tenant UIs (e.g. the scheduler picking a
+    // foreign-tenant department). A true global view belongs on an admin route.
+    const departments = await this.hrService.getDepartments(tenant_id);
     return { success: true, tenant_id, data: departments };
   }
 
