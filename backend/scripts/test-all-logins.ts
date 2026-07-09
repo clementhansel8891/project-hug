@@ -17,7 +17,7 @@ const USERS: UserCredential[] = [
   // Management Team
   { email: 'estela@bambusilver.com', password: 'Estela2024!', name: 'Estela Owner', role: 'OWNER' },
   { email: 'hansel@bambusilver.com', password: 'Hansel2024!', name: 'Hansel Superadmin', role: 'SUPERADMIN' },
-  { email: 'ayi@bambusilver.com', password: 'Ayi2024!', name: 'Ayi Admin', role: 'ADMIN' },
+  { email: 'ayi@bambusilver.com', password: 'Ayi2024!', name: 'Ayi Admin', role: 'SUPERADMIN' },
   { email: 'dewi.alan@bambusilver.com', password: 'Dewi2024!', name: 'Dewi Alan', role: 'ADMIN' },
   
   // Sales Team (SPG)

@@ -53,7 +53,7 @@ const USERS = [
     password: 'Ayi2024!',
     firstName: 'Ayi',
     lastName: 'Admin',
-    role: 'ADMIN',
+    role: 'SUPERADMIN',
     phone: '+62812345003',
   },
   {
